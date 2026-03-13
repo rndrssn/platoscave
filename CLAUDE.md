@@ -58,7 +58,7 @@ Status: Early build — shell and first module in progress
 ## Branching Rules
 
 - **Never commit or push directly to `main`**
-- All work happens on the `development` branch
+- All work happens on the `develop` branch
 - Only merge to `main` when a feature is complete and working
 - Always confirm the current branch before starting work
 
@@ -147,7 +147,7 @@ Key rules:
 
 1. **Read before writing** — before touching code, read the relevant principle/epic doc for that area
 2. **Ask before installing** — never add a library or dependency without confirming with the user
-3. **Stay on development** — always confirm the branch is `development` before starting
+3. **Stay on develop** — always confirm the branch is `develop` before starting
 4. **No frameworks** — if a task feels like it needs React, Vue, or similar, flag it and discuss first
 5. **Directory URLs only** — never write `href="index.html"` or `href="page.html"` in links
 6. **Small commits** — commit after each meaningful, working change — not in large batches

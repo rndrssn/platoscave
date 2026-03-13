@@ -11,10 +11,14 @@
             "id": "4f49af7e8e5d0522",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "DOC-CONVENTIONS.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "DOC-CONVENTIONS"
             }
           }
         ]
@@ -150,12 +154,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "tests/CLAUDE.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of CLAUDE"
             }
           }
         ]
@@ -176,14 +181,18 @@
       "bases:Create new base": false
     }
   },
-  "active": "4f49af7e8e5d0522",
+  "active": "98129befb9227d0b",
   "lastOpenFiles": [
-    "VISION.md",
-    "PRINCIPLE-responsive.md",
-    "EPIC-navigation.md",
-    "PRINCIPLE-design-system.md",
-    "VISION-product.md",
     "DOC-CONVENTIONS.md",
+    "EPIC-navigation.md",
+    "VISION-product.md",
+    "HANDOFF.md",
+    "PRINCIPLE-responsive.md",
+    "PRINCIPLE-design-system.md",
+    "FIX-001-broken-navigation-links.md",
+    "tests/CLAUDE.md",
+    "tests",
+    "VISION.md",
     "RESPONSIVE.md",
     "NAVIGATION.md",
     "DESIGN-SYSTEM.md"

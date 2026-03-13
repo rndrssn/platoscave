@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GC Simulation — Validation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=DM+Mono:wght@0,300;0,400&family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --paper:      #F4EFE4;
+      --paper-dark: #EBE4D5;
+      --paper-deep: #E0D7C4;
+      --ink:        #2A2018;
+      --ink-mid:    #5C4F3A;
+      --ink-faint:  #9C8E78;
+      --ink-ghost:  #C8BDA8;
+      --rust:       #8B3A2A;
+      --ochre:      #9A7B3A;
+      --slate:      #3D4F5C;
+      --serif:      'EB Garamond', Georgia, serif;
+      --serif-alt:  'Cormorant Garamond', Georgia, serif;
+      --mono:       'DM Mono', 'Courier New', monospace;
+    }
+
+    html { font-size: 18px; }
+
+    body {
+      font-family: var(--serif);
+      background: var(--paper);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      color: var(--ink);
+      padding: 4rem 2.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-faint);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-family: var(--serif-alt);
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.08;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--ink-mid);
+      margin-bottom: 3rem;
+      max-width: 55ch;
+      line-height: 1.7;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--ink-ghost);
+      margin: 2.5rem 0;
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ink-ghost);
+      flex-shrink: 0;
+      transition: background 0.4s ease;
+    }
+
+    .status-indicator.running  { background: var(--ochre); }
+    .status-indicator.pass     { background: var(--ochre); }
+    .status-indicator.fail     { background: var(--rust); }
+
+    .status-text {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-faint);
+    }
+
+    /* ── Results table ── */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-faint);
+      margin-bottom: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 3rem;
+    }
+
+    thead tr {
+      border-bottom: 1px solid var(--ink-ghost);
+    }
+
+    th {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-ghost);
+      padding: 0 0 0.75rem 0;
+      text-align: left;
+    }
+
+    th:not(:first-child) { text-align: right; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--paper-deep);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    tbody tr.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    td {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 300;
+      padding: 0.85rem 0;
+      color: var(--ink-mid);
+      vertical-align: middle;
+    }
+
+    td:not(:first-child) { text-align: right; }
+
+    td.param {
+      color: var(--ink);
+      font-size: 0.72rem;
+    }
+
+    td.load-light    { color: var(--ochre); }
+    td.load-moderate { color: var(--ink-mid); }
+    td.load-heavy    { color: var(--rust); }
+
+    /* Bar visualization inline */
+    .bar-cell {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    .bar-track {
+      width: 80px;
+      height: 3px;
+      background: var(--paper-deep);
+      flex-shrink: 0;
+    }
+
+    .bar-fill {
+      height: 100%;
+      transition: width 0.6s ease;
+    }
+
+    .bar-fill.resolution { background: var(--slate); }
+    .bar-fill.oversight  { background: var(--ochre); }
+    .bar-fill.flight     { background: var(--rust); }
+
+    /* ── Qualitative checks ── */
+    .checks { margin-bottom: 3rem; }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--paper-deep);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .check-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .check-mark {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 400;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+      min-width: 2rem;
+    }
+
+    .check-mark.pass { color: var(--ochre); }
+    .check-mark.fail { color: var(--rust); }
+
+    .check-text {
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      color: var(--ink-mid);
+      line-height: 1.6;
+    }
+
+    /* ── Verdict ── */
+    .verdict {
+      padding: 2rem;
+      background: var(--paper-dark);
+      border: 2px solid var(--paper-deep);
+      border-top-color: var(--rust);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.5s ease, transform 0.5s ease, border-top-color 0.3s ease;
+    }
+
+    .verdict.visible { opacity: 1; transform: translateY(0); }
+    .verdict.validated { border-top-color: var(--ochre); }
+
+    .verdict-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-faint);
+      margin-bottom: 0.5rem;
+    }
+
+    .verdict-title {
+      font-family: var(--serif-alt);
+      font-weight: 300;
+      font-style: italic;
+      font-size: 1.75rem;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+
+    .verdict-body {
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      color: var(--ink-mid);
+      margin-top: 0.75rem;
+      line-height: 1.65;
+      max-width: 55ch;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--ink-ghost);
+    }
+
+    .footer p {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-ghost);
+    }
+  </style>
+</head>
+<body>
+
+  <p class="label">Spike Validation — gc-simulation.js</p>
+  <h1>Organised Anarchy<br>Simulation Test</h1>
+  <p class="subtitle">
+    Validates the JavaScript port of Cohen, March &amp; Olsen (1972) against the
+    qualitative findings of the original paper. All nine parameter combinations
+    are run with 100 Monte Carlo iterations each.
+  </p>
+
+  <div class="status-bar">
+    <div class="status-indicator" id="statusDot"></div>
+    <span class="status-text" id="statusText">Waiting</span>
+  </div>
+
+  <hr />
+
+  <p class="section-label">Nine Parameter Combinations</p>
+  <table id="resultsTable">
+    <thead>
+      <tr>
+        <th>Load</th>
+        <th>Structure</th>
+        <th>Resolution</th>
+        <th style="width:120px"></th>
+        <th>Oversight</th>
+        <th style="width:120px"></th>
+        <th>Flight</th>
+        <th style="width:120px"></th>
+      </tr>
+    </thead>
+    <tbody id="resultsBody"></tbody>
+  </table>
+
+  <p class="section-label">Qualitative Checks</p>
+  <div class="checks" id="checks"></div>
+
+  <div class="verdict" id="verdict">
+    <p class="verdict-label">Spike Status</p>
+    <p class="verdict-title" id="verdictTitle">—</p>
+    <p class="verdict-body" id="verdictBody"></p>
+  </div>
+
+  <div class="footer">
+    <p>To the Bedrock &mdash; SPIKE-organised-anarchy-sim &mdash; Test page only, not part of the site</p>
+  </div>
+
+  <!-- Load simulation — exposes runGarbageCanSimulation as a global via window assignment -->
+  <script src="../gc-simulation.js"></script>
+  <script>
+    // Make the function available in browser context.
+    // gc-simulation.js guards its module.exports behind typeof window === 'undefined',
+    // so the functions are already declared as globals in the browser scope.
+    // We just need to verify and call them.
+
+    const dot  = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+
+    function setStatus(state, label) {
+      dot.className  = 'status-indicator ' + state;
+      text.textContent = label;
+    }
+
+    function revealWithDelay(elements, delayMs) {
+      elements.forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * delayMs);
+      });
+    }
+
+    function renderBar(value, type) {
+      return `
+        <div class="bar-cell">
+          <span>${(value * 100).toFixed(1)}%</span>
+          <div class="bar-track">
+            <div class="bar-fill ${type}" style="width:${(value * 100).toFixed(1)}%"></div>
+          </div>
+        </div>`;
+    }
+
+    function loadClass(load) {
+      return `load-${load}`;
+    }
+
+    async function runValidation() {
+      setStatus('running', 'Running simulation...');
+
+      // Yield to browser so status updates render before heavy computation
+      await new Promise(r => setTimeout(r, 50));
+
+      const loads      = ['light', 'moderate', 'heavy'];
+      const structures = ['unsegmented', 'hierarchical', 'specialized'];
+      const results    = {};
+
+      // Run all nine combinations
+      for (const load of loads) {
+        for (const structure of structures) {
+          const key = `${load}/${structure}`;
+          results[key] = runGarbageCanSimulation({
+            energyLoad:        load,
+            decisionStructure: structure,
+            accessStructure:   structure,
+          });
+          // Yield between runs so the browser stays responsive
+          await new Promise(r => setTimeout(r, 0));
+        }
+      }
+
+      // ── Render results table ──────────────────────────────────────────────────
+      const tbody = document.getElementById('resultsBody');
+      const rows  = [];
+
+      for (const load of loads) {
+        for (const structure of structures) {
+          const r   = results[`${load}/${structure}`];
+          const tr  = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="param ${loadClass(load)}">${load}</td>
+            <td class="param">${structure}</td>
+            <td colspan="2">${renderBar(r.resolution, 'resolution')}</td>
+            <td colspan="2">${renderBar(r.oversight,  'oversight')}</td>
+            <td colspan="2">${renderBar(r.flight,     'flight')}</td>
+          `;
+          tbody.appendChild(tr);
+          rows.push(tr);
+        }
+      }
+
+      revealWithDelay(rows, 80);
+
+      // ── Qualitative checks ────────────────────────────────────────────────────
+      const checksEl = document.getElementById('checks');
+      const checkItems = [];
+      let allPass = true;
+
+      function addCheck(pass, label) {
+        const div = document.createElement('div');
+        div.className = 'check-item';
+        div.innerHTML = `
+          <span class="check-mark ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'FAIL'}</span>
+          <span class="check-text">${label}</span>
+        `;
+        checksEl.appendChild(div);
+        checkItems.push(div);
+        if (!pass) allPass = false;
+      }
+
+      // Check 1: Proportions sum to 1.0
+      let sumsOk = true;
+      for (const key of Object.keys(results)) {
+        const r   = results[key];
+        const sum = r.resolution + r.oversight + r.flight;
+        if (Math.abs(sum - 1.0) > 0.001) { sumsOk = false; break; }
+      }
+      addCheck(sumsOk, 'resolution + oversight + flight = 1.0 for all nine combinations');
+
+      // Check 2: Heavy load → more flight than light (unsegmented + hierarchical)
+      const flightStructures = ['unsegmented', 'hierarchical'];
+      let flightIncreases = true;
+      for (const s of flightStructures) {
+        const light = results[`light/${s}`].flight;
+        const heavy = results[`heavy/${s}`].flight;
+        if (heavy < light) { flightIncreases = false; break; }
+      }
+      addCheck(flightIncreases,
+        `Heavy load produces more flight than light load — unsegmented: ` +
+        `${(results['light/unsegmented'].flight * 100).toFixed(1)}% → ${(results['heavy/unsegmented'].flight * 100).toFixed(1)}%, ` +
+        `hierarchical: ${(results['light/hierarchical'].flight * 100).toFixed(1)}% → ${(results['heavy/hierarchical'].flight * 100).toFixed(1)}%`
+      );
+
+      // Check 3: Hierarchical differs meaningfully from unsegmented
+      let hierDiffers = false;
+      for (const load of loads) {
+        const unseg = results[`${load}/unsegmented`].resolution;
+        const hier  = results[`${load}/hierarchical`].resolution;
+        if (Math.abs(unseg - hier) > 0.02) { hierDiffers = true; break; }
+      }
+      addCheck(hierDiffers,
+        'Hierarchical decision structure produces meaningfully different resolution rate than unsegmented'
+      );
+
+      // Check 4: ticks array is present and structured correctly
+      const sampleTicks = results['moderate/unsegmented'].ticks;
+      const ticksOk = Array.isArray(sampleTicks) &&
+                      sampleTicks.length > 0 &&
+                      sampleTicks[0].choices !== undefined &&
+                      sampleTicks[0].problems !== undefined;
+      addCheck(ticksOk,
+        `ticks array is present and structured for d3 consumption — ` +
+        `${sampleTicks ? sampleTicks.length : 0} ticks, each with choices[] and problems[]`
+      );
+
+      setTimeout(() => revealWithDelay(checkItems, 120), rows.length * 80 + 100);
+
+      // ── Verdict ───────────────────────────────────────────────────────────────
+      const verdictEl    = document.getElementById('verdict');
+      const verdictTitle = document.getElementById('verdictTitle');
+      const verdictBody  = document.getElementById('verdictBody');
+
+      setTimeout(() => {
+        if (allPass) {
+          verdictEl.classList.add('validated');
+          verdictTitle.textContent = 'Validated';
+          verdictBody.textContent =
+            'All qualitative checks pass. The simulation is faithful to the original 1972 paper. ' +
+            'Update SPIKE-organised-anarchy-sim status to VALIDATED and proceed to SPIKE-organised-anarchy-mapper.';
+          setStatus('pass', 'All checks passed');
+        } else {
+          verdictTitle.textContent = 'Needs review';
+          verdictBody.textContent =
+            'One or more qualitative checks failed. Review the failing checks above before marking the spike validated. ' +
+            'Check the simulation logic against the Python reference implementation.';
+          setStatus('fail', 'Checks failed');
+        }
+        verdictEl.classList.add('visible');
+      }, rows.length * 80 + checkItems.length * 120 + 300);
+    }
+
+    // Verify function is available before running
+    if (typeof runGarbageCanSimulation === 'function') {
+      runValidation().catch(err => {
+        setStatus('fail', 'Error — see console');
+        console.error(err);
+      });
+    } else {
+      setStatus('fail', 'runGarbageCanSimulation not found — check script path');
+    }
+  </script>
+
+</body>
+</html>

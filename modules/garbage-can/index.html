@@ -890,14 +890,14 @@
       document.getElementById('stochastic-note').hidden = true;
 
       const container = document.getElementById('viz-svg');
-      const SVG_W    = container.clientWidth || 680;
-      const SVG_H    = 240;
-      const CHOICE_Y = 110;
+      const SVG_W    = container.clientWidth || 900;
+      const SVG_H    = 260;
+      const CHOICE_Y = 140;
       const CHOICE_R = 22;
       const PROB_R   = 3.5;
-      const PAD_H    = 80;
-      const FLOAT_Y0 = 148;
-      const FLOAT_Y1 = 178;
+      const PAD_H    = 55;
+      const FLOAT_Y0 = 50;
+      const FLOAT_Y1 = 75;
 
       const svg = d3.select('#viz-svg')
         .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
@@ -911,12 +911,11 @@
       );
 
       function floatPos(id) {
-        const safeY = CHOICE_Y - CHOICE_R - 10;
         if (id < M) {
-          return { x: choiceX[id], y: Math.max(safeY, FLOAT_Y0) };
+          return { x: choiceX[id], y: FLOAT_Y0 };
         }
         const col = id - M;
-        return { x: choiceX[col] + (col % 2 === 0 ? 14 : -14), y: Math.max(safeY, FLOAT_Y1) };
+        return { x: choiceX[col] + (col % 2 === 0 ? 18 : -18), y: FLOAT_Y1 };
       }
 
       function attachedPos(choiceId, slot, total) {

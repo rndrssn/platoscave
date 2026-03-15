@@ -902,11 +902,12 @@
       );
 
       function floatPos(id) {
+        const safeY = CHOICE_Y - CHOICE_R - 10;
         if (id < M) {
-          return { x: choiceX[id], y: FLOAT_Y0 };
+          return { x: choiceX[id], y: Math.max(safeY, FLOAT_Y0) };
         }
         const col = id - M;
-        return { x: choiceX[col] + (col % 2 === 0 ? 14 : -14), y: FLOAT_Y1 };
+        return { x: choiceX[col] + (col % 2 === 0 ? 14 : -14), y: Math.max(safeY, FLOAT_Y1) };
       }
 
       function attachedPos(choiceId, slot, total) {
@@ -1017,6 +1018,10 @@
         return { x: pos.x, y: pos.y, opacity: 1, fill: C.sage, r: PROB_R };
       }
 
+      // Cumulative ever-attached counts — one entry per choice, never decreases
+      const everAttached    = Array(M).fill(0);
+      const attachedCounted = new Set(); // problem IDs already counted
+
       function renderTick(tickIdx) {
         const tick = ticks[tickIdx];
 
@@ -1032,11 +1037,11 @@
             })
             .attr('stroke-width', d => d.state === 'resolved' ? 1.5 : 1);
 
-        // Fill level — count resolved problems at each choice, animate upward
-        const resolvedAtChoice = Array(M).fill(0);
-        tick.problems.forEach(p => {
-          if (p.state === 'resolved' && typeof p.attachedTo === 'number') {
-            resolvedAtChoice[p.attachedTo]++;
+        // Fill level — cumulative count of problems ever attached to each choice
+        tick.problems.forEach((p, pid) => {
+          if (p.state === 'attached' && typeof p.attachedTo === 'number' && !attachedCounted.has(pid)) {
+            attachedCounted.add(pid);
+            everAttached[p.attachedTo]++;
           }
         });
         svg.selectAll('rect.choice-fill')
@@ -1044,8 +1049,8 @@
           .transition()
             .duration(600)
             .ease(d3.easeCubicInOut)
-            .attr('y',      i => CHOICE_Y + CHOICE_R - (resolvedAtChoice[i] / W) * (CHOICE_R * 2))
-            .attr('height', i => (resolvedAtChoice[i] / W) * (CHOICE_R * 2));
+            .attr('y',      i => CHOICE_Y + CHOICE_R - (everAttached[i] / W) * (CHOICE_R * 2))
+            .attr('height', i => (everAttached[i] / W) * (CHOICE_R * 2));
 
         svg.selectAll('circle.problem')
           .data(d3.range(W), d => d)

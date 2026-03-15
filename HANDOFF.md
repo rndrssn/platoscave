@@ -2,64 +2,80 @@
 
 ## Ready for Claude Code
 
-### Fix: Mapper — rounding, fill level, canvas height, button weight
+### Bug report: Mapper — fill level, floating dots, RUN AGAIN weight
 - File: `modules/garbage-can/index.html`
 - Branch: `experiment/organised-anarchy-mapper`
 - Read `CLAUDE.md` and `docs/PRINCIPLE-coding-standards.md` before touching anything
 
-### Fix 1 — Unresolved count going negative
-The rounding logic is producing a total that exceeds 20, resulting in
-unresolved: -1. Fix the rounding so the four counts always sum to
-exactly 20 and unresolved is never negative.
+---
 
-```js
-const resolved   = Math.round(simOutput.resolution * 20);
-const oversight  = Math.round(simOutput.oversight  * 20);
-const flight     = Math.round(simOutput.flight     * 20);
-const unresolved = Math.max(0, 20 - resolved - oversight - flight);
-```
+## Bug 1 — Fill level counts resolved problems, should count attached problems
 
-If the sum of the first three exceeds 20, reduce the largest of the
-three by the excess amount.
+**Location:** `renderTick()` function, lines 1036–1048
 
-### Fix 2 — Show resolved problems as a fill level inside the circle
-Remove the resolved dots rendering below the circles entirely.
+**Current behaviour:**
+The fill level counts problems where `p.state === 'resolved'`. This means
+circles only fill when problems have been fully resolved there — which
+rarely happens, so circles appear mostly empty.
 
-Instead, as problems resolve at a choice opportunity, fill the circle
-from the bottom upward. The fill level represents the proportion of
-problems resolved at that circle — a circle that resolved 5 out of 10
-problems attached to it fills halfway.
+**Expected behaviour:**
+The fill level should represent how many problems have ever been thrown
+into that garbage can — i.e. problems that have attached to it at any
+point during the simulation, regardless of outcome. This is the "fullness"
+of the can, not the resolution rate.
 
-Fill level calculation:
-  fill proportion = problems resolved at this circle / 20
+The count should be cumulative — it never decreases. Once a problem has
+attached to a circle, that circle's fill count goes up by one and stays up,
+even if the problem later drifts away or resolves.
 
-One resolved problem = 1/20 of the circle filled. Twenty resolved
-problems at one circle = fully filled. This is a proportion of the
-total problem space (always 20), not a proportion of problems
-attached to that circle.
+**Fix approach:**
+Maintain a separate array `everAttached[M]` initialised to zeros. On each
+tick, for each problem that is currently `attached` to a choice, increment
+`everAttached[p.attachedTo]` if it has not already been counted for that
+problem. Use `everAttached` to drive the fill level instead of counting
+resolved problems.
 
-Fill color: var(--ochre) at low opacity (0.25) so the circle stroke
-remains visible. The fill animates smoothly as each problem resolves —
-it does not jump. Use a clipPath or similar SVG technique to keep the
-fill within the circle bounds.
+Fill proportion = `everAttached[i] / 20` (total problem space is always 20).
 
-This fix also restores the C0 label which is currently hidden behind
-misplaced dots.
+---
 
-### Fix 3 — SVG canvas has excessive empty space above circles
-The SVG canvas is too tall — circles are sitting near the bottom with
-a large blank area above. Reduce the SVG height so circles are
-vertically centered with minimal padding above and below.
+## Bug 2 — Floating dots render above the SVG canvas bounds
 
-### Fix 4 — RUN AGAIN button has wrong font weight
-The RUN AGAIN text is rendering too heavy. It should match the weight
-of other mono labels in the page — DM Mono weight 300.
-Use existing tokens and classes from css/main.css only. No inline styles.
+**Location:** `floatPos()` function and SVG height definition
+
+**Current behaviour:**
+Some dots in `floating` or `inactive` state render above the circles,
+outside the visible SVG area. This is because `floatPos()` calculates
+positions relative to `CHOICE_Y` with a negative offset, and the SVG
+viewBox top does not have enough room above the circles.
+
+**Expected behaviour:**
+All dots must remain within the SVG canvas bounds at all times. Floating
+dots should drift in the space around the circles, not above the canvas.
+
+**Fix approach:**
+Either increase the SVG viewBox to add space above `CHOICE_Y`, or constrain
+`floatPos()` so it never returns a `y` value less than a minimum safe margin
+(e.g. `CHOICE_Y - CHOICE_R - 10`).
+
+---
+
+## Bug 3 — RUN AGAIN button renders too heavy
+
+**Location:** `#replay-btn` element styling
+
+**Current behaviour:**
+The RUN AGAIN button text appears heavier than other mono labels on the page.
+
+**Expected behaviour:**
+Should match other mono labels — DM Mono, weight 300, uppercase.
+Use existing tokens and classes from `css/main.css` only. No inline styles.
+
+---
 
 ## Notes
 - Do not change the animation timing or logic
-- Do not change the questions, scoring, or diagnosis text
-- Do not change the counter values or end state summary logic
+- Do not change the questions, scoring, positioning diagram, or diagnosis text
 - No inline styles — css/main.css tokens only
-- Stay on experiment/organised-anarchy-mapper
-- Nothing else until these four fixes are done
+- Stay on `experiment/organised-anarchy-mapper`
+- Nothing else until these three bugs are fixed

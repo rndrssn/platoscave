@@ -606,16 +606,9 @@
         <p class="figure-caption" id="viz-caption"></p>
         <p class="period-readout" id="period-readout"></p>
 
-        <!-- Running counters — visible during animation -->
-        <div class="module-tags" id="sim-counters">
-          <span class="module-tag" id="cnt-resolved">Resolved: 0</span>
-          <span class="module-tag" id="cnt-oversight">Oversight: 0</span>
-          <span class="module-tag" id="cnt-flight">Flight: 0</span>
-          <span class="module-tag" id="cnt-unresolved">Unresolved: 0</span>
-        </div>
-
-        <!-- End state summary — replaces counters after animation -->
+        <!-- End state summary — shown after animation -->
         <div id="sim-summary" hidden>
+          <p class="sim-summary-header" id="sum-header"></p>
           <p class="period-readout" id="sum-resolved"></p>
           <p class="period-readout" id="sum-oversight"></p>
           <p class="period-readout" id="sum-flight"></p>
@@ -738,6 +731,7 @@
       inkGhost: '#C8BDA8',
       rust:     '#8B3A2A',
       ochre:    '#9A7B3A',
+      slate:    '#3D4F5C',
     };
 
     // ─── Per-tick outcome counters ────────────────────────────────────────────────
@@ -882,27 +876,20 @@
       }
       const simUnresolved = Math.max(0, W - simResolved - simOversight - simFlight);
 
-      // Reset counter/summary state
-      document.getElementById('sim-counters').hidden  = false;
+      // Reset summary state
       document.getElementById('sim-summary').hidden   = true;
       document.getElementById('replay-btn').hidden    = true;
       document.getElementById('stochastic-note').hidden = true;
 
-      // Set counters immediately from simulation proportions — static throughout animation
-      document.getElementById('cnt-resolved').textContent   = `Resolved: ${simResolved}`;
-      document.getElementById('cnt-oversight').textContent  = `Oversight: ${simOversight}`;
-      document.getElementById('cnt-flight').textContent     = `Flight: ${simFlight}`;
-      document.getElementById('cnt-unresolved').textContent = `Unresolved: ${simUnresolved}`;
-
       const container = document.getElementById('viz-svg');
       const SVG_W    = container.clientWidth || 680;
-      const SVG_H    = 120;
-      const CHOICE_Y = 70;
+      const SVG_H    = 180;
+      const CHOICE_Y = 90;
       const CHOICE_R = 15;
       const PROB_R   = 3.5;
-      const PAD_H    = 88;
-      const FLOAT_Y0 = 45;
-      const FLOAT_Y1 = 95;
+      const PAD_H    = 90;
+      const FLOAT_Y0 = 130;
+      const FLOAT_Y1 = 155;
 
       const svg = d3.select('#viz-svg')
         .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
@@ -1119,13 +1106,13 @@
                 .attr('opacity', 0.85).attr('fill', C.inkFaint);
           });
 
-        // Oversight exit: flash ochre, then move to float position
+        // Oversight exit: flash slate, then move to float position
         allProbs.filter(id => oversightSet.has(id))
           .each(function(id) {
             const fp = floatPos(id);
             d3.select(this).interrupt()
               .transition().duration(200)
-                .attr('fill', C.ochre)
+                .attr('fill', C.slate)
               .transition().duration(400).ease(d3.easeCubicInOut)
                 .attr('cx', fp.x).attr('cy', fp.y).attr('r', PROB_R)
                 .attr('opacity', 0.85).attr('fill', C.inkFaint);
@@ -1169,17 +1156,18 @@
     // ─── End state summary ────────────────────────────────────────────────────────
     function showEndState(endResolved, endOversight, endFlight, endUnresolved) {
 
-      document.getElementById('sim-counters').hidden = true;
-      document.getElementById('sim-summary').hidden  = false;
+      document.getElementById('sim-summary').hidden = false;
 
-      document.getElementById('sum-resolved').textContent =
-        `Resolved \u2014 ${endResolved} \u2014 problem genuinely closed at a decision forum`;
-      document.getElementById('sum-oversight').textContent =
-        `Oversight \u2014 ${endOversight} \u2014 decision made while problem moved elsewhere`;
-      document.getElementById('sum-flight').textContent =
-        `Flight \u2014 ${endFlight} \u2014 problem abandoned the forum before resolution`;
-      document.getElementById('sum-unresolved').textContent =
-        `Unresolved \u2014 ${endUnresolved} \u2014 never reached a decision forum`;
+      document.getElementById('sum-header').textContent =
+        'Across 100 simulations of this organisation type, on average:';
+      document.getElementById('sum-resolved').innerHTML =
+        `<span class="outcome-resolved">Resolved</span> \u2014 ${endResolved} \u2014 problem genuinely closed at a decision forum`;
+      document.getElementById('sum-oversight').innerHTML =
+        `<span class="outcome-oversight">Oversight</span> \u2014 ${endOversight} \u2014 decision made while problem moved elsewhere`;
+      document.getElementById('sum-flight').innerHTML =
+        `<span class="outcome-flight">Flight</span> \u2014 ${endFlight} \u2014 problem abandoned the forum before resolution`;
+      document.getElementById('sum-unresolved').innerHTML =
+        `<span class="outcome-unresolved">Unresolved</span> \u2014 ${endUnresolved} \u2014 never reached a decision forum`;
 
       document.getElementById('replay-btn').hidden      = false;
       document.getElementById('stochastic-note').hidden = false;

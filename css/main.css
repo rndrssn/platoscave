@@ -433,8 +433,16 @@ footer {
   color: var(--rust);
 }
 
-/* ─── Simulation counters — plain text, no border ───────── */
-#sim-counters .module-tag {
-  border: none;
-  padding: 0;
+/* ─── Simulation end state summary ───────────────────────── */
+.sim-summary-header {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--ink-mid);
+  margin-bottom: 0.75rem;
 }
+
+.outcome-resolved   { color: var(--ochre); }
+.outcome-flight     { color: var(--rust); }
+.outcome-oversight  { color: var(--slate); }
+.outcome-unresolved { color: var(--ink-faint); }

@@ -447,7 +447,7 @@ footer {
 .outcome-resolved   { color: var(--ochre); font-weight: 400; }
 .outcome-flight     { color: var(--rust);  font-weight: 400; }
 .outcome-oversight  { color: var(--slate); font-weight: 400; }
-.outcome-unresolved { color: var(--ink-faint); }
+.outcome-unresolved { color: var(--ink-faint); font-weight: 400; }
 
 /* ─── Visualization legend ───────────────────────────────── */
 .viz-legend {
@@ -469,10 +469,10 @@ footer {
   color: var(--ink-faint);
 }
 
-.legend-sym-entering  { color: var(--ink-faint); }
-.legend-sym-searching { color: var(--ink-faint); }
-.legend-sym-forum     { color: var(--ink-mid); }
-.legend-sym-resolved  { color: var(--ink-ghost); }
+.legend-sym-entering  { color: var(--rust); }
+.legend-sym-searching { color: var(--rust); }
+.legend-sym-forum     { color: var(--ochre); }
+.legend-sym-resolved  { color: var(--slate); }
 
 /* ─── Attached dot pulse ─────────────────────────────────── */
 @keyframes dot-pulse {

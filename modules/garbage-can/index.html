@@ -890,13 +890,13 @@
 
       const container = document.getElementById('viz-svg');
       const SVG_W    = container.clientWidth || 680;
-      const SVG_H    = 180;
-      const CHOICE_Y = 90;
-      const CHOICE_R = 15;
+      const SVG_H    = 240;
+      const CHOICE_Y = 120;
+      const CHOICE_R = 22;
       const PROB_R   = 3.5;
-      const PAD_H    = 96;
-      const FLOAT_Y0 = 130;
-      const FLOAT_Y1 = 155;
+      const PAD_H    = 80;
+      const FLOAT_Y0 = 165;
+      const FLOAT_Y1 = 200;
 
       const svg = d3.select('#viz-svg')
         .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
@@ -1015,7 +1015,7 @@
 
         if (p.state === 'floating') {
           const fp = floatPos(id);
-          return { x: fp.x, y: fp.y, opacity: 0.7, fill: C.inkFaint, r: PROB_R };
+          return { x: fp.x, y: fp.y, opacity: 0.9, fill: C.rust, r: PROB_R };
         }
 
         if (p.state === 'resolved') {
@@ -1029,7 +1029,7 @@
           .filter(q => q.state === 'attached' && q.attachedTo === p.attachedTo);
         const slot = siblings.findIndex(q => q.id === id);
         const pos  = attachedPos(p.attachedTo, slot, siblings.length);
-        return { x: pos.x, y: pos.y, opacity: 1, fill: C.inkMid, r: pos.dotR };
+        return { x: pos.x, y: pos.y, opacity: 1, fill: C.ochre, r: pos.dotR };
       }
 
       // Cumulative ever-attached counts — one entry per choice, never decreases
@@ -1136,7 +1136,7 @@
             const cx = choiceX[prevTick.problems[id].attachedTo];
             d3.select(this).interrupt()
               .transition().duration(400).ease(d3.easeCubicInOut)
-                .attr('cx', cx).attr('cy', CHOICE_Y).attr('r', 1.5).attr('fill', C.ochre)
+                .attr('cx', cx).attr('cy', CHOICE_Y).attr('r', 1.5).attr('fill', C.slate)
               .transition().duration(200)
                 .attr('opacity', 0);
           });
@@ -1205,6 +1205,11 @@
 
     // ─── End state summary ────────────────────────────────────────────────────────
     function showEndState(endResolved, endOversight, endFlight, endUnresolved) {
+
+      // Stop any pulsating on dots
+      d3.select('#viz-svg').selectAll('circle.problem')
+        .classed('problem-attached', false)
+        .interrupt();
 
       document.getElementById('sim-summary').hidden = false;
 

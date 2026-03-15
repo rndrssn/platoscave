@@ -494,3 +494,27 @@ footer {
 .problem-searching {
   animation: dot-pulse 1s ease-in-out infinite;
 }
+
+/* ─── Questionnaire card ─────────────────────────────── */
+.q-card {
+  background: var(--paper-dark);
+  border: 2px solid var(--paper-deep);
+  border-top: 2px solid var(--ink-ghost);
+  padding: 2rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .q-card {
+    padding: 2rem 2.5rem;
+  }
+}
+
+.q-step-indicator {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-ghost);
+  margin-bottom: 1rem;
+}

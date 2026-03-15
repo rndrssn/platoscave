@@ -385,9 +385,10 @@
 
       <!-- Stage 1 — The questionnaire -->
       <section id="stage-1" class="stage is-visible">
+        <p class="q-step-indicator" id="q-step">1 of 3</p>
         <form id="questionnaire" novalidate>
 
-          <div class="q-section">
+          <div class="q-section q-card" id="q-group-1">
             <p class="q-section-label">01 &mdash; Energy load</p>
 
             <div class="question-block">
@@ -464,9 +465,13 @@
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
             </div>
+            <div class="submit-row">
+              <button type="button" class="submit-btn" id="q-continue-1">Continue</button>
+              <p class="form-error" id="form-error-1" hidden>Please answer all questions in this section.</p>
+            </div>
           </div>
 
-          <div class="q-section">
+          <div class="q-section q-card" id="q-group-2" hidden>
             <p class="q-section-label">02 &mdash; Access structure</p>
 
             <div class="question-block">
@@ -513,9 +518,13 @@
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
             </div>
+            <div class="submit-row">
+              <button type="button" class="submit-btn" id="q-continue-2">Continue</button>
+              <p class="form-error" id="form-error-2" hidden>Please answer all questions in this section.</p>
+            </div>
           </div>
 
-          <div class="q-section">
+          <div class="q-section q-card" id="q-group-3" hidden>
             <p class="q-section-label">03 &mdash; Decision structure</p>
 
             <div class="question-block">
@@ -579,9 +588,10 @@
             </div>
           </div>
 
-          <div class="submit-row">
-            <button type="submit" class="submit-btn">Map this organisation</button>
-            <p class="form-error" id="form-error">Please answer all twelve questions before continuing.</p>
+            <div class="submit-row">
+              <button type="submit" class="submit-btn">Map this organisation</button>
+              <p class="form-error" id="form-error">Please answer all questions before continuing.</p>
+            </div>
           </div>
 
         </form>
@@ -659,6 +669,53 @@
     // ─── Nav toggle ──────────────────────────────────────────────────────────────
     document.querySelector('.nav-mobile-toggle').addEventListener('click', function () {
       document.querySelector('.nav-links').classList.toggle('is-open');
+    });
+
+    // ─── Questionnaire step navigation ───────────────────────────────────────────
+    const Q_GROUPS = [
+      { id: 'q-group-1', questions: ['q0', 'q1', 'q2', 'q3', 'q4'], errorId: 'form-error-1', continueId: 'q-continue-1' },
+      { id: 'q-group-2', questions: ['q5', 'q6', 'q7'],             errorId: 'form-error-2', continueId: 'q-continue-2' },
+      { id: 'q-group-3', questions: ['q8', 'q9', 'q10', 'q11'],     errorId: null,           continueId: null },
+    ];
+
+    let currentGroup = 0;
+
+    function validateGroup(groupIdx) {
+      const group = Q_GROUPS[groupIdx];
+      for (let i = 0; i < group.questions.length; i++) {
+        if (!document.querySelector(`input[name="${group.questions[i]}"]:checked`)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function advanceGroup(fromIdx) {
+      const group = Q_GROUPS[fromIdx];
+      if (!validateGroup(fromIdx)) {
+        if (group.errorId) document.getElementById(group.errorId).hidden = false;
+        return;
+      }
+      if (group.errorId) document.getElementById(group.errorId).hidden = true;
+
+      // Hide current group
+      document.getElementById(group.id).hidden = true;
+
+      // Show next group
+      currentGroup = fromIdx + 1;
+      document.getElementById(Q_GROUPS[currentGroup].id).hidden = false;
+      document.getElementById('q-step').textContent = `${currentGroup + 1} of 3`;
+
+      // Scroll to top of form area
+      document.getElementById(Q_GROUPS[currentGroup].id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.getElementById('q-continue-1').addEventListener('click', function () {
+      advanceGroup(0);
+    });
+
+    document.getElementById('q-continue-2').addEventListener('click', function () {
+      advanceGroup(1);
     });
 
     // ─── Diagnosis lookup (from PRINCIPLE-organised-anarchy-diagnosis.md) ────────

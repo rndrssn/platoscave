@@ -490,3 +490,7 @@ footer {
 .problem-attached {
   animation: dot-pulse 2s ease-in-out infinite;
 }
+
+.problem-searching {
+  animation: dot-pulse 1s ease-in-out infinite;
+}

@@ -611,7 +611,7 @@
           <span class="viz-legend-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#8B3A2A"/></svg> Entering</span>
           <span class="viz-legend-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#B85C40"/></svg> Searching</span>
           <span class="viz-legend-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#B8943A"/></svg> In forum</span>
-          <span class="viz-legend-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#4A6741"/></svg> Resolved</span>
+          <span class="viz-legend-item"><svg width="12" height="12" viewBox="0 0 12 12"><defs><clipPath id="legend-clip-resolved"><circle cx="6" cy="6" r="4.5"/></clipPath></defs><circle cx="6" cy="6" r="4.5" fill="none" stroke="#5C4F3A" stroke-width="0.75"/><rect x="1" y="7" width="10" height="5" fill="#4A6741" fill-opacity="0.35" clip-path="url(#legend-clip-resolved)"/></svg> Resolved</span>
         </div>
         <p class="figure-caption" id="viz-caption"></p>
         <p class="period-readout" id="period-readout"></p>
@@ -744,15 +744,16 @@
     // ─── Color tokens ────────────────────────────────────────────────────────────
     // M (choices) and W (problems) are already defined by gc-simulation.js
     const C = {
-      ink:      '#2A2018',
-      inkMid:   '#5C4F3A',
-      inkFaint: '#7A6E5F',
-      inkGhost: '#B0A490',
-      rust:     '#8B3A2A',
-      ochre:    '#9A7B3A',
-      gold:     '#B8943A',
-      slate:    '#3D4F5C',
-      sage:     '#4A6741',
+      ink:       '#2A2018',
+      inkMid:    '#5C4F3A',
+      inkFaint:  '#7A6E5F',
+      inkGhost:  '#B0A490',
+      rust:      '#8B3A2A',
+      rustLight: '#B85C40',
+      ochre:     '#9A7B3A',
+      gold:      '#B8943A',
+      slate:     '#3D4F5C',
+      sage:      '#4A6741',
     };
 
     // ─── Per-tick outcome counters ────────────────────────────────────────────────
@@ -1025,7 +1026,7 @@
 
         if (p.state === 'floating') {
           const fp = floatPos(id);
-          return { x: fp.x, y: fp.y, opacity: 0.9, fill: C.rust, r: PROB_R };
+          return { x: fp.x, y: fp.y, opacity: 0.9, fill: C.rustLight, r: PROB_R };
         }
 
         if (p.state === 'resolved') {
@@ -1178,6 +1179,7 @@
 
         // Sync pulse class — attached dots breathe, others do not
         allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');
+        allProbs.classed('problem-searching', id => tick.problems[id].state === 'floating');
 
         document.getElementById('period-readout').textContent =
           `Cycle ${tick.tick} of 20`;

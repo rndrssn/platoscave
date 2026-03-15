@@ -722,6 +722,7 @@
       inkFaint: '#9C8E78',
       inkGhost: '#C8BDA8',
       sage:     '#3E5E35',
+      rust:     '#8B3A2A',
     };
 
     // ─── Per-tick outcome counters ────────────────────────────────────────────────
@@ -854,14 +855,23 @@
     function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       const { ticks, resolution, oversight, flight } = simResult;
 
+      // Compute counts from 100-iteration simulation proportions
+      const simResolved   = Math.round(resolution * W);
+      const simOversight  = Math.round(oversight  * W);
+      const simFlight     = Math.round(flight     * W);
+      const simUnresolved = W - simResolved - simOversight - simFlight;
+
       // Reset counter/summary state
       document.getElementById('sim-counters').hidden  = false;
       document.getElementById('sim-summary').hidden   = true;
       document.getElementById('replay-btn').hidden    = true;
       document.getElementById('stochastic-note').hidden = true;
 
-      // Pre-compute per-tick counters from tick transitions
-      const tickCounters = computeTickCounters(ticks);
+      // Set counters immediately from simulation proportions — static throughout animation
+      document.getElementById('cnt-resolved').textContent   = `Resolved: ${simResolved}`;
+      document.getElementById('cnt-oversight').textContent  = `Oversight: ${simOversight}`;
+      document.getElementById('cnt-flight').textContent     = `Flight: ${simFlight}`;
+      document.getElementById('cnt-unresolved').textContent = `Unresolved: ${simUnresolved}`;
 
       const container = document.getElementById('viz-svg');
       const SVG_W    = container.clientWidth || 680;
@@ -900,6 +910,15 @@
         return {
           x: choiceX[choiceId] + Math.cos(angle) * r,
           y: CHOICE_Y          + Math.sin(angle) * r,
+        };
+      }
+
+      function resolvedPos(choiceId, slot) {
+        if (slot === 0) return { x: choiceX[choiceId], y: CHOICE_Y };
+        const angle = ((slot - 1) / 7) * 2 * Math.PI;
+        return {
+          x: choiceX[choiceId] + Math.cos(angle) * 7,
+          y: CHOICE_Y          + Math.sin(angle) * 7,
         };
       }
 
@@ -947,17 +966,22 @@
 
         if (p.state === 'inactive') {
           const fp = floatPos(id);
-          return { x: fp.x, y: fp.y, opacity: 0, fill: C.inkGhost };
+          return { x: fp.x, y: fp.y, opacity: 0, fill: C.inkGhost, r: PROB_R };
         }
 
         if (p.state === 'floating') {
           const fp = floatPos(id);
-          return { x: fp.x, y: fp.y, opacity: 0.85, fill: C.inkFaint };
+          return { x: fp.x, y: fp.y, opacity: 0.85, fill: C.inkFaint, r: PROB_R };
         }
 
         if (p.state === 'resolved') {
-          const cx = typeof p.attachedTo === 'number' ? choiceX[p.attachedTo] : choiceX[0];
-          return { x: cx, y: CHOICE_Y, opacity: 0, fill: C.inkGhost };
+          const choiceId = typeof p.attachedTo === 'number' && p.attachedTo >= 0 ? p.attachedTo : 0;
+          const siblings = tick.problems
+            .map((q, i) => ({ ...q, id: i }))
+            .filter(q => q.state === 'resolved' && q.attachedTo === choiceId);
+          const slot = Math.max(0, siblings.findIndex(q => q.id === id));
+          const pos  = resolvedPos(choiceId, slot);
+          return { x: pos.x, y: pos.y, opacity: 1, fill: C.rust, r: 2.5 };
         }
 
         // attached — cluster around choice
@@ -966,12 +990,11 @@
           .filter(q => q.state === 'attached' && q.attachedTo === p.attachedTo);
         const slot = siblings.findIndex(q => q.id === id);
         const pos  = attachedPos(p.attachedTo, slot, siblings.length);
-        return { x: pos.x, y: pos.y, opacity: 1, fill: C.sage };
+        return { x: pos.x, y: pos.y, opacity: 1, fill: C.sage, r: PROB_R };
       }
 
       function renderTick(tickIdx) {
         const tick = ticks[tickIdx];
-        const cnt  = tickCounters[tickIdx];
 
         svg.selectAll('circle.choice')
           .data(tick.choices)
@@ -992,17 +1015,12 @@
             .ease(d3.easeCubicInOut)
             .attr('cx',      id => probAttrs(tick, id).x)
             .attr('cy',      id => probAttrs(tick, id).y)
+            .attr('r',       id => probAttrs(tick, id).r)
             .attr('opacity', id => probAttrs(tick, id).opacity)
             .attr('fill',    id => probAttrs(tick, id).fill);
 
         document.getElementById('period-readout').textContent =
           `Period ${tick.tick} of 20`;
-
-        // Update running counters
-        document.getElementById('cnt-resolved').textContent   = `Resolved: ${cnt.resolved}`;
-        document.getElementById('cnt-oversight').textContent  = `Oversight: ${cnt.oversight}`;
-        document.getElementById('cnt-flight').textContent     = `Flight: ${cnt.flight}`;
-        document.getElementById('cnt-unresolved').textContent = `Unresolved: ${cnt.unresolved}`;
       }
 
       renderTick(0);
@@ -1014,7 +1032,7 @@
           clearInterval(timer);
           document.getElementById('period-readout').textContent =
             `Period 20 of 20 \u2014 complete`;
-          showEndState(tickCounters[ticks.length - 1]);
+          showEndState(simResolved, simOversight, simFlight, simUnresolved);
           return;
         }
         renderTick(current);
@@ -1027,11 +1045,7 @@
     }
 
     // ─── End state summary ────────────────────────────────────────────────────────
-    function showEndState(finalCounters) {
-      const endResolved   = finalCounters.resolved;
-      const endOversight  = finalCounters.oversight;
-      const endFlight     = finalCounters.flight;
-      const endUnresolved = finalCounters.unresolved;
+    function showEndState(endResolved, endOversight, endFlight, endUnresolved) {
 
       document.getElementById('sim-counters').hidden = true;
       document.getElementById('sim-summary').hidden  = false;

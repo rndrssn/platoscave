@@ -417,3 +417,9 @@ footer {
   border: none;
   padding: 0;
 }
+
+/* ─── Simulation counters — plain text, no border ───────── */
+#sim-counters .module-tag {
+  border: none;
+  padding: 0;
+}

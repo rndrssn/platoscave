@@ -886,9 +886,9 @@
       const CHOICE_Y = 130;
       const CHOICE_R = 15;
       const PROB_R   = 3.5;
-      const PAD_H    = 36;
-      const FLOAT_Y0 = 30;
-      const FLOAT_Y1 = 70;
+      const PAD_H    = 48;
+      const FLOAT_Y0 = 108;
+      const FLOAT_Y1 = 150;
 
       const svg = d3.select('#viz-svg')
         .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
@@ -1064,7 +1064,7 @@
             .attr('fill',    id => probAttrs(tick, id).fill);
 
         document.getElementById('period-readout').textContent =
-          `Period ${tick.tick} of 20`;
+          `Cycle ${tick.tick} of 20`;
       }
 
       renderTick(0);
@@ -1075,7 +1075,7 @@
         if (current >= ticks.length) {
           clearInterval(timer);
           document.getElementById('period-readout').textContent =
-            `Period 20 of 20 \u2014 complete`;
+            `Cycle 20 of 20 \u2014 complete`;
           showEndState(simResolved, simOversight, simFlight, simUnresolved);
           return;
         }
@@ -1083,7 +1083,7 @@
       }, 800);
 
       document.getElementById('viz-caption').textContent =
-        `Problems (dots) search for choice opportunities (circles) each period \u2014 ` +
+        `Problems (dots) search for choice opportunities (circles) each cycle \u2014 ` +
         `attaching, drifting, and resolving as energy accumulates. ` +
         `Parameters: ${energyLoad} load \u2014 ${decisionStructure} decision \u2014 ${accessStructure} access.`;
     }
@@ -1142,7 +1142,7 @@
       console.log('Simulation output:', { resolution, oversight, flight });
 
       const cluster   = DIAGNOSIS_CLUSTERS[`${decisionStructure}/${accessStructure}`] || 'cluster-3';
-      const diagnosis = getDiagnosis(decisionStructure, accessStructure, flight);
+      const diagnosis = getDiagnosis(decisionStructure, accessStructure, flight + oversight);
       const { title } = diagnosis;
 
       console.log('Diagnosis:', { cluster, title });

@@ -621,6 +621,7 @@
           <p class="period-readout" id="sum-choice-oversight"></p>
           <p class="period-readout" id="sum-choice-flight"></p>
 
+
           <p class="sim-summary-subheader" id="sum-problems-label"></p>
           <p class="period-readout" id="sum-prob-resolved"></p>
           <p class="period-readout" id="sum-prob-displaced"></p>
@@ -879,14 +880,13 @@
     function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       const { ticks, resolution, oversight, flight } = simResult;
 
-      // Choice-level percentages (canonical GCM decision styles)
-      // Rounded to nearest 5% — at 100 Monte Carlo iterations, finer precision is noise
-      const pctRes  = Math.round(simResult.resolution * 20) * 5;
-      const pctOver = Math.round(simResult.oversight  * 20) * 5;
-      const pctFli  = 100 - pctRes - pctOver;
+      // Choice-level counts (out of M=10, canonical GCM decision styles)
+      const choiceResolution = Math.round(simResult.choiceResolution);
+      const choiceOversight  = Math.round(simResult.choiceOversight);
+      const choiceFlight     = Math.round(simResult.choiceFlight);
+      const choiceOpen       = Math.max(0, M - choiceResolution - choiceOversight - choiceFlight);
 
       // Problem-level counts (out of W=20, interpretive extension)
-      // Round three, derive fourth as remainder to guarantee sum = W
       const probResolved  = Math.round(simResult.problemResolved);
       const probDisplaced = Math.round(simResult.problemDisplaced);
       const probAdrift    = Math.round(simResult.problemAdrift);
@@ -1045,13 +1045,6 @@
 
       function renderTick(tickIdx, prevTick) {
         const tick = ticks[tickIdx];
-
-        console.log('TICK ' + tick.tick + ' ' +
-          JSON.stringify({
-            c: tick.choices.map(c => c.state),
-            p: tick.problems.map(p => p.state + (p.attachedTo !== null ? '@' + p.attachedTo : ''))
-          })
-        );
 
         svg.selectAll('circle.choice')
           .data(tick.choices)

@@ -30,6 +30,7 @@ Status: Early build — shell and first module in progress
 ```
 /
 ├── CLAUDE.md               ← this file — do not move
+├── HANDOFF.md              ← current task queue for Claude Code
 ├── index.html              ← served at /
 ├── css/
 │   └── main.css
@@ -49,6 +50,7 @@ Status: Early build — shell and first module in progress
     ├── DOC-CONVENTIONS.md
     ├── VISION-product.md
     ├── PRINCIPLE-design-system.md
+    ├── PRINCIPLE-coding-standards.md
     ├── PRINCIPLE-responsive.md
     └── EPIC-navigation.md
 ```
@@ -58,9 +60,42 @@ Status: Early build — shell and first module in progress
 ## Branching Rules
 
 - **Never commit or push directly to `main`**
-- All work happens on the `develop` branch
-- Only merge to `main` when a feature is complete and working
-- Always confirm the current branch before starting work
+- Production-ready work lives on `develop` — merge to `main` only when complete and working
+- **Spike and experiment work lives on `experiment/` branches** — never on `develop`
+  - Branch naming: `experiment/[spike-slug]` e.g. `experiment/organised-anarchy-mapper`
+  - Always confirm the current branch before starting work
+  - Never merge an experiment branch to `develop` without explicit instruction
+- Check `HANDOFF.md` — it specifies which branch the current task belongs on
+
+---
+
+## Coding Standards
+
+The full coding standards live in `docs/PRINCIPLE-coding-standards.md`. Read it before writing any code.
+
+Key rules to internalize:
+
+**Separation of concerns — each file has one job:**
+- `css/main.css` — all visual decisions
+- `gc-simulation.js` — simulation logic only, no DOM
+- `gc-scoring.js` — scoring logic only, no DOM
+- `modules/*/index.html` — structure and wiring only, no logic, no inline styles
+
+**CSS:**
+- No inline styles — ever
+- No `<style>` blocks in HTML files — ever
+- No new CSS outside `css/main.css`
+- Always use CSS custom properties — never hardcode color or font values
+- Check existing classes before writing new ones
+
+**JavaScript:**
+- No logic in HTML files — logic belongs in dedicated `.js` files
+- JS logic files must be DOM-free — they accept inputs and return outputs only
+- No external dependencies without explicit approval
+
+**HTML:**
+- Directory-style URLs only — never reference `index.html` explicitly in links
+- One CSS file loaded in `<head>`, scripts at end of `<body>`
 
 ---
 
@@ -74,17 +109,17 @@ Key rules to internalize:
 
 **Colours — always use CSS variables:**
 ```css
---paper: #F4EFE4       /* base background */
---paper-dark: #EBE4D5
---paper-deep: #E0D7C4
---ink: #2A2018         /* primary text */
---ink-mid: #5C4F3A
---ink-faint: #9C8E78
---ink-ghost: #C8BDA8   /* borders, dividers */
---rust: #8B3A2A        /* primary accent */
---rust-light: #B85C40
---ochre: #9A7B3A       /* secondary accent */
---slate: #3D4F5C       /* data/science contexts */
+--paper:       #F4EFE4   /* base background */
+--paper-dark:  #EBE4D5
+--paper-deep:  #E0D7C4
+--ink:         #2A2018   /* primary text */
+--ink-mid:     #5C4F3A
+--ink-faint:   #9C8E78
+--ink-ghost:   #C8BDA8   /* borders, dividers */
+--rust:        #8B3A2A   /* primary accent */
+--rust-light:  #B85C40
+--ochre:       #9A7B3A   /* secondary accent */
+--slate:       #3D4F5C   /* data/science contexts */
 ```
 
 **Typography:**
@@ -139,19 +174,22 @@ Key rules:
 - Every doc starts with a YAML frontmatter block (id, type, title, status, created, updated, owner, relates_to, tags)
 - Never create a doc of unknown type — ask the user which type applies
 - Update the `updated` field whenever a doc is meaningfully edited
-- Valid types: VISION, STRATEGY, PRINCIPLE, ROADMAP, EPIC, STORY, TASK, FIX, TECH-DEBT, ADR
+- Valid types: VISION, STRATEGY, PRINCIPLE, ROADMAP, EPIC, STORY, TASK, FIX, TECH-DEBT, ADR, SPIKE
 
 ---
 
 ## Behavioural Rules
 
 1. **Read before writing** — before touching code, read the relevant principle/epic doc for that area
-2. **Ask before installing** — never add a library or dependency without confirming with the user
-3. **Stay on develop** — always confirm the branch is `develop` before starting
-4. **No frameworks** — if a task feels like it needs React, Vue, or similar, flag it and discuss first
-5. **Directory URLs only** — never write `href="index.html"` or `href="page.html"` in links
-6. **Small commits** — commit after each meaningful, working change — not in large batches
-7. **Confirm before renaming docs** — never rename an existing doc without asking first
+2. **Read PRINCIPLE-coding-standards.md** before writing any code — always
+3. **Read main.css** before adding any styles — use existing tokens and classes
+4. **Ask before installing** — never add a library or dependency without confirming with the user
+5. **Check the branch** — always confirm you are on the correct branch before starting (see HANDOFF.md)
+6. **No frameworks** — if a task feels like it needs React, Vue, or similar, flag it and discuss first
+7. **Directory URLs only** — never write `href="index.html"` or `href="page.html"` in links
+8. **Small commits** — commit after each meaningful, working change — not in large batches
+9. **Confirm before renaming docs** — never rename an existing doc without asking first
+10. **Do only what HANDOFF.md specifies** — do not expand scope, do not anticipate next steps
 
 ---
 
@@ -161,10 +199,9 @@ Build in this order — do not jump ahead:
 
 1. Shell: `index.html` homepage with global nav, hero section, module index teaser
 2. Module index page: `/modules/index.html` with the full list layout
-3. First module stub: `/modules/emergence/index.html` — structure and header, no visualization yet
-4. Emergence visualization: animated d3 piece showing simple rules → surprising patterns
-
-Everything else (maturity diagnostic, garbage can model, mix mapper) comes after the shell and first module are solid.
+3. Garbage Can module: `/modules/garbage-can/index.html` — in progress on `experiment/organised-anarchy-mapper`
+4. Emergence visualization — after Garbage Can is merged to develop
+5. Remaining modules (maturity, mix-mapper) — after emergence
 
 ---
 

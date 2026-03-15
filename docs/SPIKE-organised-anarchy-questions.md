@@ -2,7 +2,7 @@
 id: SPIKE-organised-anarchy-questions
 type: SPIKE
 title: Organised Anarchy — Question Design
-status: DRAFT
+status: VALIDATED
 created: 2026-03-13
 updated: 2026-03-13
 owner: Robert Andersson

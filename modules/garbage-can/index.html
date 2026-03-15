@@ -212,6 +212,21 @@
       color: var(--ink);
     }
 
+    .replay-btn {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-faint);
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .replay-btn:hover { color: var(--rust); }
+
     .form-error {
       font-family: var(--mono);
       font-size: 0.62rem;
@@ -608,7 +623,7 @@
         </div>
 
         <!-- Replay -->
-        <button class="submit-btn" id="replay-btn" hidden>Run again</button>
+        <button class="replay-btn" id="replay-btn" hidden>Run again</button>
         <p class="positioning-caption" id="stochastic-note" hidden>Each run varies slightly &mdash; the simulation is stochastic.</p>
       </section>
 
@@ -721,7 +736,6 @@
       inkMid:   '#5C4F3A',
       inkFaint: '#9C8E78',
       inkGhost: '#C8BDA8',
-      sage:     '#3E5E35',
       rust:     '#8B3A2A',
       ochre:    '#9A7B3A',
     };
@@ -886,7 +900,7 @@
       const CHOICE_Y = 130;
       const CHOICE_R = 15;
       const PROB_R   = 3.5;
-      const PAD_H    = 48;
+      const PAD_H    = 72;
       const FLOAT_Y0 = 108;
       const FLOAT_Y1 = 150;
 
@@ -1015,14 +1029,14 @@
           .filter(q => q.state === 'attached' && q.attachedTo === p.attachedTo);
         const slot = siblings.findIndex(q => q.id === id);
         const pos  = attachedPos(p.attachedTo, slot, siblings.length);
-        return { x: pos.x, y: pos.y, opacity: 1, fill: C.sage, r: PROB_R };
+        return { x: pos.x, y: pos.y, opacity: 1, fill: C.inkMid, r: PROB_R };
       }
 
       // Cumulative ever-attached counts — one entry per choice, never decreases
       const everAttached    = Array(M).fill(0);
       const attachedCounted = new Set(); // problem IDs already counted
 
-      function renderTick(tickIdx) {
+      function renderTick(tickIdx, prevTick) {
         const tick = ticks[tickIdx];
 
         svg.selectAll('circle.choice')
@@ -1031,7 +1045,7 @@
             .duration(600)
             .ease(d3.easeCubicInOut)
             .attr('stroke', d => {
-              if (d.state === 'resolved') return C.sage;
+              if (d.state === 'resolved') return C.inkMid;
               if (d.state === 'active')   return C.inkFaint;
               return C.inkGhost;
             })
@@ -1052,11 +1066,75 @@
             .attr('y',      i => CHOICE_Y + CHOICE_R - (everAttached[i] / W) * (CHOICE_R * 2))
             .attr('height', i => (everAttached[i] / W) * (CHOICE_R * 2));
 
-        svg.selectAll('circle.problem')
-          .data(d3.range(W), d => d)
-          .transition()
-            .duration(600)
-            .ease(d3.easeCubicInOut)
+        // Detect exit types by comparing previous and current tick
+        const resolvedThisTick = new Set();
+        const flightSet        = new Set();
+        const oversightSet     = new Set();
+
+        if (prevTick) {
+          const choicesResolvedThisTick = new Set();
+          for (let c = 0; c < M; c++) {
+            if (prevTick.choices[c].state === 'active' && tick.choices[c].state === 'resolved') {
+              choicesResolvedThisTick.add(c);
+            }
+          }
+          for (let id = 0; id < W; id++) {
+            const ps = prevTick.problems[id].state;
+            const cs = tick.problems[id].state;
+            if (ps === 'attached' && cs === 'resolved') {
+              resolvedThisTick.add(id);
+            } else if (ps === 'attached' && cs === 'floating') {
+              const attachedTo = prevTick.problems[id].attachedTo;
+              if (choicesResolvedThisTick.has(attachedTo)) {
+                oversightSet.add(id);
+              } else {
+                flightSet.add(id);
+              }
+            }
+          }
+        }
+
+        const allProbs = svg.selectAll('circle.problem').data(d3.range(W), d => d);
+
+        // Resolution exit: move to circle centre, shrink to r:1.5, fill ochre, then fade
+        allProbs.filter(id => resolvedThisTick.has(id))
+          .each(function(id) {
+            const cx = choiceX[prevTick.problems[id].attachedTo];
+            d3.select(this).interrupt()
+              .transition().duration(400).ease(d3.easeCubicInOut)
+                .attr('cx', cx).attr('cy', CHOICE_Y).attr('r', 1.5).attr('fill', C.ochre)
+              .transition().duration(200)
+                .attr('opacity', 0);
+          });
+
+        // Flight exit: flash rust, then move to float position
+        allProbs.filter(id => flightSet.has(id))
+          .each(function(id) {
+            const fp = floatPos(id);
+            d3.select(this).interrupt()
+              .transition().duration(200)
+                .attr('fill', C.rust)
+              .transition().duration(400).ease(d3.easeCubicInOut)
+                .attr('cx', fp.x).attr('cy', fp.y).attr('r', PROB_R)
+                .attr('opacity', 0.85).attr('fill', C.inkFaint);
+          });
+
+        // Oversight exit: flash ochre, then move to float position
+        allProbs.filter(id => oversightSet.has(id))
+          .each(function(id) {
+            const fp = floatPos(id);
+            d3.select(this).interrupt()
+              .transition().duration(200)
+                .attr('fill', C.ochre)
+              .transition().duration(400).ease(d3.easeCubicInOut)
+                .attr('cx', fp.x).attr('cy', fp.y).attr('r', PROB_R)
+                .attr('opacity', 0.85).attr('fill', C.inkFaint);
+          });
+
+        // All other problems: standard position transition
+        allProbs.filter(id => !resolvedThisTick.has(id) && !flightSet.has(id) && !oversightSet.has(id))
+          .interrupt()
+          .transition().duration(600).ease(d3.easeCubicInOut)
             .attr('cx',      id => probAttrs(tick, id).x)
             .attr('cy',      id => probAttrs(tick, id).y)
             .attr('r',       id => probAttrs(tick, id).r)
@@ -1067,7 +1145,7 @@
           `Cycle ${tick.tick} of 20`;
       }
 
-      renderTick(0);
+      renderTick(0, null);
 
       let current = 0;
       const timer = setInterval(() => {
@@ -1079,7 +1157,7 @@
           showEndState(simResolved, simOversight, simFlight, simUnresolved);
           return;
         }
-        renderTick(current);
+        renderTick(current, ticks[current - 1]);
       }, 800);
 
       document.getElementById('viz-caption').textContent =

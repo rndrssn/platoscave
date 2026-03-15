@@ -2,80 +2,105 @@
 
 ## Ready for Claude Code
 
-### Bug report: Mapper — fill level, floating dots, RUN AGAIN weight
+### Bug report: Mapper — visual exits, C9 clipping, RUN AGAIN style, sage color
 - File: `modules/garbage-can/index.html`
 - Branch: `experiment/organised-anarchy-mapper`
 - Read `CLAUDE.md` and `docs/PRINCIPLE-coding-standards.md` before touching anything
 
 ---
 
-## Bug 1 — Fill level counts resolved problems, should count attached problems
+## Bug 1 — No visual distinction between resolution, flight, and oversight exits
 
-**Location:** `renderTick()` function, lines 1036–1048
+**Location:** `probAttrs()` function, lines 994–1019. `renderTick()` function.
 
 **Current behaviour:**
-The fill level counts problems where `p.state === 'resolved'`. This means
-circles only fill when problems have been fully resolved there — which
-rarely happens, so circles appear mostly empty.
+All three exit types make the dot invisible with `opacity: 0`. A visitor
+cannot tell the difference between a problem that was resolved, one that
+fled, and one that was caught by oversight.
 
 **Expected behaviour:**
-The fill level should represent how many problems have ever been thrown
-into that garbage can — i.e. problems that have attached to it at any
-point during the simulation, regardless of outcome. This is the "fullness"
-of the can, not the resolution rate.
+Three distinct visual exits, implemented as d3 transitions in `renderTick()`:
 
-The count should be cumulative — it never decreases. Once a problem has
-attached to a circle, that circle's fill count goes up by one and stays up,
-even if the problem later drifts away or resolves.
+**Resolution** (problem `state === 'resolved'`, previous state was `attached`):
+- Dot moves to the center of its choice circle (`x: choiceX[p.attachedTo]`, `y: CHOICE_Y`)
+- Dot shrinks to `r: 1.5` and changes fill to `C.ochre`
+- Dot fades to `opacity: 0` after a short pause
+- This happens over 600ms
 
-**Fix approach:**
-Maintain a separate array `everAttached[M]` initialised to zeros. On each
-tick, for each problem that is currently `attached` to a choice, increment
-`everAttached[p.attachedTo]` if it has not already been counted for that
-problem. Use `everAttached` to drive the fill level instead of counting
-resolved problems.
+**Flight** (problem transitions from `attached` to `floating`):
+- Detect this by comparing `ticks[tickIdx-1].problems[id].state === 'attached'`
+  and `ticks[tickIdx].problems[id].state === 'floating'`
+- On the tick this transition occurs: briefly flash the dot fill to `C.rust`
+  before it moves to its floating position
+- Use a two-step transition: first change fill to `C.rust` (200ms),
+  then move to float position and fade slightly (400ms)
 
-Fill proportion = `everAttached[i] / 20` (total problem space is always 20).
+**Oversight** (choice `state` transitions from `active` to `resolved`
+while problems were attached to it in the previous tick):
+- Detect: `ticks[tickIdx-1].choices[c].state === 'active'` and
+  `ticks[tickIdx].choices[c].state === 'resolved'` and problems
+  were attached to `c` in previous tick
+- Those problems (now floating) briefly flash `C.ochre` on that tick
+
+**Implementation note:**
+`probAttrs()` currently returns static attrs per tick. To implement the
+flight flash, add a `prevTick` parameter to `renderTick()` so transition
+states can be detected by comparing previous and current tick.
 
 ---
 
-## Bug 2 — Floating dots render above the SVG canvas bounds
+## Bug 2 — C9 circle and dots clipped at right edge
 
-**Location:** `floatPos()` function and SVG height definition
+**Location:** `PAD_H = 48` (line 889), `attachedPos()` uses `r = CHOICE_R + 8 = 23`
 
 **Current behaviour:**
-Some dots in `floating` or `inactive` state render above the circles,
-outside the visible SVG area. This is because `floatPos()` calculates
-positions relative to `CHOICE_Y` with a negative offset, and the SVG
-viewBox top does not have enough room above the circles.
+Last circle `choiceX[9] = SVG_W - 48`. Attached dots orbit at radius 23,
+reaching `SVG_W - 25` which clips at the SVG edge.
 
-**Expected behaviour:**
-All dots must remain within the SVG canvas bounds at all times. Floating
-dots should drift in the space around the circles, not above the canvas.
-
-**Fix approach:**
-Either increase the SVG viewBox to add space above `CHOICE_Y`, or constrain
-`floatPos()` so it never returns a `y` value less than a minimum safe margin
-(e.g. `CHOICE_Y - CHOICE_R - 10`).
+**Fix:**
+Increase `PAD_H` from `48` to `72`. This shifts all circles inward and
+gives the rightmost circle enough margin for orbiting dots and the label.
 
 ---
 
-## Bug 3 — RUN AGAIN button renders too heavy
+## Bug 3 — RUN AGAIN button incorrectly uses submit-btn class
 
-**Location:** `#replay-btn` element styling
+**Location:** Line 611 — `<button class="submit-btn" id="replay-btn" hidden>Run again</button>`
 
 **Current behaviour:**
-The RUN AGAIN button text appears heavier than other mono labels on the page.
+Uses `submit-btn` class which has a visible border and padding, making
+it look like the form submit button.
 
 **Expected behaviour:**
-Should match other mono labels — DM Mono, weight 300, uppercase.
-Use existing tokens and classes from `css/main.css` only. No inline styles.
+Plain text trigger — no border, no background, no padding.
+DM Mono, weight 300, uppercase, `--ink-faint` color, `--rust` on hover.
+
+**Fix:**
+Remove `class="submit-btn"` and add a new CSS class `replay-btn` in
+the `<style>` block with the correct styling using CSS tokens only.
+
+---
+
+## Bug 4 — C.sage color token is wrong
+
+**Location:** Line 724 — `sage: '#3E5E35'`
+
+**Current behaviour:**
+`C.sage` is `#3E5E35` — a dark green. This is the old broken `--rust`
+value. Attached dots use `C.sage` and render in the wrong color.
+
+**Fix:**
+Remove `C.sage` entirely. Replace all uses of `C.sage` in the file with
+`C.inkMid` (`#5C4F3A`) for attached dots — a warm neutral that reads
+clearly against the paper background without being an accent color.
+The accent colors (`C.rust`, `C.ochre`) are reserved for the exit
+transitions defined in Bug 1.
 
 ---
 
 ## Notes
-- Do not change the animation timing or logic
-- Do not change the questions, scoring, positioning diagram, or diagnosis text
-- No inline styles — css/main.css tokens only
-- Stay on `experiment/organised-anarchy-mapper`
-- Nothing else until these three bugs are fixed
+- Do not change the questions, scoring, positioning diagram, or fill level logic
+- Do not change animation timing (800ms interval, 600ms transitions)
+- No inline styles — use CSS tokens only
+- Stay on experiment/organised-anarchy-mapper
+- Nothing else until these four bugs are fixed

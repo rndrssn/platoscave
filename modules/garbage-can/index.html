@@ -890,7 +890,7 @@
       const probResolved  = Math.round(simResult.problemResolved);
       const probDisplaced = Math.round(simResult.problemDisplaced);
       const probAdrift    = Math.round(simResult.problemAdrift);
-      const probInForum   = Math.round(simResult.problemInForum);
+      const probInForum   = Math.max(0, W - probResolved - probDisplaced - probAdrift);
 
       // Reset summary state
       document.getElementById('viz-legend').hidden    = false;
@@ -928,19 +928,15 @@
       }
 
       function attachedPos(choiceId, slot, total) {
-        // Dynamic radius: shrink dots as circle fills
-        const dotR = Math.max(1.2, (CHOICE_R * 0.4) / Math.sqrt(total + 1));
-
-        // Fibonacci spiral distribution
+        // Fibonacci spiral distribution — fixed dot size
         const goldenAngle = 2.399; // radians — golden angle
-        const maxR        = CHOICE_R - dotR - 1; // keep dots within boundary
+        const maxR        = CHOICE_R - PROB_R - 1; // keep dots within boundary
         const r           = maxR * Math.sqrt((slot + 0.5) / total);
         const angle       = slot * goldenAngle;
 
         return {
-          x:    choiceX[choiceId] + r * Math.cos(angle),
-          y:    CHOICE_Y          + r * Math.sin(angle),
-          dotR: dotR,
+          x: choiceX[choiceId] + r * Math.cos(angle),
+          y: CHOICE_Y          + r * Math.sin(angle),
         };
       }
 
@@ -1038,7 +1034,7 @@
           .filter(q => q.state === 'attached' && q.attachedTo === p.attachedTo);
         const slot = siblings.findIndex(q => q.id === id);
         const pos  = attachedPos(p.attachedTo, slot, siblings.length);
-        return { x: pos.x, y: pos.y, opacity: 1, fill: C.gold, r: pos.dotR };
+        return { x: pos.x, y: pos.y, opacity: 1, fill: C.gold, r: PROB_R };
       }
 
       // Cumulative resolved-at-choice counts — one entry per choice, never decreases

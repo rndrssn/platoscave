@@ -421,6 +421,64 @@ Add after the existing `.sim-summary-header` block:
 
 ---
 
+## Fix 7 — Fixed dot size for attached problems
+
+**Root cause:** `attachedPos()` dynamically shrinks dot radius as more problems attach to a choice. With 2 problems the dots are large (~6px), with 14 they shrink to ~2px. This makes lightly-loaded circles visually heavier than crowded ones — backwards from intent. Dots should be a consistent size regardless of how many are in a circle.
+
+### 7a — Remove dynamic radius from `attachedPos()`
+
+Find (~line 921):
+```js
+      function attachedPos(choiceId, slot, total) {
+        // Dynamic radius: shrink dots as circle fills
+        const dotR = Math.max(1.2, (CHOICE_R * 0.4) / Math.sqrt(total + 1));
+
+        // Fibonacci spiral distribution
+        const goldenAngle = 2.399; // radians — golden angle
+        const maxR        = CHOICE_R - dotR - 1; // keep dots within boundary
+        const r           = maxR * Math.sqrt((slot + 0.5) / total);
+        const angle       = slot * goldenAngle;
+
+        return {
+          x:    choiceX[choiceId] + r * Math.cos(angle),
+          y:    CHOICE_Y          + r * Math.sin(angle),
+          dotR: dotR,
+        };
+      }
+```
+
+Replace with:
+```js
+      function attachedPos(choiceId, slot, total) {
+        // Fibonacci spiral distribution — fixed dot size
+        const goldenAngle = 2.399; // radians — golden angle
+        const maxR        = CHOICE_R - PROB_R - 1; // keep dots within boundary
+        const r           = maxR * Math.sqrt((slot + 0.5) / total);
+        const angle       = slot * goldenAngle;
+
+        return {
+          x: choiceX[choiceId] + r * Math.cos(angle),
+          y: CHOICE_Y          + r * Math.sin(angle),
+        };
+      }
+```
+
+### 7b — Use `PROB_R` instead of `pos.dotR` in `probAttrs()`
+
+Find at the end of `probAttrs()` (~line 1032):
+```js
+        return { x: pos.x, y: pos.y, opacity: 1, fill: C.ochre, r: pos.dotR };
+```
+
+Replace with:
+```js
+        return { x: pos.x, y: pos.y, opacity: 1, fill: C.ochre, r: PROB_R };
+```
+
+Dots inside circles are now the same size as floating dots (PROB_R = 3.5). Some overlap when a circle gets crowded — that's fine, it visually communicates the pileup.
+
+---
+
 ## Notes
 - Do not change `countDecisionTypes()` — it faithfully implements the original GCM choice-level classification
 - The choice-level categories (resolution, oversight, flight, quickies) are overlapping descriptors, not exclusive bins — this is faithful to the 1972 paper. Do not attempt to make them mutually exclusive.

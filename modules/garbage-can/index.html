@@ -602,7 +602,11 @@
         <h2 class="diagnosis-title" id="diagnosis-title"></h2>
         <p class="diagnosis-body" id="diagnosis-body"></p>
         <p class="figure-eyebrow">Fig. &mdash; Garbage Can Model</p>
-        <svg id="viz-svg"></svg>
+        <div class="submit-row">
+          <button class="submit-btn" id="run-sim-btn" hidden>See how decisions play out</button>
+        </div>
+        <div id="viz-area" hidden>
+          <svg id="viz-svg"></svg>
         <div class="viz-legend" id="viz-legend" hidden>
           <span class="viz-legend-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#8B3A2A"/></svg> Entering</span>
           <span class="viz-legend-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#B85C40"/></svg> Searching</span>
@@ -632,6 +636,7 @@
         <!-- Replay -->
         <button class="replay-btn" id="replay-btn" hidden>Run again</button>
         <p class="positioning-caption" id="stochastic-note" hidden>Each run varies slightly &mdash; the simulation is stochastic.</p>
+        </div>
       </section>
 
       <!-- Footer nav -->
@@ -1158,10 +1163,13 @@
                 .attr('opacity', 0.85).attr('fill', C.inkFaint);
           });
 
-        // All other problems: standard position transition
+        // All other problems: standard position transition (staggered for organic feel)
         allProbs.filter(id => !resolvedThisTick.has(id) && !flightSet.has(id) && !oversightSet.has(id) && !enteringThisTick.has(id))
           .interrupt()
-          .transition().duration(600).ease(d3.easeCubicInOut)
+          .transition()
+            .delay(id => Math.random() * 150)
+            .duration(id => 700 + Math.random() * 300)
+            .ease(d3.easeCubicInOut)
             .attr('cx',      id => probAttrs(tick, id).x)
             .attr('cy',      id => probAttrs(tick, id).y)
             .attr('r',       id => probAttrs(tick, id).r)
@@ -1178,10 +1186,24 @@
       renderTick(0, null);
 
       let current = 0;
-      const timer = setInterval(() => {
+
+      function isDeadTick(tickIdx) {
+        if (tickIdx === 0) return false;
+        const prev = ticks[tickIdx - 1];
+        const curr = ticks[tickIdx];
+        for (let i = 0; i < M; i++) {
+          if (prev.choices[i].state !== curr.choices[i].state) return false;
+        }
+        for (let i = 0; i < W; i++) {
+          if (prev.problems[i].state !== curr.problems[i].state) return false;
+          if (prev.problems[i].attachedTo !== curr.problems[i].attachedTo) return false;
+        }
+        return true;
+      }
+
+      function stepTick() {
         current++;
         if (current >= ticks.length) {
-          clearInterval(timer);
           document.getElementById('period-readout').textContent =
             `Cycle 20 of 20 \u2014 complete`;
           showEndState(
@@ -1191,7 +1213,11 @@
           return;
         }
         renderTick(current, ticks[current - 1]);
-      }, 800);
+        var delay = isDeadTick(current) ? 200 : 800;
+        setTimeout(stepTick, delay);
+      }
+
+      setTimeout(stepTick, 800);
 
       document.getElementById('viz-caption').textContent =
         `Problems (dots) search for choice opportunities (circles) each cycle \u2014 ` +
@@ -1289,13 +1315,20 @@
           `Load: ${energyLoad} \u2014 Decision: ${decisionStructure} \u2014 Access: ${accessStructure}`;
       }, 300);
 
-      // Stage 3: diagnosis + simulation
+      // Stage 3: diagnosis (simulation waits for user click)
       showStage('stage-3', 900);
       setTimeout(() => {
         document.getElementById('diagnosis-title').textContent = diagnosis.title;
         document.getElementById('diagnosis-body').textContent  = diagnosis.body;
-        drawViz(simResult, energyLoad, decisionStructure, accessStructure);
+        document.getElementById('run-sim-btn').hidden = false;
       }, 1100);
+
+      // Simulation trigger — runs on button click
+      document.getElementById('run-sim-btn').onclick = function () {
+        document.getElementById('run-sim-btn').hidden = true;
+        document.getElementById('viz-area').hidden = false;
+        drawViz(simResult, energyLoad, decisionStructure, accessStructure);
+      };
 
       // Replay button — closure over scoring params
       document.getElementById('replay-btn').onclick = function () {

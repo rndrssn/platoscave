@@ -411,3 +411,9 @@ footer {
 @media (min-width: 1024px) {
   /* Layout is handled by max-width containers — no additional overrides needed */
 }
+
+/* ─── Replay button — plain text, no border ──────────────── */
+#replay-btn {
+  border: none;
+  padding: 0;
+}

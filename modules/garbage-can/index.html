@@ -894,9 +894,9 @@
 
       function attachedPos(choiceId, slot, total) {
         const span  = Math.min(total, 7);
-        const start = -Math.PI / 2 - ((span - 1) / 2) * (Math.PI / 4);
-        const angle = start + slot * (Math.PI / 4);
-        const r     = CHOICE_R + 18;
+        const start = Math.PI / 2 - ((span - 1) / 2) * (Math.PI / 8);
+        const angle = start + slot * (Math.PI / 8);
+        const r     = CHOICE_R + 8;
         return {
           x: choiceX[choiceId] + Math.cos(angle) * r,
           y: CHOICE_Y          + Math.sin(angle) * r,
@@ -1014,7 +1014,7 @@
           clearInterval(timer);
           document.getElementById('period-readout').textContent =
             `Period 20 of 20 \u2014 complete`;
-          showEndState(resolution, oversight, flight);
+          showEndState(tickCounters[ticks.length - 1]);
           return;
         }
         renderTick(current);
@@ -1027,11 +1027,11 @@
     }
 
     // ─── End state summary ────────────────────────────────────────────────────────
-    function showEndState(resolution, oversight, flight) {
-      const endResolved   = Math.round(resolution * W);
-      const endOversight  = Math.round(oversight  * W);
-      const endFlight     = Math.round(flight     * W);
-      const endUnresolved = W - endResolved - endOversight - endFlight;
+    function showEndState(finalCounters) {
+      const endResolved   = finalCounters.resolved;
+      const endOversight  = finalCounters.oversight;
+      const endFlight     = finalCounters.flight;
+      const endUnresolved = finalCounters.unresolved;
 
       document.getElementById('sim-counters').hidden = true;
       document.getElementById('sim-summary').hidden  = false;

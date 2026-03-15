@@ -1046,6 +1046,13 @@
       function renderTick(tickIdx, prevTick) {
         const tick = ticks[tickIdx];
 
+        console.log('TICK ' + tick.tick + ' ' +
+          JSON.stringify({
+            c: tick.choices.map(c => c.state),
+            p: tick.problems.map(p => p.state + (p.attachedTo !== null ? '@' + p.attachedTo : ''))
+          })
+        );
+
         svg.selectAll('circle.choice')
           .data(tick.choices)
           .transition()
@@ -1185,7 +1192,7 @@
           document.getElementById('period-readout').textContent =
             `Cycle 20 of 20 \u2014 complete`;
           showEndState(
-            pctRes, pctOver, pctFli,
+            choiceResolution, choiceOversight, choiceFlight, choiceOpen,
             probResolved, probDisplaced, probAdrift, probInForum
           );
           return;
@@ -1201,7 +1208,7 @@
 
     // ─── End state summary ────────────────────────────────────────────────────────
     function showEndState(
-      pctRes, pctOver, pctFli,
+      choiceResolution, choiceOversight, choiceFlight, choiceOpen,
       probResolved, probDisplaced, probAdrift, probInForum
     ) {
 
@@ -1212,9 +1219,13 @@
 
       document.getElementById('sim-summary').hidden = false;
 
-      // Primary: canonical GCM decision styles (choice-level, percentages)
+      // Primary: canonical GCM decision styles (choice-level)
       document.getElementById('sum-header').textContent =
         'Across 100 simulations of this organisation type, on average:';
+
+     const pctRes  = Math.round(simResult.resolution * 20) * 5;
+      const pctOver = Math.round(simResult.oversight  * 20) * 5;
+      const pctFli  = 100 - pctRes - pctOver;
 
       document.getElementById('sum-choices-label').textContent =
         `How the ${M} decision forums resolved`;
@@ -1224,7 +1235,7 @@
         `<span class="outcome-oversight">Oversight</span> \u2014 ${pctOver}% \u2014 forum closed with no problem attached`;
       document.getElementById('sum-choice-flight').innerHTML =
         `<span class="outcome-flight">Flight</span> \u2014 ${pctFli}% \u2014 forum closed after problems fled`;
-
+      
       // Supplementary: problem fates (interpretive extension)
       document.getElementById('sum-problems-label').textContent =
         `What happened to the ${W} problems`;

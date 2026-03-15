@@ -738,6 +738,7 @@
       rust:     '#8B3A2A',
       ochre:    '#9A7B3A',
       slate:    '#3D4F5C',
+      sage:     '#4A6741',
     };
 
     // ─── Per-tick outcome counters ────────────────────────────────────────────────
@@ -920,7 +921,7 @@
 
       function attachedPos(choiceId, slot, total) {
         // Dynamic radius: shrink dots as circle fills
-        const dotR = Math.max(1.5, (CHOICE_R - 2) / Math.sqrt(total + 1));
+        const dotR = Math.max(1.2, (CHOICE_R * 0.4) / Math.sqrt(total + 1));
 
         // Fibonacci spiral distribution
         const goldenAngle = 2.399; // radians — golden angle
@@ -1049,22 +1050,10 @@
             .ease(d3.easeCubicInOut)
             .attr('stroke', d => {
               if (d.state === 'resolved') return C.inkMid;
-              if (d.state === 'inactive') return C.inkGhost;
-              const ratio = d.energyRequired > 0
-                ? Math.min(d.energySpent / d.energyRequired, 1) : 0;
-              if (ratio > 0.66) return C.inkMid;
-              if (ratio > 0.33) return C.inkFaint;
+              if (d.state === 'active')   return C.inkFaint;
               return C.inkGhost;
             })
-            .attr('stroke-width', d => {
-              if (d.state === 'resolved') return 2.5;
-              if (d.state === 'inactive') return 0.5;
-              const ratio = d.energyRequired > 0
-                ? Math.min(d.energySpent / d.energyRequired, 1) : 0;
-              if (ratio > 0.66) return 2.0;
-              if (ratio > 0.33) return 1.5;
-              return 1.0;
-            });
+            .attr('stroke-width', 1);
 
         // Fill level — cumulative count of problems ever attached to each choice
         tick.problems.forEach((p, pid) => {
@@ -1136,7 +1125,7 @@
             const cx = choiceX[prevTick.problems[id].attachedTo];
             d3.select(this).interrupt()
               .transition().duration(400).ease(d3.easeCubicInOut)
-                .attr('cx', cx).attr('cy', CHOICE_Y).attr('r', 1.5).attr('fill', C.slate)
+                .attr('cx', cx).attr('cy', CHOICE_Y).attr('r', 1.5).attr('fill', C.sage)
               .transition().duration(200)
                 .attr('opacity', 0);
           });

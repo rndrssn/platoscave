@@ -305,6 +305,59 @@ function countDecisionTypes(Choices, Problems, ChoicesEnergyRequired) {
 }
 
 
+// ─── Count problem outcomes ───────────────────────────────────────────────────
+
+/**
+ * Classify the final fate of each problem from one iteration.
+ * NOTE: This is an interpretive extension — the original GCM (1972)
+ * tracks decision styles at the choice level, not problem fates.
+ * This function serves the visualization summary.
+ *
+ * @param {number[][]} Problems - Problems state array [W][PERIODS+1]
+ * @param {number[][]} Choices  - Choices state array [M][PERIODS+1]
+ * @returns {{ resolved: number, displaced: number, adrift: number, inForum: number, neverEntered: number }}
+ */
+function countProblemOutcomes(Problems, Choices) {
+  let resolved     = 0;
+  let displaced    = 0;
+  let adrift       = 0;
+  let inForum      = 0;
+  let neverEntered = 0;
+
+  for (let i = 0; i < W; i++) {
+    const endState = Problems[i][PERIODS];
+
+    if (endState >= 90) {
+      resolved++;
+    } else if (endState === STATE_INACTIVE) {
+      neverEntered++;
+    } else if (endState >= 0 && endState < M) {
+      inForum++;
+    } else if (endState === STATE_ACTIVE) {
+      // Floating at end — scan backwards for the last attached→floating transition
+      let wasDisplaced = false;
+      for (let t = PERIODS; t >= 1; t--) {
+        const prev = Problems[i][t - 1];
+        const curr = Problems[i][t];
+        if (prev >= 0 && prev < M && curr === STATE_ACTIVE) {
+          if (Choices[prev][t] === STATE_RESOLVED) {
+            wasDisplaced = true;
+          }
+          break;
+        }
+      }
+      if (wasDisplaced) {
+        displaced++;
+      } else {
+        adrift++;
+      }
+    }
+  }
+
+  return { resolved, displaced, adrift, inForum, neverEntered };
+}
+
+
 // ─── Tick snapshot builder ────────────────────────────────────────────────────
 
 /**
@@ -394,7 +447,14 @@ function runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructur
   let totalOversights  = 0;
   let totalFlights     = 0;
   let totalQuickies    = 0;
-  let lastResult       = null;
+
+  let totalProbResolved     = 0;
+  let totalProbDisplaced    = 0;
+  let totalProbAdrift       = 0;
+  let totalProbInForum      = 0;
+  let totalProbNeverEntered = 0;
+
+  let lastResult = null;
 
   for (let iter = 0; iter < ITERATIONS; iter++) {
     const entryM = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
@@ -408,6 +468,13 @@ function runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructur
     totalFlights     += counts.flights;
     totalQuickies    += counts.quickies;
 
+    const probCounts = countProblemOutcomes(result.Problems, result.Choices);
+    totalProbResolved     += probCounts.resolved;
+    totalProbDisplaced    += probCounts.displaced;
+    totalProbAdrift       += probCounts.adrift;
+    totalProbInForum      += probCounts.inForum;
+    totalProbNeverEntered += probCounts.neverEntered;
+
     if (iter === ITERATIONS - 1) lastResult = result;
   }
 
@@ -416,9 +483,18 @@ function runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructur
   const meanFlights     = totalFlights     / ITERATIONS;
   const meanQuickies    = totalQuickies    / ITERATIONS;
 
-  // Quickies fold into oversight for proportion calculation.
-  // resolution + oversight + flight = 1.0
+  // Quickies fold into oversight for choice-level proportion calculation.
+  // resolution + oversight + flight ≈ 1.0
+  // NOTE: these categories are overlapping descriptors (faithful to the original
+  // 1972 paper), not exclusive bins. The sum equals 1.0 because total is their sum.
   const total = meanResolutions + meanOversights + meanFlights + meanQuickies;
+
+  // Problem-level means (out of W) — interpretive extension, not canonical GCM
+  const meanProbResolved     = totalProbResolved     / ITERATIONS;
+  const meanProbDisplaced    = totalProbDisplaced    / ITERATIONS;
+  const meanProbAdrift       = totalProbAdrift       / ITERATIONS;
+  const meanProbInForum      = totalProbInForum      / ITERATIONS;
+  const meanProbNeverEntered = totalProbNeverEntered / ITERATIONS;
 
   const ticks = buildTickSnapshots(
     lastResult.Choices,
@@ -428,9 +504,23 @@ function runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructur
   );
 
   return {
+    // Choice-level proportions (canonical GCM — used by diagnosis text)
     resolution: total > 0 ? meanResolutions / total : 0,
     oversight:  total > 0 ? (meanOversights + meanQuickies) / total : 0,
     flight:     total > 0 ? meanFlights / total : 0,
+
+    // Choice-level mean counts (out of M=10, canonical GCM)
+    choiceResolution: meanResolutions,
+    choiceOversight:  meanOversights + meanQuickies,
+    choiceFlight:     meanFlights,
+
+    // Problem-level mean counts (out of W=20, interpretive extension)
+    problemResolved:     meanProbResolved,
+    problemDisplaced:    meanProbDisplaced,
+    problemAdrift:       meanProbAdrift,
+    problemInForum:      meanProbInForum,
+    problemNeverEntered: meanProbNeverEntered,
+
     ticks,
   };
 }

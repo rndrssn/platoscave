@@ -615,10 +615,18 @@
         <!-- End state summary — shown after animation -->
         <div id="sim-summary" hidden>
           <p class="sim-summary-header" id="sum-header"></p>
-          <p class="period-readout" id="sum-resolved"></p>
-          <p class="period-readout" id="sum-oversight"></p>
-          <p class="period-readout" id="sum-flight"></p>
-          <p class="period-readout" id="sum-unresolved"></p>
+
+          <p class="sim-summary-subheader" id="sum-choices-label"></p>
+          <p class="period-readout" id="sum-choice-resolution"></p>
+          <p class="period-readout" id="sum-choice-oversight"></p>
+          <p class="period-readout" id="sum-choice-flight"></p>
+          <p class="period-readout" id="sum-choice-open"></p>
+
+          <p class="sim-summary-subheader" id="sum-problems-label"></p>
+          <p class="period-readout" id="sum-prob-resolved"></p>
+          <p class="period-readout" id="sum-prob-displaced"></p>
+          <p class="period-readout" id="sum-prob-adrift"></p>
+          <p class="period-readout" id="sum-prob-inforum"></p>
         </div>
 
         <!-- Replay -->
@@ -872,17 +880,17 @@
     function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       const { ticks, resolution, oversight, flight } = simResult;
 
-      // Compute counts from 100-iteration simulation proportions
-      let simResolved   = Math.round(resolution * W);
-      let simOversight  = Math.round(oversight  * W);
-      let simFlight     = Math.round(flight     * W);
-      const excess = simResolved + simOversight + simFlight - W;
-      if (excess > 0) {
-        if (simResolved >= simOversight && simResolved >= simFlight) simResolved -= excess;
-        else if (simOversight >= simFlight)                          simOversight -= excess;
-        else                                                         simFlight   -= excess;
-      }
-      const simUnresolved = Math.max(0, W - simResolved - simOversight - simFlight);
+      // Choice-level counts (out of M=10, canonical GCM decision styles)
+      const choiceResolution = Math.round(simResult.choiceResolution);
+      const choiceOversight  = Math.round(simResult.choiceOversight);
+      const choiceFlight     = Math.round(simResult.choiceFlight);
+      const choiceOpen       = Math.max(0, M - choiceResolution - choiceOversight - choiceFlight);
+
+      // Problem-level counts (out of W=20, interpretive extension)
+      const probResolved  = Math.round(simResult.problemResolved);
+      const probDisplaced = Math.round(simResult.problemDisplaced);
+      const probAdrift    = Math.round(simResult.problemAdrift);
+      const probInForum   = Math.round(simResult.problemInForum);
 
       // Reset summary state
       document.getElementById('viz-legend').hidden    = false;
@@ -1180,7 +1188,10 @@
           clearInterval(timer);
           document.getElementById('period-readout').textContent =
             `Cycle 20 of 20 \u2014 complete`;
-          showEndState(simResolved, simOversight, simFlight, simUnresolved);
+          showEndState(
+            choiceResolution, choiceOversight, choiceFlight, choiceOpen,
+            probResolved, probDisplaced, probAdrift, probInForum
+          );
           return;
         }
         renderTick(current, ticks[current - 1]);
@@ -1193,7 +1204,10 @@
     }
 
     // ─── End state summary ────────────────────────────────────────────────────────
-    function showEndState(endResolved, endOversight, endFlight, endUnresolved) {
+    function showEndState(
+      choiceResolution, choiceOversight, choiceFlight, choiceOpen,
+      probResolved, probDisplaced, probAdrift, probInForum
+    ) {
 
       // Stop any pulsating on dots
       d3.select('#viz-svg').selectAll('circle.problem')
@@ -1202,16 +1216,32 @@
 
       document.getElementById('sim-summary').hidden = false;
 
+      // Primary: canonical GCM decision styles (choice-level)
       document.getElementById('sum-header').textContent =
         'Across 100 simulations of this organisation type, on average:';
-      document.getElementById('sum-resolved').innerHTML =
-        `<span class="outcome-resolved">Resolved</span> \u2014 ${endResolved} \u2014 problem genuinely closed at a decision forum`;
-      document.getElementById('sum-oversight').innerHTML =
-        `<span class="outcome-oversight">Oversight</span> \u2014 ${endOversight} \u2014 decision made while problem moved elsewhere`;
-      document.getElementById('sum-flight').innerHTML =
-        `<span class="outcome-flight">Flight</span> \u2014 ${endFlight} \u2014 problem abandoned the forum before resolution`;
-      document.getElementById('sum-unresolved').innerHTML =
-        `<span class="outcome-unresolved">Unresolved</span> \u2014 ${endUnresolved} \u2014 never reached a decision forum`;
+
+      document.getElementById('sum-choices-label').textContent =
+        `How the ${M} decision forums resolved`;
+      document.getElementById('sum-choice-resolution').innerHTML =
+        `<span class="outcome-resolved">Resolution</span> \u2014 ${choiceResolution} of ${M} \u2014 forum closed after genuine problem-solving`;
+      document.getElementById('sum-choice-oversight').innerHTML =
+        `<span class="outcome-oversight">Oversight</span> \u2014 ${choiceOversight} of ${M} \u2014 forum closed with no problem attached`;
+      document.getElementById('sum-choice-flight').innerHTML =
+        `<span class="outcome-flight">Flight</span> \u2014 ${choiceFlight} of ${M} \u2014 forum closed after problems fled`;
+      document.getElementById('sum-choice-open').innerHTML =
+        `<span class="outcome-unresolved">Still open</span> \u2014 ${choiceOpen} of ${M} \u2014 forum never resolved`;
+
+      // Supplementary: problem fates (interpretive extension)
+      document.getElementById('sum-problems-label').textContent =
+        `What happened to the ${W} problems`;
+      document.getElementById('sum-prob-resolved').innerHTML =
+        `<span class="outcome-resolved">Resolved</span> \u2014 ${probResolved} of ${W} \u2014 genuinely closed at a decision forum`;
+      document.getElementById('sum-prob-displaced').innerHTML =
+        `<span class="outcome-oversight">Displaced</span> \u2014 ${probDisplaced} of ${W} \u2014 forum closed without resolving this problem`;
+      document.getElementById('sum-prob-adrift').innerHTML =
+        `<span class="outcome-flight">Adrift</span> \u2014 ${probAdrift} of ${W} \u2014 detached from forum or never attached`;
+      document.getElementById('sum-prob-inforum').innerHTML =
+        `<span class="outcome-unresolved">In forum</span> \u2014 ${probInForum} of ${W} \u2014 still attached to an open forum at cycle ${PERIODS}`;
 
       document.getElementById('replay-btn').hidden      = false;
       document.getElementById('stochastic-note').hidden = false;

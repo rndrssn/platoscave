@@ -1,59 +1,103 @@
-# HANDOFF.md
+# CLAUDE.md
 
-## Ready for Claude Code
+## Project
 
-### Fix: Mapper — counters, resolved dots, border removal
-- File: `modules/garbage-can/index.html`
-- Branch: `experiment/organised-anarchy-mapper`
-- Read `CLAUDE.md` and `docs/PRINCIPLE-coding-standards.md` before touching anything
+**To the Bedrock** — a personal portfolio site that publishes ideas through interactive tools and visualizations. Plain HTML, CSS, and JavaScript. No framework, no build step. Hosted on GitHub Pages.
 
-### Fix 1 — Counters must read from simulation proportions, not ticks
+See `docs/VISION-product.md` for the full vision.
 
-The counters currently count from the ticks array of the last single
-Monte Carlo iteration. This is wrong. The counters must display the
-100-iteration mean proportions from the simulation output.
+---
 
-The simulation output is already logged to console:
-`{ resolution: Number, oversight: Number, flight: Number }`
+## Before you do anything
 
-These are proportions (0–1). Convert to counts by multiplying by 20
-(total number of problems) and rounding. Ensure the four counts sum
-to exactly 20 — assign any rounding remainder to unresolved.
+1. Read this file
+2. Read `docs/PRINCIPLE-coding-standards.md` — the rules for all code in this project
+3. Read `docs/DOC-CONVENTIONS.md` — the rules for all docs in `docs/`
+4. Read the `HANDOFF.md` in the repo root — your current task lives there
 
-```js
-const resolved   = Math.round(simOutput.resolution * 20);
-const oversight  = Math.round(simOutput.oversight  * 20);
-const flight     = Math.round(simOutput.flight     * 20);
-const unresolved = 20 - resolved - oversight - flight;
+---
+
+## Repo structure
+
+```
+/
+├── CLAUDE.md                          ← you are here
+├── HANDOFF.md                         ← current task for Claude Code
+├── css/
+│   └── main.css                       ← all styles — tokens, layout, components
+├── gc-simulation.js                   ← garbage can simulation logic (no DOM)
+├── gc-scoring.js                      ← scoring logic (no DOM)
+├── index.html                         ← site root / home page
+├── modules/
+│   └── garbage-can/
+│       └── index.html                 ← module 03 — organised anarchy mapper
+├── docs/
+│   ├── DOC-CONVENTIONS.md             ← naming, frontmatter, doc types
+│   ├── VISION-product.md
+│   ├── PRINCIPLE-coding-standards.md
+│   ├── PRINCIPLE-design-system.md
+│   ├── PRINCIPLE-responsive.md
+│   ├── PRINCIPLE-organised-anarchy-*.md
+│   ├── EPIC-*.md
+│   ├── STORY-*.md
+│   ├── SPIKE-*.md
+│   ├── FIX-*.md
+│   ├── TECH-DEBT-*.md
+│   └── ADR-*.md
 ```
 
-These four values must be used for both the live counters during
-animation and the end state summary after animation completes.
-The animation itself continues to play from the ticks array — do
-not change the animation logic.
+---
 
-### Fix 2 — Resolved dots stay inside the circle
+## How this project works
 
-When a problem resolves, instead of disappearing it must leave a
-small filled dot inside the choice opportunity circle. Resolved dots
-accumulate inside the circle across ticks. They do not move after
-resolving. Use --rust for resolved dots inside circles to distinguish
-them from active problem dots.
+This is a learning project as much as a product. The workflow is:
 
-The circle should not change size or shape — resolved dots sit within
-its bounds, arranged so they do not overlap each other.
+1. **Claude.ai** — ideation, requirements, troubleshooting, design decisions
+2. **Claude Code + VSCode** — implementation, guided by HANDOFF.md
+3. **Git + GitHub** — version control, branches, GitHub Pages deployment
 
-### Fix 3 — Remove all counter border boxes
+Claude Code does not freelance. It reads HANDOFF.md and executes what is there. If the handoff is ambiguous, Claude Code asks — it does not guess.
 
-The four counter elements (RESOLVED, OVERSIGHT, FLIGHT, UNRESOLVED)
-currently have visible border boxes around them. Remove all borders.
-Plain text only — no box, no background, no border.
-Use existing tokens from css/main.css only. No inline styles.
+---
 
-## Notes
-- Do not change the animation timing or layout
-- Do not change the questions, scoring, or diagnosis text
-- Do not change the RUN AGAIN trigger or stochastic note
-- No inline styles — css/main.css tokens only
-- Stay on experiment/organised-anarchy-mapper
-- Nothing else until these three fixes are done
+## Rules — always apply, every task
+
+These come from `docs/PRINCIPLE-coding-standards.md`. Repeating the non-negotiables here:
+
+- **No inline styles** — CSS classes only, defined in `css/main.css`
+- **No `<style>` blocks in HTML** — all CSS lives in `css/main.css`
+- **No logic in HTML files** — HTML wires components, logic lives in `.js` files
+- **No hardcoded colors or fonts** — use CSS custom properties from `main.css`
+- **No external dependencies** without an ADR
+- **Clean directory URLs** — never reference `index.html` in links
+- **JS logic files are DOM-free** — `gc-simulation.js` and `gc-scoring.js` accept inputs, return outputs
+
+---
+
+## Branch convention
+
+- `main` — production, deployed to GitHub Pages
+- `develop` — integration branch
+- `experiment/[slug]` — spike branches for exploratory work
+
+Current active branch: `experiment/organised-anarchy-mapper`
+
+---
+
+## Docs convention
+
+All docs follow `docs/DOC-CONVENTIONS.md`. Key points:
+
+- Every doc has a `TYPE-slug.md` filename
+- Every doc has YAML frontmatter with id, type, title, status, created, updated
+- Use `relates_to` to link docs together
+- SPIKEs pair with `experiment/` branches
+- When creating or editing any doc, read DOC-CONVENTIONS.md first
+
+---
+
+## Current focus
+
+Module 03 — The Garbage Can Model (organised anarchy mapper). An interactive simulation where users answer 12 questions about their organisation and receive a diagnosis with a d3.js visualization of the garbage can model in action.
+
+The task is always in HANDOFF.md. Do that and nothing else.

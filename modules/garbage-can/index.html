@@ -723,6 +723,7 @@
       inkGhost: '#C8BDA8',
       sage:     '#3E5E35',
       rust:     '#8B3A2A',
+      ochre:    '#9A7B3A',
     };
 
     // ─── Per-tick outcome counters ────────────────────────────────────────────────
@@ -856,10 +857,16 @@
       const { ticks, resolution, oversight, flight } = simResult;
 
       // Compute counts from 100-iteration simulation proportions
-      const simResolved   = Math.round(resolution * W);
-      const simOversight  = Math.round(oversight  * W);
-      const simFlight     = Math.round(flight     * W);
-      const simUnresolved = W - simResolved - simOversight - simFlight;
+      let simResolved   = Math.round(resolution * W);
+      let simOversight  = Math.round(oversight  * W);
+      let simFlight     = Math.round(flight     * W);
+      const excess = simResolved + simOversight + simFlight - W;
+      if (excess > 0) {
+        if (simResolved >= simOversight && simResolved >= simFlight) simResolved -= excess;
+        else if (simOversight >= simFlight)                          simOversight -= excess;
+        else                                                         simFlight   -= excess;
+      }
+      const simUnresolved = Math.max(0, W - simResolved - simOversight - simFlight);
 
       // Reset counter/summary state
       document.getElementById('sim-counters').hidden  = false;
@@ -875,13 +882,13 @@
 
       const container = document.getElementById('viz-svg');
       const SVG_W    = container.clientWidth || 680;
-      const SVG_H    = 300;
-      const CHOICE_Y = 228;
+      const SVG_H    = 180;
+      const CHOICE_Y = 130;
       const CHOICE_R = 15;
       const PROB_R   = 3.5;
       const PAD_H    = 36;
-      const FLOAT_Y0 = 64;
-      const FLOAT_Y1 = 116;
+      const FLOAT_Y0 = 30;
+      const FLOAT_Y1 = 70;
 
       const svg = d3.select('#viz-svg')
         .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
@@ -913,15 +920,18 @@
         };
       }
 
-      function resolvedPos(choiceId, slot) {
-        if (slot === 0) return { x: choiceX[choiceId], y: CHOICE_Y };
-        const angle = ((slot - 1) / 7) * 2 * Math.PI;
-        return {
-          x: choiceX[choiceId] + Math.cos(angle) * 7,
-          y: CHOICE_Y          + Math.sin(angle) * 7,
-        };
-      }
+      // ── clipPath defs — one per choice circle ──────────────────────────────────
+      const defs = svg.append('defs');
+      d3.range(M).forEach(i => {
+        defs.append('clipPath')
+          .attr('id', `clip-c${i}`)
+          .append('circle')
+            .attr('cx', choiceX[i])
+            .attr('cy', CHOICE_Y)
+            .attr('r', CHOICE_R);
+      });
 
+      // ── Layer 1: choice circle strokes ─────────────────────────────────────────
       const choiceLayer = svg.append('g');
 
       choiceLayer.selectAll('circle.choice')
@@ -935,7 +945,25 @@
           .attr('stroke', C.inkGhost)
           .attr('stroke-width', 1);
 
-      choiceLayer.selectAll('text.choice-label')
+      // ── Layer 2: fill rects (clipped inside choice circles) ────────────────────
+      const fillLayer = svg.append('g');
+
+      fillLayer.selectAll('rect.choice-fill')
+        .data(d3.range(M))
+        .join('rect')
+          .attr('class', 'choice-fill')
+          .attr('x', i => choiceX[i] - CHOICE_R)
+          .attr('y', CHOICE_Y + CHOICE_R)
+          .attr('width', CHOICE_R * 2)
+          .attr('height', 0)
+          .attr('fill', C.ochre)
+          .attr('fill-opacity', 0.25)
+          .attr('clip-path', i => `url(#clip-c${i})`);
+
+      // ── Layer 3: choice labels (rendered above fill) ────────────────────────────
+      const labelLayer = svg.append('g');
+
+      labelLayer.selectAll('text.choice-label')
         .data(d3.range(M))
         .join('text')
           .attr('class', 'choice-label')
@@ -949,6 +977,7 @@
           .attr('fill', C.inkGhost)
           .text(i => `C${i}`);
 
+      // ── Layer 4: problem dots ──────────────────────────────────────────────────
       const probLayer = svg.append('g');
 
       probLayer.selectAll('circle.problem')
@@ -975,13 +1004,8 @@
         }
 
         if (p.state === 'resolved') {
-          const choiceId = typeof p.attachedTo === 'number' && p.attachedTo >= 0 ? p.attachedTo : 0;
-          const siblings = tick.problems
-            .map((q, i) => ({ ...q, id: i }))
-            .filter(q => q.state === 'resolved' && q.attachedTo === choiceId);
-          const slot = Math.max(0, siblings.findIndex(q => q.id === id));
-          const pos  = resolvedPos(choiceId, slot);
-          return { x: pos.x, y: pos.y, opacity: 1, fill: C.rust, r: 2.5 };
+          const cx = typeof p.attachedTo === 'number' ? choiceX[p.attachedTo] : choiceX[0];
+          return { x: cx, y: CHOICE_Y, opacity: 0, fill: C.inkGhost, r: PROB_R };
         }
 
         // attached — cluster around choice
@@ -1007,6 +1031,21 @@
               return C.inkGhost;
             })
             .attr('stroke-width', d => d.state === 'resolved' ? 1.5 : 1);
+
+        // Fill level — count resolved problems at each choice, animate upward
+        const resolvedAtChoice = Array(M).fill(0);
+        tick.problems.forEach(p => {
+          if (p.state === 'resolved' && typeof p.attachedTo === 'number') {
+            resolvedAtChoice[p.attachedTo]++;
+          }
+        });
+        svg.selectAll('rect.choice-fill')
+          .data(d3.range(M))
+          .transition()
+            .duration(600)
+            .ease(d3.easeCubicInOut)
+            .attr('y',      i => CHOICE_Y + CHOICE_R - (resolvedAtChoice[i] / W) * (CHOICE_R * 2))
+            .attr('height', i => (resolvedAtChoice[i] / W) * (CHOICE_R * 2));
 
         svg.selectAll('circle.problem')
           .data(d3.range(W), d => d)

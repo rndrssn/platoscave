@@ -2,34 +2,64 @@
 
 ## Ready for Claude Code
 
-### Fix: Mapper — counter mismatch, button style, dot positioning
+### Fix: Mapper — rounding, fill level, canvas height, button weight
 - File: `modules/garbage-can/index.html`
 - Branch: `experiment/organised-anarchy-mapper`
 - Read `CLAUDE.md` and `docs/PRINCIPLE-coding-standards.md` before touching anything
 
-### Fix 1 — Counter mismatch
-The live counters (boxes) and the end state summary (text below) show
-different numbers. They are drawing from two different sources.
+### Fix 1 — Unresolved count going negative
+The rounding logic is producing a total that exceeds 20, resulting in
+unresolved: -1. Fix the rounding so the four counts always sum to
+exactly 20 and unresolved is never negative.
 
-The fix: the end state summary must use exactly the same counts as the
-live counters — not the simulation aggregate. One source of truth.
-Remove whichever source is wrong and make both display the same values.
+```js
+const resolved   = Math.round(simOutput.resolution * 20);
+const oversight  = Math.round(simOutput.oversight  * 20);
+const flight     = Math.round(simOutput.flight     * 20);
+const unresolved = Math.max(0, 20 - resolved - oversight - flight);
+```
 
-### Fix 2 — RUN AGAIN button styling
-The RUN AGAIN button has a visible border box around it. This does not
-match the design system. Remove the border. The button should be plain
-text only — no box, no background, no border. Style it using existing
-tokens from css/main.css only.
+If the sum of the first three exceeds 20, reduce the largest of the
+three by the excess amount.
 
-### Fix 3 — Dot positioning
-Some problem dots are rendering above the choice opportunity circles
-rather than inside or attached to them. Fix the positioning so dots
-always render within the bounds of the visualization area and attach
-correctly to their target circles.
+### Fix 2 — Show resolved problems as a fill level inside the circle
+Remove the resolved dots rendering below the circles entirely.
+
+Instead, as problems resolve at a choice opportunity, fill the circle
+from the bottom upward. The fill level represents the proportion of
+problems resolved at that circle — a circle that resolved 5 out of 10
+problems attached to it fills halfway.
+
+Fill level calculation:
+  fill proportion = problems resolved at this circle / 20
+
+One resolved problem = 1/20 of the circle filled. Twenty resolved
+problems at one circle = fully filled. This is a proportion of the
+total problem space (always 20), not a proportion of problems
+attached to that circle.
+
+Fill color: var(--ochre) at low opacity (0.25) so the circle stroke
+remains visible. The fill animates smoothly as each problem resolves —
+it does not jump. Use a clipPath or similar SVG technique to keep the
+fill within the circle bounds.
+
+This fix also restores the C0 label which is currently hidden behind
+misplaced dots.
+
+### Fix 3 — SVG canvas has excessive empty space above circles
+The SVG canvas is too tall — circles are sitting near the bottom with
+a large blank area above. Reduce the SVG height so circles are
+vertically centered with minimal padding above and below.
+
+### Fix 4 — RUN AGAIN button has wrong font weight
+The RUN AGAIN text is rendering too heavy. It should match the weight
+of other mono labels in the page — DM Mono weight 300.
+Use existing tokens and classes from css/main.css only. No inline styles.
 
 ## Notes
-- Do not change anything else
-- Do not change the questions, scoring, diagnosis text, or animation timing
-- No inline styles — use css/main.css tokens only
+- Do not change the animation timing or logic
+- Do not change the questions, scoring, or diagnosis text
+- Do not change the counter values or end state summary logic
+- No inline styles — css/main.css tokens only
 - Stay on experiment/organised-anarchy-mapper
-- Nothing else until these three fixes are done
+- Nothing else until these four fixes are done

@@ -416,6 +416,7 @@ footer {
 #replay-btn {
   border: none;
   padding: 0;
+  font-weight: 300;
 }
 
 /* ─── Simulation counters — plain text, no border ───────── */

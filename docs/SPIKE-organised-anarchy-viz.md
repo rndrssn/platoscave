@@ -2,12 +2,18 @@
 id: SPIKE-organised-anarchy-viz
 type: SPIKE
 title: Organised Anarchy — Visualization Aesthetic
-status: DRAFT
+status: VALIDATED
 created: 2026-03-13
-updated: 2026-03-13
+updated: 2026-03-15
 owner: Robert Andersson
-relates_to: [SPIKE-organised-anarchy-ticks, PRINCIPLE-design-system]
-tags: [garbage-can, d3, visualization, design-system]
+relates_to:
+  - SPIKE-organised-anarchy-ticks
+  - PRINCIPLE-design-system
+tags:
+  - garbage-can
+  - d3
+  - visualization
+  - design-system
 ---
 
 # Organised Anarchy — Visualization Aesthetic

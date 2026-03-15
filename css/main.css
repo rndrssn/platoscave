@@ -466,10 +466,20 @@ footer {
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--ink-ghost);
+  color: var(--ink-faint);
 }
 
 .legend-sym-entering  { color: var(--ink-faint); }
 .legend-sym-searching { color: var(--ink-faint); }
 .legend-sym-forum     { color: var(--ink-mid); }
 .legend-sym-resolved  { color: var(--ink-ghost); }
+
+/* ─── Attached dot pulse ─────────────────────────────────── */
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1.0; }
+  50%       { opacity: 0.6; }
+}
+
+.problem-attached {
+  animation: dot-pulse 2s ease-in-out infinite;
+}

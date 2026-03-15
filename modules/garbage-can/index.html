@@ -102,7 +102,7 @@
       font-weight: 300;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: var(--ink-ghost);
+      color: var(--ink-faint);
       margin-bottom: 1.5rem;
       padding-bottom: 0.5rem;
       border-bottom: 1px solid var(--ink-ghost);
@@ -132,7 +132,7 @@
       font-weight: 300;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: var(--ink-ghost);
+      color: var(--ink-faint);
       flex: 1;
       line-height: 1.4;
     }
@@ -179,7 +179,7 @@
       font-family: var(--mono);
       font-size: 0.52rem;
       font-weight: 300;
-      color: var(--ink-ghost);
+      color: var(--ink-faint);
       cursor: pointer;
       letter-spacing: 0.05em;
     }
@@ -261,7 +261,7 @@
       font-weight: 300;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--ink-ghost);
+      color: var(--ink-faint);
       margin-top: 1.25rem;
       line-height: 2;
     }
@@ -292,7 +292,7 @@
       font-weight: 300;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: var(--ink-ghost);
+      color: var(--ink-faint);
       margin-top: 2.5rem;
       margin-bottom: 0.5rem;
     }
@@ -320,7 +320,7 @@
       font-weight: 300;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--ink-ghost);
+      color: var(--ink-faint);
       margin-top: 0.5rem;
     }
 
@@ -983,7 +983,7 @@
           .attr('font-size', '0.5rem')
           .attr('font-weight', '300')
           .attr('letter-spacing', '0.1em')
-          .attr('fill', C.inkGhost)
+          .attr('fill', C.inkFaint)
           .text(i => `C${i}`);
 
       // ── Layer 4: problem dots ──────────────────────────────────────────────────
@@ -1043,8 +1043,10 @@
             .ease(d3.easeCubicInOut)
             .attr('stroke', d => {
               if (d.state === 'resolved') return C.inkMid;
-              if (d.state === 'active')   return C.inkFaint;
-              return C.inkGhost;
+              const ratio = d.energyRequired > 0
+                ? Math.min(d.energySpent / d.energyRequired, 1)
+                : 0;
+              return d3.interpolateRgb(C.inkGhost, C.inkMid)(ratio);
             })
             .attr('stroke-width', d => d.state === 'resolved' ? 1.5 : 1);
 
@@ -1156,6 +1158,9 @@
             .attr('r',       id => probAttrs(tick, id).r)
             .attr('opacity', id => probAttrs(tick, id).opacity)
             .attr('fill',    id => probAttrs(tick, id).fill);
+
+        // Sync pulse class — attached dots breathe, others do not
+        allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');
 
         document.getElementById('period-readout').textContent =
           `Cycle ${tick.tick} of 20`;

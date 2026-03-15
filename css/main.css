@@ -444,9 +444,9 @@ footer {
   margin-bottom: 0.75rem;
 }
 
-.outcome-resolved   { color: var(--ochre); }
-.outcome-flight     { color: var(--rust); }
-.outcome-oversight  { color: var(--slate); }
+.outcome-resolved   { color: var(--ochre); font-weight: 400; }
+.outcome-flight     { color: var(--rust);  font-weight: 400; }
+.outcome-oversight  { color: var(--slate); font-weight: 400; }
 .outcome-unresolved { color: var(--ink-faint); }
 
 /* ─── Visualization legend ───────────────────────────────── */

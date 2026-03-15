@@ -309,7 +309,7 @@
       font-weight: 300;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--ink-faint);
+      color: var(--ink-mid);
       margin-top: 1.75rem;
       line-height: 2;
     }
@@ -320,7 +320,7 @@
       font-weight: 300;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--ink-faint);
+      color: var(--ink-mid);
       margin-top: 0.5rem;
     }
 
@@ -607,7 +607,7 @@
           <span class="viz-legend-item"><span class="legend-sym-entering">&#9679;</span> Entering</span>
           <span class="viz-legend-item"><span class="legend-sym-searching">&#9675;</span> Searching</span>
           <span class="viz-legend-item"><span class="legend-sym-forum">&#9679;</span> In forum</span>
-          <span class="viz-legend-item"><span class="legend-sym-resolved">&#183;</span> Resolved</span>
+          <span class="viz-legend-item"><svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="2" fill="currentColor" opacity="0.4"/></svg> Resolved</span>
         </div>
         <p class="figure-caption" id="viz-caption"></p>
         <p class="period-readout" id="period-readout"></p>
@@ -733,8 +733,8 @@
     const C = {
       ink:      '#2A2018',
       inkMid:   '#5C4F3A',
-      inkFaint: '#9C8E78',
-      inkGhost: '#C8BDA8',
+      inkFaint: '#7A6E5F',
+      inkGhost: '#B0A490',
       rust:     '#8B3A2A',
       ochre:    '#9A7B3A',
       slate:    '#3D4F5C',
@@ -919,13 +919,19 @@
       }
 
       function attachedPos(choiceId, slot, total) {
-        const span  = Math.min(total, 7);
-        const start = Math.PI / 2 - ((span - 1) / 2) * (Math.PI / 8);
-        const angle = start + slot * (Math.PI / 8);
-        const r     = CHOICE_R - 6;
+        // Dynamic radius: shrink dots as circle fills
+        const dotR = Math.max(1.5, (CHOICE_R - 2) / Math.sqrt(total + 1));
+
+        // Fibonacci spiral distribution
+        const goldenAngle = 2.399; // radians — golden angle
+        const maxR        = CHOICE_R - dotR - 1; // keep dots within boundary
+        const r           = maxR * Math.sqrt((slot + 0.5) / total);
+        const angle       = slot * goldenAngle;
+
         return {
-          x: choiceX[choiceId] + Math.cos(angle) * r,
-          y: CHOICE_Y          + Math.sin(angle) * r,
+          x:    choiceX[choiceId] + r * Math.cos(angle),
+          y:    CHOICE_Y          + r * Math.sin(angle),
+          dotR: dotR,
         };
       }
 
@@ -1017,13 +1023,13 @@
           return { x: cx, y: CHOICE_Y, opacity: 0, fill: C.inkGhost, r: PROB_R };
         }
 
-        // attached — cluster around choice
+        // attached — fibonacci packing inside choice circle
         const siblings = tick.problems
           .map((q, i) => ({ ...q, id: i }))
           .filter(q => q.state === 'attached' && q.attachedTo === p.attachedTo);
         const slot = siblings.findIndex(q => q.id === id);
         const pos  = attachedPos(p.attachedTo, slot, siblings.length);
-        return { x: pos.x, y: pos.y, opacity: 1, fill: C.inkMid, r: PROB_R + 1 };
+        return { x: pos.x, y: pos.y, opacity: 1, fill: C.inkMid, r: pos.dotR };
       }
 
       // Cumulative ever-attached counts — one entry per choice, never decreases
@@ -1043,12 +1049,22 @@
             .ease(d3.easeCubicInOut)
             .attr('stroke', d => {
               if (d.state === 'resolved') return C.inkMid;
+              if (d.state === 'inactive') return C.inkGhost;
               const ratio = d.energyRequired > 0
-                ? Math.min(d.energySpent / d.energyRequired, 1)
-                : 0;
-              return d3.interpolateRgb(C.inkGhost, C.inkMid)(ratio);
+                ? Math.min(d.energySpent / d.energyRequired, 1) : 0;
+              if (ratio > 0.66) return C.inkMid;
+              if (ratio > 0.33) return C.inkFaint;
+              return C.inkGhost;
             })
-            .attr('stroke-width', d => d.state === 'resolved' ? 1.5 : 1);
+            .attr('stroke-width', d => {
+              if (d.state === 'resolved') return 2.5;
+              if (d.state === 'inactive') return 0.5;
+              const ratio = d.energyRequired > 0
+                ? Math.min(d.energySpent / d.energyRequired, 1) : 0;
+              if (ratio > 0.66) return 2.0;
+              if (ratio > 0.33) return 1.5;
+              return 1.0;
+            });
 
         // Fill level — cumulative count of problems ever attached to each choice
         tick.problems.forEach((p, pid) => {

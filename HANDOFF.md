@@ -2,105 +2,95 @@
 
 ## Ready for Claude Code
 
-### Bug report: Mapper — visual exits, C9 clipping, RUN AGAIN style, sage color
+### Bug report: Mapper — replay button CSS, SVG height, C9 clipping
 - File: `modules/garbage-can/index.html`
 - Branch: `experiment/organised-anarchy-mapper`
 - Read `CLAUDE.md` and `docs/PRINCIPLE-coding-standards.md` before touching anything
 
 ---
 
-## Bug 1 — No visual distinction between resolution, flight, and oversight exits
+## Bug 1 — replay-btn CSS class is missing — button renders with browser defaults
 
-**Location:** `probAttrs()` function, lines 994–1019. `renderTick()` function.
+**Location:** `<style>` block. HTML line 626: `<button class="replay-btn" id="replay-btn" hidden>`
 
 **Current behaviour:**
-All three exit types make the dot invisible with `opacity: 0`. A visitor
-cannot tell the difference between a problem that was resolved, one that
-fled, and one that was caught by oversight.
+The `.replay-btn` class is referenced in the HTML but never defined in
+the `<style>` block. The button inherits browser default styles — bold
+weight, visible border.
 
-**Expected behaviour:**
-Three distinct visual exits, implemented as d3 transitions in `renderTick()`:
+**Fix:**
+Add this CSS rule to the `<style>` block:
 
-**Resolution** (problem `state === 'resolved'`, previous state was `attached`):
-- Dot moves to the center of its choice circle (`x: choiceX[p.attachedTo]`, `y: CHOICE_Y`)
-- Dot shrinks to `r: 1.5` and changes fill to `C.ochre`
-- Dot fades to `opacity: 0` after a short pause
-- This happens over 600ms
+```css
+.replay-btn {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-top: 1rem;
+  display: block;
+  transition: color 0.2s ease;
+}
 
-**Flight** (problem transitions from `attached` to `floating`):
-- Detect this by comparing `ticks[tickIdx-1].problems[id].state === 'attached'`
-  and `ticks[tickIdx].problems[id].state === 'floating'`
-- On the tick this transition occurs: briefly flash the dot fill to `C.rust`
-  before it moves to its floating position
-- Use a two-step transition: first change fill to `C.rust` (200ms),
-  then move to float position and fade slightly (400ms)
-
-**Oversight** (choice `state` transitions from `active` to `resolved`
-while problems were attached to it in the previous tick):
-- Detect: `ticks[tickIdx-1].choices[c].state === 'active'` and
-  `ticks[tickIdx].choices[c].state === 'resolved'` and problems
-  were attached to `c` in previous tick
-- Those problems (now floating) briefly flash `C.ochre` on that tick
-
-**Implementation note:**
-`probAttrs()` currently returns static attrs per tick. To implement the
-flight flash, add a `prevTick` parameter to `renderTick()` so transition
-states can be detected by comparing previous and current tick.
+.replay-btn:hover {
+  color: var(--rust);
+}
+```
 
 ---
 
-## Bug 2 — C9 circle and dots clipped at right edge
+## Bug 2 — SVG canvas too tall with too much empty space above circles
 
-**Location:** `PAD_H = 48` (line 889), `attachedPos()` uses `r = CHOICE_R + 8 = 23`
+**Location:** `drawViz()` — constants at lines 899–905:
+`SVG_H = 180`, `CHOICE_Y = 130`, `FLOAT_Y0 = 108`, `FLOAT_Y1 = 150`
 
 **Current behaviour:**
-Last circle `choiceX[9] = SVG_W - 48`. Attached dots orbit at radius 23,
-reaching `SVG_W - 25` which clips at the SVG edge.
+Circles sit at y=130 in a 180px canvas — leaving 130px of empty space
+above. Floating dots at y=108 sit above the circles which looks odd.
 
 **Fix:**
-Increase `PAD_H` from `48` to `72`. This shifts all circles inward and
-gives the rightmost circle enough margin for orbiting dots and the label.
+Reduce SVG height and reposition everything to be vertically centered
+with minimal padding. Suggested values:
+
+```js
+const SVG_H    = 120;
+const CHOICE_Y = 70;
+const FLOAT_Y0 = 45;
+const FLOAT_Y1 = 95;
+```
+
+Ensure `CHOICE_Y + CHOICE_R + 13` (label position) stays within `SVG_H`.
+With `CHOICE_Y = 70`, `CHOICE_R = 15`, label sits at y=98, within 120px. ✓
 
 ---
 
-## Bug 3 — RUN AGAIN button incorrectly uses submit-btn class
+## Bug 3 — C9 label and dots still clipped at right edge
 
-**Location:** Line 611 — `<button class="submit-btn" id="replay-btn" hidden>Run again</button>`
-
-**Current behaviour:**
-Uses `submit-btn` class which has a visible border and padding, making
-it look like the form submit button.
-
-**Expected behaviour:**
-Plain text trigger — no border, no background, no padding.
-DM Mono, weight 300, uppercase, `--ink-faint` color, `--rust` on hover.
-
-**Fix:**
-Remove `class="submit-btn"` and add a new CSS class `replay-btn` in
-the `<style>` block with the correct styling using CSS tokens only.
-
----
-
-## Bug 4 — C.sage color token is wrong
-
-**Location:** Line 724 — `sage: '#3E5E35'`
+**Location:** `PAD_H = 72` (line 903), `attachedPos()` uses `r = CHOICE_R + 8 = 23`
 
 **Current behaviour:**
-`C.sage` is `#3E5E35` — a dark green. This is the old broken `--rust`
-value. Attached dots use `C.sage` and render in the wrong color.
+`choiceX[9] = SVG_W - 72`. Attached dots orbit at radius 23, reaching
+`SVG_W - 49` which still clips near the edge on smaller screens.
 
 **Fix:**
-Remove `C.sage` entirely. Replace all uses of `C.sage` in the file with
-`C.inkMid` (`#5C4F3A`) for attached dots — a warm neutral that reads
-clearly against the paper background without being an accent color.
-The accent colors (`C.rust`, `C.ochre`) are reserved for the exit
-transitions defined in Bug 1.
+Increase `PAD_H` from `72` to `88`. Also add `overflow: hidden` to
+`#viz-svg` CSS rule and change `overflow: visible` to `overflow: hidden`
+to prevent any clipping outside the viewBox.
+
+Actually the better fix: keep `overflow: visible` but increase PAD_H
+to `88` so the last circle has enough room for its orbit ring and label.
 
 ---
 
 ## Notes
+- Do not change the visual exit logic — resolution/flight/oversight transitions are correct
 - Do not change the questions, scoring, positioning diagram, or fill level logic
-- Do not change animation timing (800ms interval, 600ms transitions)
-- No inline styles — use CSS tokens only
+- No inline styles — CSS tokens only
 - Stay on experiment/organised-anarchy-mapper
-- Nothing else until these four bugs are fixed
+- Nothing else until these three bugs are fixed

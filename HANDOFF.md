@@ -2,18 +2,18 @@
 
 ## Ready for Claude Code
 
-### Fix: Mapper — circle size, dot colors, stop pulse on end, contrast
+### Fix: Mapper — circle size constants, float zone, fibonacci dot scaling
 - File: `modules/garbage-can/index.html`
 - Branch: `experiment/organised-anarchy-mapper`
 - Read `CLAUDE.md` and `docs/PRINCIPLE-coding-standards.md` before touching anything
 
 ---
 
-## Fix 1 — Increase circle size by ~47%
+## Fix 1 — Circle size constants were not applied in previous session
 
-**Location:** Constants at lines 893–899
+**Location:** `drawViz()` constants, lines 893–899
 
-**Current values:**
+**Current values (still old — not updated):**
 ```js
 const SVG_H    = 180;
 const CHOICE_Y = 90;
@@ -23,124 +23,91 @@ const FLOAT_Y0 = 130;
 const FLOAT_Y1 = 155;
 ```
 
-**New values:**
+**Required values:**
 ```js
 const SVG_H    = 240;
-const CHOICE_Y = 120;
+const CHOICE_Y = 110;
 const CHOICE_R = 22;
 const PAD_H    = 80;
-const FLOAT_Y0 = 165;
-const FLOAT_Y1 = 200;
+const FLOAT_Y0 = 148;
+const FLOAT_Y1 = 178;
 ```
 
-`CHOICE_R = 22` is ~47% larger than 15. `SVG_H = 240` gives room
-for larger circles, labels below at `CHOICE_Y + CHOICE_R + 13 = 155`,
-and floating dots at 165–200. `PAD_H = 80` slightly reduced to give
-more horizontal space for the larger circles across the row.
+With `CHOICE_R = 22`: circle diameter is 44px. Label sits at
+`CHOICE_Y + CHOICE_R + 13 = 145`. Float zone starts just below
+at 148 — tight against the circles, no dead space.
+`SVG_H = 240` gives room for everything including float dots at 178.
 
-`PROB_R` stays at `3.5` — dots stay the same size, circles grow around them.
-The fibonacci packing already scales with `CHOICE_R` so no changes needed there.
+Also update `attachedPos()` — the old arc-based function is still
+present from a previous version and must be replaced with the
+fibonacci implementation. The fibonacci `attachedPos()` uses
+`CHOICE_R` in its calculation so it will scale correctly:
 
-Also update the clipPath radius in the defs section to use `CHOICE_R`:
 ```js
-.attr('r', CHOICE_R)  // already uses the constant — no change needed
+function attachedPos(choiceId, slot, total) {
+  const dotR = Math.max(1.5, (CHOICE_R - 2) / Math.sqrt(total + 1));
+  const goldenAngle = 2.399;
+  const maxR = CHOICE_R - dotR - 1;
+  const r = maxR * Math.sqrt((slot + 0.5) / total);
+  const angle = slot * goldenAngle;
+  return {
+    x:    choiceX[choiceId] + r * Math.cos(angle),
+    y:    CHOICE_Y          + r * Math.sin(angle),
+    dotR: dotR,
+  };
+}
 ```
 
 ---
 
-## Fix 2 — Dot colors: use accent colors for clear state distinction
-
-**Location:** `probAttrs()` function and `C` color tokens
+## Fix 2 — Float zone too far below circles — dead space
 
 **Current behaviour:**
-Floating and attached dots use muted ink tones that are hard to
-distinguish from each other and from the background.
+`FLOAT_Y0 = 130` with `CHOICE_Y = 90` and `CHOICE_R = 15` places
+floating dots 25px below the circle edge. After Fix 1 increases
+`CHOICE_R` to 22, the new constants above place float dots
+just below the circle boundary — no dead space.
 
-**New color assignment:**
+This fix is resolved by applying the constants in Fix 1.
+No separate change needed.
 
-| State | Color | Token |
-|-------|-------|-------|
-| Floating (searching) | `C.rust` | `#8B3A2A` — problem needs a home, tension |
-| Attached (in forum) | `C.ochre` | `#9A7B3A` — in process, amber |
-| Entering (fade in) | `C.rust` | Same as floating — just entered, searching |
-| Resolved exit flash | `C.slate` | `#3D4F5C` — cool, settled |
-| Flight exit flash | `C.rust` | Already correct |
-| Oversight exit flash | `C.ochre` | — forum closed around it |
+---
 
-**Update `probAttrs()`:**
+## Fix 3 — Fibonacci dot scaling for crowded circles
+
+**Current behaviour:**
+C0 shows a solid ochre blob — too many dots packed into a small
+circle because `CHOICE_R` is still 15. After Fix 1 increases
+`CHOICE_R` to 22, the fibonacci packing will have more room.
+
+However, the dynamic radius formula also needs to be verified.
+The current `attachedPos()` may still be the old arc-based version.
+The fibonacci implementation in Fix 1 includes:
+
 ```js
-if (p.state === 'floating') {
-  return { x: fp.x, y: fp.y, opacity: 0.9, fill: C.rust, r: PROB_R };
-}
-// attached:
+const dotR = Math.max(1.5, (CHOICE_R - 2) / Math.sqrt(total + 1));
+```
+
+With `CHOICE_R = 22` and `total = 20`: `dotR = Math.max(1.5, 20/√21) = Math.max(1.5, 4.36) = 4.36`
+With `total = 5`: `dotR = Math.max(1.5, 20/√6) = 8.16`
+
+This means dots shrink gracefully as the circle fills — a circle
+with 2 dots shows them large and clear, a full circle shows many
+small dots. This is correct behaviour.
+
+Also ensure `probAttrs()` uses `pos.dotR` for the attached state radius:
+```js
+// attached branch:
+const pos = attachedPos(p.attachedTo, slot, siblings.length);
 return { x: pos.x, y: pos.y, opacity: 1, fill: C.ochre, r: pos.dotR };
-```
-
-**Update resolution exit in `renderTick()`:**
-Change resolved exit flash from `C.ochre` to `C.slate`:
-```js
-.attr('r', 1.5).attr('fill', C.slate)
-```
-
-**Update legend colors to match:**
-- ENTERING bullet: `C.rust`
-- SEARCHING circle: `C.rust` (hollow)
-- IN FORUM bullet: `C.ochre`
-- RESOLVED dot: `C.slate`
-
----
-
-## Fix 3 — Stop pulse animation when simulation ends
-
-**Location:** `showEndState()` function, line 1186
-
-**Current behaviour:**
-If pulse animation exists on attached dots, it continues after the
-simulation ends. Dots keep pulsating at the end state.
-
-**Fix:**
-At the start of `showEndState()`, remove the pulse class from all
-problem dots and interrupt any ongoing d3 opacity transitions:
-
-```js
-function showEndState(...) {
-  // Stop any pulsating on dots
-  svg.selectAll('circle.problem')
-    .classed('problem-attached', false)
-    .interrupt();
-  // ... rest of function
-}
-```
-
-If pulse is implemented via d3 transitions rather than CSS, interrupt
-all ongoing transitions on problem dots at the start of `showEndState()`.
-
----
-
-## Fix 4 — General contrast improvements
-
-**CSS `<style>` block changes:**
-
-| Class | Property | Change |
-|-------|----------|--------|
-| `.figure-eyebrow` | `color` | `var(--ink-ghost)` → `var(--ink-faint)` |
-| `.period-readout` | `color` | `var(--ink-ghost)` → `var(--ink-mid)` |
-| `.q-section-label` | `color` | `var(--ink-ghost)` → `var(--ink-faint)` |
-| `.scale-pole` | `color` | `var(--ink-ghost)` → `var(--ink-faint)` |
-| `.scale-option label` | `color` | `var(--ink-ghost)` → `var(--ink-faint)` |
-
-**Outcome label weights** — make colored labels heavier:
-```css
-.outcome-resolved, .outcome-oversight, .outcome-flight, .outcome-unresolved {
-  font-weight: 400;
-}
 ```
 
 ---
 
 ## Notes
-- Do not change scoring, positioning diagram, fill level, diagnosis, or fibonacci packing logic
+- Do not change dot colors — rust for floating, ochre for attached are correct
+- Do not change scoring, positioning diagram, fill level, or diagnosis
 - Do not change animation timing
 - No inline styles — CSS tokens only
 - Stay on experiment/organised-anarchy-mapper
-- Nothing else until these four fixes are done
+- Nothing else until these fixes are done

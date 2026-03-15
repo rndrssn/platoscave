@@ -12,8 +12,8 @@
   --ink-faint:   #9C8E78;
   --ink-ghost:   #C8BDA8;
 
-  --rust:        #3E5E35;
-  --rust-light:  #5C7D52;
+  --sage:        #3E5E35;
+  --sage-light:  #5C7D52;
   --ochre:       #9A7B3A;
   --slate:       #3D4F5C;
 
@@ -98,7 +98,7 @@ nav {
 }
 
 .nav-link:hover    { color: var(--ink-mid); }
-.nav-link--active  { color: var(--rust); }
+.nav-link--active  { color: var(--sage); }
 
 .nav-mobile-toggle {
   display: block;
@@ -171,7 +171,7 @@ section + section {
   display: inline-block;
   background: var(--paper-dark);
   border: 2px solid var(--paper-deep);
-  border-top: 2px solid var(--rust);
+  border-top: 2px solid var(--sage);
   padding: 2.25rem 1.5rem;
   max-width: 480px;
   width: 100%;
@@ -235,12 +235,12 @@ section + section {
 }
 
 .contact-value a {
-  color: var(--rust);
+  color: var(--sage);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-.contact-value a:hover { color: var(--rust-light); }
+.contact-value a:hover { color: var(--sage-light); }
 
 /* ─── Fade-in on load ────────────────────────────────────── */
 .fade-in {
@@ -324,7 +324,7 @@ footer {
 }
 
 .module-entry--live { cursor: pointer; }
-.module-entry--live:hover .module-title { color: var(--rust); }
+.module-entry--live:hover .module-title { color: var(--sage); }
 
 .module-entry-main {
   display: flex;

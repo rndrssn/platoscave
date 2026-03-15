@@ -20,6 +20,30 @@ Every markdown file in `docs/` must belong to exactly one of the following types
 | `FIX` | A bug or broken behaviour to resolve | Changes frequently |
 | `TECH-DEBT` | Internal improvements with no user-facing change | Changes frequently |
 | `ADR` | Architecture Decision Record — a technical decision log | Permanent once set |
+| `SPIKE` | Time-boxed research or prototype exploration notes | Temporary |
+
+### SPIKE — extended description
+
+A `SPIKE` document captures exploratory work that is not yet ready to become a `STORY` or `TASK`. It is used when the goal is learning, prototyping, or validating an idea — not delivering a feature.
+
+**When to create a SPIKE:**
+- Prototyping a visualization before committing to an approach
+- Exploring a library or technique with high uncertainty
+- Capturing pen-and-paper sketches and conceptual work before coding begins
+- Any time-boxed investigation with an open-ended outcome
+
+**SPIKE lifecycle:**
+- Created when exploration begins — status `IN-PROGRESS`
+- Concluded with a finding: either `VALIDATED` (proceed to STORY) or `ABANDONED` (idea discarded)
+- Never merged into a STORY directly — a SPIKE informs, it does not become
+- Keep SPIKEs in `docs/` alongside other types — the naming convention makes them easy to identify and filter
+
+**SPIKE status values** (in addition to standard statuses):
+| Status | Meaning |
+|--------|---------|
+| `IN-PROGRESS` | Exploration actively underway |
+| `VALIDATED` | Approach confirmed — ready to write a STORY |
+| `ABANDONED` | Exploration concluded — idea discarded, reasoning captured |
 
 ---
 
@@ -46,13 +70,18 @@ STORY-mobile-responsive-nav.md
 STORY-dark-mode.md
 TASK-update-footer-links.md
 FIX-broken-button-homepage.md
+FIX-001-broken-navigation-links.md
 TECH-DEBT-refactor-css-variables.md
 ADR-001-static-site-over-spa.md
+SPIKE-emergence-viz-approaches.md
+SPIKE-three-js-particle-system.md
 ```
 
 ### Notes
 - `ADR` files use a zero-padded numeric prefix (ADR-001, ADR-002) to preserve decision order
-- All other types use descriptive slugs only — no numeric IDs needed at this stage
+- `FIX` files may optionally use a numeric prefix (FIX-001) for tracking purposes
+- `SPIKE` files use descriptive slugs — no numeric prefix needed
+- All other types use descriptive slugs only
 
 ---
 
@@ -66,7 +95,7 @@ Every `.md` file in `docs/` must begin with a YAML frontmatter block. Claude Cod
 id: [TYPE]-[slug]
 type: [TYPE]
 title: Human readable title
-status: [DRAFT | ACTIVE | IN-PROGRESS | DONE | DEPRECATED]
+status: [DRAFT | ACTIVE | IN-PROGRESS | DONE | DEPRECATED | VALIDATED | ABANDONED]
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 owner: [your name or "team"]
@@ -91,13 +120,15 @@ tags: []
 
 ### Status values
 
-| Status | Meaning |
-|--------|---------|
-| `DRAFT` | Work in progress, not ready to act on |
-| `ACTIVE` | Current and authoritative |
-| `IN-PROGRESS` | Being actively worked on (for EPICs, STORYs, TASKs) |
-| `DONE` | Completed (for EPICs, STORYs, TASKs, FIXes) |
-| `DEPRECATED` | No longer relevant, kept for reference only |
+| Status | Meaning | Applicable types |
+|--------|---------|-----------------|
+| `DRAFT` | Work in progress, not ready to act on | All |
+| `ACTIVE` | Current and authoritative | VISION, STRATEGY, PRINCIPLE |
+| `IN-PROGRESS` | Being actively worked on | EPIC, STORY, TASK, FIX, SPIKE |
+| `DONE` | Completed | EPIC, STORY, TASK, FIX |
+| `DEPRECATED` | No longer relevant, kept for reference | All |
+| `VALIDATED` | Exploration confirmed — proceed to STORY | SPIKE only |
+| `ABANDONED` | Exploration concluded — idea discarded | SPIKE only |
 
 ---
 
@@ -110,6 +141,8 @@ Use the `relates_to` field to link documents together. This creates a navigable 
 - A `TASK` or `FIX` should relate to its parent `STORY` or `EPIC`
 - A `PRINCIPLE` should relate to `VISION` or `STRATEGY` where applicable
 - An `ADR` should relate to the `EPIC` or `STORY` that prompted the decision
+- A `SPIKE` should relate to the `EPIC` or `STORY` it is informing
+- When a `SPIKE` is `VALIDATED`, the resulting `STORY` should relate back to the `SPIKE`
 
 ### Example
 ```yaml
@@ -118,24 +151,52 @@ relates_to: [VISION-product, EPIC-navigation]
 
 ---
 
-## 5. Folder Structure
+## 5. Branch Convention for Experimental Work
+
+SPIKE documents pair with dedicated Git branches. When starting a spike:
+
+```bash
+git checkout develop
+git checkout -b experiment/[spike-slug]
+```
+
+Examples:
+```
+experiment/emergence-viz
+experiment/three-js-particles
+experiment/force-graph-layout
+```
+
+**Branch lifecycle mirrors the SPIKE status:**
+- `IN-PROGRESS` → branch is active, work ongoing
+- `VALIDATED` → merge branch into `develop`, update SPIKE status
+- `ABANDONED` → delete branch, update SPIKE status with findings captured in the doc
+
+This keeps experimental work isolated from `develop` while remaining tracked in GitHub.
+
+---
+
+## 6. Folder Structure
 
 All docs live in the `docs/` folder at the repo root. No subfolders are needed at this stage — the filename prefix provides enough organisation.
 
 ```
 docs/
-├── DOC-CONVENTIONS.md        ← this file
+├── DOC-CONVENTIONS.md              ← this file
 ├── VISION-product.md
 ├── PRINCIPLE-design-system.md
 ├── PRINCIPLE-coding-standards.md
+├── PRINCIPLE-responsive.md
 ├── EPIC-navigation.md
 ├── STORY-mobile-responsive-nav.md
-└── ADR-001-static-site-over-spa.md
+├── FIX-001-broken-navigation-links.md
+├── ADR-001-static-site-over-spa.md
+└── SPIKE-emergence-viz-approaches.md
 ```
 
 ---
 
-## 6. Instructions for Claude Code
+## 7. Instructions for Claude Code
 
 When working with docs in this project, Claude Code must:
 
@@ -146,18 +207,5 @@ When working with docs in this project, Claude Code must:
 5. **Update the `updated` field** whenever a doc is meaningfully edited
 6. **Never create a doc of unknown type** — if uncertain, ask the user which type applies
 7. **Suggest a status** based on context but always confirm with the user before setting `ACTIVE`
-
----
-
-## 7. Migrating Existing Docs
-
-The following files currently exist in `docs/` and should be migrated to this convention:
-
-| Current filename | Suggested new name | Suggested type |
-|------------------|--------------------|----------------|
-| `VISION.md` | `VISION-product.md` | `VISION` |
-| `DESIGN-SYSTEM.md` | `PRINCIPLE-design-system.md` | `PRINCIPLE` |
-| `NAVIGATION.md` | `EPIC-navigation.md` or `STORY-navigation.md` | `EPIC` or `STORY` — confirm with user |
-| `RESPONSIVE.md` | `PRINCIPLE-responsive.md` or `STORY-responsive-layout.md` | `PRINCIPLE` or `STORY` — confirm with user |
-
-> Claude Code should ask the user to confirm the type for ambiguous files before renaming.
+8. **For SPIKE docs** — always create a matching `experiment/` branch suggestion and include it in the doc under a `## Branch` section
+9. **When a SPIKE is VALIDATED** — prompt the user to create a corresponding STORY before closing the SPIKE

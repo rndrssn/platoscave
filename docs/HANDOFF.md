@@ -2,14 +2,20 @@
 
 ## Ready for Claude Code
 
-### FIX-001 — Broken navigation links
-- Doc: `docs/FIX-001-broken-navigation-links.md`
-- Test: `tests/test-navigation-links.js`
-- Task: Read the fix doc, investigate the three hypotheses,
-  identify root cause, apply fix on development branch,
-  confirm test passes, do not merge to main
+### SPIKE-organised-anarchy-scoring — Scoring Implementation
+- Doc: `docs/SPIKE-organised-anarchy-scoring.md`
+- Spec: `docs/PRINCIPLE-organised-anarchy-questions.md`
+- Task: Read both docs. Implement the scoring logic defined in the spec
+  as a single file `gc-scoring.js` at the repo root. Expose one function:
+  `scoreResponses(responses)` as defined in the spike doc. Write a test
+  script `tests/test-gc-scoring.js` that validates the three archetypes
+  (university, startup, manufacturing firm) produce the expected parameter
+  sets. Run the test in Node and confirm all three pass.
+- Branch: `experiment/organised-anarchy-mapper`
 
-### Notes
-- All new files must follow docs/DOC-CONVENTIONS.md
-- Stay on the development branch
-- Nothing else until this fix is resolved
+## Notes
+- All new files must follow `docs/DOC-CONVENTIONS.md`
+- Stay on `experiment/organised-anarchy-mapper`
+- The only deliverables are `gc-scoring.js` and `tests/test-gc-scoring.js`
+- Do not begin any other spike
+- Nothing else until this spike is resolved

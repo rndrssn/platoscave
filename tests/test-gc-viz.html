@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organised Anarchy — Visualization Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=DM+Mono:wght@300;400&family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper:      #F4EFE4;
+      --paper-dark: #EBE4D5;
+      --ink:        #2A2018;
+      --ink-mid:    #5C4F3A;
+      --ink-faint:  #9C8E78;
+      --ink-ghost:  #C8BDA8;
+      --sage:       #3E5E35;
+      --sage-light: #5C7D52;
+      --slate:      #3D4F5C;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 18px; }
+
+    body {
+      background-color: var(--paper);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      line-height: 1.7;
+      padding: 5rem 2.5rem;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .figure {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .figure-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-ghost);
+      margin-bottom: 0.5rem;
+    }
+
+    .figure-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1.85rem;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 2.5rem;
+    }
+
+    #viz-svg {
+      display: block;
+      width: 100%;
+      overflow: visible;
+    }
+
+    .figure-caption {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-faint);
+      margin-top: 1.75rem;
+      line-height: 2;
+    }
+
+    .period-readout {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-ghost);
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="figure">
+    <p class="figure-eyebrow">Fig. 01 — Garbage Can Model</p>
+    <h1 class="figure-title">Organised Anarchy</h1>
+    <svg id="viz-svg"></svg>
+    <p class="figure-caption">
+      Problems (dots) search for choice opportunities (circles) each period &mdash;
+      attaching, drifting, and resolving as energy accumulates.<br>
+      Parameters: moderate load &mdash; unsegmented access &mdash; unsegmented decision structure.
+    </p>
+    <p class="period-readout" id="period-readout">Period 0 of 20</p>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="../gc-simulation.js"></script>
+  <script>
+    // ─── Run simulation ────────────────────────────────────────────────────────
+    const sim = runGarbageCanSimulation({
+      energyLoad:        'moderate',
+      decisionStructure: 'unsegmented',
+      accessStructure:   'unsegmented',
+    });
+    const ticks = sim.ticks;
+
+    // ─── Color tokens ─────────────────────────────────────────────────────────
+    const C = {
+      ink:      '#2A2018',
+      inkMid:   '#5C4F3A',
+      inkFaint: '#9C8E78',
+      inkGhost: '#C8BDA8',
+      sage:     '#3E5E35',
+      slate:    '#3D4F5C',
+    };
+
+    // ─── Dimensions ───────────────────────────────────────────────────────────
+    // M (choices) and W (problems) are already defined by gc-simulation.js
+    const SVG_W      = 760;
+    const SVG_H      = 300;
+    const CHOICE_Y   = 228;
+    const CHOICE_R   = 15;
+    const PROB_R     = 3.5;
+    const PAD_H      = 36;
+    const FLOAT_Y0   = 64;   // first floating row y
+    const FLOAT_Y1   = 116;  // second floating row y
+
+    const svg = d3.select('#viz-svg')
+      .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
+      .attr('height', SVG_H);
+
+    // ─── Choice x positions ────────────────────────────────────────────────────
+    const choiceX = d3.range(M).map(
+      i => PAD_H + i * (SVG_W - PAD_H * 2) / (M - 1)
+    );
+
+    // ─── Floating positions (two rows, deterministic by problem id) ────────────
+    function floatPos(id) {
+      if (id < M) {
+        // row 0: directly above each choice column
+        return { x: choiceX[id], y: FLOAT_Y0 };
+      }
+      // row 1: between choice positions, slightly lower
+      const col = id - M;
+      return { x: choiceX[col] + (col % 2 === 0 ? 14 : -14), y: FLOAT_Y1 };
+    }
+
+    // ─── Attached positions (radial cluster around choice circle) ─────────────
+    function attachedPos(choiceId, slot, total) {
+      const span  = Math.min(total, 7);           // cap to avoid full circle
+      const start = -Math.PI / 2 - ((span - 1) / 2) * (Math.PI / 4);
+      const angle = start + slot * (Math.PI / 4);
+      const r     = CHOICE_R + 18;
+      return {
+        x: choiceX[choiceId] + Math.cos(angle) * r,
+        y: CHOICE_Y          + Math.sin(angle) * r,
+      };
+    }
+
+    // ─── Draw choice circles ───────────────────────────────────────────────────
+    const choiceLayer = svg.append('g');
+
+    choiceLayer.selectAll('circle.choice')
+      .data(d3.range(M))
+      .join('circle')
+        .attr('class', 'choice')
+        .attr('cx', i => choiceX[i])
+        .attr('cy', CHOICE_Y)
+        .attr('r', CHOICE_R)
+        .attr('fill', 'none')
+        .attr('stroke', C.inkGhost)
+        .attr('stroke-width', 1);
+
+    choiceLayer.selectAll('text.choice-label')
+      .data(d3.range(M))
+      .join('text')
+        .attr('class', 'choice-label')
+        .attr('x', i => choiceX[i])
+        .attr('y', CHOICE_Y + CHOICE_R + 13)
+        .attr('text-anchor', 'middle')
+        .attr('font-family', "'DM Mono', monospace")
+        .attr('font-size', '0.5rem')
+        .attr('font-weight', '300')
+        .attr('letter-spacing', '0.1em')
+        .attr('fill', C.inkGhost)
+        .text(i => `C${i}`);
+
+    // ─── Draw problem dots ─────────────────────────────────────────────────────
+    const probLayer = svg.append('g');
+
+    probLayer.selectAll('circle.problem')
+      .data(d3.range(W), d => d)
+      .join('circle')
+        .attr('class', 'problem')
+        .attr('cx', id => floatPos(id).x)
+        .attr('cy', id => floatPos(id).y)
+        .attr('r', PROB_R)
+        .attr('fill', C.inkGhost)
+        .attr('opacity', 0);
+
+    // ─── Compute position/appearance per problem at a given tick ──────────────
+    function probAttrs(tick, id) {
+      const p = tick.problems[id];
+
+      if (p.state === 'inactive') {
+        const fp = floatPos(id);
+        return { x: fp.x, y: fp.y, opacity: 0, fill: C.inkGhost };
+      }
+
+      if (p.state === 'floating') {
+        const fp = floatPos(id);
+        return { x: fp.x, y: fp.y, opacity: 0.85, fill: C.inkFaint };
+      }
+
+      if (p.state === 'resolved') {
+        const cx = typeof p.attachedTo === 'number' ? choiceX[p.attachedTo] : choiceX[0];
+        return { x: cx, y: CHOICE_Y, opacity: 0, fill: C.inkGhost };
+      }
+
+      // attached — cluster around choice
+      const siblings = tick.problems
+        .map((q, i) => ({ ...q, id: i }))
+        .filter(q => q.state === 'attached' && q.attachedTo === p.attachedTo);
+      const slot = siblings.findIndex(q => q.id === id);
+      const pos  = attachedPos(p.attachedTo, slot, siblings.length);
+      return { x: pos.x, y: pos.y, opacity: 1, fill: C.sage };
+    }
+
+    // ─── Render a single tick ─────────────────────────────────────────────────
+    function renderTick(tickIdx) {
+      const tick = ticks[tickIdx];
+
+      // Choices: stroke color and weight reflect state
+      svg.selectAll('circle.choice')
+        .data(tick.choices)
+        .transition()
+          .duration(600)
+          .ease(d3.easeCubicInOut)
+          .attr('stroke', d => {
+            if (d.state === 'resolved') return C.sage;
+            if (d.state === 'active')   return C.inkFaint;
+            return C.inkGhost;
+          })
+          .attr('stroke-width', d => d.state === 'resolved' ? 1.5 : 1);
+
+      // Problems: move and recolor
+      svg.selectAll('circle.problem')
+        .data(d3.range(W), d => d)
+        .transition()
+          .duration(600)
+          .ease(d3.easeCubicInOut)
+          .attr('cx',      id => probAttrs(tick, id).x)
+          .attr('cy',      id => probAttrs(tick, id).y)
+          .attr('opacity', id => probAttrs(tick, id).opacity)
+          .attr('fill',    id => probAttrs(tick, id).fill);
+
+      document.getElementById('period-readout').textContent =
+        `Period ${tick.tick} of 20`;
+    }
+
+    // ─── Animate through ticks — no looping ───────────────────────────────────
+    renderTick(0);
+
+    let current = 0;
+    const timer = setInterval(() => {
+      current++;
+      if (current >= ticks.length) {
+        clearInterval(timer);
+        document.getElementById('period-readout').textContent =
+          `Period 20 of 20 \u2014 complete`;
+        return;
+      }
+      renderTick(current);
+    }, 800);
+  </script>
+
+</body>
+</html>

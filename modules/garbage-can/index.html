@@ -603,6 +603,12 @@
         <p class="diagnosis-body" id="diagnosis-body"></p>
         <p class="figure-eyebrow">Fig. &mdash; Garbage Can Model</p>
         <svg id="viz-svg"></svg>
+        <div class="viz-legend" id="viz-legend" hidden>
+          <span class="viz-legend-item"><span class="legend-sym-entering">&#9679;</span> Entering</span>
+          <span class="viz-legend-item"><span class="legend-sym-searching">&#9675;</span> Searching</span>
+          <span class="viz-legend-item"><span class="legend-sym-forum">&#9679;</span> In forum</span>
+          <span class="viz-legend-item"><span class="legend-sym-resolved">&#183;</span> Resolved</span>
+        </div>
         <p class="figure-caption" id="viz-caption"></p>
         <p class="period-readout" id="period-readout"></p>
 
@@ -877,6 +883,7 @@
       const simUnresolved = Math.max(0, W - simResolved - simOversight - simFlight);
 
       // Reset summary state
+      document.getElementById('viz-legend').hidden    = false;
       document.getElementById('sim-summary').hidden   = true;
       document.getElementById('replay-btn').hidden    = true;
       document.getElementById('stochastic-note').hidden = true;
@@ -887,7 +894,7 @@
       const CHOICE_Y = 90;
       const CHOICE_R = 15;
       const PROB_R   = 3.5;
-      const PAD_H    = 90;
+      const PAD_H    = 96;
       const FLOAT_Y0 = 130;
       const FLOAT_Y1 = 155;
 
@@ -915,7 +922,7 @@
         const span  = Math.min(total, 7);
         const start = Math.PI / 2 - ((span - 1) / 2) * (Math.PI / 8);
         const angle = start + slot * (Math.PI / 8);
-        const r     = CHOICE_R + 8;
+        const r     = CHOICE_R - 6;
         return {
           x: choiceX[choiceId] + Math.cos(angle) * r,
           y: CHOICE_Y          + Math.sin(angle) * r,
@@ -1002,7 +1009,7 @@
 
         if (p.state === 'floating') {
           const fp = floatPos(id);
-          return { x: fp.x, y: fp.y, opacity: 0.85, fill: C.inkFaint, r: PROB_R };
+          return { x: fp.x, y: fp.y, opacity: 0.7, fill: C.inkFaint, r: PROB_R };
         }
 
         if (p.state === 'resolved') {
@@ -1016,12 +1023,15 @@
           .filter(q => q.state === 'attached' && q.attachedTo === p.attachedTo);
         const slot = siblings.findIndex(q => q.id === id);
         const pos  = attachedPos(p.attachedTo, slot, siblings.length);
-        return { x: pos.x, y: pos.y, opacity: 1, fill: C.inkMid, r: PROB_R };
+        return { x: pos.x, y: pos.y, opacity: 1, fill: C.inkMid, r: PROB_R + 1 };
       }
 
       // Cumulative ever-attached counts — one entry per choice, never decreases
       const everAttached    = Array(M).fill(0);
       const attachedCounted = new Set(); // problem IDs already counted
+
+      // Problem IDs that have ever been active (for entrance animation)
+      const everActive = new Set();
 
       function renderTick(tickIdx, prevTick) {
         const tick = ticks[tickIdx];
@@ -1081,7 +1091,26 @@
           }
         }
 
+        // Detect problems entering for the first time this tick
+        const enteringThisTick = new Set();
+        for (let id = 0; id < W; id++) {
+          if (tick.problems[id].state !== 'inactive' && !everActive.has(id)) {
+            enteringThisTick.add(id);
+            everActive.add(id);
+          }
+        }
+
         const allProbs = svg.selectAll('circle.problem').data(d3.range(W), d => d);
+
+        // Entrance fade-in: scale up from r:1, opacity 0 → target state
+        allProbs.filter(id => enteringThisTick.has(id))
+          .each(function(id) {
+            const attrs = probAttrs(tick, id);
+            d3.select(this).interrupt()
+              .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', 1).attr('opacity', 0)
+              .transition().duration(400).ease(d3.easeCubicOut)
+                .attr('r', attrs.r).attr('opacity', attrs.opacity).attr('fill', attrs.fill);
+          });
 
         // Resolution exit: move to circle centre, shrink to r:1.5, fill ochre, then fade
         allProbs.filter(id => resolvedThisTick.has(id))
@@ -1119,7 +1148,7 @@
           });
 
         // All other problems: standard position transition
-        allProbs.filter(id => !resolvedThisTick.has(id) && !flightSet.has(id) && !oversightSet.has(id))
+        allProbs.filter(id => !resolvedThisTick.has(id) && !flightSet.has(id) && !oversightSet.has(id) && !enteringThisTick.has(id))
           .interrupt()
           .transition().duration(600).ease(d3.easeCubicInOut)
             .attr('cx',      id => probAttrs(tick, id).x)

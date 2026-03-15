@@ -12,6 +12,8 @@
   --ink-faint:   #9C8E78;
   --ink-ghost:   #C8BDA8;
 
+  --rust:        #8B3A2A;
+  --rust-light:  #B85C40;
   --sage:        #3E5E35;
   --sage-light:  #5C7D52;
   --ochre:       #9A7B3A;
@@ -446,3 +448,28 @@ footer {
 .outcome-flight     { color: var(--rust); }
 .outcome-oversight  { color: var(--slate); }
 .outcome-unresolved { color: var(--ink-faint); }
+
+/* ─── Visualization legend ───────────────────────────────── */
+.viz-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.viz-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-ghost);
+}
+
+.legend-sym-entering  { color: var(--ink-faint); }
+.legend-sym-searching { color: var(--ink-faint); }
+.legend-sym-forum     { color: var(--ink-mid); }
+.legend-sym-resolved  { color: var(--ink-ghost); }

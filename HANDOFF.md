@@ -2,120 +2,145 @@
 
 ## Ready for Claude Code
 
-### Fix: Mapper — counter redesign, color coding, floating dot position, C9 clipping
+### Fix: Mapper — problem entrance animation, state distinction, legend, C0/C9 labels, flight color
 - File: `modules/garbage-can/index.html`
 - Branch: `experiment/organised-anarchy-mapper`
 - Read `CLAUDE.md` and `docs/PRINCIPLE-coding-standards.md` before touching anything
 
 ---
 
-## Fix 1 — Remove running counters, replace with statistical end state summary
+## Fix 1 — Problem entrance animation
 
 **Current behaviour:**
-Running counters show during animation (from Monte Carlo proportions).
-End state summary replaces them after animation. The two sources
-are different — animation is one run, counters are 100-run mean —
-which confuses the visitor.
+All 20 problems are initialised at opacity 0 and appear suddenly when
+they enter. The visitor cannot see the system building up over time.
 
 **Expected behaviour:**
-- Remove the running counters `#sim-counters` entirely during animation
-- After the animation completes, show one clear statistical summary
-  with an explanatory header:
+When a problem transitions from `inactive` to `floating` or `attached`
+for the first time, it should fade in visibly — not just appear.
 
-```
-Across 100 simulations of this organisation type, on average:
-
-RESOLVED    — 2   — problem genuinely closed at a decision forum
-OVERSIGHT   — 10  — decision made while problem moved elsewhere
-FLIGHT      — 8   — problem abandoned the forum before resolution
-UNRESOLVED  — 0   — never reached a decision forum
-```
-
-The header line should be EB Garamond, italic, `--ink-mid`, `0.95rem`.
-The four outcome lines use `period-readout` class styling but with
-colored labels as defined in Fix 2.
-
-**HTML changes required:**
-- Remove `id="sim-counters"` div (lines 609–615) entirely
-- Remove the `hidden` attribute logic for sim-counters in `drawViz()`
-- Update `showEndState()` to render the header and four colored lines
-- The `#sim-summary` div should gain a header paragraph above the four lines
-
----
-
-## Fix 2 — Color coding: consistent colors across animation and summary
-
-**Add `slate` to the color tokens object** (currently missing):
+**Implementation:**
+Track which problem IDs have ever been active using a Set:
 ```js
-const C = {
-  ink:      '#2A2018',
-  inkMid:   '#5C4F3A',
-  inkFaint: '#9C8E78',
-  inkGhost: '#C8BDA8',
-  rust:     '#8B3A2A',
-  ochre:    '#9A7B3A',
-  slate:    '#3D4F5C',  // ADD THIS
-};
+const everActive = new Set();
 ```
 
-**Animation exit colors** (update `renderTick()` visual exits):
-- Resolution exit: dot moves to center, shrinks, fill → `C.ochre` ✓ (already correct)
-- Flight exit: dot flashes → `C.rust` ✓ (already correct)
-- Oversight exit: dot flashes → `C.slate` (currently wrong — uses `C.ochre`, change to `C.slate`)
+In `renderTick()`, for each problem transitioning from inactive to
+active for the first time (id not in `everActive`):
+- Add id to `everActive`
+- Apply a fade-in transition: start at opacity 0, scale up from r:1
+  to `PROB_R` over 400ms with `d3.easeCubicOut`
 
-**Summary label colors:**
-Each outcome label in the end state summary must use its matching color.
-Add CSS classes to the `<style>` block:
-
-```css
-.outcome-resolved  { color: var(--ochre); }
-.outcome-flight    { color: var(--rust); }
-.outcome-oversight { color: var(--slate); }
-.outcome-unresolved { color: var(--ink-faint); }
-```
-
-Apply these classes to the label portion of each summary line.
+This makes the two problems entering each cycle clearly visible
+as new arrivals rather than sudden appearances.
 
 ---
 
-## Fix 3 — Floating dots positioning
-
-**Location:** Constants at lines 899–905.
-Current: `SVG_H = 180`, `CHOICE_Y = 130`, `FLOAT_Y0 = 108`, `FLOAT_Y1 = 150`
+## Fix 2 — Visual state distinction
 
 **Current behaviour:**
-`FLOAT_Y0 = 108` places floating dots at y=108, which is above
-`CHOICE_Y - CHOICE_R = 115`. Some dots render above the circles.
+`floating` and `attached` dots look too similar — both are small
+dark dots. The three active states need clearer visual distinction.
 
-**Fix:**
-Floating dots must stay in the band between the circles and the
-bottom of the SVG. Update constants:
+**Expected behaviour:**
 
-```js
-const SVG_H    = 180;
-const CHOICE_Y = 90;
-const FLOAT_Y0 = 130;
-const FLOAT_Y1 = 155;
-```
+| State | Fill | Opacity | Radius | Meaning |
+|-------|------|---------|--------|---------|
+| `inactive` | `C.inkGhost` | 0 | `PROB_R` | Not yet in system |
+| `floating` | `C.inkFaint` | 0.7 | `PROB_R` | Searching for a forum |
+| `attached` | `C.inkMid` | 1.0 | `PROB_R + 1` | In a forum, waiting |
+| `resolved` | fades out | 0 | `PROB_R` | Processed |
 
-With `CHOICE_Y = 90`: circles centered at 90, label at y=118,
-floating dots at 130–155 — all below the circles, within the 180px canvas.
+The attached state gets `r: PROB_R + 1` — slightly larger — to signal
+it has found a home. The floating state is slightly more transparent
+to read as "searching, unsettled."
+
+Also move attached dots **inside** the circle:
+In `attachedPos()`, change `r = CHOICE_R + 8` to `r = CHOICE_R - 6`.
+Dots now orbit inside the circle boundary — ontologically correct,
+a problem inside the garbage can.
 
 ---
 
-## Fix 4 — C9 label and dots still clipped at right edge
+## Fix 3 — Legend below the animation
 
-**Location:** `PAD_H = 72` (line 903)
+**Expected behaviour:**
+A small legend below the animation, above the cycle readout.
+Four items in a single row:
+
+```
+● ENTERING    ◌ SEARCHING    ● IN FORUM    · RESOLVED
+```
+
+Each symbol uses the color of that state. Labels in DM Mono,
+uppercase, `0.55rem`, `--ink-ghost`. The symbols are small SVG
+circles inline with the text, or use Unicode bullets styled
+with CSS color.
+
+Add as a static HTML element below `#viz-svg`:
+```html
+<div class="viz-legend" id="viz-legend" hidden></div>
+```
+
+Show it (remove hidden) when `drawViz()` is called.
+
+CSS for `.viz-legend` — add to `<style>` block, no inline styles:
+```css
+.viz-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+.viz-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-ghost);
+}
+```
+
+---
+
+## Fix 4 — FLIGHT label color missing
+
+**Current behaviour:**
+RESOLVED shows in `--ochre`, OVERSIGHT in `--slate`, but FLIGHT
+is not colored — it renders the same as the surrounding text.
 
 **Fix:**
-Increase `PAD_H` from `72` to `90`. This gives the rightmost circle
-enough margin for its orbit ring and label without clipping.
+Apply `outcome-flight` class to the FLIGHT label in `showEndState()`.
+The `.outcome-flight { color: var(--rust); }` CSS class already exists.
+The label just needs the class applied.
+
+---
+
+## Fix 5 — C0 and C9 labels still missing
+
+**Current behaviour:**
+C0 label is hidden behind dots sitting below the circle.
+C9 is clipped at the right edge.
+
+**Fix for C0:**
+The two dots below C0 are attached dots now inside the circle
+(after Fix 2 moves them inside). The label sits at
+`CHOICE_Y + CHOICE_R + 13`. If dots are inside the circle they
+should no longer obscure the label.
+
+**Fix for C9:**
+Increase `PAD_H` from current value to `96`. Verify
+`choiceX[9] + CHOICE_R + PROB_R` stays within `SVG_W`.
 
 ---
 
 ## Notes
-- Do not change the questions, scoring, positioning diagram, or fill level logic
-- Do not change animation timing
+- Do not change scoring, positioning diagram, fill level logic, or diagnosis text
+- Do not change animation timing (800ms interval, 600ms transitions)
 - No inline styles — CSS tokens only
 - Stay on experiment/organised-anarchy-mapper
-- Nothing else until these four fixes are done
+- Nothing else until these five fixes are done

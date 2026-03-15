@@ -880,11 +880,11 @@
     function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       const { ticks, resolution, oversight, flight } = simResult;
 
-      // Choice-level counts (out of M=10, canonical GCM decision styles)
-      const choiceResolution = Math.round(simResult.choiceResolution);
-      const choiceOversight  = Math.round(simResult.choiceOversight);
-      const choiceFlight     = Math.round(simResult.choiceFlight);
-      const choiceOpen       = Math.max(0, M - choiceResolution - choiceOversight - choiceFlight);
+      // Choice-level percentages (canonical GCM decision styles)
+      // Rounded to nearest 5% — at 100 Monte Carlo iterations, finer precision is noise
+      const pctRes  = Math.round(simResult.resolution * 20) * 5;
+      const pctOver = Math.round(simResult.oversight  * 20) * 5;
+      const pctFli  = 100 - pctRes - pctOver;
 
       // Problem-level counts (out of W=20, interpretive extension)
       const probResolved  = Math.round(simResult.problemResolved);
@@ -1185,7 +1185,7 @@
           document.getElementById('period-readout').textContent =
             `Cycle 20 of 20 \u2014 complete`;
           showEndState(
-            choiceResolution, choiceOversight, choiceFlight, choiceOpen,
+            pctRes, pctOver, pctFli,
             probResolved, probDisplaced, probAdrift, probInForum
           );
           return;
@@ -1201,7 +1201,7 @@
 
     // ─── End state summary ────────────────────────────────────────────────────────
     function showEndState(
-      choiceResolution, choiceOversight, choiceFlight, choiceOpen,
+      pctRes, pctOver, pctFli,
       probResolved, probDisplaced, probAdrift, probInForum
     ) {
 
@@ -1215,10 +1215,6 @@
       // Primary: canonical GCM decision styles (choice-level)
       document.getElementById('sum-header').textContent =
         'Across 100 simulations of this organisation type, on average:';
-
-     const pctRes  = Math.round(simResult.resolution * 20) * 5;
-      const pctOver = Math.round(simResult.oversight  * 20) * 5;
-      const pctFli  = 100 - pctRes - pctOver;
 
       document.getElementById('sum-choices-label').textContent =
         `How the ${M} decision forums resolved`;

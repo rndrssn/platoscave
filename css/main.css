@@ -17,6 +17,7 @@
   --sage:        #4A6741;
   --sage-light:  #6B8F62;
   --ochre:       #9A7B3A;
+  --gold:        #B8943A;
   --slate:       #3D4F5C;
 
   --serif:       'EB Garamond', Georgia, serif;
@@ -468,11 +469,6 @@ footer {
   letter-spacing: 0.08em;
   color: var(--ink-faint);
 }
-
-.legend-sym-entering  { color: var(--rust); }
-.legend-sym-searching { color: var(--rust); }
-.legend-sym-forum     { color: var(--ochre); }
-.legend-sym-resolved  { color: var(--sage); }
 
 /* ─── Attached dot pulse ─────────────────────────────────── */
 @keyframes dot-pulse {

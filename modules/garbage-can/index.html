@@ -977,7 +977,7 @@
           .attr('width', CHOICE_R * 2)
           .attr('height', 0)
           .attr('fill', C.sage)
-          .attr('fill-opacity', 0.25)
+          .attr('fill-opacity', 0.50)
           .attr('clip-path', i => `url(#clip-c${i})`);
 
       // ── Layer 3: choice labels (rendered above fill) ────────────────────────────
@@ -1089,8 +1089,8 @@
         // Fill level — cumulative count of problems resolved at each choice
         if (prevTick) {
           for (let id = 0; id < W; id++) {
-            if (prevTick.problems[id].state === 'attached' && tick.problems[id].state === 'resolved') {
-              resolvedAtChoice[prevTick.problems[id].attachedTo]++;
+            if (tick.problems[id].state === 'resolved' && prevTick.problems[id].state !== 'resolved') {
+              resolvedAtChoice[tick.problems[id].attachedTo]++;
             }
           }
         }

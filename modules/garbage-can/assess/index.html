@@ -373,6 +373,11 @@
   <script src="../../../gc-simulation.js"></script>
   <script src="../../../gc-scoring.js"></script>
   <script>
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+
     // ─── Nav toggle ──────────────────────────────────────────────────────────────
     document.querySelector('.nav-mobile-toggle').addEventListener('click', function () {
       document.querySelector('.nav-links').classList.toggle('is-open');

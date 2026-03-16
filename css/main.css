@@ -329,6 +329,12 @@ footer {
 .module-entry--live { cursor: pointer; }
 .module-entry--live:hover .module-title { color: var(--sage); }
 
+.module-entry-link {
+  text-decoration: none;
+  color: inherit;
+  display: contents;
+}
+
 .module-entry-main {
   display: flex;
   flex-direction: column;

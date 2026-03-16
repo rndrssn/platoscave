@@ -450,30 +450,27 @@
         legendX += item.label.length * 7 + 30;
       });
 
-      var resolvedClipId = 'legend-clip-resolved-' + suffix;
-      svg.select('defs').append('clipPath')
-        .attr('id', resolvedClipId)
-        .append('circle')
-          .attr('cx', legendX + 5)
-          .attr('cy', LEGEND_Y)
-          .attr('r', 5);
+      // Resolved legend item — semicircle fill at bottom + circle outline
+      // Uses an arc path instead of clipping to avoid transform/coordinate issues
+      var resolvedCx = legendX + 5;
+      var resolvedR  = 5;
 
+      // Bottom-half fill (semicircle arc)
+      legendG.append('path')
+        .attr('d', 'M ' + (resolvedCx - resolvedR) + ' 0' +
+                    ' A ' + resolvedR + ' ' + resolvedR + ' 0 0 0 ' + (resolvedCx + resolvedR) + ' 0' +
+                    ' Z')
+        .attr('fill', C.sage)
+        .attr('fill-opacity', 0.35);
+
+      // Circle outline on top
       legendG.append('circle')
-        .attr('cx', legendX + 5)
+        .attr('cx', resolvedCx)
         .attr('cy', 0)
-        .attr('r', 5)
+        .attr('r', resolvedR)
         .attr('fill', 'none')
         .attr('stroke', C.inkMid)
         .attr('stroke-width', 0.75);
-
-      legendG.append('rect')
-        .attr('x', legendX)
-        .attr('y', 5 / 3)
-        .attr('width', 10)
-        .attr('height', 10 / 3)
-        .attr('fill', C.sage)
-        .attr('fill-opacity', 0.35)
-        .attr('clip-path', 'url(#' + resolvedClipId + ')');
 
       legendG.append('text')
         .attr('x', legendX + 14)

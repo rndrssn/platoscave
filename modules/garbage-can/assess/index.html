@@ -42,8 +42,10 @@
 
       <!-- Stage 1 — The questionnaire -->
       <section id="stage-1" class="stage is-visible">
-        <p class="q-step-indicator" id="q-step">1 of 3</p>
-        <form id="questionnaire" novalidate>
+        <button class="collapsible-toggle" id="questionnaire-toggle" type="button" hidden>Retake assessment</button>
+        <div id="questionnaire-content">
+          <p class="q-step-indicator" id="q-step">1 of 3</p>
+          <form id="questionnaire" novalidate>
 
           <div class="q-section q-card" id="q-group-1">
             <p class="q-section-label">01 &middot; Energy load</p>
@@ -252,6 +254,7 @@
           </div>
 
         </form>
+        </div>
       </section>
 
       <!-- Results — revealed after form submission -->
@@ -272,7 +275,6 @@
 
         <!-- Section: Diagnosis -->
         <section id="section-diagnosis" class="results-section">
-          <hr class="stage-rule" />
           <p class="stage-label">Diagnosis</p>
           <h2 class="diagnosis-title" id="diagnosis-title"></h2>
           <p class="diagnosis-body" id="diagnosis-body"></p>
@@ -284,7 +286,6 @@
 
         <!-- Section: Positioning -->
         <section id="section-positioning" class="results-section">
-          <hr class="stage-rule" />
           <p class="stage-label">Positioning</p>
           <svg id="positioning-svg"></svg>
           <p class="positioning-caption" id="positioning-caption"></p>
@@ -292,11 +293,9 @@
 
         <!-- Section: Simulation -->
         <section id="section-simulation" class="results-section">
-          <hr class="stage-rule" />
           <p class="stage-label">Simulation</p>
 
           <!-- Figure intro — visible before animation runs -->
-          <p class="figure-eyebrow">Fig. &middot; Garbage Can Model</p>
           <p class="figure-caption" id="viz-caption"></p>
 
           <!-- Field notes — model explanation -->
@@ -381,6 +380,16 @@
     // ─── Nav toggle ──────────────────────────────────────────────────────────────
     document.querySelector('.nav-mobile-toggle').addEventListener('click', function () {
       document.querySelector('.nav-links').classList.toggle('is-open');
+    });
+
+    // ─── Questionnaire collapse/expand ───────────────────────────────────────────
+    document.getElementById('questionnaire-toggle').addEventListener('click', function () {
+      var content = document.getElementById('questionnaire-content');
+      content.hidden = !content.hidden;
+      this.textContent = content.hidden ? 'Retake assessment' : 'Hide questionnaire';
+      if (!content.hidden) {
+        document.getElementById('stage-1').classList.remove('stage-collapsed');
+      }
     });
 
     // ─── Results mini-nav ────────────────────────────────────────────────────────
@@ -874,31 +883,27 @@
         legendX += item.label.length * 7 + 30;
       });
 
-      // Resolved legend item — circle with sage fill at bottom
-      var resolvedClipId = 'legend-clip-resolved-viz';
-      svg.select('defs').append('clipPath')
-        .attr('id', resolvedClipId)
-        .append('circle')
-          .attr('cx', legendX + 5)
-          .attr('cy', LEGEND_Y)
-          .attr('r', 5);
+      // Resolved legend item — semicircle fill at bottom + circle outline
+      // Uses an arc path instead of clipping to avoid transform/coordinate issues
+      var resolvedCx = legendX + 5;
+      var resolvedR  = 5;
 
+      // Bottom-half fill (semicircle arc)
+      legendG.append('path')
+        .attr('d', 'M ' + (resolvedCx - resolvedR) + ' 0' +
+                    ' A ' + resolvedR + ' ' + resolvedR + ' 0 0 0 ' + (resolvedCx + resolvedR) + ' 0' +
+                    ' Z')
+        .attr('fill', C.sage)
+        .attr('fill-opacity', 0.35);
+
+      // Circle outline on top
       legendG.append('circle')
-        .attr('cx', legendX + 5)
+        .attr('cx', resolvedCx)
         .attr('cy', 0)
-        .attr('r', 5)
+        .attr('r', resolvedR)
         .attr('fill', 'none')
         .attr('stroke', C.inkMid)
         .attr('stroke-width', 0.75);
-
-      legendG.append('rect')
-        .attr('x', legendX)
-        .attr('y', 5 / 3)
-        .attr('width', 10)
-        .attr('height', 10 / 3)
-        .attr('fill', C.sage)
-        .attr('fill-opacity', 0.35)
-        .attr('clip-path', 'url(#' + resolvedClipId + ')');
 
       legendG.append('text')
         .attr('x', legendX + 14)
@@ -1305,6 +1310,29 @@
 
       // Reveal results area
       showStage('results-area', 100);
+
+      // Reset and collapse questionnaire
+      document.querySelectorAll('#questionnaire input[type="radio"]').forEach(function(r) {
+        r.checked = false;
+      });
+      document.getElementById('q-group-1').hidden = false;
+      document.getElementById('q-group-2').hidden = true;
+      document.getElementById('q-group-3').hidden = true;
+      document.getElementById('q-step').textContent = '1 of 3';
+      document.getElementById('q-continue-1').disabled = true;
+      document.getElementById('q-continue-2').disabled = true;
+      document.getElementById('submit-btn').disabled = true;
+      document.getElementById('questionnaire-content').hidden = true;
+      document.querySelector('.module-header').style.marginTop = '0';
+      document.getElementById('questionnaire-toggle').hidden = false;
+      document.getElementById('stage-1').classList.add('stage-collapsed');
+
+      // Reset simulation area
+      document.getElementById('viz-area').hidden = true;
+      document.getElementById('run-sim-btn').hidden = false;
+      document.getElementById('sim-summary').hidden = true;
+      document.getElementById('replay-btn').hidden = true;
+      document.getElementById('stochastic-note').hidden = true;
 
       // Diagnosis
       setTimeout(() => {

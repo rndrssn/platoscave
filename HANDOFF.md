@@ -2,151 +2,261 @@
 
 ## Ready for Claude Code
 
-### STORY 6: Navigation and integration — cross-link all pages, update module index
-- Files: `modules/index.html`, `modules/garbage-can/index.html`, `modules/garbage-can/taxonomy/index.html`, `modules/garbage-can/explorer/index.html`, `modules/garbage-can/assess/index.html`
+### Task: Apply interactive element hierarchy across all pages
+- Files: `css/main.css`, `modules/garbage-can/assess/index.html`, `modules/garbage-can/explorer/index.html`, `modules/garbage-can/index.html`, `modules/garbage-can/taxonomy/index.html`
 - Branch: `experiment/organised-anarchy-mapper`
-- Epic: `docs/EPIC-garbage-can-restructure.md`
-- Read `CLAUDE.md` and `docs/PRINCIPLE-coding-standards.md` before touching anything
+- Read `CLAUDE.md`, `docs/PRINCIPLE-coding-standards.md`, and `docs/PRINCIPLE-interactive-elements.md` before touching anything
 
 ---
 
 ## Context
 
-All four garbage-can sub-pages now exist. This final story ensures they are properly cross-linked and the module index reflects the new structure.
+A new principle has been added: `docs/PRINCIPLE-interactive-elements.md`. It defines four tiers of interactive elements. The current site uses them inconsistently. This handoff applies the hierarchy across all pages.
 
 ---
 
-## Fix 1 — Update the module index page
+## Fix 1 — Update CSS classes in `css/main.css`
 
-The module index (`modules/index.html`) currently shows module 03 as "Coming". Update it to "Live" with a working link. Optionally show the four sub-pages.
+### 1a — Keep `.submit-btn` as the primary CTA (Tier 1)
 
-Find in `modules/index.html` the module 03 entry:
+No change needed — the current `.submit-btn` styling is correct for Tier 1. It stays as-is.
 
-```html
-        <li class="module-entry module-entry--coming">
-          <div class="module-entry-main">
-            <div class="module-entry-title-row">
-              <span class="module-number">03 &middot;</span>
-              <span class="module-title">The Garbage Can Model</span>
-            </div>
-            <p class="module-descriptor">Organisational choice under ambiguity.</p>
-          </div>
-          <span class="module-status status-coming">Coming</span>
-        </li>
-```
+### 1b — Standardise secondary actions (Tier 2)
 
-Replace with:
+The `.replay-btn` and `.collapsible-toggle` should look identical — plain text, no border.
 
-```html
-        <li class="module-entry module-entry--live">
-          <a href="garbage-can/" style="text-decoration:none;color:inherit;display:contents;">
-            <div class="module-entry-main">
-              <div class="module-entry-title-row">
-                <span class="module-number">03 &middot;</span>
-                <span class="module-title">The Garbage Can Model</span>
-              </div>
-              <p class="module-descriptor">Organisational choice under ambiguity.</p>
-            </div>
-            <span class="module-status status-live">Live</span>
-          </a>
-        </li>
-```
-
-Note: the inline style on the `<a>` is a pragmatic workaround. If there's already a pattern in the CSS for clickable module entries, use that instead. Otherwise, add a class:
-
+Find `.collapsible-toggle`:
 ```css
-.module-entry-link {
-  text-decoration: none;
-  color: inherit;
-  display: contents;
+.collapsible-toggle {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  background: none;
+  border: 1px solid var(--ink-ghost);
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+
+.collapsible-toggle:hover {
+  border-color: var(--ink-mid);
+  color: var(--ink);
 }
 ```
 
-And use `<a class="module-entry-link" href="garbage-can/">`.
+Replace with:
+```css
+.collapsible-toggle {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  margin-bottom: 1.5rem;
+}
 
----
-
-## Fix 2 — Verify all footer nav links across sub-pages
-
-Check each sub-page has correct footer nav. The pattern is:
-
-| Page | Left link | Right link |
-|------|-----------|------------|
-| `/modules/garbage-can/` (narrative) | `← Previous` → `../maturity/` | `Next →` → `../mix-mapper/` |
-| `/modules/garbage-can/taxonomy/` | `← The Garbage Can Model` → `../` | `Explorer →` → `../explorer/` |
-| `/modules/garbage-can/explorer/` | `← The Garbage Can Model` → `../` | `Self-Assessment →` → `../assess/` |
-| `/modules/garbage-can/assess/` | `← The Garbage Can Model` → `../` | `Explorer →` → `../explorer/` |
-
-The narrative page links to sibling modules (maturity, mix-mapper) because it's the module root. The sub-pages link back to the narrative and to each other.
-
-Verify each file matches this table. Fix any that don't.
-
----
-
-## Fix 3 — Verify the narrative page's "Explore the Model" links
-
-In `modules/garbage-can/index.html`, the essay links section should point to:
-
-```html
-            <a class="essay-link" href="taxonomy/">
-            <a class="essay-link" href="explorer/">
-            <a class="essay-link" href="assess/">
+.collapsible-toggle:hover {
+  color: var(--rust);
+}
 ```
 
-These are relative to the narrative page's location. Verify they work.
+This matches `.replay-btn` — plain text, no border, rust on hover.
 
----
+### 1c — Add underline on hover to navigation links (Tier 3)
 
-## Fix 4 — Verify the assess page's contextual diagnosis links
+Find `.diagnosis-link`:
+```css
+.diagnosis-link {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--sage);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
 
-In `modules/garbage-can/assess/index.html`, after the diagnosis:
-
-```html
-            <a class="diagnosis-link" href="../taxonomy/">Read more about the organisation types</a>
-            <a class="diagnosis-link" href="../">Understand the model</a>
+.diagnosis-link:hover {
+  color: var(--sage-light);
+}
 ```
 
-Verify these link correctly.
+Replace with:
+```css
+.diagnosis-link {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--sage);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.diagnosis-link:hover {
+  color: var(--sage-light);
+  text-decoration: underline;
+}
+```
+
+Also update `.footer-nav-link`:
+
+Find:
+```css
+.footer-nav-link:hover {
+  color: var(--ink-mid);
+}
+```
+
+Replace with:
+```css
+.footer-nav-link:hover {
+  color: var(--ink-mid);
+  text-decoration: underline;
+}
+```
+
+### 1d — Remove border from tags (Tier 4)
+
+Find `.module-tag`:
+```css
+.module-tag {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  border: 1px solid var(--ink-ghost);
+  padding: 0.2rem 0.5rem;
+}
+```
+
+Replace with:
+```css
+.module-tag {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  padding: 0;
+}
+```
+
+Border removed, padding removed — tags are now plain text.
+
+### 1e — Add separator between tags
+
+Without borders, adjacent tags need a visual separator. Update `.module-tags`:
+
+Find:
+```css
+.module-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+```
+
+Replace with:
+```css
+.module-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.module-tag + .module-tag::before {
+  content: '\00B7';
+  margin-right: 0.25rem;
+  color: var(--ink-ghost);
+}
+```
+
+Tags now render as: `Garbage Can Model · Organisational theory · Decision science`
 
 ---
 
-## Fix 5 — Add scroll restoration to all sub-pages
+## Fix 2 — Update essay link cards on the narrative page
 
-Each sub-page should have scroll restoration at the top of its script block. Verify all four sub-pages have:
+The essay link cards on `modules/garbage-can/index.html` should use sage for the label text to signal "this is a link."
 
-```js
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-    window.scrollTo(0, 0);
+Find in `css/main.css`:
+```css
+.essay-link-label {
+  display: block;
+  font-family: var(--serif-alt);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+```
+
+Replace with:
+```css
+.essay-link-label {
+  display: block;
+  font-family: var(--serif-alt);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--sage);
+  margin-bottom: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.essay-link:hover .essay-link-label {
+  color: var(--sage-light);
+}
 ```
 
 ---
 
-## Fix 6 — Test all navigation paths
+## Fix 3 — Verify across all pages
 
-Verify these paths work by clicking through:
+Check each page and confirm:
 
-1. Module index → click module 03 → narrative page
-2. Narrative → "Taxonomy" link → taxonomy page
-3. Narrative → "Simulation Explorer" link → explorer page
-4. Narrative → "Self-Assessment" link → assess page
-5. Taxonomy → "← The Garbage Can Model" → narrative
-6. Taxonomy → "Explorer →" → explorer
-7. Explorer → "← The Garbage Can Model" → narrative
-8. Explorer → "Self-Assessment →" → assess
-9. Assess → "← The Garbage Can Model" → narrative
-10. Assess → "Explorer →" → explorer
-11. Assess → diagnosis link "Read more about the organisation types" → taxonomy
-12. Assess → diagnosis link "Understand the model" → narrative
+| Page | Primary CTAs (bordered) | Secondary actions (plain text) | Navigation links (sage + underline hover) | Tags (no border) |
+|---|---|---|---|---|
+| Narrative | none | none | Essay link cards (sage label) | Garbage Can Model, etc. |
+| Taxonomy | none | none | Footer nav, Explore Further links | none |
+| Explorer | Run simulation | Run again | Footer nav | none |
+| Assess | Continue, Map this organisation, See how decisions play out | Run again, Retake assessment | Diagnosis links, Footer nav | Garbage Can Model, etc. |
 
-Report any broken links. Do not create placeholder pages for maturity or mix-mapper — those are future modules.
+Fix any elements that don't match their tier.
+
+---
+
+## Verification
+
+1. **Tags** — should look like plain metadata text, not clickable boxes
+2. **Diagnosis links** — sage text, underline appears on hover
+3. **Retake assessment** — plain text like "Run again", no border
+4. **Footer nav links** — underline on hover
+5. **Essay link cards** — sage label text, sage-light on hover
+6. **Primary CTAs** — only bordered buttons are Continue, Map this organisation, See how decisions play out, Run simulation
 
 ---
 
 ## Notes
-- This is a verification and wiring story — minimal code changes, mostly checking and fixing links
-- Use clean directory URLs everywhere — never reference `index.html` explicitly
-- The narrative page keeps its sibling module links (maturity, mix-mapper) in the footer nav — these will 404 until those modules are built, which is expected
-- Do not change any simulation, scoring, or visualization logic
+- This is a CSS-only change for most fixes — HTML stays the same
+- The `.module-tag` border removal affects all pages that use tags (narrative, assess, and any placeholder pages)
+- The middot separator between tags uses a CSS `::before` pseudo-element — no HTML changes needed
+- Follow `docs/PRINCIPLE-interactive-elements.md` for all future interactive elements
 - Stay on `experiment/organised-anarchy-mapper`

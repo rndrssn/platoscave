@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Mix Mapper · To the Bedrock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/main.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-title" href="../../">To the Bedrock</a>
+    <div class="nav-links">
+      <a class="nav-link" href="../../">Home</a>
+      <a class="nav-link nav-link--active" href="../../modules/">Index</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu">Menu</button>
+  </nav>
+
+  <main class="main--narrow">
+    <div class="module-page">
+
+      <header class="module-header">
+        <p class="module-header-number">04 &middot; The Mix Mapper</p>
+        <h1 class="module-header-title">The Mix Mapper</h1>
+        <p class="module-header-body">This module is under development.</p>
+      </header>
+
+      <!-- Footer nav -->
+      <nav class="module-footer-nav" aria-label="Module navigation">
+        <a class="footer-nav-link" href="../garbage-can/">&larr; Previous</a>
+        <span></span>
+      </nav>
+
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">To the Bedrock &middot; Platoscave</p>
+  </footer>
+
+  <script>
+    document.querySelector('.nav-mobile-toggle').addEventListener('click', function () {
+      document.querySelector('.nav-links').classList.toggle('is-open');
+    });
+  </script>
+
+</body>
+</html>

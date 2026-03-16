@@ -919,9 +919,6 @@
             d3.select(this).append('title');
           });
 
-      // ── Layer 7: energy deficit indicators ──────────────────────────────────────
-      var deficitLayer = svg.append('g');
-
       function probAttrs(tick, id) {
         const p = tick.problems[id];
 
@@ -954,9 +951,6 @@
 
       // Problem IDs that have ever been active (for entrance animation)
       const everActive = new Set();
-
-      // Track consecutive unchanged ticks per choice (for deadlock detection)
-      var choiceUnchangedTicks = Array(M).fill(0);
 
       function isDeadTick(tickIdx) {
         if (tickIdx === 0) return false;
@@ -1002,8 +996,6 @@
             text = 'Choice opportunity: not yet entered';
           } else if (state === 'resolved') {
             text = 'Resolved: this forum has closed';
-          } else if (choiceUnchangedTicks && choiceUnchangedTicks[i] >= 2) {
-            text = 'Deadlocked: too many problems, not enough energy';
           } else {
             text = 'Choice opportunity: a forum where decisions could be made';
           }
@@ -1156,88 +1148,6 @@
             .text('System locked');
         }
 
-        // Deadlock detection per choice
-        for (var ci = 0; ci < M; ci++) {
-          if (prevTick &&
-              tick.choices[ci].state === 'active' &&
-              prevTick.choices[ci].state === 'active' &&
-              tick.choices[ci].energyRequired === prevTick.choices[ci].energyRequired) {
-            choiceUnchangedTicks[ci]++;
-          } else {
-            choiceUnchangedTicks[ci] = 0;
-          }
-        }
-
-        // Apply dashed stroke to deadlocked choices
-        svg.selectAll('circle.choice')
-          .attr('stroke-dasharray', function(d, i) {
-            if (d.state === 'active' && choiceUnchangedTicks[i] >= 2) {
-              return '3,3';
-            }
-            return 'none';
-          });
-
-        // Energy deficit indicators on deadlocked choices
-        deficitLayer.selectAll('*').remove();
-
-        for (var di = 0; di < M; di++) {
-          if (tick.choices[di].state !== 'active' || choiceUnchangedTicks[di] < 2) continue;
-
-          var cx = choiceX[di];
-          var problemCount = 0;
-          tick.problems.forEach(function(p) {
-            if (p.state === 'attached' && p.attachedTo === di) problemCount++;
-          });
-
-          if (problemCount === 0) continue;
-
-          // Problem count below the circle
-          deficitLayer.append('text')
-            .attr('x', cx)
-            .attr('y', CHOICE_Y + CHOICE_R + 28)
-            .attr('text-anchor', 'middle')
-            .attr('font-family', "'DM Mono', monospace")
-            .attr('font-size', '0.5rem')
-            .attr('font-weight', '300')
-            .attr('fill', C.rust)
-            .attr('letter-spacing', '0.05em')
-            .text('\u00D7' + problemCount);
-
-          // Progress arc — energy spent / energy required
-          var required = tick.choices[di].energyRequired;
-          var spent    = tick.choices[di].energySpent;
-          var progress = required > 0 ? Math.min(spent / required, 1) : 0;
-          var arcR     = CHOICE_R + 4;
-
-          if (progress > 0 && progress < 1) {
-            var arcPath = d3.arc()
-              .innerRadius(arcR - 1.5)
-              .outerRadius(arcR)
-              .startAngle(0)
-              .endAngle(progress * 2 * Math.PI);
-
-            deficitLayer.append('path')
-              .attr('transform', 'translate(' + cx + ',' + CHOICE_Y + ')')
-              .attr('d', arcPath)
-              .attr('fill', C.rust)
-              .attr('opacity', 0.6)
-              .append('title')
-                .text('Energy progress: ' + Math.round(progress * 100) + '% of what is needed to resolve');
-
-            // Background arc (full circle, very faint)
-            var bgArc = d3.arc()
-              .innerRadius(arcR - 1.5)
-              .outerRadius(arcR)
-              .startAngle(0)
-              .endAngle(2 * Math.PI);
-
-            deficitLayer.append('path')
-              .attr('transform', 'translate(' + cx + ',' + CHOICE_Y + ')')
-              .attr('d', bgArc)
-              .attr('fill', C.inkGhost)
-              .attr('opacity', 0.2);
-          }
-        }
       }
 
       renderTick(0, null);
@@ -1249,7 +1159,6 @@
         if (current >= ticks.length) {
           counterText.text('Cycle 20 of 20 \u00B7 showing final run');
           phaseText.text('');
-          deficitLayer.selectAll('*').remove();
           showEndState(
             pctRes, pctOver, pctFli,
             probResolved, probDisplaced, probAdrift, probInForum,
@@ -1323,9 +1232,9 @@
         'Across 100 simulations, on average:';
 
       document.getElementById('sum-choices-label').textContent =
-        `How the ${M} decision forums resolved`;
+        `How the ${M} decision forums closed`;
       document.getElementById('sum-choice-resolution').innerHTML =
-        `<span class="outcome-resolved">Resolution</span>: ${pctRes}% \u2014 forum closed after genuine problem-solving`;
+        `<span class="outcome-resolved">Deliberation</span>: ${pctRes}% \u2014 forum closed after sustained engagement`;
       document.getElementById('sum-choice-oversight').innerHTML =
         `<span class="outcome-oversight">Oversight</span>: ${pctOver}% \u2014 forum closed with no problem attached`;
       document.getElementById('sum-choice-flight').innerHTML =

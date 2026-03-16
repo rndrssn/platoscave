@@ -4,70 +4,55 @@
  * gc-scoring.js
  * Organised Anarchy — Scoring Logic
  *
- * Converts survey responses into simulation parameters for the Garbage Can Model.
+ * Converts 12 survey responses into simulation parameters for the Garbage Can Model.
  * Exposes one function: scoreResponses(responses)
  *
- * Question order (8 questions, integers 1–5):
+ * Question order (12 questions, integers 1–5):
  *
- *   Energy load (problematic preferences, unclear technology, fluid participation):
- *   [0] "Our strategic goals shift faster than our plans can keep up with."
- *       1 = stable goals  →  5 = goals in constant flux
- *   [1] "How work actually gets done here is more a matter of judgement than established process."
- *       1 = clear process  →  5 = improvised judgement
- *   [2] "The people involved in any given decision vary significantly from one conversation to the next."
- *       1 = same people every time  →  5 = different people every time
+ *   Energy load (Q1–Q5, indices 0–4) — mean of five raw scores:
+ *   [0] Goals shift often enough that work started under one priority gets abandoned for another.
+ *   [1] If you asked three colleagues how a decision gets made, you'd get three different answers.
+ *   [2] Organisation carries a backlog of unresolved issues no one has the mandate to close.
+ *   [3] Institutional memory lives in people's heads rather than anywhere reliably accessible.
+ *   [4] Hard to point to a decision made this year that definitively closed a problem.
  *
- *   Decision structure (who attends which choice opportunities):
- *   [3] "Participation in decisions is open to anyone with relevant knowledge, regardless of their level."
- *       1 = tightly restricted  →  5 = fully open        (openness dimension)
- *   [4] "Participation in decisions is primarily determined by seniority or title."
- *       1 = title irrelevant  →  5 = title determines access  (hierarchy dimension)
+ *   Access structure (Q6–Q8, indices 5–7):
+ *   [5] Problems tend to find their way to the right people and the right forum.
+ *       (INVERTED: 6 − raw, because agreement = good routing = unsegmented)
+ *   [6] Who hears about a problem depends more on who raised it than on who should deal with it.
+ *   [7] Organisation has forums for making decisions but it is rarely clear which forum owns which problem.
  *
- *   Access structure (which problems reach which forums):
- *   [5] "Problems and topics tend to surface in whatever forum happens to be meeting,
- *        rather than a specifically designated one."
- *       1 = problems go to the right place  →  5 = problems float freely  (openness dimension)
- *   [6] "Clear conventions exist about which types of problems belong in which meetings."
- *       1 = no clear conventions  →  5 = clear structured routing          (structure dimension)
- *   [7] "When a significant problem arises, it gets escalated through levels rather than
- *        going directly to the right forum."
- *       1 = direct routing  →  5 = escalation-based routing  (hierarchy dimension)
+ *   Decision structure (Q9–Q12, indices 8–11) — mean of four raw scores:
+ *   [8]  Seniority determines who gets a seat at the table more than relevance to the problem.
+ *   [9]  The people closest to a problem are rarely the ones who decide how it gets resolved.
+ *   [10] The people with the most relevant expertise are often not the ones with the final say.
+ *   [11] Decisions are often announced rather than made — the real decision happened somewhere else.
+ *
+ * Thresholds:
+ *   Energy:    ≤2.0 → light,       ≤3.5 → moderate,     else heavy
+ *   Structure: ≤2.0 → unsegmented, ≤3.5 → hierarchical, else specialized
  */
-
-// ─── Thresholds ───────────────────────────────────────────────────────────────
-
-const ENERGY_LIGHT_MAX    = 7  / 3;  // ≤ 2.33 → light
-const ENERGY_MODERATE_MAX = 11 / 3;  // ≤ 3.67 → moderate, else heavy
-
-const OPEN_MIN = 3.5;   // openness score ≥ this → unsegmented
-const HIER_MIN = 3.5;   // hierarchy score ≥ this → hierarchical (otherwise specialized)
 
 // ─── Classifiers ─────────────────────────────────────────────────────────────
 
-function classifyEnergy(raw) {
-  if (raw <= ENERGY_LIGHT_MAX)    return 'light';
-  if (raw <= ENERGY_MODERATE_MAX) return 'moderate';
+function classifyEnergy(mean) {
+  if (mean <= 2.0) return 'light';
+  if (mean <= 3.5) return 'moderate';
   return 'heavy';
 }
 
-/**
- * Classify a structure dimension into one of three simulation parameters.
- * openness  high → unsegmented  (everyone accesses everything)
- * openness  low + hierarchy high → hierarchical (rank-based access)
- * openness  low + hierarchy low  → specialized  (narrow, role-specific access)
- */
-function classifyStructure(openness, hierarchy) {
-  if (openness  >= OPEN_MIN) return 'unsegmented';
-  if (hierarchy >= HIER_MIN) return 'hierarchical';
+function classifyStructure12(mean) {
+  if (mean <= 2.0) return 'unsegmented';
+  if (mean <= 3.5) return 'hierarchical';
   return 'specialized';
 }
 
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 /**
- * Score an array of 8 survey responses.
+ * Score an array of 12 survey responses.
  *
- * @param {number[]} responses - Array of exactly 8 integers, each 1–5
+ * @param {number[]} responses - Array of exactly 12 integers, each 1–5
  * @returns {{
  *   energyLoad:        'light'|'moderate'|'heavy',
  *   decisionStructure: 'unsegmented'|'hierarchical'|'specialized',
@@ -76,25 +61,20 @@ function classifyStructure(openness, hierarchy) {
  * }}
  */
 function scoreResponses(responses) {
-  if (!Array.isArray(responses) || responses.length !== 8) {
-    throw new Error('scoreResponses expects exactly 8 responses (integers 1–5).');
+  if (!Array.isArray(responses) || responses.length !== 12) {
+    throw new Error('scoreResponses expects exactly 12 responses (integers 1–5).');
   }
 
-  const [q0, q1, q2, q3, q4, q5, q6, q7] = responses;
-
-  const energyScore   = (q0 + q1 + q2) / 3;
-  const decisionScore = q3;               // openness — used for continuous positioning
-  const accessScore   = q5;               // openness — used for continuous positioning
+  const q6inv       = 6 - responses[5];  // invert question 6
+  const energyScore   = (responses[0] + responses[1] + responses[2] + responses[3] + responses[4]) / 5;
+  const accessScore   = (q6inv + responses[6] + responses[7]) / 3;
+  const decisionScore = (responses[8] + responses[9] + responses[10] + responses[11]) / 4;
 
   return {
     energyLoad:        classifyEnergy(energyScore),
-    decisionStructure: classifyStructure(q3, q4),
-    accessStructure:   classifyStructure(q5, q7),
-    raw: {
-      energyScore,
-      decisionScore,
-      accessScore,
-    },
+    decisionStructure: classifyStructure12(decisionScore),
+    accessStructure:   classifyStructure12(accessScore),
+    raw: { energyScore, decisionScore, accessScore },
   };
 }
 

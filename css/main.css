@@ -753,6 +753,8 @@ footer {
   cursor: pointer;
   transition: border-color 0.2s ease, background-color 0.2s ease;
   flex-shrink: 0;
+  padding: 0.6rem;
+  box-sizing: content-box;
 }
 
 .scale-option input[type="radio"]:checked {
@@ -1336,4 +1338,87 @@ footer {
   display: block;
   width: 100%;
   overflow: visible;
+}
+
+/* ─── Interactive element aliases (PRINCIPLE-interactive-elements) ── */
+/* Tier 1 — Primary CTA */
+.cta-primary {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-mid);
+  background: none;
+  border: 1px solid var(--ink-ghost);
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.cta-primary:hover {
+  border-color: var(--ink-mid);
+  color: var(--ink);
+}
+
+.cta-primary:disabled {
+  color: var(--ink-ghost);
+  border-color: var(--ink-ghost);
+  cursor: not-allowed;
+}
+
+.cta-primary:disabled:hover {
+  color: var(--ink-ghost);
+  border-color: var(--ink-ghost);
+}
+
+/* Tier 2 — Secondary action */
+.cta-secondary {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.cta-secondary:hover {
+  color: var(--rust);
+}
+
+.cta-secondary::before {
+  content: '\203A';
+  margin-right: 0.35rem;
+}
+
+/* Tier 3 — Navigation link */
+.nav-link-contextual {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--sage);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-link-contextual:hover {
+  color: var(--sage-light);
+  text-decoration: underline;
+}
+
+/* Tier 4 — Tag / label */
+.tag-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
 }

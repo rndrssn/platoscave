@@ -139,6 +139,7 @@
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="../../../gc-simulation.js"></script>
+  <script src="../../../gc-diagnosis.js"></script>
   <script>
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
@@ -147,53 +148,6 @@
     document.querySelector('.nav-mobile-toggle').addEventListener('click', function() {
       document.querySelector('.nav-links').classList.toggle('is-open');
     });
-
-    // ─── Diagnosis lookup ─────────────────────────────────────────────────────────
-    const DIAGNOSIS_CLUSTERS = {
-      'unsegmented/unsegmented':  'cluster-2',
-      'unsegmented/hierarchical': 'cluster-4',
-      'unsegmented/specialized':  'cluster-4',
-      'hierarchical/hierarchical':'cluster-1',
-      'hierarchical/unsegmented': 'cluster-3',
-      'hierarchical/specialized': 'cluster-3',
-      'specialized/specialized':  'cluster-5',
-      'specialized/hierarchical': 'cluster-3',
-      'specialized/unsegmented':  'cluster-4',
-    };
-
-    const DIAGNOSES = {
-      'cluster-1': {
-        title: 'The Coherent Traditional Organisation',
-        body:  'Your organisation is what it believes itself to be. Problems reach the forums designed for them. Decisions are made by the people with the authority to make them. The instruments of traditional management (governance structures, reporting lines, sanctioned decision forums) are reasonably well matched to the work being done. The Garbage Can Model has limited explanatory power here. In organisations like yours, roughly {flight}% of decisions are made by resolution: the underlying problem is genuinely closed.',
-      },
-      'cluster-2': {
-        title: 'The Complexity-Informed Organisation',
-        body:  'Your organisation has rejected the decomposable worldview, at least in practice. Problems surface wherever they can find a forum. Participation is fluid and expertise-driven rather than seniority-driven. This is not disorder \u2014 it is a different kind of order, one that the Garbage Can Model describes well. The risk here is not anarchy but invisibility: when everything is permeable, it becomes difficult to know which decisions were actually made, by whom, and whether the underlying problem was resolved or merely displaced. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved.',
-      },
-      'cluster-3': {
-        title: 'The Mix',
-        body:  'Your organisation has inherited the instruments of a decomposable worldview: governance structures, reporting lines, sanctioned decision forums. It applies them to a system that does not behave decomposably. Problems surface everywhere because the work itself is emergent. But decisions are made hierarchically, because the management frame requires it. The result is a permanent structural gap: problems live where the work is, decisions are made where the authority is, and the two rarely occupy the same room at the same time. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved.',
-      },
-      'cluster-4': {
-        title: 'The Inverse Mix',
-        body:  'Your organisation has open, fluid decision-making: in principle, anyone can weigh in. But the problems that reach decision forums are filtered before they arrive. Important issues that originate at the edges of the organisation travel slowly or not at all toward the forums where they could be addressed. The people in the room are willing to decide. The problems that most need deciding rarely make it through the door. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved.',
-      },
-      'cluster-5': {
-        title: 'The Siloed Organisation',
-        body:  'Your organisation has partitioned itself: problems are assigned to designated channels, people are assigned to designated forums. On paper this looks like clarity. In practice it means that problems which do not fit their designated channel have nowhere to go. The work that falls between the silos has no legitimate forum. It either disappears from view or creates informal decision-making that the organisation cannot see or govern. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved.',
-      },
-    };
-
-    function getDiagnosis(decisionStructure, accessStructure, flight) {
-      const key        = `${decisionStructure}/${accessStructure}`;
-      const clusterKey = DIAGNOSIS_CLUSTERS[key] || 'cluster-3';
-      const cluster    = DIAGNOSES[clusterKey];
-      const flightPct  = Math.round(flight * 100);
-      return {
-        title: cluster.title,
-        body:  cluster.body.replace('{flight}', flightPct),
-      };
-    }
 
     // ─── Color tokens ─────────────────────────────────────────────────────────────
     // M (choices) and W (problems) are defined by gc-simulation.js
@@ -749,6 +703,19 @@
       setTimeout(stepTick, 800);
     }
 
+    // ─── Simulation state ─────────────────────────────────────────────────────────
+    var simHasRun = false;
+
+    // ─── Diagnosis helper — updates title/body from current dropdown values ───────
+    function updateDiagnosis(suffix, flight) {
+      var decisionStructure = document.getElementById('panel-' + suffix + '-decision').value;
+      var accessStructure   = document.getElementById('panel-' + suffix + '-access').value;
+      var diagnosis = getDiagnosis(decisionStructure, accessStructure, flight || 0);
+      document.getElementById('explorer-diagnosis-title-' + suffix).textContent = diagnosis.title;
+      document.getElementById('explorer-diagnosis-body-' + suffix).textContent  = diagnosis.body;
+      document.getElementById('explorer-diagnosis-' + suffix).hidden = false;
+    }
+
     // ─── Panel runner ─────────────────────────────────────────────────────────────
     function runPanel(suffix) {
       var loadEl     = document.getElementById('panel-' + suffix + '-load');
@@ -765,11 +732,10 @@
         accessStructure: accessStructure
       });
 
-      var diagnosis = getDiagnosis(decisionStructure, accessStructure, simResult.flight);
-      document.getElementById('explorer-diagnosis-title-' + suffix).textContent = diagnosis.title;
-      document.getElementById('explorer-diagnosis-body-' + suffix).textContent  = diagnosis.body;
-      document.getElementById('explorer-diagnosis-' + suffix).hidden = false;
+      updateDiagnosis(suffix, simResult.flight);
 
+      simHasRun = true;
+      document.getElementById('run-' + suffix).hidden = true;
       document.getElementById('viz-area-' + suffix).hidden = false;
       drawVizPanel(simResult, energyLoad, decisionStructure, accessStructure, suffix);
     }
@@ -781,6 +747,19 @@
 
     document.getElementById('replay-btn-a').addEventListener('click', function() {
       runPanel('a');
+    });
+
+    // ─── Dropdown change — update diagnosis and reset simulation ──────────────────
+    ['panel-a-load', 'panel-a-decision', 'panel-a-access'].forEach(function(id) {
+      document.getElementById(id).addEventListener('change', function() {
+        updateDiagnosis('a', 0);
+        if (simHasRun) {
+          document.getElementById('viz-svg-a').innerHTML = '';
+          document.getElementById('viz-area-a').hidden = true;
+          document.getElementById('sim-summary-a').hidden = true;
+          document.getElementById('run-a').hidden = false;
+        }
+      });
     });
   </script>
 

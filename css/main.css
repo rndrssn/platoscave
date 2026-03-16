@@ -1,5 +1,6 @@
 /* ─── Reset ──────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
 
 /* ─── Tokens ─────────────────────────────────────────────── */
 :root {
@@ -959,13 +960,13 @@ footer {
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--ink-faint);
+  color: var(--sage);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .footer-nav-link:hover {
-  color: var(--ink-mid);
+  color: var(--sage-light);
   text-decoration: underline;
 }
 

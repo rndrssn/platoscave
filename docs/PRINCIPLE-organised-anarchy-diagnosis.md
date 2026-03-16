@@ -67,7 +67,7 @@ The key is `decisionStructure/accessStructure`. All nine combinations of the thr
 
 ### Fallback Rules
 
-- **Cluster 3 fallback:** any combination where decision structure is hierarchical and access structure is not hierarchical (`hierarchical/specialized`), or where access structure is hierarchical and decision structure is specialized (`specialized/hierarchical`). The hierarchical dimension — wherever it appears — is the load-bearing constraint.
+- **Cluster 3 fallback:** any combination where decision structure is hierarchical and access structure is not hierarchical (`hierarchical/specialized`), or where access structure is hierarchical and decision structure is specialized (`specialized/hierarchical`). The hierarchical dimension — wherever it appears — is the load-bearing constraint. Note: `specialized/hierarchical` is intentionally mapped to cluster-3 (The Mix) rather than cluster-5 (The Siloed Organisation) — the hierarchical access structure is treated as the dominant signal, biasing toward The Mix classification.
 - **Cluster 4 fallback:** any combination where one dimension is unsegmented and the other is specialized (`unsegmented/specialized`, `specialized/unsegmented`). The open side creates willingness; the specialized side creates the filter.
 
 ### JS Object
@@ -81,7 +81,7 @@ const DIAGNOSIS_CLUSTERS = {
   'hierarchical/unsegmented':  'cluster-3',
   'hierarchical/specialized':  'cluster-3',  // fallback: hierarchical decision is the constraint
   'specialized/specialized':  'cluster-5',
-  'specialized/hierarchical': 'cluster-5',  // siloed — not The Mix
+  'specialized/hierarchical': 'cluster-3',  // intentional: hierarchical access is the dominant constraint — biased toward The Mix, not The Siloed Organisation
   'specialized/unsegmented':  'cluster-4',  // fallback: open access, narrow decision reach
 };
 

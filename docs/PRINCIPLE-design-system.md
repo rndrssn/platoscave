@@ -189,7 +189,7 @@ Large italic Cormorant, rust left border, no quotation marks.
 Mono, uppercase. `--ochre` for live, `--ink-faint` for coming.
 
 ### Tags
-Small mono labels, `1px solid --ink-ghost` border, `2px` border-radius. Used for topic tagging on modules.
+Small mono labels, plain text, no border, no background. Used for topic tagging on modules. Tags must not look interactive — see `PRINCIPLE-interactive-elements.md`.
 
 ---
 

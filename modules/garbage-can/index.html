@@ -466,7 +466,7 @@
               </div>
             </div>
             <div class="submit-row">
-              <button type="button" class="submit-btn" id="q-continue-1">Continue</button>
+              <button type="button" class="submit-btn" id="q-continue-1" disabled>Continue</button>
               <p class="form-error" id="form-error-1" hidden>Please answer all questions in this section.</p>
             </div>
           </div>
@@ -519,7 +519,7 @@
               </div>
             </div>
             <div class="submit-row">
-              <button type="button" class="submit-btn" id="q-continue-2">Continue</button>
+              <button type="button" class="submit-btn" id="q-continue-2" disabled>Continue</button>
               <p class="form-error" id="form-error-2" hidden>Please answer all questions in this section.</p>
             </div>
           </div>
@@ -766,6 +766,19 @@
           if (validateGroup(2)) {
             document.getElementById('submit-btn').disabled = false;
           }
+        });
+      });
+    });
+
+    // Enable Continue buttons when their group's questions are answered
+    [0, 1].forEach(function(groupIdx) {
+      Q_GROUPS[groupIdx].questions.forEach(function(qName) {
+        document.querySelectorAll('input[name="' + qName + '"]').forEach(function(radio) {
+          radio.addEventListener('change', function() {
+            if (validateGroup(groupIdx)) {
+              document.getElementById(Q_GROUPS[groupIdx].continueId).disabled = false;
+            }
+          });
         });
       });
     });

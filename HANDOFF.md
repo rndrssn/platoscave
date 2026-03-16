@@ -2,124 +2,109 @@
 
 ## Ready for Claude Code
 
-### Tech debt batch 2: Extract inline JS into dedicated files (TD-001, TD-004)
+### Tech debt batch 2: Extract gc-viz.js, assess.js, explorer.js, add tests (TD-001, TD-004)
 - Files: multiple (see below)
 - Branch: `experiment/organised-anarchy-mapper`
 - Read `CLAUDE.md`, `docs/PRINCIPLE-coding-standards.md`, and `docs/TECH-DEBT-tracker.md` before touching anything
 
 ---
 
+## Critical rule
+
+**The assess page (`modules/garbage-can/assess/index.html`) is the source of truth for all visualization logic.** The assess page renders correctly. The explorer page has drifted. This handoff eliminates the drift by extracting the assess page's viz code into a shared file that both pages use.
+
+**Move code only. No logic changes. Behaviour must be identical after extraction.**
+
+---
+
 ## Prerequisites
 
-Batch 1 must be complete. Specifically:
-- `gc-diagnosis.js` exists and is loaded by both assess and explorer pages
-- `gc-scoring.js` handles 12 questions and is loaded by the assess page
-- Inline `DIAGNOSES`, `DIAGNOSIS_CLUSTERS`, `getDiagnosis`, `computeScoring`, `classifyEnergy`, `classifyStructure12` have been removed from the inline `<script>` blocks
+Batch 1 must be complete:
+- `gc-diagnosis.js` exists at repo root, loaded by both pages
+- `gc-scoring.js` handles 12 questions, loaded by assess page
+- Inline diagnosis and scoring code removed from both pages
 
 If any of these are still inline, complete Batch 1 first.
 
 ---
 
-## Overview
-
-Three new JS files, one per concern:
-
-| File | Purpose | Used by |
-|------|---------|---------|
-| `gc-viz.js` | Shared visualization: drawViz, renderTick, probAttrs, positioning diagram, showEndState, color tokens, tick helpers | Assess, Explorer |
-| `modules/garbage-can/assess/assess.js` | Assess page wiring: questionnaire flow, form submission, collapse/expand, mini-nav | Assess only |
-| `modules/garbage-can/explorer/explorer.js` | Explorer page wiring: dropdown handlers, panel run logic, diagnosis update on change | Explorer only |
-
-After extraction, each HTML page's `<script>` block should contain only the list of `<script src="...">` tags. No inline logic.
-
-**Rule: move code only, no logic changes. Behaviour must be identical before and after.**
-
----
-
-## Step 1 — Create gc-viz.js
+## Step 1 — Create gc-viz.js from the assess page
 
 Create `gc-viz.js` at the repo root (same level as `gc-simulation.js`).
 
-### What goes in gc-viz.js
+**Source: `modules/garbage-can/assess/index.html` inline `<script>` block ONLY. Do NOT use any code from the explorer page.**
 
-Extract these sections from the assess page's inline `<script>`:
+Extract these sections in order from the assess page:
 
+### 1a — Color tokens
+```js
+const C = { ... };
 ```
-Color tokens (const C = { ... })
-Per-tick outcome counters (computeTickCounters)
-isDeadTick function
-floatPos function
-attachedPos function
-probAttrs function
-drawPositioning function
-drawViz function (including renderTick, showEndState as inner functions)
+Copy the entire `C` object exactly as it appears in the assess page.
+
+### 1b — Helper functions
+Copy in this order:
+- `isDeadTick(tickIdx, ticks)` — note: this function needs access to `ticks`. It may need to be refactored to accept `ticks` as a parameter if it currently accesses it from closure scope. Check the assess page.
+- `floatPos(id, svgW)` — may need SVG_W passed as parameter. Check.
+- `attachedPos(choiceIdx, slot, total, choiceX, CHOICE_Y, CHOICE_R)` — check what it accesses from closure.
+
+**Important:** Some helper functions may reference variables from `drawViz` closure scope (like `ticks`, `choiceX`, `SVG_W`). If so, they must stay inside `drawViz` as inner functions — do NOT extract them to the top level. Only extract functions that are truly independent.
+
+### 1c — drawPositioning
+```js
+function drawPositioning(raw) { ... }
 ```
+Copy the entire function from the assess page.
 
-### Public API
+### 1d — drawViz
+```js
+function drawViz(simResult, energyLoad, decisionStructure, accessStructure) { ... }
+```
+Copy the ENTIRE function from the assess page, including ALL inner functions:
+- All constants: `SVG_W`, `SVG_H`, `CHOICE_R`, `PROB_R`, `PAD_H`, `CHOICE_Y`, `LEGEND_Y`
+- `isDeadTick` (if it's inside drawViz)
+- `floatPos` (if it's inside drawViz)
+- `attachedPos`
+- `probAttrs`
+- `renderTick`
+- `stepTick`
+- `showEndState`
 
-The file exposes these globals:
+Keep every constant, every helper, every d3 selection exactly as the assess page has it. Do not rename, restructure, or parameterise anything.
+
+### 1e — File structure
 
 ```js
 'use strict';
 
 /**
  * gc-viz.js
- * Organised Anarchy — Visualization
+ * Organised Anarchy — Shared Visualization
  *
- * Shared d3 rendering for the Garbage Can Model simulation.
- * Used by assess and explorer pages.
+ * D3 rendering for the Garbage Can Model simulation.
+ * Source of truth: modules/garbage-can/assess/index.html
  *
  * Dependencies: d3.js, gc-simulation.js (for M, W, PERIODS constants)
  *
  * Exposes:
- *   C               - color tokens object
- *   drawPositioning(raw) - renders the three-axis positioning diagram
- *   drawViz(simResult, energyLoad, decisionStructure, accessStructure) - runs the simulation animation
- */
-```
-
-### Key considerations
-
-1. **`drawViz` contains closures** — `renderTick`, `showEndState`, `isDeadTick`, `probAttrs`, `floatPos`, `attachedPos` are all defined inside or before `drawViz`. They must stay together. Move the entire `drawViz` function with all its inner functions as one block.
-
-2. **DOM element IDs** — `drawViz` references fixed IDs like `viz-svg`, `sim-summary`, `sum-header`, etc. These must exist in the HTML of any page that calls `drawViz`. Both assess and explorer already have these.
-
-3. **The explorer page has a parameterised version** — `drawVizPanel` with suffixed IDs. For now, keep the explorer's parameterised version in `explorer.js`. Later, `gc-viz.js` could accept a suffix parameter, but that's a logic change — out of scope for this refactor.
-
-4. **`showEndState` references `pctRes`, `pctOver`, `pctFli`** — these are computed in `drawViz` before calling `showEndState`. They stay together inside `drawViz`.
-
-5. **`M`, `W`, `PERIODS`** — these constants come from `gc-simulation.js` which is loaded before `gc-viz.js`. They are globals. No import needed.
-
-### File structure
-
-```js
-'use strict';
-
-/**
- * gc-viz.js
- * [JSDoc as above]
+ *   C                - color tokens
+ *   drawPositioning  - three-axis positioning diagram
+ *   drawViz          - simulation animation with summary
  */
 
 // ─── Color tokens ────────────────────────────────────────────────────────────
 const C = {
-  // Copy exactly from assess inline JS
+  // [exact copy from assess]
 };
-
-// ─── Per-tick outcome counters ───────────────────────────────────────────────
-function computeTickCounters(ticks) {
-  // Copy exactly from assess inline JS
-}
 
 // ─── Positioning diagram ─────────────────────────────────────────────────────
 function drawPositioning(raw) {
-  // Copy exactly from assess inline JS
+  // [exact copy from assess]
 }
 
 // ─── Visualization ───────────────────────────────────────────────────────────
 function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
-  // Copy the entire function including all inner functions:
-  //   isDeadTick, floatPos, attachedPos, probAttrs, renderTick, stepTick, showEndState
-  // Copy exactly from assess inline JS
+  // [exact copy from assess, including ALL inner functions and constants]
 }
 ```
 
@@ -129,22 +114,9 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
 
 Create `modules/garbage-can/assess/assess.js`.
 
+Extract everything that remains in the assess page's inline `<script>` after removing the viz code, diagnosis, and scoring. This is the page-specific wiring.
+
 ### What goes in assess.js
-
-Everything that remains in the assess page's inline `<script>` after removing viz code, diagnosis, and scoring:
-
-```
-Scroll restoration
-Nav toggle
-Questionnaire collapse/expand
-Results mini-nav click handling
-Questionnaire step navigation (Q_GROUPS, validateGroup, advanceGroup)
-Continue/Submit button enable handlers
-Stage reveal (showStage)
-Form submission handler
-```
-
-### File structure
 
 ```js
 'use strict';
@@ -153,7 +125,7 @@ Form submission handler
  * assess.js
  * Self-Assessment page — questionnaire flow and wiring
  *
- * Dependencies: gc-simulation.js, gc-scoring.js, gc-diagnosis.js, gc-viz.js, d3.js
+ * Dependencies: d3.js, gc-simulation.js, gc-scoring.js, gc-diagnosis.js, gc-viz.js
  */
 
 // ─── Scroll restoration ──────────────────────────────────────────────────────
@@ -163,28 +135,24 @@ if ('scrollRestoration' in history) {
 window.scrollTo(0, 0);
 
 // ─── Nav toggle ──────────────────────────────────────────────────────────────
-document.querySelector('.nav-mobile-toggle').addEventListener('click', function () {
-  document.querySelector('.nav-links').classList.toggle('is-open');
-});
+// [copy from assess inline]
 
 // ─── Questionnaire collapse/expand ───────────────────────────────────────────
-// [Copy from inline]
+// [copy from assess inline]
 
 // ─── Results mini-nav ────────────────────────────────────────────────────────
-// [Copy from inline]
+// [copy from assess inline]
 
 // ─── Questionnaire step navigation ───────────────────────────────────────────
-// [Copy Q_GROUPS, validateGroup, advanceGroup, button handlers from inline]
+// [copy Q_GROUPS, validateGroup, advanceGroup, continue/submit enable handlers]
 
 // ─── Stage reveal ────────────────────────────────────────────────────────────
-// [Copy showStage from inline]
+// [copy showStage]
 
 // ─── Form submission ─────────────────────────────────────────────────────────
-// [Copy form submit handler from inline]
-// This handler calls: scoreResponses (from gc-scoring.js),
-//   runGarbageCanSimulation (from gc-simulation.js),
-//   getDiagnosis (from gc-diagnosis.js),
-//   drawPositioning, drawViz (from gc-viz.js)
+// [copy form submit handler]
+// This calls: scoreResponses (gc-scoring.js), runGarbageCanSimulation (gc-simulation.js),
+//   getDiagnosis (gc-diagnosis.js), drawPositioning, drawViz (gc-viz.js)
 ```
 
 ---
@@ -193,49 +161,59 @@ document.querySelector('.nav-mobile-toggle').addEventListener('click', function 
 
 Create `modules/garbage-can/explorer/explorer.js`.
 
-### What goes in explorer.js
+**The explorer now uses the shared `drawViz` from `gc-viz.js` — NOT its own `drawVizPanel`.** Delete `drawVizPanel` and all parameterised viz code entirely.
 
-All inline JS from the explorer page. This includes the parameterised viz functions (`drawVizPanel`, `showEndStatePanel`, `runPanel`) and the dropdown/button wiring.
+### What goes in explorer.js
 
 ```js
 'use strict';
 
 /**
  * explorer.js
- * Simulation Explorer page — parameter selection and simulation wiring
+ * Simulation Explorer page — parameter selection and wiring
  *
- * Dependencies: gc-simulation.js, gc-diagnosis.js, d3.js
- * Note: uses its own drawVizPanel (parameterised) rather than gc-viz.js drawViz.
- *       Future refactor: make gc-viz.js accept a suffix parameter.
+ * Dependencies: d3.js, gc-simulation.js, gc-diagnosis.js, gc-viz.js
  */
 
 // ─── Scroll restoration ──────────────────────────────────────────────────────
-// [Copy from inline]
+// [copy from explorer inline]
 
 // ─── Nav toggle ──────────────────────────────────────────────────────────────
-// [Copy from inline]
-
-// ─── Color tokens ────────────────────────────────────────────────────────────
-// NOTE: duplicated from gc-viz.js because drawVizPanel is self-contained.
-// Future refactor: import C from gc-viz.js and make drawViz accept a suffix.
-
-// ─── Parameterised visualization ─────────────────────────────────────────────
-// [Copy drawVizPanel, showEndStatePanel, runPanel from inline]
+// [copy from explorer inline]
 
 // ─── Dropdown change handlers ────────────────────────────────────────────────
-// [Copy from inline]
+// allDropdownsSelected, updateDiagnosis, resetSimulation
+// [copy from explorer inline]
 
-// ─── Run button handlers ─────────────────────────────────────────────────────
-// [Copy from inline]
+// ─── Run simulation ──────────────────────────────────────────────────────────
+// Reads dropdown values, calls runGarbageCanSimulation, then drawViz (from gc-viz.js)
+// [copy from explorer inline — but use drawViz not drawVizPanel]
+
+// ─── Replay ──────────────────────────────────────────────────────────────────
+// [copy from explorer inline]
 ```
+
+### Critical change for explorer
+
+The explorer's HTML must use the **same element IDs** as the assess page for the viz and summary elements. `drawViz` from `gc-viz.js` references fixed IDs:
+- `viz-svg`
+- `sim-summary`
+- `sum-header`
+- `sum-thisrun-label`, `sum-thisrun-resolved`, etc.
+- `sum-choices-label`, `sum-choice-resolution`, etc.
+- `sum-problems-label`, `sum-prob-resolved`, etc.
+- `replay-btn`
+- `stochastic-note`
+
+**If the explorer HTML currently uses suffixed IDs** (like `viz-svg-a`, `sim-summary-a`), rename them to match the assess page IDs. Remove all `-a` suffixes from the explorer HTML.
 
 ---
 
-## Step 4 — Update HTML files to load the new scripts
+## Step 4 — Update HTML files
 
 ### Assess page — `modules/garbage-can/assess/index.html`
 
-Replace the entire `<script>...</script>` block (from `<script>` at line 374 to `</script>` at line 1370) with:
+Replace the entire inline `<script>...</script>` block with script tags only:
 
 ```html
   <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -246,130 +224,161 @@ Replace the entire `<script>...</script>` block (from `<script>` at line 374 to 
   <script src="assess.js"></script>
 ```
 
-No inline `<script>` block. Six script tags, each with one responsibility.
-
-Note: `gc-diagnosis.js` may already be loaded from Batch 1. Check and don't duplicate.
+No inline JS remains. Zero lines between `<script>` and `</script>`.
 
 ### Explorer page — `modules/garbage-can/explorer/index.html`
 
-Replace the entire inline `<script>` block with:
+Replace the entire inline `<script>...</script>` block with:
 
 ```html
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="../../../gc-simulation.js"></script>
   <script src="../../../gc-diagnosis.js"></script>
+  <script src="../../../gc-viz.js"></script>
   <script src="explorer.js"></script>
 ```
 
-The explorer does NOT load `gc-scoring.js` (no questionnaire) or `gc-viz.js` (uses its own parameterised version). It loads `gc-diagnosis.js` for the organisation type lookup.
+No `gc-scoring.js` (no questionnaire). No inline JS.
+
+Also update the explorer HTML: remove all `-a` suffixed IDs and replace with the standard IDs from the assess page. For example:
+- `viz-svg-a` → `viz-svg`
+- `sim-summary-a` → `sim-summary`
+- `sum-thisrun-label-a` → `sum-thisrun-label`
+- `replay-btn-a` → `replay-btn`
+- etc.
+
+Remove any Panel B HTML if it still exists.
 
 ---
 
 ## Step 5 — Add tests (TD-004)
 
-Create `tests/test-gc-diagnosis.js`:
+### tests/test-gc-diagnosis.js
 
 ```js
 'use strict';
-const { DIAGNOSIS_CLUSTERS, getDiagnosis } = require('../gc-diagnosis.js');
+var assert = require('assert');
+var diag = require('../gc-diagnosis.js');
 
-// Test all 9 decision×access combinations produce a valid cluster
-const structures = ['unsegmented', 'hierarchical', 'specialized'];
-let pass = true;
+var structures = ['unsegmented', 'hierarchical', 'specialized'];
+var passed = 0;
+var failed = 0;
 
-for (const d of structures) {
-  for (const a of structures) {
-    const key = `${d}/${a}`;
-    const cluster = DIAGNOSIS_CLUSTERS[key];
-    if (!cluster) {
-      console.log(`FAIL: no cluster for ${key}`);
-      pass = false;
-      continue;
-    }
-    const diag = getDiagnosis(d, a, 0.5);
-    if (!diag.title || !diag.body) {
-      console.log(`FAIL: empty diagnosis for ${key} -> ${cluster}`);
-      pass = false;
-    } else {
-      console.log(`PASS: ${key} -> ${cluster} -> "${diag.title}"`);
+for (var d of structures) {
+  for (var a of structures) {
+    var key = d + '/' + a;
+    var cluster = diag.DIAGNOSIS_CLUSTERS[key];
+    try {
+      assert(cluster, 'Missing cluster for ' + key);
+      var result = diag.getDiagnosis(d, a, 0.5);
+      assert(result.title, 'Empty title for ' + key);
+      assert(result.body, 'Empty body for ' + key);
+      console.log('PASS: ' + key + ' -> ' + cluster + ' -> "' + result.title + '"');
+      passed++;
+    } catch (e) {
+      console.log('FAIL: ' + key + ' — ' + e.message);
+      failed++;
     }
   }
 }
 
-console.log(pass ? '\nAll diagnosis tests passed.' : '\nSome tests failed.');
+console.log('\n' + passed + ' passed, ' + failed + ' failed');
+process.exit(failed > 0 ? 1 : 0);
 ```
 
-Create `tests/test-gc-scoring-12.js`:
+### tests/test-gc-scoring.js
 
 ```js
 'use strict';
-const { scoreResponses } = require('../gc-scoring.js');
+var assert = require('assert');
+var scoring = require('../gc-scoring.js');
 
-// Archetype tests from PRINCIPLE-organised-anarchy-questions.md
-const tests = [
+var tests = [
   {
-    name: 'University department (high anarchy)',
+    name: 'All 5s (high anarchy)',
     responses: [5, 5, 5, 5, 5, 1, 5, 5, 5, 5, 5, 5],
     expect: { energyLoad: 'heavy' }
   },
   {
-    name: 'Traditional manufacturer (low anarchy)',
+    name: 'All 1s (low anarchy)',
     responses: [1, 1, 1, 1, 1, 5, 1, 1, 1, 1, 1, 1],
     expect: { energyLoad: 'light' }
   },
   {
-    name: 'Moderate startup',
+    name: 'All 3s (moderate)',
     responses: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
     expect: { energyLoad: 'moderate' }
   }
 ];
 
-let pass = true;
-for (const t of tests) {
-  const result = scoreResponses(t.responses);
-  const ok = result.energyLoad === t.expect.energyLoad;
-  console.log(`${ok ? 'PASS' : 'FAIL'}: ${t.name} -> ${result.energyLoad} (expected ${t.expect.energyLoad})`);
-  console.log(`  raw: energy=${result.raw.energyScore.toFixed(2)} decision=${result.raw.decisionScore.toFixed(2)} access=${result.raw.accessScore.toFixed(2)}`);
-  console.log(`  ${result.energyLoad} / ${result.decisionStructure} / ${result.accessStructure}`);
-  if (!ok) pass = false;
+var passed = 0;
+var failed = 0;
+
+for (var t of tests) {
+  var result = scoring.scoreResponses
+    ? scoring.scoreResponses(t.responses)
+    : scoring.computeScoring(t.responses);
+  try {
+    assert.strictEqual(result.energyLoad, t.expect.energyLoad);
+    console.log('PASS: ' + t.name + ' -> ' + result.energyLoad);
+    console.log('  raw: energy=' + result.raw.energyScore.toFixed(2) +
+      ' decision=' + result.raw.decisionScore.toFixed(2) +
+      ' access=' + result.raw.accessScore.toFixed(2));
+    passed++;
+  } catch (e) {
+    console.log('FAIL: ' + t.name + ' -> got ' + result.energyLoad + ', expected ' + t.expect.energyLoad);
+    failed++;
+  }
 }
 
-console.log(pass ? '\nAll scoring tests passed.' : '\nSome tests failed.');
+console.log('\n' + passed + ' passed, ' + failed + ' failed');
+process.exit(failed > 0 ? 1 : 0);
 ```
 
 Run with:
 ```bash
 node tests/test-gc-diagnosis.js
-node tests/test-gc-scoring-12.js
+node tests/test-gc-scoring.js
 ```
 
 ---
 
 ## Verification
 
-After all files are extracted:
+### 1. Run tests
+```bash
+node tests/test-gc-diagnosis.js
+node tests/test-gc-scoring.js
+```
+Both must pass.
 
-1. **Run tests:**
-   ```bash
-   node tests/test-gc-diagnosis.js
-   node tests/test-gc-scoring-12.js
-   ```
-   Both should pass.
+### 2. Assess page
+Open `/modules/garbage-can/assess/`. Complete questionnaire → diagnosis appears → positioning renders → click "See how decisions play out" → simulation plays → summary appears. **Must look and behave identically to before the extraction.**
 
-2. **Assess page:** Open `/modules/garbage-can/assess/`. Complete the questionnaire, get diagnosis, run simulation, check summary. Behaviour must be identical to before the extraction.
+### 3. Explorer page
+Open `/modules/garbage-can/explorer/`. Select all three dropdowns → diagnosis appears → click "See how decisions play out" → simulation plays → summary appears. **The simulation must now look identical to the assess page** — same circle sizes, same legend, same layout. The previous drift is eliminated because both pages use the same `drawViz` from `gc-viz.js`.
 
-3. **Explorer page:** Open `/modules/garbage-can/explorer/`. Select parameters, run simulation. Change parameters, verify diagnosis updates and simulation resets. Behaviour must be identical to before the extraction.
+### 4. Console
+No errors on either page.
 
-4. **Console:** No errors on either page.
+### 5. HTML files
+Open both HTML files. Confirm: zero inline `<script>` blocks. Only `<script src="...">` tags.
 
-5. **Check HTML files:** The assess page's `<script>` block should contain only `<script src="...">` tags. No inline JS. Same for the explorer page.
+---
+
+## After verification
+
+Update `docs/TECH-DEBT-tracker.md`:
+- Move TD-001 to Resolved with today's date
+- Move TD-004 to Resolved with today's date
+- Note in TD-004 (duplicated viz code) that it is now resolved — both pages use gc-viz.js
 
 ---
 
 ## Notes
-- **Move code only, no logic changes.** If something doesn't work after extraction, the cause is a missing variable, wrong scope, or wrong load order — not a logic bug.
-- **Load order matters.** Scripts load synchronously in order. `gc-simulation.js` must load before `gc-viz.js` (provides M, W, PERIODS). `gc-viz.js` must load before `assess.js` (provides drawViz, drawPositioning, C).
-- The explorer's `drawVizPanel` duplicates viz code with suffixed IDs. This duplication is accepted for now — tracked as future refactor to make `gc-viz.js` accept a suffix parameter.
-- The color tokens `C` are duplicated between `gc-viz.js` and `explorer.js`. Accepted for now — same reason.
-- After this batch, update `docs/TECH-DEBT-tracker.md`: move TD-001 and TD-004 to Resolved.
+- **The assess page is the source of truth.** All viz code comes from there. Do not mix in any explorer-specific rendering.
+- **Load order matters:** d3 → gc-simulation → gc-diagnosis → gc-viz → page.js
+- The explorer no longer needs its own parameterised viz. One `drawViz`, one set of IDs, one set of constants.
+- If `drawViz` inner functions reference closure variables like `ticks`, `choiceX`, etc., they must stay inside `drawViz`. Do not extract them to file scope.
+- The `module.exports` pattern is not needed for gc-viz.js — it uses d3 which is browser-only. Tests for viz are deferred (requires DOM mocking).
 - Stay on `experiment/organised-anarchy-mapper`

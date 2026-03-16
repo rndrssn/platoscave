@@ -60,64 +60,70 @@
             <div class="explorer-select-group">
               <label class="explorer-select-label" for="panel-a-load">Load</label>
               <select class="explorer-select" id="panel-a-load">
+                <option value="" disabled selected>Select&hellip;</option>
                 <option value="light">Light</option>
                 <option value="moderate">Moderate</option>
-                <option value="heavy" selected>Heavy</option>
+                <option value="heavy">Heavy</option>
               </select>
             </div>
             <div class="explorer-select-group">
               <label class="explorer-select-label" for="panel-a-decision">Decision</label>
               <select class="explorer-select" id="panel-a-decision">
+                <option value="" disabled selected>Select&hellip;</option>
                 <option value="unsegmented">Unsegmented</option>
-                <option value="hierarchical" selected>Hierarchical</option>
+                <option value="hierarchical">Hierarchical</option>
                 <option value="specialized">Specialized</option>
               </select>
             </div>
             <div class="explorer-select-group">
               <label class="explorer-select-label" for="panel-a-access">Access</label>
               <select class="explorer-select" id="panel-a-access">
+                <option value="" disabled selected>Select&hellip;</option>
                 <option value="unsegmented">Unsegmented</option>
-                <option value="hierarchical" selected>Hierarchical</option>
+                <option value="hierarchical">Hierarchical</option>
                 <option value="specialized">Specialized</option>
               </select>
             </div>
           </div>
 
-          <div class="submit-row">
-            <button class="submit-btn explorer-run-btn" id="run-a">Run simulation</button>
+          <!-- Diagnosis — appears when all dropdowns are set -->
+          <div id="explorer-diagnosis" hidden>
+            <hr class="stage-rule" />
+            <h2 class="diagnosis-title" id="explorer-diagnosis-title"></h2>
+            <p class="diagnosis-body" id="explorer-diagnosis-body"></p>
           </div>
 
-          <div class="explorer-diagnosis" id="explorer-diagnosis-a" hidden>
-            <p class="stage-label">Diagnosis</p>
-            <h2 class="diagnosis-title" id="explorer-diagnosis-title-a"></h2>
-            <p class="diagnosis-body" id="explorer-diagnosis-body-a"></p>
+          <!-- Simulation trigger — appears after diagnosis -->
+          <div class="submit-row" id="explorer-sim-trigger" hidden>
+            <button class="submit-btn" id="run-sim-btn">See how decisions play out</button>
           </div>
 
-          <div class="explorer-viz" id="viz-area-a" hidden>
-            <svg id="viz-svg-a"></svg>
-            <div class="sim-summary-card" id="sim-summary-a" hidden>
-              <p class="sim-summary-header" id="sum-header-a"></p>
+          <!-- Simulation area — hidden until button click -->
+          <div id="viz-area" hidden>
+            <svg id="viz-svg"></svg>
+            <div class="sim-summary-card" id="sim-summary" hidden>
+              <p class="sim-summary-header" id="sum-header"></p>
 
-              <p class="sim-summary-subheader" id="sum-thisrun-label-a"></p>
-              <p class="period-readout" id="sum-thisrun-resolved-a"></p>
-              <p class="period-readout" id="sum-thisrun-inforum-a"></p>
-              <p class="period-readout" id="sum-thisrun-adrift-a"></p>
-              <p class="period-readout" id="sum-thisrun-choices-resolved-a"></p>
-              <p class="period-readout" id="sum-thisrun-choices-open-a"></p>
+              <p class="sim-summary-subheader" id="sum-thisrun-label"></p>
+              <p class="period-readout" id="sum-thisrun-resolved"></p>
+              <p class="period-readout" id="sum-thisrun-inforum"></p>
+              <p class="period-readout" id="sum-thisrun-adrift"></p>
+              <p class="period-readout" id="sum-thisrun-choices-resolved"></p>
+              <p class="period-readout" id="sum-thisrun-choices-open"></p>
 
-              <p class="sim-summary-subheader" id="sum-choices-label-a"></p>
-              <p class="period-readout" id="sum-choice-resolution-a"></p>
-              <p class="period-readout" id="sum-choice-oversight-a"></p>
-              <p class="period-readout" id="sum-choice-flight-a"></p>
+              <p class="sim-summary-subheader" id="sum-choices-label"></p>
+              <p class="period-readout" id="sum-choice-resolution"></p>
+              <p class="period-readout" id="sum-choice-oversight"></p>
+              <p class="period-readout" id="sum-choice-flight"></p>
 
-              <p class="sim-summary-subheader" id="sum-problems-label-a"></p>
-              <p class="period-readout" id="sum-prob-resolved-a"></p>
-              <p class="period-readout" id="sum-prob-displaced-a"></p>
-              <p class="period-readout" id="sum-prob-adrift-a"></p>
-              <p class="period-readout" id="sum-prob-inforum-a"></p>
+              <p class="sim-summary-subheader" id="sum-problems-label"></p>
+              <p class="period-readout" id="sum-prob-resolved"></p>
+              <p class="period-readout" id="sum-prob-displaced"></p>
+              <p class="period-readout" id="sum-prob-adrift"></p>
+              <p class="period-readout" id="sum-prob-inforum"></p>
 
-              <button class="replay-btn" id="replay-btn-a">Run again</button>
-              <p class="positioning-caption">Each run varies slightly. The simulation is stochastic.</p>
+              <button class="replay-btn" id="replay-btn">Run again</button>
+              <p class="positioning-caption" id="stochastic-note">Each run varies slightly. The simulation is stochastic.</p>
             </div>
           </div>
         </div>
@@ -164,92 +170,28 @@
       sage:      '#4A6741',
     };
 
-    // ─── End state summary ────────────────────────────────────────────────────────
-    function showEndStatePanel(
-      pctRes, pctOver, pctFli,
-      probResolved, probDisplaced, probAdrift, probInForum,
-      lastTick, suffix
-    ) {
-
-      d3.select('#viz-svg-' + suffix).selectAll('circle.problem')
-        .classed('problem-attached', false)
-        .interrupt();
-
-      document.getElementById('sim-summary-' + suffix).hidden = false;
-
-      // Single-run end state from tick 20
-      var runResolved = 0;
-      var runInForum  = 0;
-      var runAdrift   = 0;
-      var runChoicesResolved = 0;
-      var runChoicesOpen     = 0;
-
-      if (lastTick) {
-        lastTick.problems.forEach(function(p) {
-          if (p.state === 'resolved') runResolved++;
-          else if (p.state === 'attached') runInForum++;
-          else if (p.state === 'floating') runAdrift++;
-        });
-        lastTick.choices.forEach(function(c) {
-          if (c.state === 'resolved') runChoicesResolved++;
-          else if (c.state === 'active') runChoicesOpen++;
-        });
-      }
-
-      document.getElementById('sum-thisrun-label-' + suffix).textContent =
-        'This run (cycle ' + PERIODS + ')';
-      document.getElementById('sum-thisrun-resolved-' + suffix).innerHTML =
-        '<span class="outcome-resolved">Resolved</span>: ' + runResolved + ' of ' + W + ' problems';
-      document.getElementById('sum-thisrun-inforum-' + suffix).innerHTML =
-        '<span class="outcome-unresolved">In forum</span>: ' + runInForum + ' of ' + W + ' problems';
-      document.getElementById('sum-thisrun-adrift-' + suffix).innerHTML =
-        '<span class="outcome-flight">Adrift</span>: ' + runAdrift + ' of ' + W + ' problems';
-      document.getElementById('sum-thisrun-choices-resolved-' + suffix).innerHTML =
-        '<span class="outcome-resolved">Choices resolved</span>: ' + runChoicesResolved + ' of ' + M;
-      document.getElementById('sum-thisrun-choices-open-' + suffix).innerHTML =
-        '<span class="outcome-unresolved">Choices still open</span>: ' + runChoicesOpen + ' of ' + M;
-
-      document.getElementById('sum-header-' + suffix).textContent =
-        'Across 100 simulations, on average:';
-
-      document.getElementById('sum-choices-label-' + suffix).textContent =
-        `How the ${M} decision forums closed`;
-      document.getElementById('sum-choice-resolution-' + suffix).innerHTML =
-        `<span class="outcome-resolved">Deliberation</span>: ${pctRes}% \u2014 forum closed after sustained engagement`;
-      document.getElementById('sum-choice-oversight-' + suffix).innerHTML =
-        `<span class="outcome-oversight">Oversight</span>: ${pctOver}% \u2014 forum closed with no problem attached`;
-      document.getElementById('sum-choice-flight-' + suffix).innerHTML =
-        `<span class="outcome-flight">Flight</span>: ${pctFli}% \u2014 forum closed after problems fled`;
-
-      document.getElementById('sum-problems-label-' + suffix).textContent =
-        `What happened to the ${W} problems`;
-      document.getElementById('sum-prob-resolved-' + suffix).innerHTML =
-        `<span class="outcome-resolved">Resolved</span>: ${probResolved} of ${W} \u2014 genuinely closed at a decision forum`;
-      document.getElementById('sum-prob-displaced-' + suffix).innerHTML =
-        `<span class="outcome-oversight">Displaced</span>: ${probDisplaced} of ${W} \u2014 forum closed without resolving this problem`;
-      document.getElementById('sum-prob-adrift-' + suffix).innerHTML =
-        `<span class="outcome-flight">Adrift</span>: ${probAdrift} of ${W} \u2014 detached from forum or never attached`;
-      document.getElementById('sum-prob-inforum-' + suffix).innerHTML =
-        `<span class="outcome-unresolved">In forum</span>: ${probInForum} of ${W} \u2014 still attached to an open forum at cycle ${PERIODS}`;
-    }
-
-    // ─── Visualization ────────────────────────────────────────────────────────────
-    function drawVizPanel(simResult, energyLoad, decisionStructure, accessStructure, suffix) {
+    // ─── Visualization (lifted from tests/test-gc-viz.html) ──────────────────────
+    function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       const { ticks, resolution, oversight, flight } = simResult;
 
+      // Choice-level percentages (canonical GCM decision styles)
+      // Rounded to nearest 5% — at 100 Monte Carlo iterations, finer precision is noise
       const pctRes  = Math.round(simResult.resolution * 20) * 5;
       const pctOver = Math.round(simResult.oversight  * 20) * 5;
       const pctFli  = 100 - pctRes - pctOver;
 
+      // Problem-level counts (out of W=20, interpretive extension)
       const probResolved  = Math.round(simResult.problemResolved);
       const probDisplaced = Math.round(simResult.problemDisplaced);
       const probAdrift    = Math.round(simResult.problemAdrift);
       const probInForum   = Math.max(0, W - probResolved - probDisplaced - probAdrift);
 
       // Reset summary state
-      document.getElementById('sim-summary-' + suffix).hidden = true;
+      document.getElementById('sim-summary').hidden   = true;
+      document.getElementById('replay-btn').hidden    = true;
+      document.getElementById('stochastic-note').hidden = true;
 
-      const container = document.getElementById('viz-svg-' + suffix);
+      const container = document.getElementById('viz-svg');
       const SVG_W    = container.clientWidth || 900;
       const SVG_H    = 300;
       const CHOICE_Y = 140;
@@ -259,12 +201,13 @@
       const FLOAT_Y0 = 50;
       const FLOAT_Y1 = 75;
 
-      const svg = d3.select('#viz-svg-' + suffix)
+      const svg = d3.select('#viz-svg')
         .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
         .attr('height', SVG_H);
 
       svg.selectAll('*').remove();
 
+      // M (choices) and W (problems) are defined by gc-simulation.js
       const choiceX = d3.range(M).map(
         i => PAD_H + i * (SVG_W - PAD_H * 2) / (M - 1)
       );
@@ -278,10 +221,12 @@
       }
 
       function attachedPos(choiceId, slot, total) {
-        const goldenAngle = 2.399;
-        const maxR        = CHOICE_R - PROB_R - 1;
+        // Fibonacci spiral distribution — fixed dot size
+        const goldenAngle = 2.399; // radians — golden angle
+        const maxR        = CHOICE_R - PROB_R - 1; // keep dots within boundary
         const r           = maxR * Math.sqrt((slot + 0.5) / total);
         const angle       = slot * goldenAngle;
+
         return {
           x: choiceX[choiceId] + r * Math.cos(angle),
           y: CHOICE_Y          + r * Math.sin(angle),
@@ -292,7 +237,7 @@
       const defs = svg.append('defs');
       d3.range(M).forEach(i => {
         defs.append('clipPath')
-          .attr('id', `clip-c${i}-${suffix}`)
+          .attr('id', `clip-c${i}`)
           .append('circle')
             .attr('cx', choiceX[i])
             .attr('cy', CHOICE_Y)
@@ -329,9 +274,9 @@
           .attr('height', 0)
           .attr('fill', C.sage)
           .attr('fill-opacity', 0.50)
-          .attr('clip-path', i => `url(#clip-c${i}-${suffix})`);
+          .attr('clip-path', i => `url(#clip-c${i})`);
 
-      // ── Layer 3: choice labels ─────────────────────────────────────────────────
+      // ── Layer 3: choice labels (rendered above fill) ────────────────────────────
       const labelLayer = svg.append('g');
 
       labelLayer.selectAll('text.choice-label')
@@ -348,7 +293,7 @@
           .attr('fill', C.inkFaint)
           .text(i => `C${i}`);
 
-      // ── Layer 5: cycle counter (top-left) ─────────────────────────────────────
+      // ── Layer 5: cycle counter (top-left) ───────────────────────────────────────
       var counterText = svg.append('text')
         .attr('class', 'viz-counter')
         .attr('x', 0)
@@ -360,7 +305,7 @@
         .attr('fill', C.inkFaint)
         .text('Cycle 0 of 20');
 
-      // ── Phase label (top-right) ────────────────────────────────────────────────
+      // ── Phase label (top-right) ─────────────────────────────────────────────────
       var phaseText = svg.append('text')
         .attr('x', SVG_W)
         .attr('y', 16)
@@ -373,7 +318,7 @@
         .attr('fill', C.inkFaint)
         .text('');
 
-      // ── Layer 6: legend (bottom of SVG) ───────────────────────────────────────
+      // ── Layer 6: legend (bottom of SVG) ─────────────────────────────────────────
       var LEGEND_Y = SVG_H - 12;
       var legendItems = [
         { label: 'Entering',  color: C.rust },
@@ -479,7 +424,10 @@
         return { x: pos.x, y: pos.y, opacity: 1, fill: C.gold, r: PROB_R };
       }
 
+      // Cumulative resolved-at-choice counts — one entry per choice, never decreases
       const resolvedAtChoice = Array(M).fill(0);
+
+      // Problem IDs that have ever been active (for entrance animation)
       const everActive = new Set();
 
       function isDeadTick(tickIdx) {
@@ -548,7 +496,7 @@
           d3.select(this).select('title').text(text);
         });
 
-        // Detect exit types
+        // Detect exit types by comparing previous and current tick
         const resolvedThisTick = new Set();
         const flightSet        = new Set();
         const oversightSet     = new Set();
@@ -576,7 +524,7 @@
           }
         }
 
-        // Fill level
+        // Fill level — cumulative count of problems resolved at each choice
         if (prevTick) {
           for (let id = 0; id < W; id++) {
             if (tick.problems[id].state === 'resolved' && prevTick.problems[id].state !== 'resolved') {
@@ -592,7 +540,7 @@
             .attr('y',      i => CHOICE_Y + CHOICE_R - (resolvedAtChoice[i] / W) * (CHOICE_R * 2))
             .attr('height', i => (resolvedAtChoice[i] / W) * (CHOICE_R * 2));
 
-        // Entrance detection
+        // Detect problems entering for the first time this tick
         const enteringThisTick = new Set();
         for (let id = 0; id < W; id++) {
           if (tick.problems[id].state !== 'inactive' && !everActive.has(id)) {
@@ -603,6 +551,7 @@
 
         const allProbs = svg.selectAll('circle.problem').data(d3.range(W), d => d);
 
+        // Entrance fade-in: scale up from r:1, opacity 0 → target state
         allProbs.filter(id => enteringThisTick.has(id))
           .each(function(id) {
             const attrs = probAttrs(tick, id);
@@ -612,6 +561,7 @@
                 .attr('r', attrs.r).attr('opacity', attrs.opacity).attr('fill', attrs.fill);
           });
 
+        // Resolution exit: move to circle centre, shrink to r:1.5, fill sage, then fade
         allProbs.filter(id => resolvedThisTick.has(id))
           .each(function(id) {
             const cx = choiceX[prevTick.problems[id].attachedTo];
@@ -622,6 +572,7 @@
                 .attr('opacity', 0);
           });
 
+        // Flight exit: flash rust, then move to float position
         allProbs.filter(id => flightSet.has(id))
           .each(function(id) {
             const fp = floatPos(id);
@@ -633,6 +584,7 @@
                 .attr('opacity', 0.85).attr('fill', C.inkFaint);
           });
 
+        // Oversight exit: flash slate, then move to float position
         allProbs.filter(id => oversightSet.has(id))
           .each(function(id) {
             const fp = floatPos(id);
@@ -644,6 +596,7 @@
                 .attr('opacity', 0.85).attr('fill', C.inkFaint);
           });
 
+        // All other problems: standard position transition (staggered for organic feel)
         allProbs.filter(id => !resolvedThisTick.has(id) && !flightSet.has(id) && !oversightSet.has(id) && !enteringThisTick.has(id))
           .interrupt()
           .transition()
@@ -656,11 +609,13 @@
             .attr('opacity', id => probAttrs(tick, id).opacity)
             .attr('fill',    id => probAttrs(tick, id).fill);
 
+        // Sync pulse class — attached dots breathe, others do not
         allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');
         allProbs.classed('problem-searching', id => tick.problems[id].state === 'floating');
 
         counterText.text(`Cycle ${tick.tick} of 20`);
 
+        // Phase label
         if (tick.tick <= 10) {
           phaseText.text('Problems entering');
         } else if (prevTick && !isDeadTick(tickIdx)) {
@@ -670,6 +625,7 @@
             .attr('fill', C.rust)
             .text('System locked');
         }
+
       }
 
       renderTick(0, null);
@@ -681,10 +637,10 @@
         if (current >= ticks.length) {
           counterText.text('Cycle 20 of 20 \u00B7 showing final run');
           phaseText.text('');
-          showEndStatePanel(
+          showEndState(
             pctRes, pctOver, pctFli,
             probResolved, probDisplaced, probAdrift, probInForum,
-            ticks[ticks.length - 1], suffix
+            ticks[ticks.length - 1]
           );
           return;
         }
@@ -703,63 +659,163 @@
       setTimeout(stepTick, 800);
     }
 
-    // ─── Simulation state ─────────────────────────────────────────────────────────
-    var simHasRun = false;
+    // ─── End state summary ────────────────────────────────────────────────────────
+    function showEndState(
+      pctRes, pctOver, pctFli,
+      probResolved, probDisplaced, probAdrift, probInForum,
+      lastTick
+    ) {
 
-    // ─── Diagnosis helper — updates title/body from current dropdown values ───────
-    function updateDiagnosis(suffix, flight) {
-      var decisionStructure = document.getElementById('panel-' + suffix + '-decision').value;
-      var accessStructure   = document.getElementById('panel-' + suffix + '-access').value;
-      var diagnosis = getDiagnosis(decisionStructure, accessStructure, flight || 0);
-      document.getElementById('explorer-diagnosis-title-' + suffix).textContent = diagnosis.title;
-      document.getElementById('explorer-diagnosis-body-' + suffix).textContent  = diagnosis.body;
-      document.getElementById('explorer-diagnosis-' + suffix).hidden = false;
+      // Stop any pulsating on dots
+      d3.select('#viz-svg').selectAll('circle.problem')
+        .classed('problem-attached', false)
+        .interrupt();
+
+      document.getElementById('sim-summary').hidden = false;
+
+      // Single-run end state from tick 20
+      var runResolved = 0;
+      var runInForum  = 0;
+      var runAdrift   = 0;
+      var runChoicesResolved = 0;
+      var runChoicesOpen     = 0;
+
+      if (lastTick) {
+        lastTick.problems.forEach(function(p) {
+          if (p.state === 'resolved') runResolved++;
+          else if (p.state === 'attached') runInForum++;
+          else if (p.state === 'floating') runAdrift++;
+        });
+        lastTick.choices.forEach(function(c) {
+          if (c.state === 'resolved') runChoicesResolved++;
+          else if (c.state === 'active') runChoicesOpen++;
+        });
+      }
+
+      document.getElementById('sum-thisrun-label').textContent =
+        'This run (cycle ' + PERIODS + ')';
+      document.getElementById('sum-thisrun-resolved').innerHTML =
+        '<span class="outcome-resolved">Resolved</span>: ' + runResolved + ' of ' + W + ' problems';
+      document.getElementById('sum-thisrun-inforum').innerHTML =
+        '<span class="outcome-unresolved">In forum</span>: ' + runInForum + ' of ' + W + ' problems';
+      document.getElementById('sum-thisrun-adrift').innerHTML =
+        '<span class="outcome-flight">Adrift</span>: ' + runAdrift + ' of ' + W + ' problems';
+      document.getElementById('sum-thisrun-choices-resolved').innerHTML =
+        '<span class="outcome-resolved">Choices resolved</span>: ' + runChoicesResolved + ' of ' + M;
+      document.getElementById('sum-thisrun-choices-open').innerHTML =
+        '<span class="outcome-unresolved">Choices still open</span>: ' + runChoicesOpen + ' of ' + M;
+
+      // Primary: canonical GCM decision styles (choice-level)
+      document.getElementById('sum-header').textContent =
+        'Across 100 simulations, on average:';
+
+      document.getElementById('sum-choices-label').textContent =
+        `How the ${M} decision forums closed`;
+      document.getElementById('sum-choice-resolution').innerHTML =
+        `<span class="outcome-resolved">Deliberation</span>: ${pctRes}% \u2014 forum closed after sustained engagement`;
+      document.getElementById('sum-choice-oversight').innerHTML =
+        `<span class="outcome-oversight">Oversight</span>: ${pctOver}% \u2014 forum closed with no problem attached`;
+      document.getElementById('sum-choice-flight').innerHTML =
+        `<span class="outcome-flight">Flight</span>: ${pctFli}% \u2014 forum closed after problems fled`;
+
+      // Supplementary: problem fates (interpretive extension)
+      document.getElementById('sum-problems-label').textContent =
+        `What happened to the ${W} problems`;
+      document.getElementById('sum-prob-resolved').innerHTML =
+        `<span class="outcome-resolved">Resolved</span>: ${probResolved} of ${W} \u2014 genuinely closed at a decision forum`;
+      document.getElementById('sum-prob-displaced').innerHTML =
+        `<span class="outcome-oversight">Displaced</span>: ${probDisplaced} of ${W} \u2014 forum closed without resolving this problem`;
+      document.getElementById('sum-prob-adrift').innerHTML =
+        `<span class="outcome-flight">Adrift</span>: ${probAdrift} of ${W} \u2014 detached from forum or never attached`;
+      document.getElementById('sum-prob-inforum').innerHTML =
+        `<span class="outcome-unresolved">In forum</span>: ${probInForum} of ${W} \u2014 still attached to an open forum at cycle ${PERIODS}`;
+
+      document.getElementById('replay-btn').hidden      = false;
+      document.getElementById('stochastic-note').hidden = false;
     }
 
-    // ─── Panel runner ─────────────────────────────────────────────────────────────
-    function runPanel(suffix) {
-      var loadEl     = document.getElementById('panel-' + suffix + '-load');
-      var decisionEl = document.getElementById('panel-' + suffix + '-decision');
-      var accessEl   = document.getElementById('panel-' + suffix + '-access');
-
-      var energyLoad        = loadEl.value;
-      var decisionStructure = decisionEl.value;
-      var accessStructure   = accessEl.value;
-
-      var simResult = runGarbageCanSimulation({
-        energyLoad: energyLoad,
-        decisionStructure: decisionStructure,
-        accessStructure: accessStructure
-      });
-
-      updateDiagnosis(suffix, simResult.flight);
-
-      simHasRun = true;
-      document.getElementById('run-' + suffix).hidden = true;
-      document.getElementById('viz-area-' + suffix).hidden = false;
-      drawVizPanel(simResult, energyLoad, decisionStructure, accessStructure, suffix);
+    // ─── Dropdown helpers ─────────────────────────────────────────────────────────
+    function allDropdownsSelected() {
+      var load     = document.getElementById('panel-a-load').value;
+      var decision = document.getElementById('panel-a-decision').value;
+      var access   = document.getElementById('panel-a-access').value;
+      return load !== '' && decision !== '' && access !== '';
     }
 
-    // ─── Button wiring ────────────────────────────────────────────────────────────
-    document.getElementById('run-a').addEventListener('click', function() {
-      runPanel('a');
-    });
+    // ─── Diagnosis helper — updates title/body when all dropdowns have a value ────
+    function updateDiagnosis() {
+      if (!allDropdownsSelected()) {
+        document.getElementById('explorer-diagnosis').hidden = true;
+        document.getElementById('explorer-sim-trigger').hidden = true;
+        return;
+      }
 
-    document.getElementById('replay-btn-a').addEventListener('click', function() {
-      runPanel('a');
-    });
+      var decision = document.getElementById('panel-a-decision').value;
+      var access   = document.getElementById('panel-a-access').value;
+
+      var diagnosis = getDiagnosis(decision, access, 0);
+
+      // Strip the flight-percentage sentence — no simulation result yet
+      var bodyText = diagnosis.body;
+      bodyText = bodyText.replace(/In organisations like yours, roughly.*$/, '').trim();
+
+      document.getElementById('explorer-diagnosis-title').textContent = diagnosis.title;
+      document.getElementById('explorer-diagnosis-body').textContent  = bodyText;
+      document.getElementById('explorer-diagnosis').hidden = false;
+      document.getElementById('explorer-sim-trigger').hidden = false;
+    }
+
+    // ─── Simulation reset ─────────────────────────────────────────────────────────
+    function resetSimulation() {
+      var vizArea = document.getElementById('viz-area');
+      if (!vizArea.hidden) {
+        var svg = document.getElementById('viz-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+        vizArea.hidden = true;
+        document.getElementById('sim-summary').hidden = true;
+        document.getElementById('run-sim-btn').hidden = false;
+      }
+    }
 
     // ─── Dropdown change — update diagnosis and reset simulation ──────────────────
     ['panel-a-load', 'panel-a-decision', 'panel-a-access'].forEach(function(id) {
       document.getElementById(id).addEventListener('change', function() {
-        updateDiagnosis('a', 0);
-        if (simHasRun) {
-          document.getElementById('viz-svg-a').innerHTML = '';
-          document.getElementById('viz-area-a').hidden = true;
-          document.getElementById('sim-summary-a').hidden = true;
-          document.getElementById('run-a').hidden = false;
-        }
+        updateDiagnosis();
+        resetSimulation();
       });
+    });
+
+    // ─── Run simulation button ────────────────────────────────────────────────────
+    document.getElementById('run-sim-btn').addEventListener('click', function() {
+      var load     = document.getElementById('panel-a-load').value;
+      var decision = document.getElementById('panel-a-decision').value;
+      var access   = document.getElementById('panel-a-access').value;
+
+      var simResult = runGarbageCanSimulation({
+        energyLoad: load,
+        decisionStructure: decision,
+        accessStructure: access
+      });
+
+      document.getElementById('run-sim-btn').hidden = true;
+      document.getElementById('viz-area').hidden = false;
+      drawViz(simResult, load, decision, access);
+    });
+
+    // ─── Replay button ────────────────────────────────────────────────────────────
+    document.getElementById('replay-btn').addEventListener('click', function() {
+      var load     = document.getElementById('panel-a-load').value;
+      var decision = document.getElementById('panel-a-decision').value;
+      var access   = document.getElementById('panel-a-access').value;
+
+      var newSim = runGarbageCanSimulation({
+        energyLoad: load,
+        decisionStructure: decision,
+        accessStructure: access
+      });
+
+      drawViz(newSim, load, decision, access);
     });
   </script>
 

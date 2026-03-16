@@ -21,7 +21,7 @@
     <button class="nav-mobile-toggle" aria-label="Toggle menu">Menu</button>
   </nav>
 
-  <main>
+  <main class="main--narrow">
     <div class="module-page">
 
       <!-- Module header -->
@@ -30,8 +30,8 @@
         <h1 class="module-header-title">Simulation Explorer</h1>
         <p class="module-header-body">
           Run the Garbage Can Model with any parameter combination.
-          Compare two configurations side by side to see how different
-          structures produce different decision-making patterns.
+          Adjust energy load, decision structure, and access structure
+          to see how different configurations shape decision-making.
         </p>
       </header>
 
@@ -53,12 +53,8 @@
         </p>
       </div>
 
-      <!-- Comparison panels -->
-      <div class="explorer-panels">
-
-        <!-- Panel A -->
-        <div class="explorer-panel" id="panel-a">
-          <p class="explorer-panel-label">Configuration A</p>
+      <!-- Simulation panel -->
+      <div class="explorer-panel" id="panel-a">
 
           <div class="explorer-selectors">
             <div class="explorer-select-group">
@@ -113,68 +109,6 @@
               <p class="period-readout" id="sum-prob-inforum-a"></p>
 
               <button class="replay-btn" id="replay-btn-a">Run again</button>
-              <p class="positioning-caption">Each run varies slightly. The simulation is stochastic.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel B -->
-        <div class="explorer-panel" id="panel-b">
-          <p class="explorer-panel-label">Configuration B</p>
-
-          <div class="explorer-selectors">
-            <div class="explorer-select-group">
-              <label class="explorer-select-label" for="panel-b-load">Load</label>
-              <select class="explorer-select" id="panel-b-load">
-                <option value="light" selected>Light</option>
-                <option value="moderate">Moderate</option>
-                <option value="heavy">Heavy</option>
-              </select>
-            </div>
-            <div class="explorer-select-group">
-              <label class="explorer-select-label" for="panel-b-decision">Decision</label>
-              <select class="explorer-select" id="panel-b-decision">
-                <option value="unsegmented" selected>Unsegmented</option>
-                <option value="hierarchical">Hierarchical</option>
-                <option value="specialized">Specialized</option>
-              </select>
-            </div>
-            <div class="explorer-select-group">
-              <label class="explorer-select-label" for="panel-b-access">Access</label>
-              <select class="explorer-select" id="panel-b-access">
-                <option value="unsegmented" selected>Unsegmented</option>
-                <option value="hierarchical">Hierarchical</option>
-                <option value="specialized">Specialized</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="submit-row">
-            <button class="submit-btn explorer-run-btn" id="run-b">Run simulation</button>
-          </div>
-
-          <div class="explorer-viz" id="viz-area-b" hidden>
-            <svg id="viz-svg-b"></svg>
-            <div class="sim-summary-card" id="sim-summary-b" hidden>
-              <p class="sim-summary-subheader" id="sum-thisrun-label-b"></p>
-              <p class="period-readout" id="sum-thisrun-resolved-b"></p>
-              <p class="period-readout" id="sum-thisrun-inforum-b"></p>
-              <p class="period-readout" id="sum-thisrun-adrift-b"></p>
-              <p class="period-readout" id="sum-thisrun-choices-resolved-b"></p>
-              <p class="period-readout" id="sum-thisrun-choices-open-b"></p>
-
-              <p class="sim-summary-subheader" id="sum-choices-label-b"></p>
-              <p class="period-readout" id="sum-choice-resolution-b"></p>
-              <p class="period-readout" id="sum-choice-oversight-b"></p>
-              <p class="period-readout" id="sum-choice-flight-b"></p>
-
-              <p class="sim-summary-subheader" id="sum-problems-label-b"></p>
-              <p class="period-readout" id="sum-prob-resolved-b"></p>
-              <p class="period-readout" id="sum-prob-displaced-b"></p>
-              <p class="period-readout" id="sum-prob-adrift-b"></p>
-              <p class="period-readout" id="sum-prob-inforum-b"></p>
-
-              <button class="replay-btn" id="replay-btn-b">Run again</button>
               <p class="positioning-caption">Each run varies slightly. The simulation is stochastic.</p>
             </div>
           </div>
@@ -303,8 +237,7 @@
       // Reset summary state
       document.getElementById('sim-summary-' + suffix).hidden = true;
 
-      const container = document.getElementById('viz-svg-' + suffix);
-      const SVG_W    = container.clientWidth || 900;
+      const SVG_W    = 900;
       const SVG_H    = 300;
       const CHOICE_Y = 140;
       const CHOICE_R = 22;
@@ -785,16 +718,8 @@
       runPanel('a');
     });
 
-    document.getElementById('run-b').addEventListener('click', function() {
-      runPanel('b');
-    });
-
     document.getElementById('replay-btn-a').addEventListener('click', function() {
       runPanel('a');
-    });
-
-    document.getElementById('replay-btn-b').addEventListener('click', function() {
-      runPanel('b');
     });
   </script>
 

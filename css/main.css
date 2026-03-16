@@ -415,27 +415,6 @@ footer {
   /* Layout is handled by max-width containers — no additional overrides needed */
 }
 
-/* ─── Replay button — plain text, no border ──────────────── */
-#replay-btn {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ink-faint);
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  margin-top: 1rem;
-  display: block;
-  transition: color 0.2s ease;
-}
-
-#replay-btn:hover {
-  color: var(--rust);
-}
-
 /* ─── Simulation end state summary ───────────────────────── */
 .sim-summary-header {
   font-family: var(--serif);
@@ -982,4 +961,89 @@ footer {
 .field-notes-body strong {
   font-weight: 500;
   color: var(--ink);
+}
+
+/* ─── Module essay ───────────────────────────────────── */
+.module-essay {
+  margin-top: 2rem;
+}
+
+.essay-section {
+  padding: 2rem 0;
+  border-top: 1px solid var(--ink-ghost);
+}
+
+.essay-heading {
+  font-family: var(--serif-alt);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+
+.essay-body {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--ink-mid);
+  line-height: 1.8;
+  max-width: 60ch;
+  margin-bottom: 1rem;
+}
+
+.essay-body:last-child {
+  margin-bottom: 0;
+}
+
+.essay-body strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.essay-body em {
+  font-style: italic;
+}
+
+/* ─── Essay sub-page links ───────────────────────────── */
+.essay-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.essay-link {
+  display: block;
+  background: var(--paper-dark);
+  border: 2px solid var(--paper-deep);
+  border-left: 2px solid var(--sage);
+  padding: 1.25rem 1.5rem;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+  max-width: 480px;
+}
+
+.essay-link:hover {
+  transform: translateX(4px);
+}
+
+.essay-link-label {
+  display: block;
+  font-family: var(--serif-alt);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+
+.essay-link-desc {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Garbage Can Model · To the Bedrock</title>
+  <title>Organised Anarchy · The Garbage Can Model · To the Bedrock</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
@@ -29,330 +29,128 @@
         <p class="module-header-number">03 &middot; The Garbage Can Model</p>
         <h1 class="module-header-title">Organised Anarchy</h1>
         <p class="module-header-body">
-          In 1972, Cohen, March and Olsen described organisations not as rational decision machines,
-          but as garbage cans &mdash; collections of problems, solutions, participants and choice
-          opportunities that collide more or less at random. Answer twelve questions about how
-          decisions actually work where you are. The model will show you what kind of organised
-          anarchy you are operating in.
+          In 1972, Cohen, March and Olsen asked a simple question: what if organisations
+          do not make decisions the way they think they do? What if the process is not
+          rational deliberation but something closer to a collision of independent streams,
+          each following its own logic, meeting more or less at random?
         </p>
         <div class="module-tags">
           <span class="module-tag">Garbage Can Model</span>
           <span class="module-tag">Organisational theory</span>
           <span class="module-tag">Decision science</span>
+          <span class="module-tag">Cohen, March &amp; Olsen 1972</span>
         </div>
       </header>
 
-      <!-- Stage 1 — The questionnaire -->
-      <section id="stage-1" class="stage is-visible">
-        <p class="q-step-indicator" id="q-step">1 of 3</p>
-        <form id="questionnaire" novalidate>
+      <!-- Essay -->
+      <article class="module-essay">
 
-          <div class="q-section q-card" id="q-group-1">
-            <p class="q-section-label">01 &middot; Energy load</p>
-
-            <div class="question-block">
-              <p class="question-text">Your organisation&#8217;s goals shift often enough that work started under one priority gets abandoned for another.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q0" value="1" id="q0-1"><label for="q0-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q0" value="2" id="q0-2"><label for="q0-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q0" value="3" id="q0-3"><label for="q0-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q0" value="4" id="q0-4"><label for="q0-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q0" value="5" id="q0-5"><label for="q0-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-
-            <div class="question-block">
-              <p class="question-text">If you asked three colleagues how a decision typically gets made in your organisation, you would get three different answers.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q1" value="1" id="q1-1"><label for="q1-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q1" value="2" id="q1-2"><label for="q1-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q1" value="3" id="q1-3"><label for="q1-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q1" value="4" id="q1-4"><label for="q1-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q1" value="5" id="q1-5"><label for="q1-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-
-            <div class="question-block">
-              <p class="question-text">Your organisation carries a backlog of unresolved issues that everyone knows about but no one has the mandate to close.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q2" value="1" id="q2-1"><label for="q2-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q2" value="2" id="q2-2"><label for="q2-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q2" value="3" id="q2-3"><label for="q2-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q2" value="4" id="q2-4"><label for="q2-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q2" value="5" id="q2-5"><label for="q2-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-
-            <div class="question-block">
-              <p class="question-text">Institutional memory in your organisation lives in people&#8217;s heads rather than anywhere it can be reliably accessed.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q3" value="1" id="q3-1"><label for="q3-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q3" value="2" id="q3-2"><label for="q3-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q3" value="3" id="q3-3"><label for="q3-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q3" value="4" id="q3-4"><label for="q3-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q3" value="5" id="q3-5"><label for="q3-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-
-            <div class="question-block">
-              <p class="question-text">It is difficult to point to a decision your organisation made this year that definitively closed a problem.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q4" value="1" id="q4-1"><label for="q4-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q4" value="2" id="q4-2"><label for="q4-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q4" value="3" id="q4-3"><label for="q4-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q4" value="4" id="q4-4"><label for="q4-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q4" value="5" id="q4-5"><label for="q4-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-            <div class="submit-row">
-              <button type="button" class="submit-btn" id="q-continue-1" disabled>Continue</button>
-              <p class="form-error" id="form-error-1" hidden>Please answer all questions in this section.</p>
-            </div>
-          </div>
-
-          <div class="q-section q-card" id="q-group-2" hidden>
-            <p class="q-section-label">02 &middot; Access structure</p>
-
-            <div class="question-block">
-              <p class="question-text">Problems in your organisation tend to find their way to the right people and the right forum.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q5" value="1" id="q5-1"><label for="q5-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q5" value="2" id="q5-2"><label for="q5-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q5" value="3" id="q5-3"><label for="q5-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q5" value="4" id="q5-4"><label for="q5-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q5" value="5" id="q5-5"><label for="q5-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-
-            <div class="question-block">
-              <p class="question-text">In your organisation, who hears about a problem depends more on who raised it than on who should deal with it.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q6" value="1" id="q6-1"><label for="q6-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q6" value="2" id="q6-2"><label for="q6-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q6" value="3" id="q6-3"><label for="q6-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q6" value="4" id="q6-4"><label for="q6-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q6" value="5" id="q6-5"><label for="q6-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-
-            <div class="question-block">
-              <p class="question-text">Your organisation has forums for making decisions but it is rarely clear which forum owns which type of problem.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q7" value="1" id="q7-1"><label for="q7-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q7" value="2" id="q7-2"><label for="q7-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q7" value="3" id="q7-3"><label for="q7-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q7" value="4" id="q7-4"><label for="q7-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q7" value="5" id="q7-5"><label for="q7-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-            <div class="submit-row">
-              <button type="button" class="submit-btn" id="q-continue-2" disabled>Continue</button>
-              <p class="form-error" id="form-error-2" hidden>Please answer all questions in this section.</p>
-            </div>
-          </div>
-
-          <div class="q-section q-card" id="q-group-3" hidden>
-            <p class="q-section-label">03 &middot; Decision structure</p>
-
-            <div class="question-block">
-              <p class="question-text">In your organisation, seniority determines who gets a seat at the table more than relevance to the problem.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q8" value="1" id="q8-1"><label for="q8-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q8" value="2" id="q8-2"><label for="q8-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q8" value="3" id="q8-3"><label for="q8-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q8" value="4" id="q8-4"><label for="q8-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q8" value="5" id="q8-5"><label for="q8-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-
-            <div class="question-block">
-              <p class="question-text">The people closest to a problem are rarely the ones who decide how it gets resolved.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q9" value="1" id="q9-1"><label for="q9-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q9" value="2" id="q9-2"><label for="q9-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q9" value="3" id="q9-3"><label for="q9-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q9" value="4" id="q9-4"><label for="q9-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q9" value="5" id="q9-5"><label for="q9-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-
-            <div class="question-block">
-              <p class="question-text">The people with the most relevant expertise are often not the ones with the final say.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q10" value="1" id="q10-1"><label for="q10-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q10" value="2" id="q10-2"><label for="q10-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q10" value="3" id="q10-3"><label for="q10-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q10" value="4" id="q10-4"><label for="q10-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q10" value="5" id="q10-5"><label for="q10-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-
-            <div class="question-block">
-              <p class="question-text">Decisions in your organisation are often announced rather than made &mdash; the real decision happened somewhere else.</p>
-              <div class="question-scale">
-                <span class="scale-pole">Disagree</span>
-                <div class="scale-options">
-                  <div class="scale-option"><input type="radio" name="q11" value="1" id="q11-1"><label for="q11-1">1</label></div>
-                  <div class="scale-option"><input type="radio" name="q11" value="2" id="q11-2"><label for="q11-2">2</label></div>
-                  <div class="scale-option"><input type="radio" name="q11" value="3" id="q11-3"><label for="q11-3">3</label></div>
-                  <div class="scale-option"><input type="radio" name="q11" value="4" id="q11-4"><label for="q11-4">4</label></div>
-                  <div class="scale-option"><input type="radio" name="q11" value="5" id="q11-5"><label for="q11-5">5</label></div>
-                </div>
-                <span class="scale-pole scale-pole--right">Agree</span>
-              </div>
-            </div>
-          </div>
-
-            <div class="submit-row">
-              <button type="submit" class="submit-btn" id="submit-btn" disabled>Map this organisation</button>
-              <p class="form-error" id="form-error">Please answer all questions before continuing.</p>
-            </div>
-          </div>
-
-        </form>
-      </section>
-
-      <!-- Results — revealed after form submission -->
-      <div id="results-area" class="stage">
-
-        <!-- Mini-nav -->
-        <nav class="results-nav results-nav--static" id="results-nav" aria-label="Results navigation">
-          <a class="results-nav-link results-nav-link--active" href="#section-diagnosis" data-section="section-diagnosis">
-            <span class="results-nav-dot">&#183;</span> Diagnosis
-          </a>
-          <a class="results-nav-link" href="#section-positioning" data-section="section-positioning">
-            <span class="results-nav-dot">&#183;</span> Positioning
-          </a>
-          <a class="results-nav-link" href="#section-simulation" data-section="section-simulation">
-            <span class="results-nav-dot">&#183;</span> Simulation
-          </a>
-        </nav>
-
-        <!-- Section: Diagnosis -->
-        <section id="section-diagnosis" class="results-section">
-          <hr class="stage-rule" />
-          <p class="stage-label">Diagnosis</p>
-          <h2 class="diagnosis-title" id="diagnosis-title"></h2>
-          <p class="diagnosis-body" id="diagnosis-body"></p>
+        <section class="essay-section">
+          <h2 class="essay-heading">The Four Streams</h2>
+          <p class="essay-body">
+            The Garbage Can Model describes organisations as the intersection of four
+            independent streams: <strong>problems</strong> that need attention,
+            <strong>solutions</strong> that exist whether or not a matching problem has been
+            identified, <strong>participants</strong> whose attention drifts between forums,
+            and <strong>choice opportunities</strong> where decisions could be made.
+          </p>
+          <p class="essay-body">
+            In a rational model, a problem surfaces, participants gather, solutions are
+            evaluated, and a decision is made. In the garbage can model, these streams
+            collide inside choice opportunities with no guarantee that the problem in the
+            room matches the solution being offered, or that the participants present are
+            the ones who understand either.
+          </p>
         </section>
 
-        <!-- Section: Positioning -->
-        <section id="section-positioning" class="results-section">
-          <hr class="stage-rule" />
-          <p class="stage-label">Positioning</p>
-          <svg id="positioning-svg"></svg>
-          <p class="positioning-caption" id="positioning-caption"></p>
+        <section class="essay-section">
+          <h2 class="essay-heading">Three Ways a Decision Gets Made</h2>
+          <p class="essay-body">
+            The model identifies three styles of decision-making, only one of which
+            involves actually solving the problem at hand.
+          </p>
+          <p class="essay-body">
+            <strong>Deliberation</strong> occurs when a problem attaches to a choice
+            opportunity, sufficient energy accumulates, and the problem is genuinely
+            resolved. This is what organisations believe happens most of the time.
+            The model suggests it is the exception.
+          </p>
+          <p class="essay-body">
+            <strong>Oversight</strong> occurs when a choice opportunity resolves with
+            no problem attached. The meeting happened, the budget was approved, the
+            decision was recorded. But the underlying problem was elsewhere, unaddressed.
+            The organisation produced a decision without producing a resolution.
+          </p>
+          <p class="essay-body">
+            <strong>Flight</strong> occurs when problems leave a choice opportunity
+            before it resolves. The issue was raised, discussed, and then abandoned
+            as participants moved on to other forums. The problem did not get solved.
+            It migrated.
+          </p>
         </section>
 
-        <!-- Section: Simulation -->
-        <section id="section-simulation" class="results-section">
-          <hr class="stage-rule" />
-          <p class="stage-label">Simulation</p>
+        <section class="essay-section">
+          <h2 class="essay-heading">Organised Anarchy</h2>
+          <p class="essay-body">
+            Cohen, March and Olsen coined the term <em>organised anarchy</em> to
+            describe institutions characterised by three properties: problematic
+            preferences (the organisation's goals are unclear or inconsistent),
+            unclear technology (the organisation does not fully understand its own
+            processes), and fluid participation (who shows up to which decision
+            varies unpredictably).
+          </p>
+          <p class="essay-body">
+            Universities were the original case study. But the description applies
+            to any organisation where the work is emergent, the environment is
+            complex, and the management instruments were designed for a simpler system.
+            This is what this site calls <em>The Mix</em>.
+          </p>
+        </section>
 
-          <!-- Figure intro — visible before animation runs -->
-          <p class="figure-eyebrow">Fig. &middot; Garbage Can Model</p>
-          <p class="figure-caption" id="viz-caption"></p>
+        <section class="essay-section">
+          <h2 class="essay-heading">Why This Matters</h2>
+          <p class="essay-body">
+            Most organisations operate as if decisions are made rationally: a problem
+            is identified, options are weighed, a choice is made. Governance structures,
+            reporting lines, and capital allocation processes are all built on this
+            assumption. The garbage can model reveals what happens when that assumption
+            is wrong.
+          </p>
+          <p class="essay-body">
+            In heavy-load organisations, problems outnumber the system's capacity to
+            resolve them. Forums close without addressing the issues that were raised.
+            Problems migrate between meetings, never finding a home. The organisation
+            produces decisions at a steady rate, but the problems persist.
+          </p>
+          <p class="essay-body">
+            The gap between the decisions being made and the problems being experienced
+            is not a failure of communication or competence. It is a structural property
+            of the system. The instruments were designed for a different kind of organisation.
+          </p>
+        </section>
 
-          <!-- Field notes — model explanation -->
-          <div class="field-notes-card">
-            <p class="field-notes-title">The Garbage Can Model</p>
-            <p class="field-notes-body">
-              <strong>Choice opportunities</strong> (circles) are forums where decisions could be made:
-              meetings, reviews, committees. <strong>Problems</strong> (dots) seek resolution by attaching
-              to a choice opportunity. <strong>Decision makers</strong> (invisible) allocate
-              <strong>energy</strong> to the choices they can access each cycle. When cumulative energy
-              meets the demand, a choice <strong>resolves</strong> and closes its attached problems.
-            </p>
-            <p class="field-notes-body">
-              The model&#8217;s insight: when problems outnumber capacity, decisions happen by
-              <strong>oversight</strong> (the forum closes while problems are elsewhere) or
-              <strong>flight</strong> (problems leave before the forum closes).
-              <strong>Resolution</strong> &#8212; genuinely closing the problem &#8212; becomes rare.
-            </p>
-          </div>
-
-          <!-- Trigger button -->
-          <div class="submit-row">
-            <button class="submit-btn" id="run-sim-btn">See how decisions play out</button>
-          </div>
-
-          <!-- Simulation area — hidden until button click -->
-          <div id="viz-area" hidden>
-            <svg id="viz-svg"></svg>
-
-            <!-- End state summary card — shown after animation -->
-            <div class="sim-summary-card" id="sim-summary" hidden>
-              <p class="sim-summary-header" id="sum-header"></p>
-
-              <p class="sim-summary-subheader" id="sum-thisrun-label"></p>
-              <p class="period-readout" id="sum-thisrun-resolved"></p>
-              <p class="period-readout" id="sum-thisrun-inforum"></p>
-              <p class="period-readout" id="sum-thisrun-adrift"></p>
-              <p class="period-readout" id="sum-thisrun-choices-resolved"></p>
-              <p class="period-readout" id="sum-thisrun-choices-open"></p>
-
-              <p class="sim-summary-subheader" id="sum-choices-label"></p>
-              <p class="period-readout" id="sum-choice-resolution"></p>
-              <p class="period-readout" id="sum-choice-oversight"></p>
-              <p class="period-readout" id="sum-choice-flight"></p>
-
-              <p class="sim-summary-subheader" id="sum-problems-label"></p>
-              <p class="period-readout" id="sum-prob-resolved"></p>
-              <p class="period-readout" id="sum-prob-displaced"></p>
-              <p class="period-readout" id="sum-prob-adrift"></p>
-              <p class="period-readout" id="sum-prob-inforum"></p>
-
-              <button class="replay-btn" id="replay-btn">Run again</button>
-              <p class="positioning-caption" id="stochastic-note">Each run varies slightly. The simulation is stochastic.</p>
-            </div>
+        <section class="essay-section">
+          <h2 class="essay-heading">Explore the Model</h2>
+          <p class="essay-body">
+            This module offers three ways to engage with the Garbage Can Model:
+          </p>
+          <div class="essay-links">
+            <a class="essay-link" href="taxonomy/">
+              <span class="essay-link-label">Taxonomy</span>
+              <span class="essay-link-desc">The five organisation types and how they are classified</span>
+            </a>
+            <a class="essay-link" href="explorer/">
+              <span class="essay-link-label">Simulation Explorer</span>
+              <span class="essay-link-desc">Run the model with any parameter combination</span>
+            </a>
+            <a class="essay-link" href="assess/">
+              <span class="essay-link-label">Self-Assessment</span>
+              <span class="essay-link-desc">Answer twelve questions and see your organisation modelled</span>
+            </a>
           </div>
         </section>
 
-      </div>
+      </article>
 
       <!-- Footer nav -->
       <nav class="module-footer-nav" aria-label="Module navigation">
@@ -367,969 +165,13 @@
     <p class="footer-text">To the Bedrock &middot; Platoscave</p>
   </footer>
 
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="../../gc-simulation.js"></script>
-  <script src="../../gc-scoring.js"></script>
   <script>
-    // ─── Nav toggle ──────────────────────────────────────────────────────────────
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
     document.querySelector('.nav-mobile-toggle').addEventListener('click', function () {
       document.querySelector('.nav-links').classList.toggle('is-open');
-    });
-
-    // ─── Results mini-nav ────────────────────────────────────────────────────────
-    document.querySelectorAll('.results-nav-link').forEach(function(link) {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        var targetId = this.getAttribute('data-section');
-        document.getElementById(targetId).scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // Update active state
-        document.querySelectorAll('.results-nav-link').forEach(function(l) {
-          l.classList.remove('results-nav-link--active');
-        });
-        this.classList.add('results-nav-link--active');
-      });
-    });
-
-    // ─── Questionnaire step navigation ───────────────────────────────────────────
-    const Q_GROUPS = [
-      { id: 'q-group-1', questions: ['q0', 'q1', 'q2', 'q3', 'q4'], errorId: 'form-error-1', continueId: 'q-continue-1' },
-      { id: 'q-group-2', questions: ['q5', 'q6', 'q7'],             errorId: 'form-error-2', continueId: 'q-continue-2' },
-      { id: 'q-group-3', questions: ['q8', 'q9', 'q10', 'q11'],     errorId: null,           continueId: null },
-    ];
-
-    let currentGroup = 0;
-
-    function validateGroup(groupIdx) {
-      const group = Q_GROUPS[groupIdx];
-      for (let i = 0; i < group.questions.length; i++) {
-        if (!document.querySelector(`input[name="${group.questions[i]}"]:checked`)) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    function advanceGroup(fromIdx) {
-      const group = Q_GROUPS[fromIdx];
-      if (!validateGroup(fromIdx)) {
-        if (group.errorId) document.getElementById(group.errorId).hidden = false;
-        return;
-      }
-      if (group.errorId) document.getElementById(group.errorId).hidden = true;
-
-      // Hide current group
-      document.getElementById(group.id).hidden = true;
-
-      // Show next group
-      currentGroup = fromIdx + 1;
-      document.getElementById(Q_GROUPS[currentGroup].id).hidden = false;
-      document.getElementById('q-step').textContent = `${currentGroup + 1} of 3`;
-
-      // Scroll to top of next card — offset for fixed nav
-      setTimeout(function() {
-        var el = document.getElementById(Q_GROUPS[currentGroup].id);
-        var navHeight = 56; // 3.5rem nav bar
-        var y = el.getBoundingClientRect().top + window.pageYOffset - navHeight - 16;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-      }, 50);
-    }
-
-    document.getElementById('q-continue-1').addEventListener('click', function () {
-      advanceGroup(0);
-    });
-
-    document.getElementById('q-continue-2').addEventListener('click', function () {
-      advanceGroup(1);
-    });
-
-    // Enable submit button when all group 3 questions are answered
-    Q_GROUPS[2].questions.forEach(function(qName) {
-      document.querySelectorAll('input[name="' + qName + '"]').forEach(function(radio) {
-        radio.addEventListener('change', function() {
-          if (validateGroup(2)) {
-            document.getElementById('submit-btn').disabled = false;
-          }
-        });
-      });
-    });
-
-    // Enable Continue buttons when their group's questions are answered
-    [0, 1].forEach(function(groupIdx) {
-      Q_GROUPS[groupIdx].questions.forEach(function(qName) {
-        document.querySelectorAll('input[name="' + qName + '"]').forEach(function(radio) {
-          radio.addEventListener('change', function() {
-            if (validateGroup(groupIdx)) {
-              document.getElementById(Q_GROUPS[groupIdx].continueId).disabled = false;
-            }
-          });
-        });
-      });
-    });
-
-    // ─── Diagnosis lookup (from PRINCIPLE-organised-anarchy-diagnosis.md) ────────
-    const DIAGNOSIS_CLUSTERS = {
-      'unsegmented/unsegmented':  'cluster-2',
-      'unsegmented/hierarchical': 'cluster-4',
-      'unsegmented/specialized':  'cluster-4',
-      'hierarchical/hierarchical':'cluster-1',
-      'hierarchical/unsegmented': 'cluster-3',
-      'hierarchical/specialized': 'cluster-3',
-      'specialized/specialized':  'cluster-5',
-      'specialized/hierarchical': 'cluster-3',
-      'specialized/unsegmented':  'cluster-4',
-    };
-
-    const DIAGNOSES = {
-      'cluster-1': {
-        title: 'The Coherent Traditional Organisation',
-        body:  'Your organisation is what it believes itself to be. Problems reach the forums designed for them. Decisions are made by the people with the authority to make them. The instruments of traditional management (governance structures, reporting lines, sanctioned decision forums) are reasonably well matched to the work being done. The Garbage Can Model has limited explanatory power here. If this diagnosis surprises you, it is worth asking whether the questions captured the full complexity of your environment, or whether parts of your organisation are operating under different conditions than the ones you described. In organisations like yours, roughly {flight}% of decisions are made by resolution: the underlying problem is genuinely closed.',
-      },
-      'cluster-2': {
-        title: 'The Complexity-Informed Organisation',
-        body:  'Your organisation has rejected the decomposable worldview, at least in practice. Problems surface wherever they can find a forum. Participation is fluid and expertise-driven rather than seniority-driven. Decisions emerge from whoever is present and engaged rather than from sanctioned authority. This is not disorder \u2014 it is a different kind of order, one that the Garbage Can Model describes well. The risk here is not anarchy but invisibility: when everything is permeable, it becomes difficult to know which decisions were actually made, by whom, and whether the underlying problem was resolved or merely displaced. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved.',
-      },
-      'cluster-3': {
-        title: 'The Mix',
-        body:  'Your organisation has inherited the instruments of a decomposable worldview: governance structures, reporting lines, sanctioned decision forums, capital allocation processes designed around predictable throughput. It applies them to a system that does not behave decomposably. Problems surface everywhere because the work itself is emergent \u2014 complex interactions between people, technology, and context that cannot be predicted from their parts. But decisions are made hierarchically, because the management frame requires it. The result is a permanent structural gap: problems live where the work is, decisions are made where the authority is, and the two rarely occupy the same room at the same time. This is not a communication problem. It is two incompatible beliefs about the nature of the system, operating simultaneously on the same organisation. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved, not because of incompetence, but because the instruments were designed for a different kind of system.',
-      },
-      'cluster-4': {
-        title: 'The Inverse Mix',
-        body:  'Your organisation has open, fluid decision-making: in principle, anyone can weigh in, participation is not strictly governed by seniority. But the problems that reach decision forums are filtered before they arrive. Important issues that originate at the edges of the organisation (where the work actually happens) travel slowly or not at all toward the forums where they could be addressed. The people in the room are willing to decide. The problems that most need deciding rarely make it through the door. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved. The forum was open, but the problem was elsewhere.',
-      },
-      'cluster-5': {
-        title: 'The Siloed Organisation',
-        body:  'Your organisation has partitioned itself: problems are assigned to designated channels, people are assigned to designated forums. On paper this looks like clarity. In practice it means that problems which do not fit their designated channel have nowhere to go. The work that falls between the silos (the integrations, the dependencies, the emergent issues that span functions) has no legitimate forum. It either disappears from view or creates informal decision-making that the organisation cannot see or govern. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved. The problems most likely to go unresolved are the ones the structure was never designed to see.',
-      },
-    };
-
-    function getDiagnosis(decisionStructure, accessStructure, flight) {
-      const key        = `${decisionStructure}/${accessStructure}`;
-      const clusterKey = DIAGNOSIS_CLUSTERS[key] || 'cluster-3';
-      const cluster    = DIAGNOSES[clusterKey];
-      const flightPct  = Math.round(flight * 100);
-      return {
-        title: cluster.title,
-        body:  cluster.body.replace('{flight}', flightPct),
-      };
-    }
-
-    // ─── Scoring (12 questions — from PRINCIPLE-organised-anarchy-questions.md) ──
-    // Q1–5  (indices 0–4)  → energyLoad   — mean of five raw scores
-    // Q6    (index 5)      → accessStructure (inverted: 6 − raw)
-    // Q7–8  (indices 6–7)  → accessStructure — mean with inverted Q6
-    // Q9–12 (indices 8–11) → decisionStructure — mean of four raw scores
-    //
-    // Thresholds: ≤2.0 → light/unsegmented, ≤3.5 → moderate/hierarchical, else heavy/specialized
-
-    function classifyEnergy(mean) {
-      if (mean <= 2.0) return 'light';
-      if (mean <= 3.5) return 'moderate';
-      return 'heavy';
-    }
-
-    function classifyStructure12(mean) {
-      if (mean <= 2.0) return 'unsegmented';
-      if (mean <= 3.5) return 'hierarchical';
-      return 'specialized';
-    }
-
-    function computeScoring(responses) {
-      const q6inv       = 6 - responses[5];  // invert question 6
-      const energyScore   = (responses[0] + responses[1] + responses[2] + responses[3] + responses[4]) / 5;
-      const accessScore   = (q6inv + responses[6] + responses[7]) / 3;
-      const decisionScore = (responses[8] + responses[9] + responses[10] + responses[11]) / 4;
-      return {
-        energyLoad:        classifyEnergy(energyScore),
-        decisionStructure: classifyStructure12(decisionScore),
-        accessStructure:   classifyStructure12(accessScore),
-        raw: { energyScore, decisionScore, accessScore },
-      };
-    }
-
-    // ─── Color tokens ────────────────────────────────────────────────────────────
-    // M (choices) and W (problems) are already defined by gc-simulation.js
-    const C = {
-      ink:       '#2A2018',
-      inkMid:    '#5C4F3A',
-      inkFaint:  '#7A6E5F',
-      inkGhost:  '#B0A490',
-      rust:      '#8B3A2A',
-      rustLight: '#B85C40',
-      ochre:     '#9A7B3A',
-      gold:      '#B8943A',
-      slate:     '#3D4F5C',
-      sage:      '#4A6741',
-    };
-
-    // ─── Per-tick outcome counters ────────────────────────────────────────────────
-    // Derived from tick transitions. Four counters tracked incrementally:
-    //   resolved  — problems that became 'resolved' this tick (attached → resolved)
-    //   flight    — problems that fled a choice (attached → floating)
-    //   oversight — choices that resolved with no attached problems (choice-level event)
-    //   unresolved — W minus resolved minus flight (everything not yet categorised)
-    function computeTickCounters(ticks) {
-      const result = [];
-      let cResolved  = 0;
-      let cFlight    = 0;
-      let cOversight = 0;
-
-      result.push({ resolved: 0, oversight: 0, flight: 0, unresolved: W });
-
-      for (let i = 1; i < ticks.length; i++) {
-        const prev = ticks[i - 1];
-        const curr = ticks[i];
-
-        // Problems resolved this tick (attached → resolved)
-        // Problems that fled this tick (attached → floating)
-        for (let p = 0; p < W; p++) {
-          const ps = prev.problems[p].state;
-          const cs = curr.problems[p].state;
-          if (ps !== 'resolved' && cs === 'resolved') cResolved++;
-          if (ps === 'attached' && cs === 'floating')  cFlight++;
-        }
-
-        // Choices that resolved this tick with no problems attached in previous tick
-        for (let c = 0; c < M; c++) {
-          if (prev.choices[c].state === 'active' && curr.choices[c].state === 'resolved') {
-            const hadAttached = prev.problems.some(p => p.state === 'attached' && p.attachedTo === c);
-            if (!hadAttached) cOversight++;
-          }
-        }
-
-        result.push({
-          resolved:   cResolved,
-          oversight:  cOversight,
-          flight:     cFlight,
-          unresolved: W - cResolved - cFlight,
-        });
-      }
-
-      return result;
-    }
-
-    // ─── Positioning diagram ─────────────────────────────────────────────────────
-    function drawPositioning(raw) {
-      const svgEl  = document.getElementById('positioning-svg');
-      const svgW   = svgEl.clientWidth || 640;
-      const PAD_L  = 100;
-      const PAD_R  = 24;
-      const TRACKW = svgW - PAD_L - PAD_R;
-      const TRACKH = 48;
-      const svgH   = TRACKH * 3 + 8;
-
-      const svg = d3.select('#positioning-svg')
-        .attr('viewBox', `0 0 ${svgW} ${svgH}`)
-        .attr('height', svgH);
-
-      svg.selectAll('*').remove();
-
-      const tracks = [
-        { label: 'Load',     score: raw.energyScore,   lo: 'Light',      hi: 'Heavy',  min: 1, max: 5 },
-        { label: 'Decision', score: raw.decisionScore,  lo: 'Restricted', hi: 'Open',   min: 1, max: 5 },
-        { label: 'Access',   score: raw.accessScore,    lo: 'Directed',   hi: 'Open',   min: 1, max: 5 },
-      ];
-
-      const g = svg.selectAll('g.track')
-        .data(tracks)
-        .join('g')
-          .attr('class', 'track')
-          .attr('transform', (d, i) => `translate(0, ${i * TRACKH + 4})`);
-
-      g.append('text')
-        .attr('x', 0)
-        .attr('y', 22)
-        .attr('font-family', "'DM Mono', monospace")
-        .attr('font-size', '9')
-        .attr('font-weight', '300')
-        .attr('fill', C.inkFaint)
-        .attr('letter-spacing', '0.1em')
-        .text(d => d.label.toUpperCase());
-
-      g.append('text')
-        .attr('x', PAD_L)
-        .attr('y', 13)
-        .attr('font-family', "'DM Mono', monospace")
-        .attr('font-size', '8')
-        .attr('font-weight', '300')
-        .attr('fill', C.inkGhost)
-        .attr('text-anchor', 'start')
-        .attr('letter-spacing', '0.08em')
-        .text(d => d.lo.toUpperCase());
-
-      g.append('text')
-        .attr('x', PAD_L + TRACKW)
-        .attr('y', 13)
-        .attr('font-family', "'DM Mono', monospace")
-        .attr('font-size', '8')
-        .attr('font-weight', '300')
-        .attr('fill', C.inkGhost)
-        .attr('text-anchor', 'end')
-        .attr('letter-spacing', '0.08em')
-        .text(d => d.hi.toUpperCase());
-
-      g.append('line')
-        .attr('x1', PAD_L)
-        .attr('x2', PAD_L + TRACKW)
-        .attr('y1', 28)
-        .attr('y2', 28)
-        .attr('stroke', C.inkGhost)
-        .attr('stroke-width', 0.75);
-
-      g.append('circle')
-        .attr('cx', d => PAD_L + ((d.score - d.min) / (d.max - d.min)) * TRACKW)
-        .attr('cy', 28)
-        .attr('r', 4)
-        .attr('fill', C.inkMid)
-        .attr('opacity', 0)
-        .transition()
-          .duration(600)
-          .ease(d3.easeCubicInOut)
-          .attr('opacity', 1);
-    }
-
-    // ─── Visualization (lifted from tests/test-gc-viz.html) ──────────────────────
-    function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
-      const { ticks, resolution, oversight, flight } = simResult;
-
-      // Choice-level percentages (canonical GCM decision styles)
-      // Rounded to nearest 5% — at 100 Monte Carlo iterations, finer precision is noise
-      const pctRes  = Math.round(simResult.resolution * 20) * 5;
-      const pctOver = Math.round(simResult.oversight  * 20) * 5;
-      const pctFli  = 100 - pctRes - pctOver;
-
-      // Problem-level counts (out of W=20, interpretive extension)
-      const probResolved  = Math.round(simResult.problemResolved);
-      const probDisplaced = Math.round(simResult.problemDisplaced);
-      const probAdrift    = Math.round(simResult.problemAdrift);
-      const probInForum   = Math.max(0, W - probResolved - probDisplaced - probAdrift);
-
-      // Reset summary state
-      document.getElementById('sim-summary').hidden   = true;
-      document.getElementById('replay-btn').hidden    = true;
-      document.getElementById('stochastic-note').hidden = true;
-
-      const container = document.getElementById('viz-svg');
-      const SVG_W    = container.clientWidth || 900;
-      const SVG_H    = 300;
-      const CHOICE_Y = 140;
-      const CHOICE_R = 22;
-      const PROB_R   = 3.5;
-      const PAD_H    = 55;
-      const FLOAT_Y0 = 50;
-      const FLOAT_Y1 = 75;
-
-      const svg = d3.select('#viz-svg')
-        .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
-        .attr('height', SVG_H);
-
-      svg.selectAll('*').remove();
-
-      // M (choices) and W (problems) are defined by gc-simulation.js
-      const choiceX = d3.range(M).map(
-        i => PAD_H + i * (SVG_W - PAD_H * 2) / (M - 1)
-      );
-
-      function floatPos(id) {
-        if (id < M) {
-          return { x: choiceX[id], y: FLOAT_Y0 };
-        }
-        const col = id - M;
-        return { x: choiceX[col] + (col % 2 === 0 ? 18 : -18), y: FLOAT_Y1 };
-      }
-
-      function attachedPos(choiceId, slot, total) {
-        // Fibonacci spiral distribution — fixed dot size
-        const goldenAngle = 2.399; // radians — golden angle
-        const maxR        = CHOICE_R - PROB_R - 1; // keep dots within boundary
-        const r           = maxR * Math.sqrt((slot + 0.5) / total);
-        const angle       = slot * goldenAngle;
-
-        return {
-          x: choiceX[choiceId] + r * Math.cos(angle),
-          y: CHOICE_Y          + r * Math.sin(angle),
-        };
-      }
-
-      // ── clipPath defs — one per choice circle ──────────────────────────────────
-      const defs = svg.append('defs');
-      d3.range(M).forEach(i => {
-        defs.append('clipPath')
-          .attr('id', `clip-c${i}`)
-          .append('circle')
-            .attr('cx', choiceX[i])
-            .attr('cy', CHOICE_Y)
-            .attr('r', CHOICE_R);
-      });
-
-      // ── Layer 1: choice circle strokes ─────────────────────────────────────────
-      const choiceLayer = svg.append('g');
-
-      choiceLayer.selectAll('circle.choice')
-        .data(d3.range(M))
-        .join('circle')
-          .attr('class', 'choice')
-          .attr('cx', i => choiceX[i])
-          .attr('cy', CHOICE_Y)
-          .attr('r', CHOICE_R)
-          .attr('fill', 'none')
-          .attr('stroke', C.inkGhost)
-          .attr('stroke-width', 1)
-          .each(function() {
-            d3.select(this).append('title');
-          });
-
-      // ── Layer 2: fill rects (clipped inside choice circles) ────────────────────
-      const fillLayer = svg.append('g');
-
-      fillLayer.selectAll('rect.choice-fill')
-        .data(d3.range(M))
-        .join('rect')
-          .attr('class', 'choice-fill')
-          .attr('x', i => choiceX[i] - CHOICE_R)
-          .attr('y', CHOICE_Y + CHOICE_R)
-          .attr('width', CHOICE_R * 2)
-          .attr('height', 0)
-          .attr('fill', C.sage)
-          .attr('fill-opacity', 0.50)
-          .attr('clip-path', i => `url(#clip-c${i})`);
-
-      // ── Layer 3: choice labels (rendered above fill) ────────────────────────────
-      const labelLayer = svg.append('g');
-
-      labelLayer.selectAll('text.choice-label')
-        .data(d3.range(M))
-        .join('text')
-          .attr('class', 'choice-label')
-          .attr('x', i => choiceX[i])
-          .attr('y', CHOICE_Y + CHOICE_R + 13)
-          .attr('text-anchor', 'middle')
-          .attr('font-family', "'DM Mono', monospace")
-          .attr('font-size', '0.5rem')
-          .attr('font-weight', '300')
-          .attr('letter-spacing', '0.1em')
-          .attr('fill', C.inkFaint)
-          .text(i => `C${i}`);
-
-      // ── Layer 5: cycle counter (top-left) ───────────────────────────────────────
-      var counterText = svg.append('text')
-        .attr('class', 'viz-counter')
-        .attr('x', 0)
-        .attr('y', 16)
-        .attr('font-family', "'DM Mono', monospace")
-        .attr('font-size', '0.6rem')
-        .attr('font-weight', '300')
-        .attr('letter-spacing', '0.1em')
-        .attr('fill', C.inkFaint)
-        .text('Cycle 0 of 20');
-
-      // ── Phase label (top-right) ─────────────────────────────────────────────────
-      var phaseText = svg.append('text')
-        .attr('x', SVG_W)
-        .attr('y', 16)
-        .attr('text-anchor', 'end')
-        .attr('font-family', "'DM Mono', monospace")
-        .attr('font-size', '0.55rem')
-        .attr('font-weight', '300')
-        .attr('font-style', 'italic')
-        .attr('letter-spacing', '0.08em')
-        .attr('fill', C.inkFaint)
-        .text('');
-
-      // ── Layer 6: legend (bottom of SVG) ─────────────────────────────────────────
-      var LEGEND_Y = SVG_H - 12;
-      var legendItems = [
-        { label: 'Entering',  color: C.rust },
-        { label: 'Searching', color: C.rustLight },
-        { label: 'In forum',  color: C.gold },
-      ];
-
-      var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
-      var legendX = 0;
-
-      legendItems.forEach(function(item) {
-        legendG.append('circle')
-          .attr('cx', legendX + 4)
-          .attr('cy', 0)
-          .attr('r', 4)
-          .attr('fill', item.color);
-
-        legendG.append('text')
-          .attr('x', legendX + 12)
-          .attr('y', 4)
-          .attr('font-family', "'DM Mono', monospace")
-          .attr('font-size', '0.5rem')
-          .attr('font-weight', '300')
-          .attr('letter-spacing', '0.08em')
-          .attr('fill', C.inkFaint)
-          .text(item.label.toUpperCase());
-
-        legendX += item.label.length * 7 + 30;
-      });
-
-      // Resolved legend item — circle with sage fill at bottom
-      var resolvedClipId = 'legend-clip-resolved-viz';
-      svg.select('defs').append('clipPath')
-        .attr('id', resolvedClipId)
-        .append('circle')
-          .attr('cx', legendX + 5)
-          .attr('cy', LEGEND_Y)
-          .attr('r', 5);
-
-      legendG.append('circle')
-        .attr('cx', legendX + 5)
-        .attr('cy', 0)
-        .attr('r', 5)
-        .attr('fill', 'none')
-        .attr('stroke', C.inkMid)
-        .attr('stroke-width', 0.75);
-
-      legendG.append('rect')
-        .attr('x', legendX)
-        .attr('y', 2)
-        .attr('width', 10)
-        .attr('height', 5)
-        .attr('fill', C.sage)
-        .attr('fill-opacity', 0.35)
-        .attr('clip-path', 'url(#' + resolvedClipId + ')');
-
-      legendG.append('text')
-        .attr('x', legendX + 14)
-        .attr('y', 4)
-        .attr('font-family', "'DM Mono', monospace")
-        .attr('font-size', '0.5rem')
-        .attr('font-weight', '300')
-        .attr('letter-spacing', '0.08em')
-        .attr('fill', C.inkFaint)
-        .text('RESOLVED');
-
-      // ── Layer 4: problem dots ──────────────────────────────────────────────────
-      const probLayer = svg.append('g');
-
-      probLayer.selectAll('circle.problem')
-        .data(d3.range(W), d => d)
-        .join('circle')
-          .attr('class', 'problem')
-          .attr('cx', id => floatPos(id).x)
-          .attr('cy', id => floatPos(id).y)
-          .attr('r', PROB_R)
-          .attr('fill', C.inkGhost)
-          .attr('opacity', 0)
-          .each(function() {
-            d3.select(this).append('title');
-          });
-
-      function probAttrs(tick, id) {
-        const p = tick.problems[id];
-
-        if (p.state === 'inactive') {
-          const fp = floatPos(id);
-          return { x: fp.x, y: fp.y, opacity: 0, fill: C.inkGhost, r: PROB_R };
-        }
-
-        if (p.state === 'floating') {
-          const fp = floatPos(id);
-          return { x: fp.x, y: fp.y, opacity: 0.9, fill: C.rustLight, r: PROB_R };
-        }
-
-        if (p.state === 'resolved') {
-          const cx = typeof p.attachedTo === 'number' ? choiceX[p.attachedTo] : choiceX[0];
-          return { x: cx, y: CHOICE_Y, opacity: 0, fill: C.sage, r: PROB_R };
-        }
-
-        // attached — fibonacci packing inside choice circle
-        const siblings = tick.problems
-          .map((q, i) => ({ ...q, id: i }))
-          .filter(q => q.state === 'attached' && q.attachedTo === p.attachedTo);
-        const slot = siblings.findIndex(q => q.id === id);
-        const pos  = attachedPos(p.attachedTo, slot, siblings.length);
-        return { x: pos.x, y: pos.y, opacity: 1, fill: C.gold, r: PROB_R };
-      }
-
-      // Cumulative resolved-at-choice counts — one entry per choice, never decreases
-      const resolvedAtChoice = Array(M).fill(0);
-
-      // Problem IDs that have ever been active (for entrance animation)
-      const everActive = new Set();
-
-      function isDeadTick(tickIdx) {
-        if (tickIdx === 0) return false;
-        const prev = ticks[tickIdx - 1];
-        const curr = ticks[tickIdx];
-        for (let i = 0; i < M; i++) {
-          if (prev.choices[i].state !== curr.choices[i].state) return false;
-        }
-        for (let i = 0; i < W; i++) {
-          if (prev.problems[i].state !== curr.problems[i].state) return false;
-          if (prev.problems[i].attachedTo !== curr.problems[i].attachedTo) return false;
-        }
-        return true;
-      }
-
-      function renderTick(tickIdx, prevTick) {
-        const tick = ticks[tickIdx];
-
-        svg.selectAll('circle.choice')
-          .data(tick.choices)
-          .transition()
-            .duration(600)
-            .ease(d3.easeCubicInOut)
-            .attr('stroke', d => {
-              if (d.state === 'resolved') return C.inkGhost;
-              if (d.state === 'active')   return C.inkFaint;
-              return C.inkGhost;
-            })
-            .attr('stroke-width', d => {
-              if (d.state === 'resolved') return 0.5;
-              return 1;
-            })
-            .attr('opacity', d => {
-              if (d.state === 'resolved') return 0.4;
-              return 1;
-            });
-
-        // Update choice tooltips
-        svg.selectAll('circle.choice').each(function(d, i) {
-          var state = tick.choices[i].state;
-          var text;
-          if (state === 'inactive') {
-            text = 'Choice opportunity: not yet entered';
-          } else if (state === 'resolved') {
-            text = 'Resolved: this forum has closed';
-          } else {
-            text = 'Choice opportunity: a forum where decisions could be made';
-          }
-          d3.select(this).select('title').text(text);
-        });
-
-        // Update problem tooltips
-        svg.selectAll('circle.problem').each(function(d) {
-          var p = tick.problems[d];
-          var text;
-          if (p.state === 'inactive') {
-            text = '';
-          } else if (p.state === 'floating') {
-            text = 'Problem searching for a forum';
-          } else if (p.state === 'attached') {
-            text = 'Problem attached to forum C' + p.attachedTo;
-          } else if (p.state === 'resolved') {
-            text = 'Problem resolved at forum C' + p.attachedTo;
-          }
-          d3.select(this).select('title').text(text);
-        });
-
-        // Detect exit types by comparing previous and current tick
-        const resolvedThisTick = new Set();
-        const flightSet        = new Set();
-        const oversightSet     = new Set();
-
-        if (prevTick) {
-          const choicesResolvedThisTick = new Set();
-          for (let c = 0; c < M; c++) {
-            if (prevTick.choices[c].state === 'active' && tick.choices[c].state === 'resolved') {
-              choicesResolvedThisTick.add(c);
-            }
-          }
-          for (let id = 0; id < W; id++) {
-            const ps = prevTick.problems[id].state;
-            const cs = tick.problems[id].state;
-            if (ps === 'attached' && cs === 'resolved') {
-              resolvedThisTick.add(id);
-            } else if (ps === 'attached' && cs === 'floating') {
-              const attachedTo = prevTick.problems[id].attachedTo;
-              if (choicesResolvedThisTick.has(attachedTo)) {
-                oversightSet.add(id);
-              } else {
-                flightSet.add(id);
-              }
-            }
-          }
-        }
-
-        // Fill level — cumulative count of problems resolved at each choice
-        if (prevTick) {
-          for (let id = 0; id < W; id++) {
-            if (tick.problems[id].state === 'resolved' && prevTick.problems[id].state !== 'resolved') {
-              resolvedAtChoice[tick.problems[id].attachedTo]++;
-            }
-          }
-        }
-        svg.selectAll('rect.choice-fill')
-          .data(d3.range(M))
-          .transition()
-            .duration(600)
-            .ease(d3.easeCubicInOut)
-            .attr('y',      i => CHOICE_Y + CHOICE_R - (resolvedAtChoice[i] / W) * (CHOICE_R * 2))
-            .attr('height', i => (resolvedAtChoice[i] / W) * (CHOICE_R * 2));
-
-        // Detect problems entering for the first time this tick
-        const enteringThisTick = new Set();
-        for (let id = 0; id < W; id++) {
-          if (tick.problems[id].state !== 'inactive' && !everActive.has(id)) {
-            enteringThisTick.add(id);
-            everActive.add(id);
-          }
-        }
-
-        const allProbs = svg.selectAll('circle.problem').data(d3.range(W), d => d);
-
-        // Entrance fade-in: scale up from r:1, opacity 0 → target state
-        allProbs.filter(id => enteringThisTick.has(id))
-          .each(function(id) {
-            const attrs = probAttrs(tick, id);
-            d3.select(this).interrupt()
-              .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', 1).attr('opacity', 0)
-              .transition().duration(400).ease(d3.easeCubicOut)
-                .attr('r', attrs.r).attr('opacity', attrs.opacity).attr('fill', attrs.fill);
-          });
-
-        // Resolution exit: move to circle centre, shrink to r:1.5, fill sage, then fade
-        allProbs.filter(id => resolvedThisTick.has(id))
-          .each(function(id) {
-            const cx = choiceX[prevTick.problems[id].attachedTo];
-            d3.select(this).interrupt()
-              .transition().duration(400).ease(d3.easeCubicInOut)
-                .attr('cx', cx).attr('cy', CHOICE_Y).attr('r', 1.5).attr('fill', C.sage)
-              .transition().duration(200)
-                .attr('opacity', 0);
-          });
-
-        // Flight exit: flash rust, then move to float position
-        allProbs.filter(id => flightSet.has(id))
-          .each(function(id) {
-            const fp = floatPos(id);
-            d3.select(this).interrupt()
-              .transition().duration(200)
-                .attr('fill', C.rust)
-              .transition().duration(400).ease(d3.easeCubicInOut)
-                .attr('cx', fp.x).attr('cy', fp.y).attr('r', PROB_R)
-                .attr('opacity', 0.85).attr('fill', C.inkFaint);
-          });
-
-        // Oversight exit: flash slate, then move to float position
-        allProbs.filter(id => oversightSet.has(id))
-          .each(function(id) {
-            const fp = floatPos(id);
-            d3.select(this).interrupt()
-              .transition().duration(200)
-                .attr('fill', C.slate)
-              .transition().duration(400).ease(d3.easeCubicInOut)
-                .attr('cx', fp.x).attr('cy', fp.y).attr('r', PROB_R)
-                .attr('opacity', 0.85).attr('fill', C.inkFaint);
-          });
-
-        // All other problems: standard position transition (staggered for organic feel)
-        allProbs.filter(id => !resolvedThisTick.has(id) && !flightSet.has(id) && !oversightSet.has(id) && !enteringThisTick.has(id))
-          .interrupt()
-          .transition()
-            .delay(id => Math.random() * 150)
-            .duration(id => 700 + Math.random() * 300)
-            .ease(d3.easeCubicInOut)
-            .attr('cx',      id => probAttrs(tick, id).x)
-            .attr('cy',      id => probAttrs(tick, id).y)
-            .attr('r',       id => probAttrs(tick, id).r)
-            .attr('opacity', id => probAttrs(tick, id).opacity)
-            .attr('fill',    id => probAttrs(tick, id).fill);
-
-        // Sync pulse class — attached dots breathe, others do not
-        allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');
-        allProbs.classed('problem-searching', id => tick.problems[id].state === 'floating');
-
-        counterText.text(`Cycle ${tick.tick} of 20`);
-
-        // Phase label
-        if (tick.tick <= 10) {
-          phaseText.text('Problems entering');
-        } else if (prevTick && !isDeadTick(tickIdx)) {
-          phaseText.text('Energy accumulating');
-        } else if (prevTick && isDeadTick(tickIdx)) {
-          phaseText.transition().duration(400)
-            .attr('fill', C.rust)
-            .text('System locked');
-        }
-
-      }
-
-      renderTick(0, null);
-
-      let current = 0;
-
-      function stepTick() {
-        current++;
-        if (current >= ticks.length) {
-          counterText.text('Cycle 20 of 20 \u00B7 showing final run');
-          phaseText.text('');
-          showEndState(
-            pctRes, pctOver, pctFli,
-            probResolved, probDisplaced, probAdrift, probInForum,
-            ticks[ticks.length - 1]
-          );
-          return;
-        }
-        renderTick(current, ticks[current - 1]);
-        var delay;
-        if (current <= 10) {
-          delay = 1000;
-        } else if (isDeadTick(current)) {
-          delay = 600;
-        } else {
-          delay = 1200;
-        }
-        setTimeout(stepTick, delay);
-      }
-
-      setTimeout(stepTick, 800);
-    }
-
-    // ─── End state summary ────────────────────────────────────────────────────────
-    function showEndState(
-      pctRes, pctOver, pctFli,
-      probResolved, probDisplaced, probAdrift, probInForum,
-      lastTick
-    ) {
-
-      // Stop any pulsating on dots
-      d3.select('#viz-svg').selectAll('circle.problem')
-        .classed('problem-attached', false)
-        .interrupt();
-
-      document.getElementById('sim-summary').hidden = false;
-
-      // Single-run end state from tick 20
-      var runResolved = 0;
-      var runInForum  = 0;
-      var runAdrift   = 0;
-      var runChoicesResolved = 0;
-      var runChoicesOpen     = 0;
-
-      if (lastTick) {
-        lastTick.problems.forEach(function(p) {
-          if (p.state === 'resolved') runResolved++;
-          else if (p.state === 'attached') runInForum++;
-          else if (p.state === 'floating') runAdrift++;
-        });
-        lastTick.choices.forEach(function(c) {
-          if (c.state === 'resolved') runChoicesResolved++;
-          else if (c.state === 'active') runChoicesOpen++;
-        });
-      }
-
-      document.getElementById('sum-thisrun-label').textContent =
-        'This run (cycle ' + PERIODS + ')';
-      document.getElementById('sum-thisrun-resolved').innerHTML =
-        '<span class="outcome-resolved">Resolved</span>: ' + runResolved + ' of ' + W + ' problems';
-      document.getElementById('sum-thisrun-inforum').innerHTML =
-        '<span class="outcome-unresolved">In forum</span>: ' + runInForum + ' of ' + W + ' problems';
-      document.getElementById('sum-thisrun-adrift').innerHTML =
-        '<span class="outcome-flight">Adrift</span>: ' + runAdrift + ' of ' + W + ' problems';
-      document.getElementById('sum-thisrun-choices-resolved').innerHTML =
-        '<span class="outcome-resolved">Choices resolved</span>: ' + runChoicesResolved + ' of ' + M;
-      document.getElementById('sum-thisrun-choices-open').innerHTML =
-        '<span class="outcome-unresolved">Choices still open</span>: ' + runChoicesOpen + ' of ' + M;
-
-      // Primary: canonical GCM decision styles (choice-level)
-      document.getElementById('sum-header').textContent =
-        'Across 100 simulations, on average:';
-
-      document.getElementById('sum-choices-label').textContent =
-        `How the ${M} decision forums closed`;
-      document.getElementById('sum-choice-resolution').innerHTML =
-        `<span class="outcome-resolved">Deliberation</span>: ${pctRes}% \u2014 forum closed after sustained engagement`;
-      document.getElementById('sum-choice-oversight').innerHTML =
-        `<span class="outcome-oversight">Oversight</span>: ${pctOver}% \u2014 forum closed with no problem attached`;
-      document.getElementById('sum-choice-flight').innerHTML =
-        `<span class="outcome-flight">Flight</span>: ${pctFli}% \u2014 forum closed after problems fled`;
-      
-      // Supplementary: problem fates (interpretive extension)
-      document.getElementById('sum-problems-label').textContent =
-        `What happened to the ${W} problems`;
-      document.getElementById('sum-prob-resolved').innerHTML =
-        `<span class="outcome-resolved">Resolved</span>: ${probResolved} of ${W} \u2014 genuinely closed at a decision forum`;
-      document.getElementById('sum-prob-displaced').innerHTML =
-        `<span class="outcome-oversight">Displaced</span>: ${probDisplaced} of ${W} \u2014 forum closed without resolving this problem`;
-      document.getElementById('sum-prob-adrift').innerHTML =
-        `<span class="outcome-flight">Adrift</span>: ${probAdrift} of ${W} \u2014 detached from forum or never attached`;
-      document.getElementById('sum-prob-inforum').innerHTML =
-        `<span class="outcome-unresolved">In forum</span>: ${probInForum} of ${W} \u2014 still attached to an open forum at cycle ${PERIODS}`;
-
-      document.getElementById('replay-btn').hidden      = false;
-      document.getElementById('stochastic-note').hidden = false;
-    }
-
-    // ─── Stage reveal ────────────────────────────────────────────────────────────
-    function showStage(id, delay) {
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        el.classList.add('is-visible');
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, delay);
-    }
-
-    // ─── Form submission ─────────────────────────────────────────────────────────
-    document.getElementById('questionnaire').addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const responses = [];
-      for (let i = 0; i < 12; i++) {
-        const checked = this.querySelector(`input[name="q${i}"]:checked`);
-        if (!checked) {
-          document.getElementById('form-error').style.display = 'block';
-          return;
-        }
-        responses.push(parseInt(checked.value, 10));
-      }
-      document.getElementById('form-error').style.display = 'none';
-
-      const scoring = computeScoring(responses);
-      const { energyLoad, decisionStructure, accessStructure, raw } = scoring;
-
-      console.log('Scoring output:', { energyLoad, decisionStructure, accessStructure, raw });
-
-      const simResult = runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructure });
-      const { resolution, oversight, flight } = simResult;
-
-      console.log('Simulation output:', { resolution, oversight, flight });
-
-      const cluster   = DIAGNOSIS_CLUSTERS[`${decisionStructure}/${accessStructure}`] || 'cluster-3';
-      const diagnosis = getDiagnosis(decisionStructure, accessStructure, flight + oversight);
-      const { title } = diagnosis;
-
-      console.log('Diagnosis:', { cluster, title });
-
-      // Reveal results area
-      showStage('results-area', 100);
-
-      // Diagnosis
-      setTimeout(() => {
-        document.getElementById('diagnosis-title').textContent = diagnosis.title;
-        document.getElementById('diagnosis-body').textContent  = diagnosis.body;
-      }, 300);
-
-      // Positioning
-      setTimeout(() => {
-        drawPositioning(raw);
-        document.getElementById('positioning-caption').textContent =
-          `Load: ${energyLoad}; Decision: ${decisionStructure}; Access: ${accessStructure}`;
-      }, 500);
-
-      // Simulation caption (visible before animation)
-      document.getElementById('viz-caption').textContent =
-        `Problems (dots) search for choice opportunities (circles) each cycle, ` +
-        `attaching, drifting, and resolving as energy accumulates. ` +
-        `Parameters: ${energyLoad} load; ${decisionStructure} decision; ${accessStructure} access.`;
-
-      // Simulation trigger — runs on button click
-      document.getElementById('run-sim-btn').onclick = function () {
-        document.getElementById('run-sim-btn').hidden = true;
-        document.getElementById('viz-area').hidden = false;
-        drawViz(simResult, energyLoad, decisionStructure, accessStructure);
-      };
-
-      // Replay button — closure over scoring params
-      document.getElementById('replay-btn').onclick = function () {
-        const newSim = runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructure });
-        drawViz(newSim, energyLoad, decisionStructure, accessStructure);
-      };
     });
   </script>
 

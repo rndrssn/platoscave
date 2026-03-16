@@ -589,7 +589,7 @@
           </div>
 
             <div class="submit-row">
-              <button type="submit" class="submit-btn">Map this organisation</button>
+              <button type="submit" class="submit-btn" id="submit-btn" disabled>Map this organisation</button>
               <p class="form-error" id="form-error">Please answer all questions before continuing.</p>
             </div>
           </div>
@@ -597,57 +597,78 @@
         </form>
       </section>
 
-      <!-- Stage 2 — Positioning diagram -->
-      <section id="stage-2" class="stage">
-        <hr class="stage-rule" />
-        <p class="stage-label">Positioning</p>
-        <svg id="positioning-svg"></svg>
-        <p class="positioning-caption" id="positioning-caption"></p>
-      </section>
+      <!-- Results — revealed after form submission -->
+      <div id="results-area" class="stage">
 
-      <!-- Stage 3 — Diagnosis + simulation -->
-      <section id="stage-3" class="stage">
-        <hr class="stage-rule" />
-        <p class="stage-label">Diagnosis</p>
-        <h2 class="diagnosis-title" id="diagnosis-title"></h2>
-        <p class="diagnosis-body" id="diagnosis-body"></p>
-        <p class="figure-eyebrow">Fig. &mdash; Garbage Can Model</p>
-        <div class="submit-row">
-          <button class="submit-btn" id="run-sim-btn" hidden>See how decisions play out</button>
-        </div>
-        <div id="viz-area" hidden>
-          <svg id="viz-svg"></svg>
-        <div class="viz-legend" id="viz-legend" hidden>
-          <span class="viz-legend-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#8B3A2A"/></svg> Entering</span>
-          <span class="viz-legend-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#B85C40"/></svg> Searching</span>
-          <span class="viz-legend-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#B8943A"/></svg> In forum</span>
-          <span class="viz-legend-item"><svg width="12" height="12" viewBox="0 0 12 12"><defs><clipPath id="legend-clip-resolved"><circle cx="6" cy="6" r="4.5"/></clipPath></defs><circle cx="6" cy="6" r="4.5" fill="none" stroke="#5C4F3A" stroke-width="0.75"/><rect x="1" y="7" width="10" height="5" fill="#4A6741" fill-opacity="0.35" clip-path="url(#legend-clip-resolved)"/></svg> Resolved</span>
-        </div>
-        <p class="figure-caption" id="viz-caption"></p>
-        <p class="period-readout" id="period-readout"></p>
+        <!-- Mini-nav -->
+        <nav class="results-nav results-nav--static" id="results-nav" aria-label="Results navigation">
+          <a class="results-nav-link results-nav-link--active" href="#section-diagnosis" data-section="section-diagnosis">
+            <span class="results-nav-dot">&#183;</span> Diagnosis
+          </a>
+          <a class="results-nav-link" href="#section-positioning" data-section="section-positioning">
+            <span class="results-nav-dot">&#183;</span> Positioning
+          </a>
+          <a class="results-nav-link" href="#section-simulation" data-section="section-simulation">
+            <span class="results-nav-dot">&#183;</span> Simulation
+          </a>
+        </nav>
 
-        <!-- End state summary — shown after animation -->
-        <div id="sim-summary" hidden>
-          <p class="sim-summary-header" id="sum-header"></p>
+        <!-- Section: Diagnosis -->
+        <section id="section-diagnosis" class="results-section">
+          <hr class="stage-rule" />
+          <p class="stage-label">Diagnosis</p>
+          <h2 class="diagnosis-title" id="diagnosis-title"></h2>
+          <p class="diagnosis-body" id="diagnosis-body"></p>
+        </section>
 
-          <p class="sim-summary-subheader" id="sum-choices-label"></p>
-          <p class="period-readout" id="sum-choice-resolution"></p>
-          <p class="period-readout" id="sum-choice-oversight"></p>
-          <p class="period-readout" id="sum-choice-flight"></p>
+        <!-- Section: Positioning -->
+        <section id="section-positioning" class="results-section">
+          <hr class="stage-rule" />
+          <p class="stage-label">Positioning</p>
+          <svg id="positioning-svg"></svg>
+          <p class="positioning-caption" id="positioning-caption"></p>
+        </section>
 
+        <!-- Section: Simulation -->
+        <section id="section-simulation" class="results-section">
+          <hr class="stage-rule" />
+          <p class="stage-label">Simulation</p>
 
-          <p class="sim-summary-subheader" id="sum-problems-label"></p>
-          <p class="period-readout" id="sum-prob-resolved"></p>
-          <p class="period-readout" id="sum-prob-displaced"></p>
-          <p class="period-readout" id="sum-prob-adrift"></p>
-          <p class="period-readout" id="sum-prob-inforum"></p>
-        </div>
+          <!-- Figure intro — visible before animation runs -->
+          <p class="figure-eyebrow">Fig. &mdash; Garbage Can Model</p>
+          <p class="figure-caption" id="viz-caption"></p>
 
-        <!-- Replay -->
-        <button class="replay-btn" id="replay-btn" hidden>Run again</button>
-        <p class="positioning-caption" id="stochastic-note" hidden>Each run varies slightly &mdash; the simulation is stochastic.</p>
-        </div>
-      </section>
+          <!-- Trigger button -->
+          <div class="submit-row">
+            <button class="submit-btn" id="run-sim-btn">See how decisions play out</button>
+          </div>
+
+          <!-- Simulation area — hidden until button click -->
+          <div id="viz-area" hidden>
+            <svg id="viz-svg"></svg>
+
+            <!-- End state summary card — shown after animation -->
+            <div class="sim-summary-card" id="sim-summary" hidden>
+              <p class="sim-summary-header" id="sum-header"></p>
+
+              <p class="sim-summary-subheader" id="sum-choices-label"></p>
+              <p class="period-readout" id="sum-choice-resolution"></p>
+              <p class="period-readout" id="sum-choice-oversight"></p>
+              <p class="period-readout" id="sum-choice-flight"></p>
+
+              <p class="sim-summary-subheader" id="sum-problems-label"></p>
+              <p class="period-readout" id="sum-prob-resolved"></p>
+              <p class="period-readout" id="sum-prob-displaced"></p>
+              <p class="period-readout" id="sum-prob-adrift"></p>
+              <p class="period-readout" id="sum-prob-inforum"></p>
+
+              <button class="replay-btn" id="replay-btn">Run again</button>
+              <p class="positioning-caption" id="stochastic-note">Each run varies slightly &mdash; the simulation is stochastic.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
 
       <!-- Footer nav -->
       <nav class="module-footer-nav" aria-label="Module navigation">
@@ -669,6 +690,21 @@
     // ─── Nav toggle ──────────────────────────────────────────────────────────────
     document.querySelector('.nav-mobile-toggle').addEventListener('click', function () {
       document.querySelector('.nav-links').classList.toggle('is-open');
+    });
+
+    // ─── Results mini-nav ────────────────────────────────────────────────────────
+    document.querySelectorAll('.results-nav-link').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var targetId = this.getAttribute('data-section');
+        document.getElementById(targetId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Update active state
+        document.querySelectorAll('.results-nav-link').forEach(function(l) {
+          l.classList.remove('results-nav-link--active');
+        });
+        this.classList.add('results-nav-link--active');
+      });
     });
 
     // ─── Questionnaire step navigation ───────────────────────────────────────────
@@ -706,8 +742,13 @@
       document.getElementById(Q_GROUPS[currentGroup].id).hidden = false;
       document.getElementById('q-step').textContent = `${currentGroup + 1} of 3`;
 
-      // Scroll to top of form area
-      document.getElementById(Q_GROUPS[currentGroup].id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Scroll to top of next card — offset for fixed nav
+      setTimeout(function() {
+        var el = document.getElementById(Q_GROUPS[currentGroup].id);
+        var navHeight = 56; // 3.5rem nav bar
+        var y = el.getBoundingClientRect().top + window.pageYOffset - navHeight - 16;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }, 50);
     }
 
     document.getElementById('q-continue-1').addEventListener('click', function () {
@@ -716,6 +757,17 @@
 
     document.getElementById('q-continue-2').addEventListener('click', function () {
       advanceGroup(1);
+    });
+
+    // Enable submit button when all group 3 questions are answered
+    Q_GROUPS[2].questions.forEach(function(qName) {
+      document.querySelectorAll('input[name="' + qName + '"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          if (validateGroup(2)) {
+            document.getElementById('submit-btn').disabled = false;
+          }
+        });
+      });
     });
 
     // ─── Diagnosis lookup (from PRINCIPLE-organised-anarchy-diagnosis.md) ────────
@@ -956,14 +1008,13 @@
       const probInForum   = Math.max(0, W - probResolved - probDisplaced - probAdrift);
 
       // Reset summary state
-      document.getElementById('viz-legend').hidden    = false;
       document.getElementById('sim-summary').hidden   = true;
       document.getElementById('replay-btn').hidden    = true;
       document.getElementById('stochastic-note').hidden = true;
 
       const container = document.getElementById('viz-svg');
       const SVG_W    = container.clientWidth || 900;
-      const SVG_H    = 260;
+      const SVG_H    = 300;
       const CHOICE_Y = 140;
       const CHOICE_R = 22;
       const PROB_R   = 3.5;
@@ -1059,6 +1110,85 @@
           .attr('letter-spacing', '0.1em')
           .attr('fill', C.inkFaint)
           .text(i => `C${i}`);
+
+      // ── Layer 5: cycle counter (top-left) ───────────────────────────────────────
+      var counterText = svg.append('text')
+        .attr('class', 'viz-counter')
+        .attr('x', 0)
+        .attr('y', 16)
+        .attr('font-family', "'DM Mono', monospace")
+        .attr('font-size', '0.6rem')
+        .attr('font-weight', '300')
+        .attr('letter-spacing', '0.1em')
+        .attr('fill', C.inkFaint)
+        .text('Cycle 0 of 20');
+
+      // ── Layer 6: legend (bottom of SVG) ─────────────────────────────────────────
+      var LEGEND_Y = SVG_H - 12;
+      var legendItems = [
+        { label: 'Entering',  color: C.rust },
+        { label: 'Searching', color: C.rustLight },
+        { label: 'In forum',  color: C.gold },
+      ];
+
+      var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
+      var legendX = 0;
+
+      legendItems.forEach(function(item) {
+        legendG.append('circle')
+          .attr('cx', legendX + 4)
+          .attr('cy', 0)
+          .attr('r', 4)
+          .attr('fill', item.color);
+
+        legendG.append('text')
+          .attr('x', legendX + 12)
+          .attr('y', 4)
+          .attr('font-family', "'DM Mono', monospace")
+          .attr('font-size', '0.5rem')
+          .attr('font-weight', '300')
+          .attr('letter-spacing', '0.08em')
+          .attr('fill', C.inkFaint)
+          .text(item.label.toUpperCase());
+
+        legendX += item.label.length * 7 + 30;
+      });
+
+      // Resolved legend item — circle with sage fill at bottom
+      var resolvedClipId = 'legend-clip-resolved-viz';
+      svg.select('defs').append('clipPath')
+        .attr('id', resolvedClipId)
+        .append('circle')
+          .attr('cx', legendX + 5)
+          .attr('cy', LEGEND_Y)
+          .attr('r', 5);
+
+      legendG.append('circle')
+        .attr('cx', legendX + 5)
+        .attr('cy', 0)
+        .attr('r', 5)
+        .attr('fill', 'none')
+        .attr('stroke', C.inkMid)
+        .attr('stroke-width', 0.75);
+
+      legendG.append('rect')
+        .attr('x', legendX)
+        .attr('y', 2)
+        .attr('width', 10)
+        .attr('height', 5)
+        .attr('fill', C.sage)
+        .attr('fill-opacity', 0.35)
+        .attr('clip-path', 'url(#' + resolvedClipId + ')');
+
+      legendG.append('text')
+        .attr('x', legendX + 14)
+        .attr('y', 4)
+        .attr('font-family', "'DM Mono', monospace")
+        .attr('font-size', '0.5rem')
+        .attr('font-weight', '300')
+        .attr('letter-spacing', '0.08em')
+        .attr('fill', C.inkFaint)
+        .text('RESOLVED');
 
       // ── Layer 4: problem dots ──────────────────────────────────────────────────
       const probLayer = svg.append('g');
@@ -1238,8 +1368,7 @@
         allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');
         allProbs.classed('problem-searching', id => tick.problems[id].state === 'floating');
 
-        document.getElementById('period-readout').textContent =
-          `Cycle ${tick.tick} of 20`;
+        counterText.text(`Cycle ${tick.tick} of 20`);
       }
 
       renderTick(0, null);
@@ -1263,8 +1392,7 @@
       function stepTick() {
         current++;
         if (current >= ticks.length) {
-          document.getElementById('period-readout').textContent =
-            `Cycle 20 of 20 \u2014 complete`;
+          counterText.text('Cycle 20 of 20 \u2014 showing final run');
           showEndState(
             pctRes, pctOver, pctFli,
             probResolved, probDisplaced, probAdrift, probInForum
@@ -1277,11 +1405,6 @@
       }
 
       setTimeout(stepTick, 800);
-
-      document.getElementById('viz-caption').textContent =
-        `Problems (dots) search for choice opportunities (circles) each cycle \u2014 ` +
-        `attaching, drifting, and resolving as energy accumulates. ` +
-        `Parameters: ${energyLoad} load \u2014 ${decisionStructure} decision \u2014 ${accessStructure} access.`;
     }
 
     // ─── End state summary ────────────────────────────────────────────────────────
@@ -1366,21 +1489,27 @@
 
       console.log('Diagnosis:', { cluster, title });
 
-      // Stage 2: positioning
-      showStage('stage-2', 100);
+      // Reveal results area
+      showStage('results-area', 100);
+
+      // Diagnosis
+      setTimeout(() => {
+        document.getElementById('diagnosis-title').textContent = diagnosis.title;
+        document.getElementById('diagnosis-body').textContent  = diagnosis.body;
+      }, 300);
+
+      // Positioning
       setTimeout(() => {
         drawPositioning(raw);
         document.getElementById('positioning-caption').textContent =
           `Load: ${energyLoad} \u2014 Decision: ${decisionStructure} \u2014 Access: ${accessStructure}`;
-      }, 300);
+      }, 500);
 
-      // Stage 3: diagnosis (simulation waits for user click)
-      showStage('stage-3', 900);
-      setTimeout(() => {
-        document.getElementById('diagnosis-title').textContent = diagnosis.title;
-        document.getElementById('diagnosis-body').textContent  = diagnosis.body;
-        document.getElementById('run-sim-btn').hidden = false;
-      }, 1100);
+      // Simulation caption (visible before animation)
+      document.getElementById('viz-caption').textContent =
+        `Problems (dots) search for choice opportunities (circles) each cycle \u2014 ` +
+        `attaching, drifting, and resolving as energy accumulates. ` +
+        `Parameters: ${energyLoad} load \u2014 ${decisionStructure} decision \u2014 ${accessStructure} access.`;
 
       // Simulation trigger — runs on button click
       document.getElementById('run-sim-btn').onclick = function () {

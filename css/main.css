@@ -461,26 +461,6 @@ footer {
 .outcome-oversight  { color: var(--slate); font-weight: 400; }
 .outcome-unresolved { color: var(--ink-faint); font-weight: 400; }
 
-/* ─── Visualization legend ───────────────────────────────── */
-.viz-legend {
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.viz-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: var(--mono);
-  font-size: 0.55rem;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink-faint);
-}
-
 /* ─── Attached dot pulse ─────────────────────────────────── */
 @keyframes dot-pulse {
   0%, 100% { opacity: 1.0; }
@@ -493,6 +473,95 @@ footer {
 
 .problem-searching {
   animation: dot-pulse 1s ease-in-out infinite;
+}
+
+/* ─── Results mini-nav ───────────────────────────────── */
+.results-nav {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+.results-nav-link {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-ghost);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.results-nav-link:hover {
+  color: var(--ink-faint);
+}
+
+.results-nav-link--active {
+  color: var(--ink-mid);
+}
+
+.results-nav-dot {
+  font-size: 1.2rem;
+  vertical-align: middle;
+  margin-right: 0.15rem;
+}
+
+.results-nav-link--active .results-nav-dot {
+  color: var(--sage);
+}
+
+/* Nav behaviour variants — toggle by changing the class on .results-nav */
+.results-nav--static {
+  /* default — scrolls with page */
+}
+
+.results-nav--sticky {
+  position: sticky;
+  top: 3.5rem; /* below main nav */
+  background: var(--paper);
+  z-index: 50;
+}
+
+.results-nav--fixed {
+  position: fixed;
+  top: 3.5rem;
+  left: 0;
+  right: 0;
+  background: var(--paper);
+  z-index: 50;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .results-nav--fixed {
+    padding: 1rem 2.5rem;
+  }
+}
+
+/* ─── Results sections ───────────────────────────────── */
+.results-section {
+  padding: 2rem 0;
+}
+
+/* ─── Simulation summary card ────────────────────────── */
+.sim-summary-card {
+  background: var(--paper-dark);
+  border: 2px solid var(--paper-deep);
+  border-top: 2px solid var(--sage);
+  padding: 2.25rem 1.5rem;
+  margin-top: 2.5rem;
+  max-width: 560px;
+}
+
+@media (min-width: 640px) {
+  .sim-summary-card {
+    padding: 2.25rem 2.5rem;
+  }
 }
 
 /* ─── Questionnaire card ─────────────────────────────── */
@@ -517,4 +586,16 @@ footer {
   letter-spacing: 0.1em;
   color: var(--ink-ghost);
   margin-bottom: 1rem;
+}
+
+/* ─── Submit button disabled state ──────────────────── */
+.submit-btn:disabled {
+  color: var(--ink-ghost);
+  border-color: var(--ink-ghost);
+  cursor: not-allowed;
+}
+
+.submit-btn:disabled:hover {
+  color: var(--ink-ghost);
+  border-color: var(--ink-ghost);
 }

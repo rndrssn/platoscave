@@ -223,7 +223,7 @@
 
     // ─── Visualization ────────────────────────────────────────────────────────────
     function drawVizPanel(simResult, energyLoad, decisionStructure, accessStructure, suffix) {
-      const { ticks } = simResult;
+      const { ticks, resolution, oversight, flight } = simResult;
 
       const pctRes  = Math.round(simResult.resolution * 20) * 5;
       const pctOver = Math.round(simResult.oversight  * 20) * 5;
@@ -237,7 +237,8 @@
       // Reset summary state
       document.getElementById('sim-summary-' + suffix).hidden = true;
 
-      const SVG_W    = 900;
+      const container = document.getElementById('viz-svg-' + suffix);
+      const SVG_W    = container.clientWidth || 900;
       const SVG_H    = 300;
       const CHOICE_Y = 140;
       const CHOICE_R = 22;

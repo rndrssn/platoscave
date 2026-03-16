@@ -4,7 +4,7 @@ type: TECH-DEBT
 title: Technical Debt Tracker
 status: IN-PROGRESS
 created: 2026-03-16
-updated: 2026-03-16
+updated: 2026-03-17
 owner: Robert Andersson
 relates_to: [PRINCIPLE-coding-standards, EPIC-garbage-can-restructure]
 tags: [tech-debt, maintenance, refactoring]
@@ -14,38 +14,7 @@ tags: [tech-debt, maintenance, refactoring]
 
 ## Active Debt
 
-### TD-001 — Extract inline JS from assess and explorer into dedicated files
-**Severity:** Moderate
-**Effort:** Medium
-**Files:** `modules/garbage-can/assess/index.html`, `modules/garbage-can/explorer/index.html`
-**Principle violated:** PRINCIPLE-coding-standards: "No logic in HTML files"
-
-The assess page has ~400 lines of inline JS (visualization, form handling, step navigation). The explorer page has similar inline viz code. Both should be extracted.
-
-**Proposed fix:** Create `modules/garbage-can/assess/assess.js` and `modules/garbage-can/explorer/explorer.js`. Move all page-specific logic there. HTML files load the scripts and wire components only. Keep behaviour identical — code move only.
-
-**Depends on:** TD-002, TD-003 (extract shared modules first, so page-specific files import from them)
-
-**Created:** 2026-03-16
-
----
-
-### TD-004 — Add tests for diagnosis, scoring, and extracted modules
-**Severity:** Low
-**Effort:** Medium
-**Files:** `tests/` directory
-**Principle violated:** None (preventive measure)
-
-No tests exist for the diagnosis mapping or the 12-question scoring. The viz code has no DOM-free unit tests. Regressions are caught manually.
-
-**Proposed tests:**
-- Diagnosis mapping: all 9 decision×access combinations produce expected cluster
-- Scoring contract: 12 inputs, threshold edges, three archetype fixture tests
-- Lightweight DOM-free unit tests for any extracted modules (gc-diagnosis.js, gc-scoring.js)
-
-**Depends on:** TD-002, TD-003 (test the extracted modules, not the inline code)
-
-**Created:** 2026-03-16
+_(none)_
 
 ---
 
@@ -92,6 +61,18 @@ Added `.cta-primary`, `.cta-secondary`, `.nav-link-contextual`, `.tag-label` ali
 ### TD-006 — Radio button touch targets too small for mobile
 **Resolved:** 2026-03-16
 Added `padding: 0.6rem; box-sizing: content-box` to `.scale-option input[type="radio"]`. Tappable area expanded to ~43px without changing visible dot size.
+
+---
+
+### TD-001 — Extract inline JS from assess and explorer into dedicated files
+**Resolved:** 2026-03-17
+Created `gc-viz.js` (shared visualization), `modules/garbage-can/assess/assess.js`, and `modules/garbage-can/explorer/explorer.js`. All inline `<script>` blocks removed from both HTML files. Both pages now load only `<script src="...">` tags. Explorer visualization drift eliminated — both pages use the same `drawViz` from `gc-viz.js`.
+
+---
+
+### TD-004 — Add tests for diagnosis, scoring, and extracted modules
+**Resolved:** 2026-03-17
+Created `tests/test-gc-diagnosis.js` (9 assertions — all 9 decision×access combinations) and replaced `tests/test-gc-scoring.js` with a 12-question version (3 assertions). Both files pass: 12/12 assertions.
 
 ---
 

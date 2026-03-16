@@ -87,9 +87,17 @@
             <button class="submit-btn explorer-run-btn" id="run-a">Run simulation</button>
           </div>
 
+          <div class="explorer-diagnosis" id="explorer-diagnosis-a" hidden>
+            <p class="stage-label">Diagnosis</p>
+            <h2 class="diagnosis-title" id="explorer-diagnosis-title-a"></h2>
+            <p class="diagnosis-body" id="explorer-diagnosis-body-a"></p>
+          </div>
+
           <div class="explorer-viz" id="viz-area-a" hidden>
             <svg id="viz-svg-a"></svg>
             <div class="sim-summary-card" id="sim-summary-a" hidden>
+              <p class="sim-summary-header" id="sum-header-a"></p>
+
               <p class="sim-summary-subheader" id="sum-thisrun-label-a"></p>
               <p class="period-readout" id="sum-thisrun-resolved-a"></p>
               <p class="period-readout" id="sum-thisrun-inforum-a"></p>
@@ -139,6 +147,53 @@
     document.querySelector('.nav-mobile-toggle').addEventListener('click', function() {
       document.querySelector('.nav-links').classList.toggle('is-open');
     });
+
+    // ─── Diagnosis lookup ─────────────────────────────────────────────────────────
+    const DIAGNOSIS_CLUSTERS = {
+      'unsegmented/unsegmented':  'cluster-2',
+      'unsegmented/hierarchical': 'cluster-4',
+      'unsegmented/specialized':  'cluster-4',
+      'hierarchical/hierarchical':'cluster-1',
+      'hierarchical/unsegmented': 'cluster-3',
+      'hierarchical/specialized': 'cluster-3',
+      'specialized/specialized':  'cluster-5',
+      'specialized/hierarchical': 'cluster-3',
+      'specialized/unsegmented':  'cluster-4',
+    };
+
+    const DIAGNOSES = {
+      'cluster-1': {
+        title: 'The Coherent Traditional Organisation',
+        body:  'Your organisation is what it believes itself to be. Problems reach the forums designed for them. Decisions are made by the people with the authority to make them. The instruments of traditional management (governance structures, reporting lines, sanctioned decision forums) are reasonably well matched to the work being done. The Garbage Can Model has limited explanatory power here. In organisations like yours, roughly {flight}% of decisions are made by resolution: the underlying problem is genuinely closed.',
+      },
+      'cluster-2': {
+        title: 'The Complexity-Informed Organisation',
+        body:  'Your organisation has rejected the decomposable worldview, at least in practice. Problems surface wherever they can find a forum. Participation is fluid and expertise-driven rather than seniority-driven. This is not disorder \u2014 it is a different kind of order, one that the Garbage Can Model describes well. The risk here is not anarchy but invisibility: when everything is permeable, it becomes difficult to know which decisions were actually made, by whom, and whether the underlying problem was resolved or merely displaced. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved.',
+      },
+      'cluster-3': {
+        title: 'The Mix',
+        body:  'Your organisation has inherited the instruments of a decomposable worldview: governance structures, reporting lines, sanctioned decision forums. It applies them to a system that does not behave decomposably. Problems surface everywhere because the work itself is emergent. But decisions are made hierarchically, because the management frame requires it. The result is a permanent structural gap: problems live where the work is, decisions are made where the authority is, and the two rarely occupy the same room at the same time. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved.',
+      },
+      'cluster-4': {
+        title: 'The Inverse Mix',
+        body:  'Your organisation has open, fluid decision-making: in principle, anyone can weigh in. But the problems that reach decision forums are filtered before they arrive. Important issues that originate at the edges of the organisation travel slowly or not at all toward the forums where they could be addressed. The people in the room are willing to decide. The problems that most need deciding rarely make it through the door. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved.',
+      },
+      'cluster-5': {
+        title: 'The Siloed Organisation',
+        body:  'Your organisation has partitioned itself: problems are assigned to designated channels, people are assigned to designated forums. On paper this looks like clarity. In practice it means that problems which do not fit their designated channel have nowhere to go. The work that falls between the silos has no legitimate forum. It either disappears from view or creates informal decision-making that the organisation cannot see or govern. In organisations like yours, roughly {flight}% of decisions are made without the underlying problem being resolved.',
+      },
+    };
+
+    function getDiagnosis(decisionStructure, accessStructure, flight) {
+      const key        = `${decisionStructure}/${accessStructure}`;
+      const clusterKey = DIAGNOSIS_CLUSTERS[key] || 'cluster-3';
+      const cluster    = DIAGNOSES[clusterKey];
+      const flightPct  = Math.round(flight * 100);
+      return {
+        title: cluster.title,
+        body:  cluster.body.replace('{flight}', flightPct),
+      };
+    }
 
     // ─── Color tokens ─────────────────────────────────────────────────────────────
     // M (choices) and W (problems) are defined by gc-simulation.js
@@ -199,6 +254,9 @@
         '<span class="outcome-resolved">Choices resolved</span>: ' + runChoicesResolved + ' of ' + M;
       document.getElementById('sum-thisrun-choices-open-' + suffix).innerHTML =
         '<span class="outcome-unresolved">Choices still open</span>: ' + runChoicesOpen + ' of ' + M;
+
+      document.getElementById('sum-header-' + suffix).textContent =
+        'Across 100 simulations, on average:';
 
       document.getElementById('sum-choices-label-' + suffix).textContent =
         `How the ${M} decision forums closed`;
@@ -410,9 +468,9 @@
 
       legendG.append('rect')
         .attr('x', legendX)
-        .attr('y', 2)
+        .attr('y', 5 / 3)
         .attr('width', 10)
-        .attr('height', 5)
+        .attr('height', 10 / 3)
         .attr('fill', C.sage)
         .attr('fill-opacity', 0.35)
         .attr('clip-path', 'url(#' + resolvedClipId + ')');
@@ -709,6 +767,11 @@
         decisionStructure: decisionStructure,
         accessStructure: accessStructure
       });
+
+      var diagnosis = getDiagnosis(decisionStructure, accessStructure, simResult.flight);
+      document.getElementById('explorer-diagnosis-title-' + suffix).textContent = diagnosis.title;
+      document.getElementById('explorer-diagnosis-body-' + suffix).textContent  = diagnosis.body;
+      document.getElementById('explorer-diagnosis-' + suffix).hidden = false;
 
       document.getElementById('viz-area-' + suffix).hidden = false;
       drawVizPanel(simResult, energyLoad, decisionStructure, accessStructure, suffix);

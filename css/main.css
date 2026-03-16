@@ -1272,6 +1272,12 @@ footer {
   border-color: var(--ink-mid);
 }
 
+.explorer-diagnosis {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ink-ghost);
+}
+
 .explorer-viz {
   margin-top: 1.5rem;
 }

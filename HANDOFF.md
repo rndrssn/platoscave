@@ -2,152 +2,46 @@
 
 ## Ready for Claude Code
 
-### Feature: Mapper — deadlock visualization (phase labels, dimming, energy indicator)
-- File: `modules/garbage-can/index.html`
+### Cleanup and remaining work: simplify deadlock, field notes, tooltips, punctuation, CSS extraction
+- Files: `modules/garbage-can/index.html`, `css/main.css`
 - Branch: `experiment/organised-anarchy-mapper`
-- Read `CLAUDE.md` and `docs/PRINCIPLE-coding-standards.md` before touching anything
+- Read `CLAUDE.md`, `docs/PRINCIPLE-coding-standards.md`, and `docs/PRINCIPLE-punctuation.md` before touching anything
 
 ---
 
-## Context
+## What has already been applied — do NOT revert
 
-In heavy-load scenarios, the simulation reaches a frozen state around tick 11–14 where remaining problems are trapped in an overloaded choice that can never resolve. The user watches nothing happen for 5–8 ticks and doesn't understand why. This is the model's central insight — but the visualization doesn't communicate it.
-
-Four visual signals to add:
-
-1. **Phase labels** — text in the SVG narrating what's happening
-2. **Dim resolved circles** — fade resolved choices so active ones stand out
-3. **Dashed stroke on deadlocked choices** — visual signal for "stuck"
-4. **Energy deficit indicator** — problem count below + progress arc around stuck choices
+Everything listed in previous handoffs is done. Phase labels and dimming are kept. This handoff removes the noisy deadlock features and adds the missing pieces.
 
 ---
 
-## Fix 1 — Phase labels inside the SVG
+## Fix 1 — Remove dashed stroke, problem count, and energy arc (simplify deadlock viz)
 
-A single line of text, top-right of the SVG (opposite the cycle counter top-left). Changes at phase transitions.
+The deadlock visualization is too busy. Keep only phase labels and dimmed resolved circles. Remove the dashed stroke, problem count below circles, and energy progress arc.
 
-### Phase definitions
+### 1a — Delete the `deficitLayer` declaration
 
-| Phase | Condition | Label text |
-|-------|-----------|------------|
-| Entering | tick ≤ 10 | `Problems entering` |
-| Accumulating | tick > 10 AND state changed from previous tick | `Energy accumulating` |
-| Locked | tick > 10 AND no state change from previous tick (dead tick) | `System locked` |
-
-### 1a — Add phase label text element
-
-Add after the cycle counter text element (Fix 6c from the combined restructure handoff), inside `drawViz()`:
-
+Find (~line 1239):
 ```js
-      // ── Phase label (top-right) ─────────────────────────────────────────────────
-      var phaseText = svg.append('text')
-        .attr('x', SVG_W)
-        .attr('y', 16)
-        .attr('text-anchor', 'end')
-        .attr('font-family', "'DM Mono', monospace")
-        .attr('font-size', '0.55rem')
-        .attr('font-weight', '300')
-        .attr('font-style', 'italic')
-        .attr('letter-spacing', '0.08em')
-        .attr('fill', C.inkFaint)
-        .text('');
+      // ── Layer 7: energy deficit indicators ──────────────────────────────────────
+      var deficitLayer = svg.append('g');
 ```
 
-### 1b — Update phase label in `renderTick()`
+Delete these two lines.
 
-Add at the end of `renderTick()`, after the pulse class assignments:
+### 1b — Delete the `choiceUnchangedTicks` declaration
 
-```js
-        // Phase label
-        if (tick.tick <= 10) {
-          phaseText.text('Problems entering');
-        } else if (prevTick && !isDeadTick(tickIdx)) {
-          phaseText.text('Energy accumulating');
-        } else if (prevTick && isDeadTick(tickIdx)) {
-          phaseText.transition().duration(400)
-            .attr('fill', C.rust)
-            .text('System locked');
-        }
-```
-
-Note: `isDeadTick` must be defined before `renderTick`. If it's currently defined after (in the timer section), move it before `renderTick`.
-
-### 1c — Update phase label at end of animation
-
-In the end-of-animation handler (inside `stepTick` or the timer completion), after updating the counter text:
-
-```js
-          phaseText.text('');
-```
-
-Clear the phase label when the summary appears — it's served its purpose.
-
----
-
-## Fix 2 — Dim resolved circles
-
-When a choice resolves, fade its stroke and opacity so the eye focuses on remaining active choices.
-
-Find in `renderTick()` the choice circle stroke transition:
-
-```js
-        svg.selectAll('circle.choice')
-          .data(tick.choices)
-          .transition()
-            .duration(600)
-            .ease(d3.easeCubicInOut)
-            .attr('stroke', d => {
-              if (d.state === 'resolved') return C.inkMid;
-              if (d.state === 'active')   return C.inkFaint;
-              return C.inkGhost;
-            })
-            .attr('stroke-width', 1);
-```
-
-Replace with:
-
-```js
-        svg.selectAll('circle.choice')
-          .data(tick.choices)
-          .transition()
-            .duration(600)
-            .ease(d3.easeCubicInOut)
-            .attr('stroke', d => {
-              if (d.state === 'resolved') return C.inkGhost;
-              if (d.state === 'active')   return C.inkFaint;
-              return C.inkGhost;
-            })
-            .attr('stroke-width', d => {
-              if (d.state === 'resolved') return 0.5;
-              return 1;
-            })
-            .attr('opacity', d => {
-              if (d.state === 'resolved') return 0.4;
-              return 1;
-            });
-```
-
-Resolved circles get ghost stroke, thinner width, and 40% opacity — they fade into the background.
-
----
-
-## Fix 3 — Dashed stroke on deadlocked choices
-
-A choice is "deadlocked" when it has been active with attached problems for 2+ consecutive ticks with no state change. Switch its stroke to dashed.
-
-### 3a — Track consecutive unchanged ticks per choice
-
-Add in `drawViz()` scope, near the other state trackers (after `resolvedAtChoice`):
-
+Find (~line 1275):
 ```js
       // Track consecutive unchanged ticks per choice (for deadlock detection)
       var choiceUnchangedTicks = Array(M).fill(0);
 ```
 
-### 3b — Update the tracker in `renderTick()`
+Delete these two lines.
 
-Add after the phase label update (Fix 1b):
+### 1c — Delete the deadlock detection, dashed stroke, and deficit indicator blocks from `renderTick()`
 
+Find the entire block (~lines 1444–1523):
 ```js
         // Deadlock detection per choice
         for (var ci = 0; ci < M; ci++) {
@@ -169,28 +63,7 @@ Add after the phase label update (Fix 1b):
             }
             return 'none';
           });
-```
 
----
-
-## Fix 4 — Energy deficit indicator (problem count + progress arc)
-
-Show a problem count below deadlocked choices and a thin progress arc showing energy progress.
-
-### 4a — Add a layer for deficit indicators
-
-Add in `drawViz()` after the problem dots layer setup:
-
-```js
-      // ── Layer 7: energy deficit indicators ──────────────────────────────────────
-      var deficitLayer = svg.append('g');
-```
-
-### 4b — Render deficit indicators in `renderTick()`
-
-Add after the deadlock detection block (Fix 3b):
-
-```js
         // Energy deficit indicators on deadlocked choices
         deficitLayer.selectAll('*').remove();
 
@@ -224,9 +97,6 @@ Add after the deadlock detection block (Fix 3b):
           var arcR     = CHOICE_R + 4;
 
           if (progress > 0 && progress < 1) {
-            var startAngle = -Math.PI / 2;
-            var endAngle   = startAngle + progress * 2 * Math.PI;
-
             var arcPath = d3.arc()
               .innerRadius(arcR - 1.5)
               .outerRadius(arcR)
@@ -255,24 +125,240 @@ Add after the deadlock detection block (Fix 3b):
         }
 ```
 
-The background arc shows the full energy requirement as a faint ring. The rust arc shows how much energy has been spent — for a jammed choice with 16 problems, this arc will be barely visible, making the deficit viscerally clear.
+Delete this entire block.
 
-### 4c — Clear deficit indicators at end of animation
+### 1d — Delete `deficitLayer` cleanup at end of animation
 
-In the end-of-animation handler, alongside clearing the phase label:
-
+Find in `stepTick()` (~line 1535):
 ```js
           deficitLayer.selectAll('*').remove();
 ```
 
+Delete this line.
+
+---
+
+## Fix 2 — Add field notes card
+
+The field notes card is missing from the HTML.
+
+Find in the Simulation section (~line 639):
+```html
+          <p class="figure-caption" id="viz-caption"></p>
+
+          <!-- Trigger button -->
+```
+
+Replace with:
+```html
+          <p class="figure-caption" id="viz-caption"></p>
+
+          <!-- Field notes — model explanation -->
+          <div class="field-notes-card">
+            <p class="field-notes-title">The Garbage Can Model</p>
+            <p class="field-notes-body">
+              <strong>Choice opportunities</strong> (circles) are forums where decisions could be made:
+              meetings, reviews, committees. <strong>Problems</strong> (dots) seek resolution by attaching
+              to a choice opportunity. <strong>Decision makers</strong> (invisible) allocate
+              <strong>energy</strong> to the choices they can access each cycle. When cumulative energy
+              meets the demand, a choice <strong>resolves</strong> and closes its attached problems.
+            </p>
+            <p class="field-notes-body">
+              The model&#8217;s insight: when problems outnumber capacity, decisions happen by
+              <strong>oversight</strong> (the forum closes while problems are elsewhere) or
+              <strong>flight</strong> (problems leave before the forum closes).
+              <strong>Resolution</strong> &#8212; genuinely closing the problem &#8212; becomes rare.
+            </p>
+          </div>
+
+          <!-- Trigger button -->
+```
+
+---
+
+## Fix 3 — Add field notes card styles to `css/main.css`
+
+```css
+/* ─── Field notes card ───────────────────────────────── */
+.field-notes-card {
+  background: var(--paper-dark);
+  border: 2px solid var(--paper-deep);
+  border-top: 2px solid var(--ink-ghost);
+  padding: 1.75rem 1.5rem;
+  margin: 1.5rem 0;
+  max-width: 560px;
+}
+
+@media (min-width: 640px) {
+  .field-notes-card {
+    padding: 1.75rem 2.5rem;
+  }
+}
+
+.field-notes-title {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-bottom: 1rem;
+}
+
+.field-notes-body {
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  color: var(--ink-mid);
+  line-height: 1.75;
+  margin-bottom: 0.75rem;
+}
+
+.field-notes-body:last-child {
+  margin-bottom: 0;
+}
+
+.field-notes-body strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+```
+
+---
+
+## Fix 4 — Add native SVG tooltips
+
+### 4a — Add title elements to choice circles
+
+Find where choice circles are created (~line 1091):
+```js
+          .attr('stroke-width', 1);
+```
+
+Add after it:
+```js
+
+      choiceLayer.selectAll('circle.choice').each(function() {
+        d3.select(this).append('title');
+      });
+```
+
+### 4b — Update choice tooltips in `renderTick()`
+
+Add after the choice circle stroke transition block:
+
+```js
+        // Update choice tooltips
+        svg.selectAll('circle.choice').each(function(d, i) {
+          var state = tick.choices[i].state;
+          var text;
+          if (state === 'inactive') {
+            text = 'Choice opportunity: not yet entered';
+          } else if (state === 'resolved') {
+            text = 'Resolved: this forum has closed';
+          } else {
+            text = 'Choice opportunity: a forum where decisions could be made';
+          }
+          d3.select(this).select('title').text(text);
+        });
+```
+
+### 4c — Add title elements to problem dots
+
+Find where problem dots are created (~line 1237):
+```js
+          .attr('opacity', 0);
+```
+
+Add after it:
+```js
+
+      probLayer.selectAll('circle.problem').each(function() {
+        d3.select(this).append('title');
+      });
+```
+
+### 4d — Update problem tooltips in `renderTick()`
+
+Add after the choice tooltip update:
+
+```js
+        // Update problem tooltips
+        svg.selectAll('circle.problem').each(function(d) {
+          var p = tick.problems[d];
+          var text;
+          if (p.state === 'inactive') {
+            text = '';
+          } else if (p.state === 'floating') {
+            text = 'Problem searching for a forum';
+          } else if (p.state === 'attached') {
+            text = 'Problem attached to forum C' + p.attachedTo;
+          } else if (p.state === 'resolved') {
+            text = 'Problem resolved at forum C' + p.attachedTo;
+          }
+          d3.select(this).select('title').text(text);
+        });
+```
+
+---
+
+## Fix 5 — Remaining punctuation
+
+### 5a — Title tag
+
+Find:
+```html
+  <title>The Garbage Can Model — To the Bedrock</title>
+```
+
+Replace with:
+```html
+  <title>The Garbage Can Model · To the Bedrock</title>
+```
+
+### 5b — Caption text
+
+Find:
+```js
+        `Problems (dots) search for choice opportunities (circles) each cycle \u2014 ` +
+```
+
+Replace with:
+```js
+        `Problems (dots) search for choice opportunities (circles) each cycle, ` +
+```
+
+### 5c — Diagnosis body text
+
+Review each diagnosis in the `DIAGNOSES` object for the one-emdash-per-paragraph limit. Count `\u2014` in each body string. If more than one, convert the least impactful to a colon, semicolon, or period. Do NOT rewrite meaning or tone.
+
+---
+
+## Fix 6 — Move `<style>` block to `css/main.css`
+
+**Coding standards compliance.** `docs/PRINCIPLE-coding-standards.md` states: "No `<style>` blocks in HTML files. All CSS lives in `css/main.css`."
+
+The garbage-can `index.html` has a `<style>` block (~lines 11–351) containing all module-page styles.
+
+1. Cut the entire contents of the `<style>...</style>` block
+2. Add them to `css/main.css` under a new section header:
+
+```css
+/* ─── Module page ────────────────────────────────────── */
+```
+
+3. Remove the empty `<style></style>` tags from the HTML
+4. Check for duplicates between the moved styles and existing `main.css` content. If a class appears in both, keep the version from the `<style>` block (more current) and remove the duplicate from `main.css`. Known overlaps to check:
+   - `.submit-btn` — exists in both the `<style>` block and potentially in `main.css`
+   - `.replay-btn` — `#replay-btn` exists in `main.css`, `.replay-btn` in the `<style>` block
+   - `.period-readout` — check for duplicates
+5. After moving, the `<head>` should contain only: `<meta>`, `<title>`, font `<link>` tags, and the CSS `<link>` tag
+
 ---
 
 ## Notes
-- `isDeadTick` must be defined before `renderTick` for Fix 1b to work — if it's currently inside the timer section, move its definition up into `drawViz` scope before `renderTick`
-- The `d3.arc()` generator is part of d3 v7 — no additional dependencies needed
-- The deficit indicators are redrawn every tick (remove + append) rather than transitioned — this is simpler and the visual doesn't need smooth transitions for static deadlock display
-- Resolved circle dimming (Fix 2) applies to the fill rects too — add `.attr('opacity', ...)` to the fill rect transition if needed to match
-- The energy data (`energyRequired`, `energySpent`) is already in the tick snapshots from `buildTickSnapshots` — no simulation changes needed
-- Do not change `gc-simulation.js`, scoring, or diagnosis logic
-- Follow `docs/PRINCIPLE-punctuation.md` for any new text — colons for label-value, middle dot for separators
+- Phase labels and dimmed resolved circles stay — they're clean and useful
+- The `choiceUnchangedTicks` tracker is fully removed — no tooltip references it anymore (the simplified tooltip in Fix 4b just checks active/resolved/inactive)
+- Native SVG `<title>` tooltips are browser-styled — no custom CSS
+- Fix 6 is the largest change but purely mechanical — no logic changes
+- Do not change `gc-simulation.js`, `gc-scoring.js`, scoring, or question text
 - Stay on `experiment/organised-anarchy-mapper`

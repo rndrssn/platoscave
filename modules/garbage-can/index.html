@@ -3,352 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Garbage Can Model — To the Bedrock</title>
+  <title>The Garbage Can Model · To the Bedrock</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../../css/main.css" />
-  <style>
-    /* ─── Module page layout ──────────────────────────────── */
-    .module-page {
-      padding-top: calc(3.5rem + 3rem);
-      padding-bottom: 3rem;
-    }
-
-    @media (min-width: 640px) {
-      .module-page {
-        padding-top: calc(3.5rem + 5rem);
-        padding-bottom: 5rem;
-      }
-    }
-
-    /* ─── Module header ───────────────────────────────────── */
-    .module-header {
-      margin-bottom: 3rem;
-    }
-
-    .module-header-number {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--ink-faint);
-      margin-bottom: 0.75rem;
-    }
-
-    .module-header-title {
-      font-family: var(--serif-alt);
-      font-weight: 300;
-      font-style: italic;
-      font-size: clamp(2rem, 6vw, 3.5rem);
-      line-height: 1.1;
-      color: var(--ink);
-      margin-bottom: 1.25rem;
-    }
-
-    .module-header-body {
-      font-family: var(--serif);
-      font-size: 1rem;
-      color: var(--ink-mid);
-      line-height: 1.75;
-      max-width: 58ch;
-      margin-bottom: 1.25rem;
-    }
-
-    .module-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .module-tag {
-      font-family: var(--mono);
-      font-size: 0.58rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--ink-faint);
-      border: 1px solid var(--ink-ghost);
-      padding: 0.2rem 0.5rem;
-    }
-
-    /* ─── Stage reveal ────────────────────────────────────── */
-    .stage {
-      opacity: 0;
-      transition: opacity 0.7s ease;
-      pointer-events: none;
-    }
-
-    .stage.is-visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .stage-rule {
-      border: none;
-      border-top: 1px solid var(--ink-ghost);
-      margin: 2.5rem 0;
-    }
-
-    /* ─── Questionnaire ───────────────────────────────────── */
-    .q-section {
-      margin-bottom: 2.5rem;
-    }
-
-    .q-section-label {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--ink-faint);
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--ink-ghost);
-    }
-
-    .question-block {
-      margin-bottom: 1.75rem;
-    }
-
-    .question-text {
-      font-family: var(--serif);
-      font-size: 0.95rem;
-      color: var(--ink-mid);
-      line-height: 1.6;
-      margin-bottom: 0.75rem;
-    }
-
-    .question-scale {
-      display: flex;
-      align-items: center;
-      gap: 0;
-    }
-
-    .scale-pole {
-      font-family: var(--mono);
-      font-size: 0.52rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--ink-faint);
-      flex: 1;
-      line-height: 1.4;
-    }
-
-    .scale-pole--right {
-      text-align: right;
-    }
-
-    .scale-options {
-      display: flex;
-      gap: 0.4rem;
-      margin: 0 0.65rem;
-      flex-shrink: 0;
-    }
-
-    .scale-option {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.2rem;
-    }
-
-    .scale-option input[type="radio"] {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 1.2rem;
-      height: 1.2rem;
-      border: 1px solid var(--ink-ghost);
-      cursor: pointer;
-      transition: border-color 0.2s ease, background-color 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .scale-option input[type="radio"]:checked {
-      border-color: var(--ink-mid);
-      background-color: var(--ink-mid);
-    }
-
-    .scale-option input[type="radio"]:hover {
-      border-color: var(--ink-faint);
-    }
-
-    .scale-option label {
-      font-family: var(--mono);
-      font-size: 0.52rem;
-      font-weight: 300;
-      color: var(--ink-faint);
-      cursor: pointer;
-      letter-spacing: 0.05em;
-    }
-
-    .submit-row {
-      margin-top: 2.5rem;
-    }
-
-    .submit-btn {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--ink-mid);
-      background: none;
-      border: 1px solid var(--ink-ghost);
-      padding: 0.75rem 2rem;
-      cursor: pointer;
-      transition: border-color 0.2s ease, color 0.2s ease;
-      width: 100%;
-    }
-
-    @media (min-width: 640px) {
-      .submit-btn { width: auto; }
-    }
-
-    .submit-btn:hover {
-      border-color: var(--ink-mid);
-      color: var(--ink);
-    }
-
-    .replay-btn {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--ink-faint);
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-    }
-
-    .replay-btn:hover { color: var(--rust); }
-
-    .form-error {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--ink-faint);
-      margin-top: 0.75rem;
-      display: none;
-    }
-
-    /* ─── Positioning diagram ─────────────────────────────── */
-    .stage-label {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--ink-faint);
-      margin-bottom: 1.25rem;
-    }
-
-    #positioning-svg {
-      display: block;
-      width: 100%;
-      overflow: visible;
-    }
-
-    .positioning-caption {
-      font-family: var(--mono);
-      font-size: 0.58rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--ink-faint);
-      margin-top: 1.25rem;
-      line-height: 2;
-    }
-
-    /* ─── Diagnosis ───────────────────────────────────────── */
-    .diagnosis-title {
-      font-family: var(--serif-alt);
-      font-weight: 300;
-      font-style: italic;
-      font-size: clamp(1.5rem, 4vw, 2.2rem);
-      line-height: 1.15;
-      color: var(--ink);
-      margin-bottom: 1.25rem;
-    }
-
-    .diagnosis-body {
-      font-family: var(--serif);
-      font-size: 1rem;
-      color: var(--ink-mid);
-      line-height: 1.8;
-      max-width: 60ch;
-    }
-
-    /* ─── Visualization ───────────────────────────────────── */
-    .figure-eyebrow {
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--ink-faint);
-      margin-top: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    #viz-svg {
-      display: block;
-      width: 100%;
-      overflow: visible;
-    }
-
-    .figure-caption {
-      font-family: var(--mono);
-      font-size: 0.58rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--ink-mid);
-      margin-top: 1.75rem;
-      line-height: 2;
-    }
-
-    .period-readout {
-      font-family: var(--mono);
-      font-size: 0.58rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--ink-mid);
-      margin-top: 0.5rem;
-    }
-
-    /* ─── Footer nav ──────────────────────────────────────── */
-    .module-footer-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      border-top: 1px solid var(--ink-ghost);
-      padding-top: 2rem;
-      margin-top: 4rem;
-    }
-
-    .footer-nav-link {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      font-weight: 300;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--ink-faint);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .footer-nav-link:hover {
-      color: var(--ink-mid);
-    }
-  </style>
 </head>
 <body>
 
@@ -637,6 +296,24 @@
           <!-- Figure intro — visible before animation runs -->
           <p class="figure-eyebrow">Fig. &middot; Garbage Can Model</p>
           <p class="figure-caption" id="viz-caption"></p>
+
+          <!-- Field notes — model explanation -->
+          <div class="field-notes-card">
+            <p class="field-notes-title">The Garbage Can Model</p>
+            <p class="field-notes-body">
+              <strong>Choice opportunities</strong> (circles) are forums where decisions could be made:
+              meetings, reviews, committees. <strong>Problems</strong> (dots) seek resolution by attaching
+              to a choice opportunity. <strong>Decision makers</strong> (invisible) allocate
+              <strong>energy</strong> to the choices they can access each cycle. When cumulative energy
+              meets the demand, a choice <strong>resolves</strong> and closes its attached problems.
+            </p>
+            <p class="field-notes-body">
+              The model&#8217;s insight: when problems outnumber capacity, decisions happen by
+              <strong>oversight</strong> (the forum closes while problems are elsewhere) or
+              <strong>flight</strong> (problems leave before the forum closes).
+              <strong>Resolution</strong> &#8212; genuinely closing the problem &#8212; becomes rare.
+            </p>
+          </div>
 
           <!-- Trigger button -->
           <div class="submit-row">
@@ -1097,7 +774,10 @@
           .attr('r', CHOICE_R)
           .attr('fill', 'none')
           .attr('stroke', C.inkGhost)
-          .attr('stroke-width', 1);
+          .attr('stroke-width', 1)
+          .each(function() {
+            d3.select(this).append('title');
+          });
 
       // ── Layer 2: fill rects (clipped inside choice circles) ────────────────────
       const fillLayer = svg.append('g');
@@ -1234,7 +914,10 @@
           .attr('cy', id => floatPos(id).y)
           .attr('r', PROB_R)
           .attr('fill', C.inkGhost)
-          .attr('opacity', 0);
+          .attr('opacity', 0)
+          .each(function() {
+            d3.select(this).append('title');
+          });
 
       // ── Layer 7: energy deficit indicators ──────────────────────────────────────
       var deficitLayer = svg.append('g');
@@ -1310,6 +993,38 @@
               if (d.state === 'resolved') return 0.4;
               return 1;
             });
+
+        // Update choice tooltips
+        svg.selectAll('circle.choice').each(function(d, i) {
+          var state = tick.choices[i].state;
+          var text;
+          if (state === 'inactive') {
+            text = 'Choice opportunity: not yet entered';
+          } else if (state === 'resolved') {
+            text = 'Resolved: this forum has closed';
+          } else if (choiceUnchangedTicks && choiceUnchangedTicks[i] >= 2) {
+            text = 'Deadlocked: too many problems, not enough energy';
+          } else {
+            text = 'Choice opportunity: a forum where decisions could be made';
+          }
+          d3.select(this).select('title').text(text);
+        });
+
+        // Update problem tooltips
+        svg.selectAll('circle.problem').each(function(d) {
+          var p = tick.problems[d];
+          var text;
+          if (p.state === 'inactive') {
+            text = '';
+          } else if (p.state === 'floating') {
+            text = 'Problem searching for a forum';
+          } else if (p.state === 'attached') {
+            text = 'Problem attached to forum C' + p.attachedTo;
+          } else if (p.state === 'resolved') {
+            text = 'Problem resolved at forum C' + p.attachedTo;
+          }
+          d3.select(this).select('title').text(text);
+        });
 
         // Detect exit types by comparing previous and current tick
         const resolvedThisTick = new Set();
@@ -1505,7 +1220,9 @@
               .attr('transform', 'translate(' + cx + ',' + CHOICE_Y + ')')
               .attr('d', arcPath)
               .attr('fill', C.rust)
-              .attr('opacity', 0.6);
+              .attr('opacity', 0.6)
+              .append('title')
+                .text('Energy progress: ' + Math.round(progress * 100) + '% of what is needed to resolve');
 
             // Background arc (full circle, very faint)
             var bgArc = d3.arc()
@@ -1688,7 +1405,7 @@
 
       // Simulation caption (visible before animation)
       document.getElementById('viz-caption').textContent =
-        `Problems (dots) search for choice opportunities (circles) each cycle \u2014 ` +
+        `Problems (dots) search for choice opportunities (circles) each cycle, ` +
         `attaching, drifting, and resolving as energy accumulates. ` +
         `Parameters: ${energyLoad} load; ${decisionStructure} decision; ${accessStructure} access.`;
 

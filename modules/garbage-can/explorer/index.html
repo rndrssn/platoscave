@@ -4,9 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulation Explorer · The Garbage Can Model · To the Bedrock</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
   <link rel="stylesheet" href="../../../css/main.css" />
 </head>
 <body>
@@ -49,16 +48,16 @@
       <div class="field-notes-card">
         <p class="field-notes-title">The Garbage Can Model</p>
         <p class="field-notes-body">
-          <strong>Choice opportunities</strong> (circles) are forums where decisions could be made:
+          <strong>Choice opportunities</strong> (circles) are places where decisions could be made:
           meetings, reviews, committees. <strong>Problems</strong> (dots) seek resolution by attaching
           to a choice opportunity. <strong>Decision makers</strong> (invisible) allocate
-          <strong>energy</strong> to the choices they can access each cycle. When cumulative energy
+          <strong>energy</strong> to the choices they can access each organizational iteration. When cumulative energy
           meets the demand, a choice <strong>resolves</strong> and closes its attached problems.
         </p>
         <p class="field-notes-body">
           The model&#8217;s insight: when problems outnumber capacity, decisions happen by
-          <strong>oversight</strong> (the forum closes while problems are elsewhere) or
-          <strong>flight</strong> (problems leave before the forum closes).
+          <strong>oversight</strong> (the choice opportunity closes while problems are elsewhere) or
+          <strong>flight</strong> (problems leave before the choice opportunity closes).
           <strong>Resolution</strong> &#8212; genuinely closing the problem &#8212; becomes rare.
         </p>
       </div>
@@ -114,6 +113,9 @@
         <div class="submit-row" id="explorer-sim-trigger" hidden>
           <button class="submit-btn" id="run-sim-btn">See how decisions play out</button>
         </div>
+        <div class="submit-row">
+          <button class="submit-btn replay-btn" id="replay-btn" hidden>Run simulation again</button>
+        </div>
         <div class="sim-summary-card" id="sim-summary" hidden>
           <p class="sim-summary-header" id="sum-header"></p>
 
@@ -135,7 +137,6 @@
           <p class="period-readout" id="sum-prob-adrift"></p>
           <p class="period-readout" id="sum-prob-inforum"></p>
 
-          <button class="replay-btn" id="replay-btn">Run again</button>
           <p class="positioning-caption" id="stochastic-note">Each run varies slightly. The simulation is stochastic.</p>
         </div>
       </div>

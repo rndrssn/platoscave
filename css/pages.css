@@ -19,7 +19,7 @@
 
 .module-header-number {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: var(--fs-module-header-number);
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -31,7 +31,7 @@
   font-family: var(--serif-alt);
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-size: clamp(var(--fs-heading-module-min), 6vw, var(--fs-heading-module-max));
   line-height: 1.1;
   color: var(--ink);
   margin-bottom: 1.25rem;
@@ -39,7 +39,7 @@
 
 .module-header-body {
   font-family: var(--serif);
-  font-size: 1rem;
+  font-size: var(--fs-body-module-header);
   color: var(--ink-mid);
   line-height: 1.75;
   max-width: 58ch;
@@ -54,7 +54,7 @@
 
 .module-tag {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: var(--fs-module-tag);
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -112,7 +112,7 @@
 
 .question-text {
   font-family: var(--serif);
-  font-size: 0.95rem;
+  font-size: var(--fs-body);
   color: var(--ink-mid);
   line-height: 1.6;
   margin-bottom: 0.75rem;
@@ -189,7 +189,7 @@
 
 .submit-btn {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: var(--fs-button-action);
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -214,7 +214,7 @@
 /* ─── Collapsible toggle ─────────────────────────────── */
 .collapsible-toggle {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: var(--fs-button-action);
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -236,21 +236,9 @@
 }
 
 .replay-btn {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ink-faint);
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
+  margin-top: 1rem;
 }
 
-.replay-btn:hover { color: var(--rust); }
-
-.replay-btn::before,
 .collapsible-toggle::before {
   content: '\203A';
   margin-right: 0.35rem;
@@ -270,7 +258,7 @@
 /* ─── Positioning diagram ─────────────────────────────── */
 .stage-label {
   font-family: var(--mono);
-  font-size: 0.85rem;
+  font-size: var(--fs-stage-label);
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -309,7 +297,7 @@
 
 .diagnosis-body {
   font-family: var(--serif);
-  font-size: 1rem;
+  font-size: var(--fs-body);
   color: var(--ink-mid);
   line-height: 1.8;
   max-width: 60ch;
@@ -366,7 +354,7 @@
 
 .footer-nav-link {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: var(--fs-link-footer-nav);
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -408,7 +396,7 @@
 
 .field-notes-body {
   font-family: var(--serif);
-  font-size: 0.9rem;
+  font-size: var(--fs-body);
   color: var(--ink-mid);
   line-height: 1.75;
   margin-bottom: 0.75rem;
@@ -445,7 +433,7 @@
 
 .essay-body {
   font-family: var(--serif);
-  font-size: 1rem;
+  font-size: var(--fs-body);
   color: var(--ink-mid);
   line-height: 1.8;
   max-width: 60ch;
@@ -554,7 +542,7 @@
 
 .taxonomy-value {
   font-family: var(--serif);
-  font-size: 0.9rem;
+  font-size: var(--fs-body);
   color: var(--ink-mid);
   line-height: 1.6;
 }
@@ -607,7 +595,7 @@
 
 .taxonomy-grid-cell {
   font-family: var(--serif);
-  font-size: 0.85rem;
+  font-size: var(--fs-body);
   color: var(--ink-mid);
   padding: 0.75rem 0.5rem;
   text-align: center;
@@ -662,22 +650,29 @@
 .module-sub-nav {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   gap: 0.5rem;
   padding-bottom: 1.25rem;
   margin-top: 4rem;
   margin-bottom: 2rem;
   border-bottom: 1px solid var(--ink-ghost);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
 .module-sub-nav-link {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.07em;
   color: var(--sage);
   text-decoration: none;
   transition: color 0.2s ease;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .module-sub-nav-link:hover {
@@ -693,7 +688,18 @@
 
 .module-sub-nav-dot {
   color: var(--ink-ghost);
-  font-size: 0.8rem;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+@media (min-width: 960px) {
+  .module-sub-nav {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    overflow-y: visible;
+    scrollbar-width: auto;
+  }
 }
 
 /* ─── Diagnosis contextual links ─────────────────────── */
@@ -706,7 +712,7 @@
 
 .diagnosis-link {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: var(--fs-link-diagnosis);
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -757,17 +763,29 @@
 .explorer-select {
   font-family: var(--mono);
   font-size: 0.75rem;
+  line-height: 1.2;
   font-weight: 300;
   color: var(--ink-mid);
   background-color: var(--paper);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6' fill='none' stroke='%239C8E78' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
   background-repeat: no-repeat;
-  background-position: right 0.75rem center;
+  background-position:
+    calc(100% - 13px) calc(50% - 2px),
+    calc(100% - 8px) calc(50% - 2px);
+  background-size: 5px 5px, 5px 5px;
   border: 1px solid var(--ink-ghost);
+  border-radius: 0;
   padding: 0.5rem 2rem 0.5rem 0.75rem;
+  min-height: 2.2rem;
+  width: 100%;
+  max-width: 16rem;
+  box-sizing: border-box;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .explorer-select:hover {

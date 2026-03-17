@@ -4,7 +4,7 @@ type: PRINCIPLE
 title: To the Bedrock — Coding Standards
 status: ACTIVE
 created: 2026-03-15
-updated: 2026-03-15
+updated: 2026-03-17
 owner: Robert Andersson
 relates_to: [VISION-product, PRINCIPLE-design-system]
 tags: [code, standards, css, javascript, separation-of-concerns]
@@ -26,7 +26,10 @@ Every file in this project has exactly one responsibility:
 
 | File | Responsibility |
 |------|---------------|
-| `css/main.css` | All visual decisions — colors, typography, spacing, layout |
+| `css/main.css` | CSS import entrypoint and cascade order |
+| `css/tokens.css` + `css/themes.css` | Visual tokens and theme overrides |
+| `theme.config.js` | Single source of truth for active site-wide theme |
+| `js/theme-bootstrap.js` | Applies configured theme to `<html data-theme='...'>` at runtime |
 | `gc-simulation.js` | Simulation logic only — no UI, no DOM |
 | `gc-scoring.js` | Scoring logic only — no UI, no DOM |
 | `modules/*/index.html` | Structure and wiring only — no logic, no inline styles |
@@ -49,11 +52,11 @@ Inline styles are forbidden everywhere. No exceptions.
 <p class="section-label">Label</p>
 ```
 
-### No new CSS outside main.css
-All CSS lives in `css/main.css`. No `<style>` blocks in HTML files. No separate CSS files per module. If a new component requires new styles, add them to `main.css` with a clearly commented section header.
+### No CSS outside `css/`
+All CSS lives in the layered files under `css/` (`tokens`, `base`, `layout`, `components`, `utilities`, `themes`, `pages`). No `<style>` blocks in HTML files.
 
 ### Use existing tokens
-All colors, fonts, and spacing must reference CSS custom properties defined in `main.css`. Never hardcode values that have a token equivalent.
+All colors, fonts, and spacing must reference CSS custom properties defined in `tokens.css` and overridden in `themes.css`. Never hardcode values that have a token equivalent.
 
 ```css
 /* Never do this */
@@ -120,19 +123,26 @@ Never reference `index.html` explicitly in any link. Always use clean directory 
 <a href="/modules/garbage-can/">Garbage Can</a>
 ```
 
-### One CSS file, loaded in head
-Every HTML page loads `css/main.css` and nothing else for styles. The path is relative to the page location.
+### Theme bootstrap in head
+Every HTML page loads `theme.config.js` and `js/theme-bootstrap.js` in `<head>` before `css/main.css`. This ensures a single config controls theme selection across all pages.
 
 ```html
 <!-- Root page -->
+<script src="theme.config.js"></script>
+<script src="js/theme-bootstrap.js"></script>
 <link rel="stylesheet" href="css/main.css" />
 
 <!-- Module page at /modules/garbage-can/ -->
+<script src="../../theme.config.js"></script>
+<script src="../../js/theme-bootstrap.js"></script>
 <link rel="stylesheet" href="../../css/main.css" />
 ```
 
+Never hardcode `data-theme` on individual HTML pages unless explicitly required for a temporary experiment.
+
 ### Scripts at end of body
-All `<script>` tags go at the end of `<body>`, after all content. Exception: Google Fonts `<link>` tags go in `<head>`.
+All page/application scripts go at the end of `<body>`, after all content.
+Exception: theme bootstrapping (`theme.config.js` + `js/theme-bootstrap.js`) runs in `<head>` to avoid flash of wrong theme.
 
 ---
 
@@ -151,14 +161,15 @@ Follows `DOC-CONVENTIONS.md` for all docs. For code files:
 When working on any file in this project, Claude Code must:
 
 1. **Read this file first** before writing any code
-2. **Read `css/main.css`** before adding any styles — use existing tokens and classes
+2. **Read `css/main.css` and `docs/CSS-ARCHITECTURE.md`** before adding styles — use existing layers, tokens, and classes
 3. **Never add inline styles** — use CSS classes only
 4. **Never add `<style>` blocks** to HTML files
 5. **Never add logic to HTML files** — logic belongs in `.js` files
 6. **Never hardcode color or font values** — use CSS custom properties
-7. **Never add external dependencies** without explicit instruction
-8. **Always use clean directory-style URLs** — never reference `index.html` explicitly
-9. **Check existing classes before writing new CSS** — the design system covers most cases
-10. **Keep JS files DOM-free** — logic files accept inputs and return outputs only
+7. **Switch global theme only via `theme.config.js`** — do not edit every HTML file
+8. **Never add external dependencies** without explicit instruction
+9. **Always use clean directory-style URLs** — never reference `index.html` explicitly
+10. **Check existing classes before writing new CSS** — the design system covers most cases
+11. **Keep JS files DOM-free** — logic files accept inputs and return outputs only
 
 These rules apply to every task regardless of how the HANDOFF is worded. They are not optional constraints — they are the baseline.

@@ -15,7 +15,7 @@ This project uses plain CSS with a layered import structure.
 Keep this order stable unless there is a clear cascade reason.
 
 ## Responsibilities
-- `tokens.css`: design tokens (`--paper`, `--ink-*`, `--sage`, fonts, `--viz-*`)
+- `tokens.css`: design tokens (`--paper`, `--ink-*`, font families, semantic font sizes `--fs-*`, and viz tokens `--viz-*`)
 - `base.css`: reset and element defaults
 - `layout.css`: global layout primitives (`main`, `section`, wrappers)
 - `components.css`: reusable UI components (cards, nav blocks, buttons, shared module UI)
@@ -26,7 +26,9 @@ Keep this order stable unless there is a clear cascade reason.
 ## Theming
 - Default values are in `:root` in `tokens.css`
 - Optional theme overrides use `[data-theme='...']` in `themes.css`
-- Current optional theme: `high-contrast`
+- Active theme is applied globally by `theme.config.js` + `js/theme-bootstrap.js`
+- Change only `window.PLATOSCAVE_THEME` in `theme.config.js` to switch the whole site
+- Theme names are defined in `css/themes.css` (for example: `high-contrast`, `urban-grid*`, `decision-collision*`, `new-yorker`)
 
 ## JS/SVG styling contract
 - `gc-viz.js` reads visual token values from CSS custom properties with fallback values

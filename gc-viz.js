@@ -37,12 +37,28 @@ const C = {
   sage:      readCssVar('--viz-sage', '#4A6741'),
 };
 
+const VIZ_FONT = {
+  mono: readCssVar('--viz-font-mono', readCssVar('--mono', "'DM Mono', monospace")),
+};
+
+const VIZ_FONT_SIZE = {
+  trackLabel: readCssVar('--viz-fs-track-label', '9px'),
+  trackEnd: readCssVar('--viz-fs-track-end', '8px'),
+  label: readCssVar('--viz-fs-label', '0.75rem'),
+};
+
+function formatChoiceOpportunityLabel(idxZeroBased) {
+  return `CO${idxZeroBased + 1}`;
+}
+
+const CHOICE_RADIUS = 30;
+
 const VIZ_LAYOUT = {
   empty: {
     svgW: 900,
     svgH: 300,
     choiceY: 140,
-    choiceRadius: 22,
+    choiceRadius: CHOICE_RADIUS,
     problemRadius: 3.5,
     padH: 55,
     floatY0: 50,
@@ -51,7 +67,7 @@ const VIZ_LAYOUT = {
     svgW: 900,
     svgH: 340,
     choiceY: 140,
-    choiceRadius: 30,
+    choiceRadius: CHOICE_RADIUS,
     problemRadius: 3.5,
     padH: 35,
     floatY0: 50,
@@ -90,8 +106,8 @@ function drawPositioning(raw) {
   g.append('text')
     .attr('x', 0)
     .attr('y', 22)
-    .attr('font-family', "'DM Mono', monospace")
-    .attr('font-size', '9')
+    .attr('font-family', VIZ_FONT.mono)
+    .attr('font-size', VIZ_FONT_SIZE.trackLabel)
     .attr('font-weight', '300')
     .attr('fill', C.inkFaint)
     .attr('letter-spacing', '0.1em')
@@ -100,8 +116,8 @@ function drawPositioning(raw) {
   g.append('text')
     .attr('x', PAD_L)
     .attr('y', 13)
-    .attr('font-family', "'DM Mono', monospace")
-    .attr('font-size', '8')
+    .attr('font-family', VIZ_FONT.mono)
+    .attr('font-size', VIZ_FONT_SIZE.trackEnd)
     .attr('font-weight', '300')
     .attr('fill', C.inkGhost)
     .attr('text-anchor', 'start')
@@ -111,8 +127,8 @@ function drawPositioning(raw) {
   g.append('text')
     .attr('x', PAD_L + TRACKW)
     .attr('y', 13)
-    .attr('font-family', "'DM Mono', monospace")
-    .attr('font-size', '8')
+    .attr('font-family', VIZ_FONT.mono)
+    .attr('font-size', VIZ_FONT_SIZE.trackEnd)
     .attr('font-weight', '300')
     .attr('fill', C.inkGhost)
     .attr('text-anchor', 'end')
@@ -182,31 +198,31 @@ function drawEmptyState() {
       .attr('x', i => choiceX[i])
       .attr('y', CHOICE_Y + CHOICE_R + 13)
       .attr('text-anchor', 'middle')
-      .attr('font-family', "'DM Mono', monospace")
-      .attr('font-size', '0.75rem')
+      .attr('font-family', VIZ_FONT.mono)
+      .attr('font-size', VIZ_FONT_SIZE.label)
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.1em')
       .attr('fill', C.inkFaint)
-      .text(i => `C${i}`);
+      .text(i => formatChoiceOpportunityLabel(i));
 
-  // Cycle counter
+  // Organizational iteration counter
   svg.append('text')
     .attr('class', 'viz-counter')
     .attr('x', 0)
     .attr('y', 16)
-    .attr('font-family', "'DM Mono', monospace")
-    .attr('font-size', '0.75rem')
+    .attr('font-family', VIZ_FONT.mono)
+    .attr('font-size', VIZ_FONT_SIZE.label)
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.1em')
     .attr('fill', C.inkFaint)
-    .text('Cycle 0 of 20');
+    .text('Organizational Iteration 0 of 20');
 
   // Legend
   var LEGEND_Y = SVG_H - 12;
   var legendItems = [
     { label: 'Entering',  color: C.rust },
-    { label: 'Searching', color: C.rustLight },
-    { label: 'In forum',  color: C.gold },
+    { label: 'Searching CO',          color: C.rustLight },
+    { label: 'In choice opportunity', color: C.gold },
   ];
 
   var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
@@ -222,8 +238,8 @@ function drawEmptyState() {
     legendG.append('text')
       .attr('x', legendX + 12)
       .attr('y', 4)
-      .attr('font-family', "'DM Mono', monospace")
-      .attr('font-size', '0.75rem')
+      .attr('font-family', VIZ_FONT.mono)
+      .attr('font-size', VIZ_FONT_SIZE.label)
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.08em')
       .attr('fill', C.inkFaint)
@@ -254,8 +270,8 @@ function drawEmptyState() {
   legendG.append('text')
     .attr('x', legendX + 14)
     .attr('y', 4)
-    .attr('font-family', "'DM Mono', monospace")
-    .attr('font-size', '0.75rem')
+    .attr('font-family', VIZ_FONT.mono)
+    .attr('font-size', VIZ_FONT_SIZE.label)
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.08em')
     .attr('fill', C.inkFaint)
@@ -305,11 +321,11 @@ function showEndState(
   }
 
   document.getElementById('sum-thisrun-label').textContent =
-    'This run (cycle ' + PERIODS + ')';
+    'This run (organizational iteration ' + PERIODS + ')';
   document.getElementById('sum-thisrun-resolved').innerHTML =
     '<span class="outcome-resolved">Resolved</span>: ' + runResolved + ' of ' + W + ' problems';
   document.getElementById('sum-thisrun-inforum').innerHTML =
-    '<span class="outcome-unresolved">In forum</span>: ' + runInForum + ' of ' + W + ' problems';
+    '<span class="outcome-unresolved">In choice opportunity</span>: ' + runInForum + ' of ' + W + ' problems';
   document.getElementById('sum-thisrun-adrift').innerHTML =
     '<span class="outcome-flight">Adrift</span>: ' + runAdrift + ' of ' + W + ' problems';
   document.getElementById('sum-thisrun-choices-resolved').innerHTML =
@@ -322,25 +338,25 @@ function showEndState(
     'Across 100 simulations, on average:';
 
   document.getElementById('sum-choices-label').textContent =
-    `How the ${M} decision forums closed`;
+    `How the ${M} choice opportunities closed`;
   document.getElementById('sum-choice-resolution').innerHTML =
-    `<span class="outcome-resolved">Deliberation</span>: ${pctRes}% \u2014 forum closed after sustained engagement`;
+    `<span class="outcome-resolved">Deliberation</span>: ${pctRes}% \u2014 choice opportunity closed after sustained engagement`;
   document.getElementById('sum-choice-oversight').innerHTML =
-    `<span class="outcome-oversight">Oversight</span>: ${pctOver}% \u2014 forum closed with no problem attached`;
+    `<span class="outcome-oversight">Oversight</span>: ${pctOver}% \u2014 choice opportunity closed with no problem attached`;
   document.getElementById('sum-choice-flight').innerHTML =
-    `<span class="outcome-flight">Flight</span>: ${pctFli}% \u2014 forum closed after problems fled`;
+    `<span class="outcome-flight">Flight</span>: ${pctFli}% \u2014 choice opportunity closed after problems fled`;
 
   // Supplementary: problem fates (interpretive extension)
   document.getElementById('sum-problems-label').textContent =
     `What happened to the ${W} problems`;
   document.getElementById('sum-prob-resolved').innerHTML =
-    `<span class="outcome-resolved">Resolved</span>: ${probResolved} of ${W} \u2014 genuinely closed at a decision forum`;
+    `<span class="outcome-resolved">Resolved</span>: ${probResolved} of ${W} \u2014 genuinely closed at a choice opportunity`;
   document.getElementById('sum-prob-displaced').innerHTML =
-    `<span class="outcome-oversight">Displaced</span>: ${probDisplaced} of ${W} \u2014 forum closed without resolving this problem`;
+    `<span class="outcome-oversight">Displaced</span>: ${probDisplaced} of ${W} \u2014 choice opportunity closed without resolving this problem`;
   document.getElementById('sum-prob-adrift').innerHTML =
-    `<span class="outcome-flight">Adrift</span>: ${probAdrift} of ${W} \u2014 detached from forum or never attached`;
+    `<span class="outcome-flight">Adrift</span>: ${probAdrift} of ${W} \u2014 detached from choice opportunity or never attached`;
   document.getElementById('sum-prob-inforum').innerHTML =
-    `<span class="outcome-unresolved">In forum</span>: ${probInForum} of ${W} \u2014 still attached to an open forum at cycle ${PERIODS}`;
+    `<span class="outcome-unresolved">In choice opportunity</span>: ${probInForum} of ${W} \u2014 still attached to an open choice opportunity at organizational iteration ${PERIODS}`;
 
   document.getElementById('replay-btn').hidden      = false;
   document.getElementById('stochastic-note').hidden = false;
@@ -462,32 +478,32 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       .attr('x', i => choiceX[i])
       .attr('y', CHOICE_Y + CHOICE_R + 13)
       .attr('text-anchor', 'middle')
-      .attr('font-family', "'DM Mono', monospace")
-      .attr('font-size', '0.75rem')
+      .attr('font-family', VIZ_FONT.mono)
+      .attr('font-size', VIZ_FONT_SIZE.label)
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.1em')
       .attr('fill', C.inkFaint)
-      .text(i => `C${i}`);
+      .text(i => formatChoiceOpportunityLabel(i));
 
-  // ── Layer 5: cycle counter (top-left) ───────────────────────────────────────
+  // ── Layer 5: organizational iteration counter (top-left) ────────────────────
   var counterText = svg.append('text')
     .attr('class', 'viz-counter')
     .attr('x', 0)
     .attr('y', 16)
-    .attr('font-family', "'DM Mono', monospace")
-    .attr('font-size', '0.75rem')
+    .attr('font-family', VIZ_FONT.mono)
+    .attr('font-size', VIZ_FONT_SIZE.label)
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.1em')
     .attr('fill', C.inkFaint)
-    .text('Cycle 0 of 20');
+    .text('Organizational Iteration 0 of 20');
 
   // ── Phase label (top-right) ─────────────────────────────────────────────────
   var phaseText = svg.append('text')
     .attr('x', SVG_W)
     .attr('y', 16)
     .attr('text-anchor', 'end')
-    .attr('font-family', "'DM Mono', monospace")
-    .attr('font-size', '0.75rem')
+    .attr('font-family', VIZ_FONT.mono)
+    .attr('font-size', VIZ_FONT_SIZE.label)
     .attr('font-weight', '300')
     .attr('font-style', 'italic')
     .attr('letter-spacing', '0.08em')
@@ -498,8 +514,8 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
   var LEGEND_Y = SVG_H - 12;
   var legendItems = [
     { label: 'Entering',  color: C.rust },
-    { label: 'Searching', color: C.rustLight },
-    { label: 'In forum',  color: C.gold },
+    { label: 'Searching CO',          color: C.rustLight },
+    { label: 'In choice opportunity', color: C.gold },
   ];
 
   var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
@@ -515,8 +531,8 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
     legendG.append('text')
       .attr('x', legendX + 12)
       .attr('y', 4)
-      .attr('font-family', "'DM Mono', monospace")
-      .attr('font-size', '0.75rem')
+      .attr('font-family', VIZ_FONT.mono)
+      .attr('font-size', VIZ_FONT_SIZE.label)
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.08em')
       .attr('fill', C.inkFaint)
@@ -550,8 +566,8 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
   legendG.append('text')
     .attr('x', legendX + 14)
     .attr('y', 4)
-    .attr('font-family', "'DM Mono', monospace")
-    .attr('font-size', '0.75rem')
+    .attr('font-family', VIZ_FONT.mono)
+    .attr('font-size', VIZ_FONT_SIZE.label)
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.08em')
     .attr('fill', C.inkFaint)
@@ -649,9 +665,9 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       if (state === 'inactive') {
         text = 'Choice opportunity: not yet entered';
       } else if (state === 'resolved') {
-        text = 'Resolved: this forum has closed';
+        text = 'Resolved: this choice opportunity has closed';
       } else {
-        text = 'Choice opportunity: a forum where decisions could be made';
+        text = 'Choice opportunity: where decisions could be made';
       }
       d3.select(this).select('title').text(text);
     });
@@ -663,11 +679,11 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       if (p.state === 'inactive') {
         text = '';
       } else if (p.state === 'floating') {
-        text = 'Problem searching for a forum';
+        text = 'Problem searching for a choice opportunity';
       } else if (p.state === 'attached') {
-        text = 'Problem attached to forum C' + p.attachedTo;
+        text = 'Problem attached to choice opportunity ' + formatChoiceOpportunityLabel(p.attachedTo);
       } else if (p.state === 'resolved') {
-        text = 'Problem resolved at forum C' + p.attachedTo;
+        text = 'Problem resolved at choice opportunity ' + formatChoiceOpportunityLabel(p.attachedTo);
       }
       d3.select(this).select('title').text(text);
     });
@@ -789,7 +805,7 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
     allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');
     allProbs.classed('problem-searching', id => tick.problems[id].state === 'floating');
 
-    counterText.text(`Cycle ${tick.tick} of 20`);
+    counterText.text(`Organizational Iteration ${tick.tick} of 20`);
 
     // Phase label
     if (tick.tick <= 10) {
@@ -811,7 +827,7 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
   function stepTick() {
     current++;
     if (current >= ticks.length) {
-      counterText.text('Cycle 20 of 20 \u00B7 showing final run');
+      counterText.text('Organizational Iteration 20 of 20 \u00B7 showing final run');
       phaseText.text('');
       showEndState(
         pctRes, pctOver, pctFli,

@@ -4,7 +4,7 @@ type: PRINCIPLE
 title: To the Bedrock — Design System
 status: ACTIVE
 created: 2026-03-13
-updated: 2026-03-13
+updated: 2026-03-17
 owner: Robert Andersson
 relates_to: [VISION-product]
 tags: [design, ux, css, typography, colour]
@@ -20,9 +20,20 @@ The feel of a well-kept researcher's field journal — one that happens to conta
 
 The design enacts the intellectual stance: unhurried, considered, grounded in material reality rather than digital gloss.
 
+## Theme Architecture (2026-03-17)
+
+The site now supports multiple visual themes with one global switch.
+
+- Theme definitions live in `css/themes.css`
+- Default design tokens live in `css/tokens.css`
+- Active theme is selected in `theme.config.js` via `window.PLATOSCAVE_THEME`
+- `js/theme-bootstrap.js` applies the configured theme to `<html data-theme="...">` on every page
+
+This document defines the **default/base design language**. Experimental themes may intentionally diverge from these defaults.
+
 ---
 
-## Non-Negotiables
+## Non-Negotiables (Base Theme)
 
 - No gradients
 - No drop shadows
@@ -35,7 +46,7 @@ The design enacts the intellectual stance: unhurried, considered, grounded in ma
 
 ---
 
-## Color Palette
+## Color Palette (Base Theme)
 
 All colors are matte and desaturated. The palette reads like ink on aged paper.
 
@@ -66,7 +77,7 @@ All colors are matte and desaturated. The palette reads like ink on aged paper.
 
 ---
 
-## Typography
+## Typography (Base Theme)
 
 ### Typefaces
 
@@ -103,7 +114,7 @@ All three loaded from Google Fonts.
 
 ---
 
-## Layout
+## Layout (Base Theme)
 
 - Max content width: `1140px`, centered
 - Page padding (horizontal): `2.5rem`
@@ -132,7 +143,7 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 
 ---
 
-## Navigation
+## Navigation (Base Theme)
 
 - Fixed top bar
 - Left: site name in italic Cormorant Garamond
@@ -142,7 +153,7 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 
 ---
 
-## Visualization Style
+## Visualization Style (Base Theme)
 
 Visualizations should feel like they belong in the same notebook as the text. Guiding principles:
 
@@ -222,6 +233,7 @@ Small mono labels, plain text, no border, no background. Used for topic tagging 
 ```
 /
 ├── index.html
+├── theme.config.js
 ├── /docs
 │   ├── VISION-product.md
 │   ├── PRINCIPLE-design-system.md
@@ -229,11 +241,18 @@ Small mono labels, plain text, no border, no background. Used for topic tagging 
 │   ├── PRINCIPLE-responsive.md
 │   └── DOC-CONVENTIONS.md
 ├── /css
-│   └── main.css
+│   ├── main.css
+│   ├── tokens.css
+│   ├── base.css
+│   ├── layout.css
+│   ├── components.css
+│   ├── utilities.css
+│   ├── themes.css
+│   └── pages.css
 ├── /js
-│   └── main.js
+│   └── theme-bootstrap.js
 └── /modules
-    ├── /emergence
+    ├── /emergence-primer
     ├── /maturity
     ├── /garbage-can
     └── /mix-mapper

@@ -112,8 +112,7 @@ function drawPositioning(raw) {
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 function drawEmptyState() {
-  const container = document.getElementById('viz-svg');
-  const SVG_W    = container.clientWidth || 900;
+  const SVG_W    = 900;
   const SVG_H    = 300;
   const CHOICE_Y = 140;
   const CHOICE_R = 22;
@@ -122,8 +121,7 @@ function drawEmptyState() {
   const FLOAT_Y0 = 50;
 
   const svg = d3.select('#viz-svg')
-    .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
-    .attr('height', SVG_H);
+    .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`);
 
   svg.selectAll('*').remove();
 
@@ -338,8 +336,7 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
   document.getElementById('replay-btn').hidden    = true;
   document.getElementById('stochastic-note').hidden = true;
 
-  const container = document.getElementById('viz-svg');
-  const SVG_W    = container.clientWidth || 900;
+  const SVG_W    = 900;
   const SVG_H    = 300;
   const CHOICE_Y = 140;
   const CHOICE_R = 22;
@@ -349,8 +346,7 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
   const FLOAT_Y1 = 75;
 
   const svg = d3.select('#viz-svg')
-    .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
-    .attr('height', SVG_H);
+    .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`);
 
   svg.selectAll('*').remove();
 

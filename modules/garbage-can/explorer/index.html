@@ -63,81 +63,81 @@
         </p>
       </div>
 
-      <!-- Simulation panel -->
+      <!-- Parameter selectors — page-level controls -->
       <div class="explorer-panel" id="panel-a">
-
-          <div class="explorer-selectors">
-            <div class="explorer-select-group">
-              <label class="explorer-select-label" for="panel-a-load">Load</label>
-              <select class="explorer-select" id="panel-a-load">
-                <option value="" disabled selected>Select&hellip;</option>
-                <option value="light">Light</option>
-                <option value="moderate">Moderate</option>
-                <option value="heavy">Heavy</option>
-              </select>
-            </div>
-            <div class="explorer-select-group">
-              <label class="explorer-select-label" for="panel-a-decision">Decision</label>
-              <select class="explorer-select" id="panel-a-decision">
-                <option value="" disabled selected>Select&hellip;</option>
-                <option value="unsegmented">Unsegmented</option>
-                <option value="hierarchical">Hierarchical</option>
-                <option value="specialized">Specialized</option>
-              </select>
-            </div>
-            <div class="explorer-select-group">
-              <label class="explorer-select-label" for="panel-a-access">Access</label>
-              <select class="explorer-select" id="panel-a-access">
-                <option value="" disabled selected>Select&hellip;</option>
-                <option value="unsegmented">Unsegmented</option>
-                <option value="hierarchical">Hierarchical</option>
-                <option value="specialized">Specialized</option>
-              </select>
-            </div>
+        <div class="explorer-selectors">
+          <div class="explorer-select-group">
+            <label class="explorer-select-label" for="panel-a-load">Load</label>
+            <select class="explorer-select" id="panel-a-load">
+              <option value="" disabled selected>Select&hellip;</option>
+              <option value="light">Light</option>
+              <option value="moderate">Moderate</option>
+              <option value="heavy">Heavy</option>
+            </select>
           </div>
-
-          <!-- Diagnosis — appears when all dropdowns are set -->
-          <div id="explorer-diagnosis" hidden>
-            <hr class="stage-rule" />
-            <h2 class="diagnosis-title" id="explorer-diagnosis-title"></h2>
-            <p class="diagnosis-body" id="explorer-diagnosis-body"></p>
+          <div class="explorer-select-group">
+            <label class="explorer-select-label" for="panel-a-decision">Decision</label>
+            <select class="explorer-select" id="panel-a-decision">
+              <option value="" disabled selected>Select&hellip;</option>
+              <option value="unsegmented">Unsegmented</option>
+              <option value="hierarchical">Hierarchical</option>
+              <option value="specialized">Specialized</option>
+            </select>
           </div>
-
-          <!-- Simulation area — shown when all dropdowns are set -->
-          <div id="viz-area" hidden>
-            <svg id="viz-svg"></svg>
-            <div class="sim-summary-card" id="sim-summary" hidden>
-              <p class="sim-summary-header" id="sum-header"></p>
-
-              <p class="sim-summary-subheader" id="sum-thisrun-label"></p>
-              <p class="period-readout" id="sum-thisrun-resolved"></p>
-              <p class="period-readout" id="sum-thisrun-inforum"></p>
-              <p class="period-readout" id="sum-thisrun-adrift"></p>
-              <p class="period-readout" id="sum-thisrun-choices-resolved"></p>
-              <p class="period-readout" id="sum-thisrun-choices-open"></p>
-
-              <p class="sim-summary-subheader" id="sum-choices-label"></p>
-              <p class="period-readout" id="sum-choice-resolution"></p>
-              <p class="period-readout" id="sum-choice-oversight"></p>
-              <p class="period-readout" id="sum-choice-flight"></p>
-
-              <p class="sim-summary-subheader" id="sum-problems-label"></p>
-              <p class="period-readout" id="sum-prob-resolved"></p>
-              <p class="period-readout" id="sum-prob-displaced"></p>
-              <p class="period-readout" id="sum-prob-adrift"></p>
-              <p class="period-readout" id="sum-prob-inforum"></p>
-
-              <button class="replay-btn" id="replay-btn">Run again</button>
-              <p class="positioning-caption" id="stochastic-note">Each run varies slightly. The simulation is stochastic.</p>
-            </div>
-          </div>
-
-          <!-- Simulation trigger — below SVG, appears when all dropdowns are set -->
-          <div class="submit-row" id="explorer-sim-trigger" hidden>
-            <button class="submit-btn" id="run-sim-btn">See how decisions play out</button>
+          <div class="explorer-select-group">
+            <label class="explorer-select-label" for="panel-a-access">Access</label>
+            <select class="explorer-select" id="panel-a-access">
+              <option value="" disabled selected>Select&hellip;</option>
+              <option value="unsegmented">Unsegmented</option>
+              <option value="hierarchical">Hierarchical</option>
+              <option value="specialized">Specialized</option>
+            </select>
           </div>
         </div>
+      </div>
 
+      <!-- Diagnosis — appears when all dropdowns are set -->
+      <div id="explorer-diagnosis" hidden>
+        <hr class="stage-rule" />
+        <p class="stage-label">Diagnosis</p>
+        <div class="sim-summary-card">
+          <h2 class="diagnosis-title" id="explorer-diagnosis-title"></h2>
+          <p class="diagnosis-body" id="explorer-diagnosis-body"></p>
+        </div>
+      </div>
+
+      <!-- Simulation area — shown when all dropdowns are set -->
+      <div id="viz-area" hidden>
+        <hr class="stage-rule" />
+        <p class="stage-label">Simulation</p>
+        <svg id="viz-svg"></svg>
+        <div class="submit-row" id="explorer-sim-trigger" hidden>
+          <button class="submit-btn" id="run-sim-btn">See how decisions play out</button>
+        </div>
+        <div class="sim-summary-card" id="sim-summary" hidden>
+          <p class="sim-summary-header" id="sum-header"></p>
+
+          <p class="sim-summary-subheader" id="sum-thisrun-label"></p>
+          <p class="period-readout" id="sum-thisrun-resolved"></p>
+          <p class="period-readout" id="sum-thisrun-inforum"></p>
+          <p class="period-readout" id="sum-thisrun-adrift"></p>
+          <p class="period-readout" id="sum-thisrun-choices-resolved"></p>
+          <p class="period-readout" id="sum-thisrun-choices-open"></p>
+
+          <p class="sim-summary-subheader" id="sum-choices-label"></p>
+          <p class="period-readout" id="sum-choice-resolution"></p>
+          <p class="period-readout" id="sum-choice-oversight"></p>
+          <p class="period-readout" id="sum-choice-flight"></p>
+
+          <p class="sim-summary-subheader" id="sum-problems-label"></p>
+          <p class="period-readout" id="sum-prob-resolved"></p>
+          <p class="period-readout" id="sum-prob-displaced"></p>
+          <p class="period-readout" id="sum-prob-adrift"></p>
+          <p class="period-readout" id="sum-prob-inforum"></p>
+
+          <button class="replay-btn" id="replay-btn">Run again</button>
+          <p class="positioning-caption" id="stochastic-note">Each run varies slightly. The simulation is stochastic.</p>
+        </div>
       </div>
 
       <nav class="module-sub-nav" aria-label="Module sections">
@@ -154,7 +154,7 @@
   </main>
 
   <footer>
-    <p class="footer-text">To the Bedrock &middot; Platoscave</p>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="/colophon/" class="footer-link">Colophon</a></p>
   </footer>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>

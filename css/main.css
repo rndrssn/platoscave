@@ -278,6 +278,16 @@ footer {
   color: var(--ink-ghost);
 }
 
+.footer-link {
+  color: var(--ink-ghost);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--ink-faint);
+}
+
 /* ─── Modules Index — mobile base ────────────────────────── */
 .modules-index {
   padding-top: calc(4rem + 3rem);
@@ -1057,6 +1067,17 @@ footer {
 
 .essay-body em {
   font-style: italic;
+}
+
+.essay-body a {
+  color: var(--sage);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.essay-body a:hover {
+  color: var(--sage-light);
+  text-decoration: underline;
 }
 
 /* ─── Essay sub-page links ───────────────────────────── */

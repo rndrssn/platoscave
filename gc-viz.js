@@ -37,6 +37,28 @@ const C = {
   sage:      readCssVar('--viz-sage', '#4A6741'),
 };
 
+const VIZ_LAYOUT = {
+  empty: {
+    svgW: 900,
+    svgH: 300,
+    choiceY: 140,
+    choiceRadius: 22,
+    problemRadius: 3.5,
+    padH: 55,
+    floatY0: 50,
+  },
+  live: {
+    svgW: 900,
+    svgH: 340,
+    choiceY: 140,
+    choiceRadius: 30,
+    problemRadius: 3.5,
+    padH: 35,
+    floatY0: 50,
+    floatY1: 75,
+  },
+};
+
 // ─── Positioning diagram ──────────────────────────────────────────────────────
 function drawPositioning(raw) {
   const svgEl  = document.getElementById('positioning-svg');
@@ -119,13 +141,15 @@ function drawPositioning(raw) {
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 function drawEmptyState() {
-  const SVG_W    = 900;
-  const SVG_H    = 300;
-  const CHOICE_Y = 140;
-  const CHOICE_R = 22;
-  const PROB_R   = 3.5;
-  const PAD_H    = 55;
-  const FLOAT_Y0 = 50;
+  const {
+    svgW: SVG_W,
+    svgH: SVG_H,
+    choiceY: CHOICE_Y,
+    choiceRadius: CHOICE_R,
+    problemRadius: PROB_R,
+    padH: PAD_H,
+    floatY0: FLOAT_Y0,
+  } = VIZ_LAYOUT.empty;
 
   const svg = d3.select('#viz-svg')
     .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`);
@@ -343,14 +367,16 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
   document.getElementById('replay-btn').hidden    = true;
   document.getElementById('stochastic-note').hidden = true;
 
-  const SVG_W    = 900;
-  const SVG_H    = 340;
-  const CHOICE_Y = 140;
-  const CHOICE_R = 30;
-  const PROB_R   = 3.5;
-  const PAD_H    = 35;
-  const FLOAT_Y0 = 50;
-  const FLOAT_Y1 = 75;
+  const {
+    svgW: SVG_W,
+    svgH: SVG_H,
+    choiceY: CHOICE_Y,
+    choiceRadius: CHOICE_R,
+    problemRadius: PROB_R,
+    padH: PAD_H,
+    floatY0: FLOAT_Y0,
+    floatY1: FLOAT_Y1,
+  } = VIZ_LAYOUT.live;
 
   const svg = d3.select('#viz-svg')
     .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`);

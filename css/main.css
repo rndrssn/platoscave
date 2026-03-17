@@ -196,7 +196,7 @@ section + section {
 
 .contact-role {
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -221,7 +221,7 @@ section + section {
 
 .contact-key {
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -270,7 +270,7 @@ footer {
 
 .footer-text {
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -313,7 +313,7 @@ footer {
 
 .modules-header-count {
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -443,7 +443,7 @@ footer {
 
 .sim-summary-subheader {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -482,7 +482,7 @@ footer {
 
 .results-nav-link {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -581,7 +581,7 @@ footer {
 
 .q-step-indicator {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -657,7 +657,7 @@ footer {
 
 .module-tag {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -698,7 +698,7 @@ footer {
 
 .q-section-label {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -729,7 +729,7 @@ footer {
 
 .scale-pole {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -778,7 +778,7 @@ footer {
 
 .scale-option label {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   color: var(--ink-faint);
   cursor: pointer;
@@ -861,7 +861,7 @@ footer {
 
 .form-error {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -890,7 +890,7 @@ footer {
 
 .positioning-caption {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -938,7 +938,7 @@ footer {
 
 .figure-caption {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -949,7 +949,7 @@ footer {
 
 .period-readout {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -969,7 +969,7 @@ footer {
 
 .footer-nav-link {
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1001,7 +1001,7 @@ footer {
 
 .field-notes-title {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1120,7 +1120,7 @@ footer {
 .essay-link-desc {
   display: block;
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1185,7 +1185,7 @@ footer {
 
 .taxonomy-grid-header {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1197,7 +1197,7 @@ footer {
 
 .taxonomy-grid-row-header {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1238,7 +1238,7 @@ footer {
 
 .taxonomy-type-grid {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1273,7 +1273,7 @@ footer {
 
 .module-sub-nav-link {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1308,7 +1308,7 @@ footer {
 
 .diagnosis-link {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1348,7 +1348,7 @@ footer {
 
 .explorer-select-label {
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1358,7 +1358,7 @@ footer {
 
 .explorer-select {
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 300;
   color: var(--ink-mid);
   background-color: var(--paper);

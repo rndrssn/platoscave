@@ -30,7 +30,7 @@ const BASE_URL = 'http://localhost:8080'; // adjust port to match your local ser
 const INTERNAL_LINKS = [
   '/',
   '/modules/',
-  '/modules/emergence/',
+  '/modules/emergence-primer/',
   '/modules/maturity/',
   '/modules/garbage-can/',
   '/modules/mix-mapper/',
@@ -52,7 +52,7 @@ const FORBIDDEN_LINK_PATTERNS = [
 const HTML_FILES = [
   'index.html',
   'modules/index.html',
-  'modules/emergence/index.html',
+  'modules/emergence-primer/index.html',
   'modules/maturity/index.html',
   'modules/garbage-can/index.html',
   'modules/mix-mapper/index.html',

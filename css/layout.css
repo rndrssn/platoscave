@@ -1,0 +1,17 @@
+/* ─── Layout — mobile base ───────────────────────────────── */
+main {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.main--narrow { max-width: 720px; }
+
+section {
+  padding: 3rem 0;
+}
+
+section + section {
+  border-top: 1px solid var(--ink-ghost);
+}
+

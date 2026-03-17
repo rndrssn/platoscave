@@ -56,6 +56,8 @@ function resetSimulation() {
 
   document.getElementById('sim-summary').hidden = true;
   document.getElementById('run-sim-btn').hidden = false;
+  document.getElementById('replay-btn').hidden = true;
+  document.getElementById('stochastic-note').hidden = true;
 
   if (allDropdownsSelected()) {
     document.getElementById('viz-area').hidden = false;

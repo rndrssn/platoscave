@@ -16,10 +16,20 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - D3.js (v7) for visualizations
 - Hosted on GitHub Pages
 
+## Themes
+
+- Styling tokens are defined in [`css/tokens.css`](css/tokens.css)
+- Theme overrides live in [`css/themes.css`](css/themes.css)
+- Active site-wide theme is set in [`theme.config.js`](theme.config.js)
+- Edit only `window.PLATOSCAVE_THEME = '...'` in `theme.config.js` to switch all pages
+  - Examples: `'default'`, `'urban-grid1'`, `'decision-collision-cold'`, `'new-yorker'`
+- CSS architecture guide: [`docs/CSS-ARCHITECTURE.md`](docs/CSS-ARCHITECTURE.md)
+
 ## Credits
 
 - Simulation based on Cohen, M. D., March, J. G., & Olsen, J. P. (1972). A Garbage Can Model of Organizational Choice. *Administrative Science Quarterly*, 17(1), 1–25.
 - JavaScript implementation translated from [Mac13kW/Garbage_Can_Model](https://github.com/Mac13kW/Garbage_Can_Model) (MIT License)
+- Self-hosted font families and licenses: [`THIRD_PARTY_FONTS.md`](THIRD_PARTY_FONTS.md)
 
 ## License
 

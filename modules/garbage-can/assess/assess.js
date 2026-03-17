@@ -147,12 +147,12 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
   for (let i = 0; i < 12; i++) {
     const checked = this.querySelector(`input[name="q${i}"]:checked`);
     if (!checked) {
-      document.getElementById('form-error').style.display = 'block';
+      document.getElementById('form-error').hidden = false;
       return;
     }
     responses.push(parseInt(checked.value, 10));
   }
-  document.getElementById('form-error').style.display = 'none';
+  document.getElementById('form-error').hidden = true;
 
   const scoring = scoreResponses(responses);
   const { energyLoad, decisionStructure, accessStructure, raw } = scoring;
@@ -185,7 +185,6 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
   document.getElementById('q-continue-2').disabled = true;
   document.getElementById('submit-btn').disabled = true;
   document.getElementById('questionnaire-content').hidden = true;
-  document.querySelector('.module-header').style.marginTop = '0';
   document.getElementById('questionnaire-toggle').hidden = false;
   document.getElementById('questionnaire-toggle').textContent = 'Retake assessment';
   document.getElementById('stage-1').classList.add('stage-collapsed');

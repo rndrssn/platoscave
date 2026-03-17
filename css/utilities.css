@@ -1,0 +1,28 @@
+/* ─── Fade-in on load ────────────────────────────────────── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeUp 0.7s ease forwards;
+}
+
+.fade-in:nth-child(2) { animation-delay: 0.15s; }
+.fade-in:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Attached dot pulse ─────────────────────────────────── */
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1.0; }
+  50%       { opacity: 0.6; }
+}
+
+.problem-attached {
+  animation: dot-pulse 2s ease-in-out infinite;
+}
+
+.problem-searching {
+  animation: dot-pulse 1s ease-in-out infinite;
+}
+

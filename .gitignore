@@ -28,3 +28,8 @@ Thumbs.db
 # Obsidian
 .obsidian/
 
+#Handoff
+HANDOFF*.md
+
+#SPIKES
+SPIKE-*.md

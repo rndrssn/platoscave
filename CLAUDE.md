@@ -23,8 +23,18 @@ See `docs/VISION-product.md` for the full vision.
 /
 ├── CLAUDE.md                          ← you are here
 ├── HANDOFF.md                         ← current task for Claude Code
+├── theme.config.js                    ← single source of truth for active theme
 ├── css/
-│   └── main.css                       ← all styles — tokens, layout, components
+│   ├── main.css                       ← CSS import entrypoint
+│   ├── tokens.css                     ← design tokens (default values)
+│   ├── base.css                       ← reset and element defaults
+│   ├── layout.css                     ← global layout primitives
+│   ├── components.css                 ← reusable shared components
+│   ├── utilities.css                  ← utility classes and keyframes
+│   ├── themes.css                     ← theme overrides
+│   └── pages.css                      ← page/module-specific styles
+├── js/
+│   └── theme-bootstrap.js             ← applies configured global theme
 ├── gc-simulation.js                   ← garbage can simulation logic (no DOM)
 ├── gc-scoring.js                      ← scoring logic (no DOM)
 ├── index.html                         ← site root / home page
@@ -64,10 +74,11 @@ Claude Code does not freelance. It reads HANDOFF.md and executes what is there. 
 
 These come from `docs/PRINCIPLE-coding-standards.md`. Repeating the non-negotiables here:
 
-- **No inline styles** — CSS classes only, defined in `css/main.css`
-- **No `<style>` blocks in HTML** — all CSS lives in `css/main.css`
+- **No inline styles** — CSS classes only, defined in layered CSS files under `css/`
+- **No `<style>` blocks in HTML** — all CSS lives in `css/*.css`
 - **No logic in HTML files** — HTML wires components, logic lives in `.js` files
-- **No hardcoded colors or fonts** — use CSS custom properties from `main.css`
+- **No hardcoded colors or fonts** — use CSS custom properties from `css/tokens.css` / `css/themes.css`
+- **Global theme is config-driven** — set `window.PLATOSCAVE_THEME` in `theme.config.js`; do not hardcode `data-theme` per page
 - **No external dependencies** without an ADR
 - **Clean directory URLs** — never reference `index.html` in links
 - **JS logic files are DOM-free** — `gc-simulation.js` and `gc-scoring.js` accept inputs, return outputs
@@ -80,7 +91,7 @@ These come from `docs/PRINCIPLE-coding-standards.md`. Repeating the non-negotiab
 - `develop` — integration branch
 - `experiment/[slug]` — spike branches for exploratory work
 
-Current active branch: `experiment/organised-anarchy-mapper`
+Current active branch: check with `git branch --show-current`
 
 ---
 

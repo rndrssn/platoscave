@@ -4,7 +4,7 @@
 
 /* ─── Tokens ─────────────────────────────────────────────── */
 :root {
-  --paper:       #f8f5ed;
+  --paper:       #faf8f1;
   --paper-dark:  #f0ead9;
   --paper-deep:  #e6dece;
 
@@ -1253,7 +1253,7 @@ footer {
 
 .module-sub-nav-link {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1266,8 +1266,9 @@ footer {
   color: var(--sage);
 }
 
-.module-sub-nav-link--active {
-  color: var(--slate-light);
+.module-sub-nav-link.module-sub-nav-link--active {
+  color: var(--ink);
+  font-weight: 400;
   pointer-events: none;
   text-decoration: none;
 }
@@ -1287,7 +1288,7 @@ footer {
 
 .diagnosis-link {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1303,16 +1304,12 @@ footer {
 
 /* ─── Explorer page ──────────────────────────────────── */
 .explorer-panel {
-  background: var(--paper-dark);
-  border: 2px solid var(--paper-deep);
-  border-top: 2px solid var(--ink-ghost);
-  padding: 1.5rem;
   margin-top: 2rem;
 }
 
 @media (min-width: 640px) {
   .explorer-panel {
-    padding: 1.5rem 2rem;
+    margin-top: 2rem;
   }
 }
 

@@ -85,6 +85,7 @@ All three loaded from Google Fonts.
 ### Scale & Rules
 
 - Base font size: `18px`
+- Minimum font size: `0.62rem`. No text element on the site should be smaller than this.
 - Body line-height: `1.7`
 - Heading line-height: `1.08–1.2`
 - Max line length for body text: `62ch`

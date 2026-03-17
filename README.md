@@ -21,6 +21,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - Styling tokens are defined in [`css/tokens.css`](css/tokens.css)
 - Theme overrides live in [`css/themes.css`](css/themes.css)
 - To enable the high-contrast variant, set `data-theme="high-contrast"` on `<html>` or `<body>`
+- CSS architecture guide: [`docs/CSS-ARCHITECTURE.md`](docs/CSS-ARCHITECTURE.md)
 
 ## Credits
 

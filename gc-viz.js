@@ -337,11 +337,11 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
   document.getElementById('stochastic-note').hidden = true;
 
   const SVG_W    = 900;
-  const SVG_H    = 300;
+  const SVG_H    = 340;
   const CHOICE_Y = 140;
-  const CHOICE_R = 22;
+  const CHOICE_R = 30;
   const PROB_R   = 3.5;
-  const PAD_H    = 55;
+  const PAD_H    = 35;
   const FLOAT_Y0 = 50;
   const FLOAT_Y1 = 75;
 

@@ -12,7 +12,7 @@
 <body>
 
   <!-- Navigation -->
-  <nav>
+  <nav class="main-nav">
     <a class="nav-title" href="../../../">To the Bedrock</a>
     <div class="nav-links">
       <a class="nav-link" href="../../../">Home</a>
@@ -23,6 +23,16 @@
 
   <main class="main--narrow">
     <div class="module-page">
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">03.1</span> Narrative</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../taxonomy/"><span class="module-sub-nav-number">03.2</span> Taxonomy</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../explorer/"><span class="module-sub-nav-number">03.3</span> Explorer</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="../assess/"><span class="module-sub-nav-number">03.4</span> Self-Assessment</a>
+      </nav>
 
       <!-- Module header -->
       <header class="module-header">
@@ -248,7 +258,7 @@
           </div>
 
             <div class="submit-row">
-              <button type="submit" class="submit-btn" id="submit-btn" disabled>Map this organisation</button>
+              <button type="submit" class="submit-btn" id="submit-btn" disabled>Diagnose this organisation</button>
               <p class="form-error" id="form-error">Please answer all questions before continuing.</p>
             </div>
           </div>
@@ -295,9 +305,6 @@
         <section id="section-simulation" class="results-section">
           <p class="stage-label">Simulation</p>
 
-          <!-- Figure intro — visible before animation runs -->
-          <p class="figure-caption" id="viz-caption"></p>
-
           <!-- Field notes — model explanation -->
           <div class="field-notes-card">
             <p class="field-notes-title">The Garbage Can Model</p>
@@ -316,14 +323,15 @@
             </p>
           </div>
 
-          <!-- Trigger button -->
-          <div class="submit-row">
-            <button class="submit-btn" id="run-sim-btn">See how decisions play out</button>
-          </div>
-
-          <!-- Simulation area — hidden until button click -->
+          <!-- Simulation area — shown after form submit with empty state -->
           <div id="viz-area" hidden>
             <svg id="viz-svg"></svg>
+            <p class="figure-caption" id="viz-caption"></p>
+
+            <!-- Trigger button — visible with empty state, hidden on click -->
+            <div class="submit-row">
+              <button class="submit-btn" id="run-sim-btn">See how decisions play out</button>
+            </div>
 
             <!-- End state summary card — shown after animation -->
             <div class="sim-summary-card" id="sim-summary" hidden>
@@ -355,10 +363,14 @@
 
       </div>
 
-      <!-- Footer nav -->
-      <nav class="module-footer-nav module-footer-nav--sub" aria-label="Module navigation">
-        <a class="footer-nav-link" href="../">&larr; The Garbage Can Model</a>
-        <a class="footer-nav-link" href="../explorer/">Explorer &rarr;</a>
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">03.1</span> Narrative</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../taxonomy/"><span class="module-sub-nav-number">03.2</span> Taxonomy</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../explorer/"><span class="module-sub-nav-number">03.3</span> Explorer</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="../assess/"><span class="module-sub-nav-number">03.4</span> Self-Assessment</a>
       </nav>
 
     </div>

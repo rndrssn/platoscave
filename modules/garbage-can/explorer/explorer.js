@@ -51,14 +51,17 @@ function updateDiagnosis() {
 
 // ─── Simulation reset ─────────────────────────────────────────────────────────
 function resetSimulation() {
-  var vizArea = document.getElementById('viz-area');
-  if (!vizArea.hidden) {
-    var svg = document.getElementById('viz-svg');
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
+  var svg = document.getElementById('viz-svg');
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-    vizArea.hidden = true;
-    document.getElementById('sim-summary').hidden = true;
-    document.getElementById('run-sim-btn').hidden = false;
+  document.getElementById('sim-summary').hidden = true;
+  document.getElementById('run-sim-btn').hidden = false;
+
+  if (allDropdownsSelected()) {
+    document.getElementById('viz-area').hidden = false;
+    drawEmptyState();
+  } else {
+    document.getElementById('viz-area').hidden = true;
   }
 }
 
@@ -83,7 +86,6 @@ document.getElementById('run-sim-btn').addEventListener('click', function() {
   });
 
   document.getElementById('run-sim-btn').hidden = true;
-  document.getElementById('viz-area').hidden = false;
   drawViz(simResult, load, decision, access);
 });
 

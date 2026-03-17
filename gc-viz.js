@@ -110,6 +110,138 @@ function drawPositioning(raw) {
       .attr('opacity', 1);
 }
 
+// ─── Empty state ──────────────────────────────────────────────────────────────
+function drawEmptyState() {
+  const container = document.getElementById('viz-svg');
+  const SVG_W    = container.clientWidth || 900;
+  const SVG_H    = 300;
+  const CHOICE_Y = 140;
+  const CHOICE_R = 22;
+  const PROB_R   = 3.5;
+  const PAD_H    = 55;
+  const FLOAT_Y0 = 50;
+
+  const svg = d3.select('#viz-svg')
+    .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
+    .attr('height', SVG_H);
+
+  svg.selectAll('*').remove();
+
+  const choiceX = d3.range(M).map(
+    i => PAD_H + i * (SVG_W - PAD_H * 2) / (M - 1)
+  );
+
+  // Choice circles
+  const choiceLayer = svg.append('g');
+  choiceLayer.selectAll('circle.choice')
+    .data(d3.range(M))
+    .join('circle')
+      .attr('class', 'choice')
+      .attr('cx', i => choiceX[i])
+      .attr('cy', CHOICE_Y)
+      .attr('r', CHOICE_R)
+      .attr('fill', 'none')
+      .attr('stroke', C.inkGhost)
+      .attr('stroke-width', 1);
+
+  // Choice labels
+  const labelLayer = svg.append('g');
+  labelLayer.selectAll('text.choice-label')
+    .data(d3.range(M))
+    .join('text')
+      .attr('class', 'choice-label')
+      .attr('x', i => choiceX[i])
+      .attr('y', CHOICE_Y + CHOICE_R + 13)
+      .attr('text-anchor', 'middle')
+      .attr('font-family', "'DM Mono', monospace")
+      .attr('font-size', '0.5rem')
+      .attr('font-weight', '300')
+      .attr('letter-spacing', '0.1em')
+      .attr('fill', C.inkFaint)
+      .text(i => `C${i}`);
+
+  // Cycle counter
+  svg.append('text')
+    .attr('class', 'viz-counter')
+    .attr('x', 0)
+    .attr('y', 16)
+    .attr('font-family', "'DM Mono', monospace")
+    .attr('font-size', '0.6rem')
+    .attr('font-weight', '300')
+    .attr('letter-spacing', '0.1em')
+    .attr('fill', C.inkFaint)
+    .text('Cycle 0 of 20');
+
+  // Legend
+  var LEGEND_Y = SVG_H - 12;
+  var legendItems = [
+    { label: 'Entering',  color: C.rust },
+    { label: 'Searching', color: C.rustLight },
+    { label: 'In forum',  color: C.gold },
+  ];
+
+  var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
+  var legendX = 0;
+
+  legendItems.forEach(function(item) {
+    legendG.append('circle')
+      .attr('cx', legendX + 4)
+      .attr('cy', 0)
+      .attr('r', 4)
+      .attr('fill', item.color);
+
+    legendG.append('text')
+      .attr('x', legendX + 12)
+      .attr('y', 4)
+      .attr('font-family', "'DM Mono', monospace")
+      .attr('font-size', '0.5rem')
+      .attr('font-weight', '300')
+      .attr('letter-spacing', '0.08em')
+      .attr('fill', C.inkFaint)
+      .text(item.label.toUpperCase());
+
+    legendX += item.label.length * 7 + 30;
+  });
+
+  // Resolved legend item
+  var resolvedCx = legendX + 5;
+  var resolvedR  = 5;
+
+  legendG.append('path')
+    .attr('d', 'M ' + (resolvedCx - resolvedR) + ' 0' +
+                ' A ' + resolvedR + ' ' + resolvedR + ' 0 0 0 ' + (resolvedCx + resolvedR) + ' 0' +
+                ' Z')
+    .attr('fill', C.sage)
+    .attr('fill-opacity', 0.35);
+
+  legendG.append('circle')
+    .attr('cx', resolvedCx)
+    .attr('cy', 0)
+    .attr('r', resolvedR)
+    .attr('fill', 'none')
+    .attr('stroke', C.inkMid)
+    .attr('stroke-width', 0.75);
+
+  legendG.append('text')
+    .attr('x', legendX + 14)
+    .attr('y', 4)
+    .attr('font-family', "'DM Mono', monospace")
+    .attr('font-size', '0.5rem')
+    .attr('font-weight', '300')
+    .attr('letter-spacing', '0.08em')
+    .attr('fill', C.inkFaint)
+    .text('RESOLVED');
+
+  // One problem dot in entering state
+  svg.append('circle')
+    .attr('class', 'problem')
+    .attr('cx', choiceX[0])
+    .attr('cy', FLOAT_Y0)
+    .attr('r', PROB_R)
+    .attr('fill', C.rust)
+    .attr('opacity', 0.9);
+}
+
 // ─── End state summary ────────────────────────────────────────────────────────
 function showEndState(
   pctRes, pctOver, pctFli,

@@ -25,6 +25,17 @@ document.getElementById('questionnaire-toggle').addEventListener('click', functi
   this.textContent = content.hidden ? 'Retake assessment' : 'Hide questionnaire';
   if (!content.hidden) {
     document.getElementById('stage-1').classList.remove('stage-collapsed');
+    document.getElementById('results-area').classList.remove('is-visible');
+    document.getElementById('diagnosis-title').textContent = '';
+    document.getElementById('diagnosis-body').textContent = '';
+    document.getElementById('diagnosis-links').hidden = true;
+    var positioningSvg = document.getElementById('positioning-svg');
+    if (positioningSvg) { while (positioningSvg.firstChild) positioningSvg.removeChild(positioningSvg.firstChild); }
+    var vizSvg = document.getElementById('viz-svg');
+    if (vizSvg) { while (vizSvg.firstChild) vizSvg.removeChild(vizSvg.firstChild); }
+    document.getElementById('viz-area').hidden = true;
+    document.getElementById('sim-summary').hidden = true;
+    document.getElementById('run-sim-btn').hidden = false;
   }
 });
 
@@ -81,7 +92,7 @@ function advanceGroup(fromIdx) {
   // Scroll to top of next card — offset for fixed nav
   setTimeout(function() {
     var el = document.getElementById(Q_GROUPS[currentGroup].id);
-    var navHeight = 56; // 3.5rem nav bar
+    var navHeight = 72; // 4rem nav bar
     var y = el.getBoundingClientRect().top + window.pageYOffset - navHeight - 16;
     window.scrollTo({ top: y, behavior: 'smooth' });
   }, 50);
@@ -176,6 +187,7 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
   document.getElementById('questionnaire-content').hidden = true;
   document.querySelector('.module-header').style.marginTop = '0';
   document.getElementById('questionnaire-toggle').hidden = false;
+  document.getElementById('questionnaire-toggle').textContent = 'Retake assessment';
   document.getElementById('stage-1').classList.add('stage-collapsed');
 
   // Reset simulation area
@@ -199,17 +211,24 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
       `Load: ${energyLoad}; Decision: ${decisionStructure}; Access: ${accessStructure}`;
   }, 500);
 
-  // Simulation caption (visible before animation)
+  // Show simulation area with empty state immediately
+  document.getElementById('viz-area').hidden = false;
+  drawEmptyState();
+
+  // Parameters caption
   document.getElementById('viz-caption').textContent =
-    `Problems (dots) search for choice opportunities (circles) each cycle, ` +
-    `attaching, drifting, and resolving as energy accumulates. ` +
     `Parameters: ${energyLoad} load; ${decisionStructure} decision; ${accessStructure} access.`;
 
   // Simulation trigger — runs on button click
   document.getElementById('run-sim-btn').onclick = function () {
     document.getElementById('run-sim-btn').hidden = true;
-    document.getElementById('viz-area').hidden = false;
     drawViz(simResult, energyLoad, decisionStructure, accessStructure);
+    setTimeout(function() {
+      var el = document.getElementById('viz-svg');
+      var navHeight = 72; // 4rem nav bar
+      var y = el.getBoundingClientRect().top + window.pageYOffset - navHeight - 16;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }, 100);
   };
 
   // Replay button — closure over scoring params

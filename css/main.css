@@ -4,9 +4,9 @@
 
 /* ─── Tokens ─────────────────────────────────────────────── */
 :root {
-  --paper:       #f4efe4;
-  --paper-dark:  #EBE4D5;
-  --paper-deep:  #E0D7C4;
+  --paper:       #f8f5ed;
+  --paper-dark:  #f0ead9;
+  --paper-deep:  #e6dece;
 
   --ink:         #2A2018;
   --ink-mid:     #5C4F3A;
@@ -20,6 +20,7 @@
   --ochre:       #9A7B3A;
   --gold:        #B8943A;
   --slate:       #3D4F5C;
+  --slate-light: #5A7080;
 
   --serif:       'EB Garamond', Georgia, serif;
   --serif-alt:   'Cormorant Garamond', Georgia, serif;
@@ -38,7 +39,7 @@ body {
   line-height: 1.7;
   color: var(--ink);
   background-color: var(--paper);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -46,7 +47,7 @@ body {
 img, svg { max-width: 100%; display: block; }
 
 /* ─── Nav — mobile base ──────────────────────────────────── */
-nav {
+.main-nav {
   position: fixed;
   top: 0;
   left: 0;
@@ -55,8 +56,8 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.25rem;
-  height: 3.5rem;
+  padding: 0 2rem;
+  height: 4rem;
   background: var(--paper);
   border-bottom: 1px solid var(--ink-ghost);
 }
@@ -82,7 +83,7 @@ nav {
   flex-direction: column;
   gap: 1rem;
   position: absolute;
-  top: 3.5rem;
+  top: 4rem;
   left: 0;
   right: 0;
   background: var(--paper-dark);
@@ -137,7 +138,7 @@ section + section {
 
 /* ─── Hero — mobile base ─────────────────────────────────── */
 .hero {
-  padding-top: calc(3.5rem + 3rem);
+  padding-top: calc(4rem + 3rem);
   padding-bottom: 3rem;
 }
 
@@ -279,7 +280,7 @@ footer {
 
 /* ─── Modules Index — mobile base ────────────────────────── */
 .modules-index {
-  padding-top: calc(3.5rem + 3rem);
+  padding-top: calc(4rem + 3rem);
   padding-bottom: 3rem;
 }
 
@@ -397,13 +398,13 @@ footer {
 
 /* ─── Tablet — min-width: 640px ──────────────────────────── */
 @media (min-width: 640px) {
-  nav    { padding: 0 2.5rem; }
+  .main-nav { padding: 0 3rem; }
   main   { padding: 0 2.5rem; }
   footer { padding: 2rem 2.5rem; }
 
   section        { padding: 5rem 0; }
-  .hero          { padding-top: calc(3.5rem + 5rem); padding-bottom: 5rem; }
-  .modules-index { padding-top: calc(3.5rem + 5rem); padding-bottom: 5rem; }
+  .hero          { padding-top: calc(4rem + 5rem); padding-bottom: 5rem; }
+  .modules-index { padding-top: calc(4rem + 5rem); padding-bottom: 5rem; }
 
   .nav-links         { display: flex; }
   .nav-links.is-open { position: static; background: none; border: none; padding: 0; flex-direction: row; }
@@ -500,20 +501,17 @@ footer {
 }
 
 /* Nav behaviour variants — toggle by changing the class on .results-nav */
-.results-nav--static {
-  /* default — scrolls with page */
-}
 
 .results-nav--sticky {
   position: sticky;
-  top: 3.5rem; /* below main nav */
+  top: 4rem; /* below main nav */
   background: var(--paper);
   z-index: 50;
 }
 
 .results-nav--fixed {
   position: fixed;
-  top: 3.5rem;
+  top: 4rem;
   left: 0;
   right: 0;
   background: var(--paper);
@@ -531,7 +529,12 @@ footer {
 
 /* ─── Results sections ───────────────────────────────── */
 .results-section {
-  padding: 0.5rem 0;
+  padding: 2rem 0 3rem 0;
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+.results-section:last-child {
+  border-bottom: none;
 }
 
 /* ─── Simulation summary card ────────────────────────── */
@@ -592,14 +595,14 @@ footer {
 /* ─── Module page — Garbage Can ──────────────────────── */
 /* ─── Module page layout ──────────────────────────────── */
 .module-page {
-  padding-top: calc(3.5rem + 3rem);
-  padding-bottom: 3rem;
+  padding-top: calc(4rem + 3rem);
+  padding-bottom: 6rem;
 }
 
 @media (min-width: 640px) {
   .module-page {
-    padding-top: calc(3.5rem + 5rem);
-    padding-bottom: 5rem;
+    padding-top: calc(4rem + 5rem);
+    padding-bottom: 8rem;
   }
 }
 
@@ -645,7 +648,7 @@ footer {
 
 .module-tag {
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -717,7 +720,7 @@ footer {
 
 .scale-pole {
   font-family: var(--mono);
-  font-size: 0.52rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -753,8 +756,6 @@ footer {
   cursor: pointer;
   transition: border-color 0.2s ease, background-color 0.2s ease;
   flex-shrink: 0;
-  padding: 0.6rem;
-  box-sizing: content-box;
 }
 
 .scale-option input[type="radio"]:checked {
@@ -768,7 +769,7 @@ footer {
 
 .scale-option label {
   font-family: var(--mono);
-  font-size: 0.52rem;
+  font-size: 0.62rem;
   font-weight: 300;
   color: var(--ink-faint);
   cursor: pointer;
@@ -863,11 +864,12 @@ footer {
 /* ─── Positioning diagram ─────────────────────────────── */
 .stage-label {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.85rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--ink-faint);
+  color: var(--ink-mid);
+  margin-top: 2.5rem;
   margin-bottom: 1.25rem;
 }
 
@@ -879,7 +881,7 @@ footer {
 
 .positioning-caption {
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -927,7 +929,7 @@ footer {
 
 .figure-caption {
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -938,7 +940,7 @@ footer {
 
 .period-readout {
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -952,8 +954,8 @@ footer {
   justify-content: space-between;
   align-items: baseline;
   border-top: 1px solid var(--ink-ghost);
-  padding-top: 2rem;
-  margin-top: 4rem;
+  padding-top: 3rem;
+  margin-top: 6rem;
 }
 
 .footer-nav-link {
@@ -974,17 +976,17 @@ footer {
 
 /* ─── Field notes card ───────────────────────────────── */
 .field-notes-card {
-  background: var(--paper-dark);
-  border: 2px solid var(--paper-deep);
-  border-top: 2px solid var(--ink-ghost);
-  padding: 1.75rem 1.5rem;
+  background: var(--paper);
+  border: none;
+  border-left: 3px solid var(--slate-light);
+  padding: 1.25rem 1.5rem 1.25rem 1.75rem;
   margin: 1.5rem 0;
   max-width: 560px;
 }
 
 @media (min-width: 640px) {
   .field-notes-card {
-    padding: 1.75rem 2.5rem;
+    padding: 1.25rem 2.5rem 1.25rem 2rem;
   }
 }
 
@@ -1098,7 +1100,7 @@ footer {
 .essay-link-desc {
   display: block;
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1163,7 +1165,7 @@ footer {
 
 .taxonomy-grid-header {
   font-family: var(--mono);
-  font-size: 0.55rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1175,7 +1177,7 @@ footer {
 
 .taxonomy-grid-row-header {
   font-family: var(--mono);
-  font-size: 0.55rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1216,7 +1218,7 @@ footer {
 
 .taxonomy-type-grid {
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1224,17 +1226,55 @@ footer {
   margin-bottom: 1rem;
 }
 
-/* ─── Sub-page footer nav ────────────────────────────── */
+/* ─── Sub-page nav (breadcrumb + footer) ────────────────── */
 .module-footer-nav--sub {
   max-width: 720px;
-  margin: 0 auto;
-  padding: 0 1.25rem;
+  margin: 0 auto 2rem;
+  padding: 0 1.25rem 1rem;
+  border-top: none;
+  border-bottom: 1px solid var(--ink-ghost);
 }
 
 @media (min-width: 640px) {
   .module-footer-nav--sub {
-    padding: 0 2.5rem;
+    padding: 0 2.5rem 1rem;
   }
+}
+
+/* ─── Module sub-nav ─────────────────────────────────── */
+.module-sub-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 1.25rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+.module-sub-nav-link {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--sage);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.module-sub-nav-link:hover {
+  color: var(--sage);
+}
+
+.module-sub-nav-link--active {
+  color: var(--slate-light);
+  pointer-events: none;
+  text-decoration: none;
+}
+
+.module-sub-nav-dot {
+  color: var(--ink-ghost);
+  font-size: 0.8rem;
 }
 
 /* ─── Diagnosis contextual links ─────────────────────── */
@@ -1338,87 +1378,4 @@ footer {
   display: block;
   width: 100%;
   overflow: visible;
-}
-
-/* ─── Interactive element aliases (PRINCIPLE-interactive-elements) ── */
-/* Tier 1 — Primary CTA */
-.cta-primary {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ink-mid);
-  background: none;
-  border: 1px solid var(--ink-ghost);
-  padding: 0.75rem 2rem;
-  cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
-}
-
-.cta-primary:hover {
-  border-color: var(--ink-mid);
-  color: var(--ink);
-}
-
-.cta-primary:disabled {
-  color: var(--ink-ghost);
-  border-color: var(--ink-ghost);
-  cursor: not-allowed;
-}
-
-.cta-primary:disabled:hover {
-  color: var(--ink-ghost);
-  border-color: var(--ink-ghost);
-}
-
-/* Tier 2 — Secondary action */
-.cta-secondary {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ink-faint);
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.cta-secondary:hover {
-  color: var(--rust);
-}
-
-.cta-secondary::before {
-  content: '\203A';
-  margin-right: 0.35rem;
-}
-
-/* Tier 3 — Navigation link */
-.nav-link-contextual {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--sage);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.nav-link-contextual:hover {
-  color: var(--sage-light);
-  text-decoration: underline;
-}
-
-/* Tier 4 — Tag / label */
-.tag-label {
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--ink-faint);
 }

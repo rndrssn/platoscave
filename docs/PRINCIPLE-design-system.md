@@ -155,6 +155,29 @@ Visualizations should feel like they belong in the same notebook as the text. Gu
 - For Three.js: background color matches `var(--paper)` — `0xF4EFE4` in hex
 
 ---
+## Module Sub-Navigation
+
+Modules with multiple sub-pages use a sibling nav bar placed immediately below the module header. The bar shows all sibling pages separated by middots. The current page is highlighted and non-clickable.
+
+Pattern:
+  Narrative · Taxonomy · Explorer · Self-Assessment
+
+Placement: below the module header, with a bottom border. Duplicated at the bottom of the page before the footer.
+
+CSS class: .module-sub-nav
+Active state: .module-sub-nav-link--active (ink-mid, pointer-events none)
+Hover: sage
+
+This pattern applies to any module with two or more sub-pages. Single-page modules do not need it.
+
+In docs/PRINCIPLE-design-system.md, update the card variants section:
+
+## Card variants:
+- Questionnaire card (.q-card): warm background (--paper-dark), ink-ghost top border. Used for interactive form content.
+- Summary card (.sim-summary-card): warm background (--paper-dark), sage top border. Used for simulation results.
+- Field notes card (.field-notes-card): page background (--paper), slate-light left border. Sidebar note style. Used for educational context and model explanations. Visually distinct from interactive cards.
+
+Each card type has a distinct visual identity. Do not mix treatments between card types.
 
 ## Motion Principles
 

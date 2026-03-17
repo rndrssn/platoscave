@@ -198,7 +198,7 @@ function drawEmptyState() {
       .attr('fill', C.inkFaint)
       .text(item.label.toUpperCase());
 
-    legendX += item.label.length * 7 + 30;
+    legendX += item.label.length * 10 + 55;
   });
 
   // Resolved legend item
@@ -489,7 +489,7 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       .attr('fill', C.inkFaint)
       .text(item.label.toUpperCase());
 
-    legendX += item.label.length * 7 + 30;
+    legendX += item.label.length * 10 + 55;
   });
 
   // Resolved legend item — semicircle fill at bottom + circle outline

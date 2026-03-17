@@ -1267,6 +1267,7 @@ footer {
   align-items: center;
   gap: 0.5rem;
   padding-bottom: 1.25rem;
+  margin-top: 4rem;
   margin-bottom: 2rem;
   border-bottom: 1px solid var(--ink-ghost);
 }

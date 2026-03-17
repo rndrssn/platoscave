@@ -16,6 +16,12 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - D3.js (v7) for visualizations
 - Hosted on GitHub Pages
 
+## Themes
+
+- Styling tokens are defined in [`css/tokens.css`](css/tokens.css)
+- Theme overrides live in [`css/themes.css`](css/themes.css)
+- To enable the high-contrast variant, set `data-theme="high-contrast"` on `<html>` or `<body>`
+
 ## Credits
 
 - Simulation based on Cohen, M. D., March, J. G., & Olsen, J. P. (1972). A Garbage Can Model of Organizational Choice. *Administrative Science Quarterly*, 17(1), 1–25.

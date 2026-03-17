@@ -3,3 +3,34 @@
    Add optional theme overrides here, e.g.:
    [data-theme='high-contrast'] { ... }
 */
+
+[data-theme='high-contrast'] {
+  --paper:       #f7f3e8;
+  --paper-dark:  #ece4d3;
+  --paper-deep:  #ddcfb4;
+
+  --ink:         #1f1712;
+  --ink-mid:     #3f3125;
+  --ink-faint:   #5a4a3a;
+  --ink-ghost:   #7a6a5a;
+
+  --rust:        #7e2e20;
+  --rust-light:  #9e432d;
+  --sage:        #305235;
+  --sage-light:  #3f6a45;
+  --ochre:       #7a5f25;
+  --gold:        #9b7827;
+  --slate:       #2f4556;
+  --slate-light: #446176;
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-sage:       var(--sage);
+}

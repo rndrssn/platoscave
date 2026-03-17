@@ -17,17 +17,24 @@
 
 // ─── Color tokens ─────────────────────────────────────────────────────────────
 // M (choices) and W (problems) are already defined by gc-simulation.js
+function readCssVar(name, fallback) {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return fallback;
+  const root = document.documentElement;
+  const raw = window.getComputedStyle(root).getPropertyValue(name);
+  return raw && raw.trim() ? raw.trim() : fallback;
+}
+
 const C = {
-  ink:       '#2A2018',
-  inkMid:    '#5C4F3A',
-  inkFaint:  '#7A6E5F',
-  inkGhost:  '#B0A490',
-  rust:      '#8B3A2A',
-  rustLight: '#B85C40',
-  ochre:     '#9A7B3A',
-  gold:      '#B8943A',
-  slate:     '#3D4F5C',
-  sage:      '#4A6741',
+  ink:       readCssVar('--viz-ink', '#2A2018'),
+  inkMid:    readCssVar('--viz-ink-mid', '#5C4F3A'),
+  inkFaint:  readCssVar('--viz-ink-faint', '#7A6E5F'),
+  inkGhost:  readCssVar('--viz-ink-ghost', '#B0A490'),
+  rust:      readCssVar('--viz-rust', '#8B3A2A'),
+  rustLight: readCssVar('--viz-rust-light', '#B85C40'),
+  ochre:     readCssVar('--viz-ochre', '#9A7B3A'),
+  gold:      readCssVar('--viz-gold', '#B8943A'),
+  slate:     readCssVar('--viz-slate', '#3D4F5C'),
+  sage:      readCssVar('--viz-sage', '#4A6741'),
 };
 
 // ─── Positioning diagram ──────────────────────────────────────────────────────

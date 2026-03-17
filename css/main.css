@@ -1,31 +1,8 @@
+@import url('./tokens.css');
+
 /* ─── Reset ──────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 [hidden] { display: none !important; }
-
-/* ─── Tokens ─────────────────────────────────────────────── */
-:root {
-  --paper:       #faf8f1;
-  --paper-dark:  #f0ead9;
-  --paper-deep:  #e6dece;
-
-  --ink:         #2A2018;
-  --ink-mid:     #5C4F3A;
-  --ink-faint:   #9C8E78;
-  --ink-ghost:   #C8BDA8;
-
-  --rust:        #8B3A2A;
-  --rust-light:  #B85C40;
-  --sage:        #4A6741;
-  --sage-light:  #6B8F62;
-  --ochre:       #9A7B3A;
-  --gold:        #B8943A;
-  --slate:       #3D4F5C;
-  --slate-light: #5A7080;
-
-  --serif:       'EB Garamond', Georgia, serif;
-  --serif-alt:   'Cormorant Garamond', Georgia, serif;
-  --mono:        'DM Mono', 'Courier New', monospace;
-}
 
 /* ─── Base ───────────────────────────────────────────────── */
 html {

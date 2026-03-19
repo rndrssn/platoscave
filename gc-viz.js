@@ -361,7 +361,7 @@ function drawEmptyState() {
     .attr('fill', C.inkFaint);
   setMultilineLegendText(topLegend, [
     'Organizational Iteration 0 of 20',
-    'Open/close state',
+    'Open/close: awaiting events',
     'Awaiting simulation',
   ], TOP_LEGEND_LINE_GAP);
 
@@ -592,7 +592,7 @@ function drawViz(simResult) {
     .attr('letter-spacing', '0.1em')
     .attr('fill', C.inkFaint);
 
-  function setTopLegend(iterText, stateText, stateColor) {
+  function setTopLegend(iterText, openCloseText, stateText, stateColor) {
     topLegend.selectAll('tspan').remove();
     topLegend.append('tspan')
       .attr('x', 0)
@@ -603,14 +603,19 @@ function drawViz(simResult) {
       .attr('x', 0)
       .attr('dy', TOP_LEGEND_LINE_GAP)
       .attr('fill', C.inkFaint)
-      .text('Open/close state');
+      .text(openCloseText || 'Open/close: none this iteration');
     topLegend.append('tspan')
       .attr('x', 0)
       .attr('dy', TOP_LEGEND_LINE_GAP)
       .attr('fill', stateColor || C.inkFaint)
       .text(stateText || 'Awaiting simulation');
   }
-  setTopLegend('Organizational Iteration 0 of 20', 'Awaiting simulation', C.inkFaint);
+  setTopLegend(
+    'Organizational Iteration 0 of 20',
+    'Open/close: awaiting events',
+    'Awaiting simulation',
+    C.inkFaint
+  );
 
   // ── Bottom legend (left-aligned, multiline) ────────────────────────────────
   var LEGEND_Y = SVG_H - 70;
@@ -895,7 +900,7 @@ function drawViz(simResult) {
         tickerMsg = `${formatChoiceOpportunityList(opened, 3)} opened this iteration`;
       }
     }
-    if (eventTickerEl) eventTickerEl.textContent = tickerMsg;
+    if (eventTickerEl) eventTickerEl.textContent = '';
 
     var enteredCount = everActive.size;
     if (enteredCount < W) {
@@ -911,7 +916,8 @@ function drawViz(simResult) {
       stateLabel = 'System stalled';
       stateColor = C.rust;
     }
-    setTopLegend(`Organizational Iteration ${tick.tick} of 20`, stateLabel, stateColor);
+    var openCloseText = tickerMsg ? `Open/close: ${tickerMsg}` : 'Open/close: none this iteration';
+    setTopLegend(`Organizational Iteration ${tick.tick} of 20`, openCloseText, stateLabel, stateColor);
 
   }
 
@@ -922,7 +928,12 @@ function drawViz(simResult) {
   function stepTick() {
     current++;
     if (current >= ticks.length) {
-      setTopLegend('Organizational Iteration 20 of 20', 'Showing final run', C.inkFaint);
+      setTopLegend(
+        'Organizational Iteration 20 of 20',
+        'Open/close: final state',
+        'Showing final run',
+        C.inkFaint
+      );
       if (eventTickerEl) eventTickerEl.textContent = '';
       showEndState(
         pctRes, pctOver, pctFli,

@@ -25,7 +25,7 @@ Always load first:
 
 ## Conditional Loading
 
-- If editing docs: load `docs/DOC-CONVENTIONS.md`.
+- If editing docs: load `docs/10-guides/DOC-CONVENTIONS.md`.
 - If editing GC simulation/scoring/diagnosis/viz: load
   - `docs/20-reference/REFERENCE-gc-model-semantics.md`
   - `docs/10-guides/GUIDE-architecture.md`

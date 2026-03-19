@@ -27,5 +27,5 @@ These rules are enforceable and always in scope.
 8. Treat accessibility and responsiveness as release gates.
 
 Canonical deep standards live in:
-- `docs/PRINCIPLE-coding-standards.md`
-- `docs/PRINCIPLE-design-system.md`
+- `docs/40-principles/PRINCIPLE-coding-standards.md`
+- `docs/40-principles/PRINCIPLE-design-system.md`

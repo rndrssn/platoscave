@@ -1,3 +1,18 @@
+---
+id: GUIDE-doc-conventions
+type: GUIDE
+title: Documentation Conventions
+status: ACTIVE
+created: 2026-03-16
+updated: 2026-03-19
+owner: Robert Andersson
+relates_to: [GUIDE-docs-index, CORE-loading-rules]
+tags: [docs, conventions, frontmatter, naming]
+load_when: [docs_changes]
+do_not_load_when: [pure_code_changes]
+token_cost_estimate: medium
+---
+
 # DOC-CONVENTIONS.md
 > This file defines the naming conventions and frontmatter standards for all documentation in this project.
 > Claude Code should read and apply these conventions whenever creating, editing, or referencing any `.md` file in the `docs/` folder.

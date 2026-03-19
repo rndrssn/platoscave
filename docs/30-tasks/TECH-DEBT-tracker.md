@@ -4,10 +4,13 @@ type: TECH-DEBT
 title: Technical Debt Tracker
 status: IN-PROGRESS
 created: 2026-03-16
-updated: 2026-03-17
+updated: 2026-03-19
 owner: Robert Andersson
 relates_to: [PRINCIPLE-coding-standards, EPIC-garbage-can-restructure]
 tags: [tech-debt, maintenance, refactoring]
+load_when: [debt_work]
+do_not_load_when: [unrelated_feature_work]
+token_cost_estimate: medium
 ---
 
 # Technical Debt Tracker

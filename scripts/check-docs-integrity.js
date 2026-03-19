@@ -131,8 +131,8 @@ const coreCaps = [
   { file: 'docs/00-core/CORE-loading-rules.md', max: 220 },
   { file: 'docs/00-core/CORE-quality-gates.md', max: 140 },
   { file: 'docs/00-core/CORE-style.md', max: 120 },
-  { file: 'docs/PRINCIPLE-coding-standards.md', max: 220 },
-  { file: 'docs/PRINCIPLE-design-system.md', max: 220 },
+  { file: 'docs/40-principles/PRINCIPLE-coding-standards.md', max: 220 },
+  { file: 'docs/40-principles/PRINCIPLE-design-system.md', max: 220 },
 ];
 
 for (const c of coreCaps) {

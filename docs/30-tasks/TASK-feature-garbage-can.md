@@ -6,7 +6,7 @@ status: IN-PROGRESS
 created: 2026-03-19
 updated: 2026-03-19
 owner: Robert Andersson
-relates_to: [TASK-current-work, REFERENCE-gc-model-semantics, TECH-DEBT-tracker]
+relates_to: [TASK-current-work, REFERENCE-gc-model-semantics, REFERENCE-gc-viz-typography, TECH-DEBT-tracker]
 tags: [task, garbage-can, simulation]
 load_when: [gc_feature_work]
 do_not_load_when: [unrelated_tasks]
@@ -23,3 +23,4 @@ Use archive docs only for historical context:
 Current quality guardrails:
 - keep metric semantics aligned with reference docs
 - maintain test coverage in `tests/`
+- keep GC-viz typography changes aligned with `docs/20-reference/REFERENCE-gc-viz-typography.md`

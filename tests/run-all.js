@@ -14,6 +14,7 @@ const tests = [
   'test-theme-bootstrap.js',
   'test-css-theme-contract.js',
   'test-gc-viz-contract.js',
+  'test-gc-viz-typography-contract.js',
   'test-gc-simulation-invariants.js',
   'test-gc-summary-consistency.js',
   'test-explorer-integration.js',

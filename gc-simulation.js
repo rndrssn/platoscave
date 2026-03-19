@@ -544,7 +544,23 @@ function finalizeSimulationResult(agg, lastResult) {
     problemInForum:      meanProbInForum,
     problemNeverEntered: meanProbNeverEntered,
 
+    // Metadata for renderers (avoid coupling on module internals)
+    meta: {
+      choices: M,
+      problems: W,
+      periods: PERIODS,
+      textScale: 'default',
+    },
+
     ticks,
+  };
+}
+
+function getGarbageCanDefaults() {
+  return {
+    choices: M,
+    problems: W,
+    periods: PERIODS,
   };
 }
 
@@ -721,5 +737,9 @@ function validateSimulation() {
 if (typeof window === 'undefined' && typeof module !== 'undefined') {
   // Node.js environment
   validateSimulation();
-  module.exports = { runGarbageCanSimulation, runGarbageCanSimulationAsync, validateSimulation };
+  module.exports = { runGarbageCanSimulation, runGarbageCanSimulationAsync, validateSimulation, getGarbageCanDefaults };
+}
+
+if (typeof window !== 'undefined') {
+  window.getGarbageCanDefaults = getGarbageCanDefaults;
 }

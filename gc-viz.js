@@ -59,6 +59,16 @@ function formatChoiceOpportunityList(ids, limit) {
   return text;
 }
 
+function setMultilineLegendText(textSel, lines, lineGap) {
+  textSel.selectAll('tspan').remove();
+  lines.forEach(function(line, idx) {
+    textSel.append('tspan')
+      .attr('x', textSel.attr('x'))
+      .attr('dy', idx === 0 ? 0 : lineGap)
+      .text(line);
+  });
+}
+
 function ensureVizEventTicker() {
   if (typeof document === 'undefined') return null;
   var svgEl = document.getElementById('viz-svg');
@@ -282,8 +292,8 @@ function drawEmptyState() {
       .attr('fill', C.inkFaint)
       .text(i => formatChoiceOpportunityLabel(i));
 
-  // Organizational iteration counter
-  svg.append('text')
+  // Top legend (left-aligned, multiline)
+  var topLegend = svg.append('text')
     .attr('class', 'viz-counter')
     .attr('x', 0)
     .attr('y', 16)
@@ -291,70 +301,67 @@ function drawEmptyState() {
     .attr('font-size', sizing.labelFontSize)
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.1em')
-    .attr('fill', C.inkFaint)
-    .text('Organizational Iteration 0 of 20');
+    .attr('fill', C.inkFaint);
+  setMultilineLegendText(topLegend, [
+    'Organizational Iteration 0 of 20',
+    'Open/close state',
+    'Awaiting simulation',
+  ], 16);
 
-  // Legend
-  var LEGEND_Y = SVG_H - 12;
+  // Bottom legend (left-aligned, multiline)
+  var LEGEND_Y = SVG_H - 70;
   var legendItems = [
     { label: 'Entering',  color: C.rust },
-    { label: 'Searching CO',          color: C.rustLight },
+    { label: 'Searching Choice opportunity (CO)', color: C.rustLight },
     { label: 'In choice opportunity', color: C.gold },
+    { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
   ];
 
   var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
-  var legendX = 0;
   var LEGEND_MARKER_R = sizing.legendMarkerRadius;
   var LEGEND_TEXT_GAP = 9;
+  var LEGEND_LINE_H = 18;
 
-  legendItems.forEach(function(item) {
-    legendG.append('circle')
-      .attr('cx', legendX + LEGEND_MARKER_R)
-      .attr('cy', 0)
-      .attr('r', LEGEND_MARKER_R)
-      .attr('fill', item.color);
+  legendItems.forEach(function(item, rowIdx) {
+    var rowY = rowIdx * LEGEND_LINE_H;
+    var markerX = LEGEND_MARKER_R;
+
+    if (item.resolved) {
+      var resolvedR = LEGEND_MARKER_R + 0.5;
+      var resolvedCx = markerX;
+      legendG.append('path')
+        .attr('d', 'M ' + (resolvedCx - resolvedR) + ' ' + rowY +
+                    ' A ' + resolvedR + ' ' + resolvedR + ' 0 0 0 ' + (resolvedCx + resolvedR) + ' ' + rowY +
+                    ' Z')
+        .attr('fill', C.sage)
+        .attr('fill-opacity', 0.35);
+
+      legendG.append('circle')
+        .attr('cx', resolvedCx)
+        .attr('cy', rowY)
+        .attr('r', resolvedR)
+        .attr('fill', 'none')
+        .attr('stroke', C.inkMid)
+        .attr('stroke-width', 0.75);
+    } else {
+      legendG.append('circle')
+        .attr('cx', markerX)
+        .attr('cy', rowY)
+        .attr('r', LEGEND_MARKER_R)
+        .attr('fill', item.color);
+    }
 
     legendG.append('text')
-      .attr('x', legendX + LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
-      .attr('y', 4)
+      .attr('x', LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
+      .attr('y', rowY + 4)
+      .attr('text-anchor', 'start')
       .attr('font-family', VIZ_FONT.mono)
       .attr('font-size', sizing.labelFontSize)
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.08em')
       .attr('fill', C.inkFaint)
       .text(item.label);
-
-    legendX += item.label.length * 10 + 55;
   });
-
-  // Resolved legend item
-  var resolvedCx = legendX + LEGEND_MARKER_R + 0.5;
-  var resolvedR  = LEGEND_MARKER_R + 0.5;
-
-  legendG.append('path')
-    .attr('d', 'M ' + (resolvedCx - resolvedR) + ' 0' +
-                ' A ' + resolvedR + ' ' + resolvedR + ' 0 0 0 ' + (resolvedCx + resolvedR) + ' 0' +
-                ' Z')
-    .attr('fill', C.sage)
-    .attr('fill-opacity', 0.35);
-
-  legendG.append('circle')
-    .attr('cx', resolvedCx)
-    .attr('cy', 0)
-    .attr('r', resolvedR)
-    .attr('fill', 'none')
-    .attr('stroke', C.inkMid)
-    .attr('stroke-width', 0.75);
-
-  legendG.append('text')
-    .attr('x', legendX + resolvedR * 2 + LEGEND_TEXT_GAP)
-    .attr('y', 4)
-    .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', sizing.labelFontSize)
-    .attr('font-weight', '300')
-    .attr('letter-spacing', '0.08em')
-    .attr('fill', C.inkFaint)
-    .text('RESOLVED PROBLEMS (CUM.)');
 
   // One problem dot in entering state
   svg.append('circle')
@@ -568,8 +575,8 @@ function drawViz(simResult) {
       .attr('fill', C.inkFaint)
       .text(i => formatChoiceOpportunityLabel(i));
 
-  // ── Layer 5: organizational iteration counter (top-left) ────────────────────
-  var counterText = svg.append('text')
+  // ── Top legend (left-aligned, multiline) ───────────────────────────────────
+  var topLegend = svg.append('text')
     .attr('class', 'viz-counter')
     .attr('x', 0)
     .attr('y', 16)
@@ -577,86 +584,82 @@ function drawViz(simResult) {
     .attr('font-size', sizing.labelFontSize)
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.1em')
-    .attr('fill', C.inkFaint)
-    .text('Organizational Iteration 0 of 20');
+    .attr('fill', C.inkFaint);
 
-  // ── Phase label (top-right) ─────────────────────────────────────────────────
-  var phaseText = svg.append('text')
-    .attr('x', SVG_W)
-    .attr('y', 16)
-    .attr('text-anchor', 'end')
-    .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', sizing.labelFontSize)
-    .attr('font-weight', '300')
-    .attr('font-style', 'italic')
-    .attr('letter-spacing', '0.08em')
-    .attr('fill', C.inkFaint)
-    .text('');
+  function setTopLegend(iterText, stateText, stateColor) {
+    topLegend.selectAll('tspan').remove();
+    topLegend.append('tspan')
+      .attr('x', 0)
+      .attr('dy', 0)
+      .attr('fill', C.inkFaint)
+      .text(iterText);
+    topLegend.append('tspan')
+      .attr('x', 0)
+      .attr('dy', 16)
+      .attr('fill', C.inkFaint)
+      .text('Open/close state');
+    topLegend.append('tspan')
+      .attr('x', 0)
+      .attr('dy', 16)
+      .attr('fill', stateColor || C.inkFaint)
+      .text(stateText || 'Awaiting simulation');
+  }
+  setTopLegend('Organizational Iteration 0 of 20', 'Awaiting simulation', C.inkFaint);
 
-  // ── Layer 6: legend (bottom of SVG) ─────────────────────────────────────────
-  var LEGEND_Y = SVG_H - 12;
+  // ── Bottom legend (left-aligned, multiline) ────────────────────────────────
+  var LEGEND_Y = SVG_H - 70;
   var legendItems = [
     { label: 'Entering',  color: C.rust },
-    { label: 'Searching CO',          color: C.rustLight },
+    { label: 'Searching Choice opportunity (CO)', color: C.rustLight },
     { label: 'In choice opportunity', color: C.gold },
+    { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
   ];
 
   var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
-  var legendX = 0;
   var LEGEND_MARKER_R = sizing.legendMarkerRadius;
   var LEGEND_TEXT_GAP = 9;
+  var LEGEND_LINE_H = 18;
 
-  legendItems.forEach(function(item) {
-    legendG.append('circle')
-      .attr('cx', legendX + LEGEND_MARKER_R)
-      .attr('cy', 0)
-      .attr('r', LEGEND_MARKER_R)
-      .attr('fill', item.color);
+  legendItems.forEach(function(item, rowIdx) {
+    var rowY = rowIdx * LEGEND_LINE_H;
+    var markerX = LEGEND_MARKER_R;
+
+    if (item.resolved) {
+      var resolvedR = LEGEND_MARKER_R + 0.5;
+      var resolvedCx = markerX;
+      legendG.append('path')
+        .attr('d', 'M ' + (resolvedCx - resolvedR) + ' ' + rowY +
+                    ' A ' + resolvedR + ' ' + resolvedR + ' 0 0 0 ' + (resolvedCx + resolvedR) + ' ' + rowY +
+                    ' Z')
+        .attr('fill', C.sage)
+        .attr('fill-opacity', 0.35);
+
+      legendG.append('circle')
+        .attr('cx', resolvedCx)
+        .attr('cy', rowY)
+        .attr('r', resolvedR)
+        .attr('fill', 'none')
+        .attr('stroke', C.inkMid)
+        .attr('stroke-width', 0.75);
+    } else {
+      legendG.append('circle')
+        .attr('cx', markerX)
+        .attr('cy', rowY)
+        .attr('r', LEGEND_MARKER_R)
+        .attr('fill', item.color);
+    }
 
     legendG.append('text')
-      .attr('x', legendX + LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
-      .attr('y', 4)
+      .attr('x', LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
+      .attr('y', rowY + 4)
+      .attr('text-anchor', 'start')
       .attr('font-family', VIZ_FONT.mono)
       .attr('font-size', sizing.labelFontSize)
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.08em')
       .attr('fill', C.inkFaint)
       .text(item.label);
-
-    legendX += item.label.length * 10 + 55;
   });
-
-  // Resolved legend item — semicircle fill at bottom + circle outline
-  // Uses an arc path instead of clipping to avoid transform/coordinate issues
-  var resolvedCx = legendX + LEGEND_MARKER_R + 0.5;
-  var resolvedR  = LEGEND_MARKER_R + 0.5;
-
-  // Bottom-half fill (semicircle arc)
-  legendG.append('path')
-    .attr('d', 'M ' + (resolvedCx - resolvedR) + ' 0' +
-                ' A ' + resolvedR + ' ' + resolvedR + ' 0 0 0 ' + (resolvedCx + resolvedR) + ' 0' +
-                ' Z')
-    .attr('fill', C.sage)
-    .attr('fill-opacity', 0.35);
-
-  // Circle outline on top
-  legendG.append('circle')
-    .attr('cx', resolvedCx)
-    .attr('cy', 0)
-    .attr('r', resolvedR)
-    .attr('fill', 'none')
-    .attr('stroke', C.inkMid)
-    .attr('stroke-width', 0.75);
-
-  legendG.append('text')
-    .attr('x', legendX + resolvedR * 2 + LEGEND_TEXT_GAP)
-    .attr('y', 4)
-    .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', sizing.labelFontSize)
-    .attr('font-weight', '300')
-    .attr('letter-spacing', '0.08em')
-    .attr('fill', C.inkFaint)
-    .text('RESOLVED PROBLEMS (CUM.)');
 
   // ── Layer 4: problem dots ──────────────────────────────────────────────────
   const probLayer = svg.append('g');
@@ -896,7 +899,8 @@ function drawViz(simResult) {
     allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');
     allProbs.classed('problem-searching', id => tick.problems[id].state === 'floating');
 
-    counterText.text(`Organizational Iteration ${tick.tick} of 20`);
+    var stateLabel = 'Energy accumulating';
+    var stateColor = C.inkFaint;
 
     // Event ticker
     var tickerMsg = '';
@@ -934,20 +938,17 @@ function drawViz(simResult) {
     }
     if (eventTickerEl) eventTickerEl.textContent = tickerMsg;
 
-    // Phase label
     if (enteringThisTick.size > 0) {
-      phaseText
-        .attr('fill', C.inkFaint)
-        .text('Problems entering');
+      stateLabel = 'Problems entering';
+      stateColor = C.inkFaint;
     } else if (prevTick && !isDeadTick(tickIdx)) {
-      phaseText
-        .attr('fill', C.inkFaint)
-        .text('Energy accumulating');
+      stateLabel = 'Energy accumulating';
+      stateColor = C.inkFaint;
     } else if (prevTick && isDeadTick(tickIdx)) {
-      phaseText.transition().duration(400)
-        .attr('fill', C.rust)
-        .text('System stalled');
+      stateLabel = 'System stalled';
+      stateColor = C.rust;
     }
+    setTopLegend(`Organizational Iteration ${tick.tick} of 20`, stateLabel, stateColor);
 
   }
 
@@ -958,8 +959,7 @@ function drawViz(simResult) {
   function stepTick() {
     current++;
     if (current >= ticks.length) {
-      counterText.text('Organizational Iteration 20 of 20 \u00B7 showing final run');
-      phaseText.text('');
+      setTopLegend('Organizational Iteration 20 of 20', 'Showing final run', C.inkFaint);
       if (eventTickerEl) eventTickerEl.textContent = '';
       showEndState(
         pctRes, pctOver, pctFli,

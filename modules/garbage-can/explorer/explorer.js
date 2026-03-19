@@ -23,6 +23,34 @@ if (navToggle && navLinks) {
   });
 }
 
+// ─── Results mini-nav ────────────────────────────────────────────────────────
+var resultsNav = document.getElementById('explorer-results-nav');
+var resultsNavLinks = Array.from(document.querySelectorAll('.results-nav-link'));
+var hasAutoNavigatedToResults = false;
+
+function setActiveResultsNav(targetId) {
+  resultsNavLinks.forEach(function(link) {
+    var isActive = link.getAttribute('data-section') === targetId;
+    link.classList.toggle('results-nav-link--active', isActive);
+    if (isActive) {
+      link.setAttribute('aria-current', 'page');
+    } else {
+      link.removeAttribute('aria-current');
+    }
+  });
+}
+
+resultsNavLinks.forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute('data-section');
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setActiveResultsNav(targetId);
+  });
+});
+
 // ─── Dropdown helpers ─────────────────────────────────────────────────────────
 function allDropdownsSelected() {
   var intensity = document.getElementById('panel-a-load').value;
@@ -37,6 +65,8 @@ function updateDiagnosis() {
   if (!allDropdownsSelected()) {
     document.getElementById('explorer-diagnosis').hidden = true;
     document.getElementById('explorer-sim-trigger').hidden = true;
+    if (resultsNav) resultsNav.hidden = true;
+    hasAutoNavigatedToResults = false;
     return;
   }
 
@@ -53,6 +83,13 @@ function updateDiagnosis() {
   document.getElementById('explorer-diagnosis-body').textContent  = bodyText;
   document.getElementById('explorer-diagnosis').hidden = false;
   document.getElementById('explorer-sim-trigger').hidden = false;
+  if (resultsNav) resultsNav.hidden = false;
+  setActiveResultsNav('explorer-diagnosis');
+
+  if (!hasAutoNavigatedToResults) {
+    document.getElementById('explorer-diagnosis').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    hasAutoNavigatedToResults = true;
+  }
 }
 
 // ─── Simulation reset ─────────────────────────────────────────────────────────
@@ -68,6 +105,7 @@ function resetSimulation() {
   if (allDropdownsSelected()) {
     document.getElementById('viz-area').hidden = false;
     drawEmptyState();
+    setActiveResultsNav('explorer-diagnosis');
   } else {
     document.getElementById('viz-area').hidden = true;
   }
@@ -101,6 +139,8 @@ document.getElementById('run-sim-btn').addEventListener('click', async function(
     });
     runBtn.hidden = true;
     drawViz(simResult);
+    setActiveResultsNav('viz-area');
+    document.getElementById('viz-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } finally {
     runBtn.disabled = false;
     runBtn.textContent = originalText;

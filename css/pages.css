@@ -862,3 +862,30 @@
 .simulation-divider {
   margin-top: 2rem;
 }
+
+.module-sub-nav--explorer-footer {
+  margin-top: 8rem;
+}
+
+.results-section#explorer-diagnosis {
+  border-bottom: none;
+  padding-bottom: 1rem;
+}
+
+#viz-area.explorer-results-section {
+  padding-top: 1rem;
+}
+
+.explorer-results-section .simulation-divider {
+  margin-bottom: 4.5rem;
+}
+
+@media (max-width: 640px) {
+  .module-sub-nav--explorer-footer {
+    margin-top: 6rem;
+  }
+
+  .explorer-results-section .simulation-divider {
+    margin-bottom: 3.5rem;
+  }
+}

@@ -107,19 +107,30 @@
         </div>
       </div>
 
+      <nav class="results-nav results-nav--static" id="explorer-results-nav" aria-label="Explorer results navigation" hidden>
+        <a class="results-nav-link results-nav-link--active" href="#explorer-diagnosis" data-section="explorer-diagnosis" aria-current="page">
+          <span class="results-nav-dot">&#183;</span> Diagnosis
+        </a>
+        <a class="results-nav-link" href="#viz-area" data-section="viz-area">
+          <span class="results-nav-dot">&#183;</span> Simulation
+        </a>
+      </nav>
+
       <!-- Diagnosis — appears when all dropdowns are set -->
-      <div id="explorer-diagnosis" hidden>
-        <hr class="stage-rule" />
+      <section id="explorer-diagnosis" class="results-section" hidden>
         <p class="stage-label">Diagnosis</p>
         <div class="sim-summary-card">
           <h2 class="diagnosis-title" id="explorer-diagnosis-title"></h2>
           <p class="diagnosis-body" id="explorer-diagnosis-body"></p>
+          <div class="diagnosis-links">
+            <a class="diagnosis-link" href="../taxonomy/">Read more about the organisation types</a>
+            <a class="diagnosis-link" href="../">Understand the model</a>
+          </div>
         </div>
-      </div>
+      </section>
 
       <!-- Simulation area — shown when all dropdowns are set -->
-      <div id="viz-area" hidden>
-        <hr class="stage-rule" />
+      <section id="viz-area" class="results-section explorer-results-section" hidden>
         <p class="stage-label">Simulation</p>
         <svg id="viz-svg"></svg>
         <div class="submit-row" id="explorer-sim-trigger" hidden>
@@ -151,10 +162,9 @@
 
           <p class="positioning-caption" id="stochastic-note">Each run varies slightly. The simulation is stochastic.</p>
         </div>
-        <hr class="stage-rule simulation-divider" />
-      </div>
+      </section>
 
-      <nav class="module-sub-nav" aria-label="Module sections">
+      <nav class="module-sub-nav module-sub-nav--explorer-footer" aria-label="Module sections">
         <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">03.1</span> Narrative</a>
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="../taxonomy/"><span class="module-sub-nav-number">03.2</span> Taxonomy</a>

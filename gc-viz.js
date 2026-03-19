@@ -71,7 +71,7 @@ function setMultilineLegendText(textSel, lines, lineGap) {
 
 const GC_LEGEND_ITEMS = [
   { label: 'Entering',  color: C.rust },
-  { label: 'Searching Choice opportunity (CO)', color: C.rustLight },
+  { label: 'Searching for choice opportunity (CO)', color: C.rustLight },
   { label: 'In choice opportunity', color: C.gold },
   { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
 ];
@@ -360,8 +360,8 @@ function drawEmptyState() {
     .attr('letter-spacing', '0.1em')
     .attr('fill', C.inkFaint);
   setMultilineLegendText(topLegend, [
-    'Organizational Iteration 0 of 20',
-    'Open/close: awaiting events',
+    'Organisational iteration 0 of 20',
+    'Choice-opportunity event: awaiting first event',
     'Awaiting simulation',
   ], TOP_LEGEND_LINE_GAP);
 
@@ -407,6 +407,7 @@ function showEndState(
   var runResolved = 0;
   var runInForum  = 0;
   var runAdrift   = 0;
+  var runNeverEntered = 0;
   var runChoicesResolved = 0;
   var runChoicesOpen     = 0;
 
@@ -415,6 +416,7 @@ function showEndState(
       if (p.state === 'resolved') runResolved++;
       else if (p.state === 'attached') runInForum++;
       else if (p.state === 'floating') runAdrift++;
+      else if (p.state === 'inactive') runNeverEntered++;
     });
     lastTick.choices.forEach(function(c) {
       if (c.state === 'resolved') runChoicesResolved++;
@@ -423,10 +425,11 @@ function showEndState(
   }
 
   document.getElementById('sum-thisrun-label').textContent =
-    'Single run snapshot (organizational iteration ' + PERIODS + ')';
+    'Single run snapshot (organisational iteration ' + PERIODS + ')';
   setReadout('sum-thisrun-resolved', 'outcome-resolved', 'Resolved', runResolved + ' of ' + W + ' problems');
   setReadout('sum-thisrun-inforum', 'outcome-unresolved', 'In choice opportunity', runInForum + ' of ' + W + ' problems');
   setReadout('sum-thisrun-adrift', 'outcome-flight', 'Adrift', runAdrift + ' of ' + W + ' problems');
+  setReadout('sum-thisrun-never-entered', 'outcome-unresolved', 'Never entered', runNeverEntered + ' of ' + W + ' problems');
   setReadout('sum-thisrun-choices-resolved', 'outcome-resolved', 'Choice opportunities concluded', runChoicesResolved + ' of ' + M);
   setReadout('sum-thisrun-choices-open', 'outcome-unresolved', 'Choice opportunities active', runChoicesOpen + ' of ' + M);
 
@@ -445,8 +448,9 @@ function showEndState(
     `What happened to the ${W} problems`;
   setReadout('sum-prob-resolved', 'outcome-resolved', 'Resolved', `${probResolved} of ${W} \u2014 genuinely closed at a choice opportunity`);
   setReadout('sum-prob-displaced', 'outcome-oversight', 'Displaced', `${probDisplaced} of ${W} \u2014 choice opportunity closed without resolving this problem`);
-  setReadout('sum-prob-adrift', 'outcome-flight', 'Adrift', `${probAdrift} of ${W} \u2014 detached from choice opportunity or never attached`);
-  setReadout('sum-prob-inforum', 'outcome-unresolved', 'In choice opportunity', `${probInForum} of ${W} \u2014 still attached to an open choice opportunity at organizational iteration ${PERIODS}`);
+  setReadout('sum-prob-adrift', 'outcome-flight', 'Adrift', `${probAdrift} of ${W} \u2014 detached from a choice opportunity after entry`);
+  setReadout('sum-prob-never-entered', 'outcome-unresolved', 'Never entered', `${probNeverEntered} of ${W} \u2014 never attached to any choice opportunity by organisational iteration ${PERIODS}`);
+  setReadout('sum-prob-inforum', 'outcome-unresolved', 'In choice opportunity', `${probInForum} of ${W} \u2014 still attached to an open choice opportunity at organisational iteration ${PERIODS}`);
 
   document.getElementById('replay-btn').hidden      = false;
   document.getElementById('stochastic-note').hidden = false;
@@ -470,6 +474,7 @@ function drawViz(simResult) {
   const probDisplaced = Math.round(simResult.problemDisplaced);
   const probAdrift    = Math.round(simResult.problemAdrift);
   const probInForum   = Math.round(simResult.problemInForum);
+  const probNeverEntered = Math.round(simResult.problemNeverEntered);
 
   // Reset summary state
   document.getElementById('sim-summary').hidden   = true;
@@ -603,7 +608,7 @@ function drawViz(simResult) {
       .attr('x', 0)
       .attr('dy', TOP_LEGEND_LINE_GAP)
       .attr('fill', C.inkFaint)
-      .text(openCloseText || 'Open/close: none this iteration');
+      .text(openCloseText || 'Choice-opportunity event: none this iteration');
     topLegend.append('tspan')
       .attr('x', 0)
       .attr('dy', TOP_LEGEND_LINE_GAP)
@@ -611,8 +616,8 @@ function drawViz(simResult) {
       .text(stateText || 'Awaiting simulation');
   }
   setTopLegend(
-    'Organizational Iteration 0 of 20',
-    'Open/close: awaiting events',
+    'Organisational iteration 0 of 20',
+    'Choice-opportunity event: awaiting first event',
     'Awaiting simulation',
     C.inkFaint
   );
@@ -872,23 +877,7 @@ function drawViz(simResult) {
       const choiceIds = Array.from(choicesResolvedThisTick).sort((a, b) => a - b);
       if (choiceIds.length === 1) {
         const c = choiceIds[0];
-        var resolvedCount = 0;
-        var displacedCount = 0;
-        for (let id = 0; id < W; id++) {
-          if (prevTick.problems[id].state === 'attached' && prevTick.problems[id].attachedTo === c) {
-            if (tick.problems[id].state === 'resolved') resolvedCount++;
-            if (tick.problems[id].state === 'floating') displacedCount++;
-          }
-        }
-        var outcomeText;
-        if (resolvedCount > 0) {
-          outcomeText = `${resolvedCount} problem${resolvedCount === 1 ? '' : 's'} resolved`;
-        } else if (displacedCount > 0) {
-          outcomeText = 'no problem resolved';
-        } else {
-          outcomeText = 'closed';
-        }
-        tickerMsg = `${formatChoiceOpportunityLabel(c)} closed (energy threshold reached; ${outcomeText})`;
+        tickerMsg = `${formatChoiceOpportunityLabel(c)} closed`;
       } else {
         tickerMsg = `${formatChoiceOpportunityList(choiceIds, 3)} closed this iteration`;
       }
@@ -916,8 +905,8 @@ function drawViz(simResult) {
       stateLabel = 'System stalled';
       stateColor = C.rust;
     }
-    var openCloseText = tickerMsg ? `Open/close: ${tickerMsg}` : 'Open/close: none this iteration';
-    setTopLegend(`Organizational Iteration ${tick.tick} of 20`, openCloseText, stateLabel, stateColor);
+    var openCloseText = tickerMsg ? `Choice-opportunity event: ${tickerMsg}` : 'Choice-opportunity event: none this iteration';
+    setTopLegend(`Organisational iteration ${tick.tick} of 20`, openCloseText, stateLabel, stateColor);
 
   }
 
@@ -929,8 +918,8 @@ function drawViz(simResult) {
     current++;
     if (current >= ticks.length) {
       setTopLegend(
-        'Organizational Iteration 20 of 20',
-        'Open/close: final state',
+        'Organisational iteration 20 of 20',
+        'Choice-opportunity event: no further events',
         'Showing final run',
         C.inkFaint
       );

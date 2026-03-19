@@ -14,9 +14,14 @@ if ('scrollRestoration' in history) {
 window.scrollTo(0, 0);
 
 // ─── Nav toggle ──────────────────────────────────────────────────────────────
-document.querySelector('.nav-mobile-toggle').addEventListener('click', function () {
-  document.querySelector('.nav-links').classList.toggle('is-open');
-});
+var navToggle = document.querySelector('.nav-mobile-toggle');
+var navLinks = document.querySelector('.nav-links');
+if (navToggle && navLinks) {
+  navToggle.addEventListener('click', function () {
+    var isOpen = navLinks.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+}
 
 // ─── Questionnaire collapse/expand ───────────────────────────────────────────
 document.getElementById('questionnaire-toggle').addEventListener('click', function () {
@@ -40,19 +45,47 @@ document.getElementById('questionnaire-toggle').addEventListener('click', functi
 });
 
 // ─── Results mini-nav ────────────────────────────────────────────────────────
-document.querySelectorAll('.results-nav-link').forEach(function(link) {
+var resultsNavLinks = Array.from(document.querySelectorAll('.results-nav-link'));
+
+function setActiveResultsNav(targetId) {
+  resultsNavLinks.forEach(function(l) {
+    var isActive = l.getAttribute('data-section') === targetId;
+    l.classList.toggle('results-nav-link--active', isActive);
+    if (isActive) {
+      l.setAttribute('aria-current', 'page');
+    } else {
+      l.removeAttribute('aria-current');
+    }
+  });
+}
+
+resultsNavLinks.forEach(function(link) {
   link.addEventListener('click', function(e) {
     e.preventDefault();
     var targetId = this.getAttribute('data-section');
     document.getElementById(targetId).scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    // Update active state
-    document.querySelectorAll('.results-nav-link').forEach(function(l) {
-      l.classList.remove('results-nav-link--active');
-    });
-    this.classList.add('results-nav-link--active');
+    setActiveResultsNav(targetId);
   });
 });
+
+var resultsSections = Array.from(document.querySelectorAll('.results-section'));
+if (resultsSections.length > 0 && 'IntersectionObserver' in window) {
+  var sectionObserver = new IntersectionObserver(function(entries) {
+    var visible = entries
+      .filter(function(entry) { return entry.isIntersecting; })
+      .sort(function(a, b) { return b.intersectionRatio - a.intersectionRatio; });
+    if (visible.length === 0) return;
+    setActiveResultsNav(visible[0].target.id);
+  }, {
+    root: null,
+    rootMargin: '-88px 0px -50% 0px',
+    threshold: [0.15, 0.35, 0.6]
+  });
+
+  resultsSections.forEach(function(section) {
+    sectionObserver.observe(section);
+  });
+}
 
 // ─── Questionnaire step navigation ───────────────────────────────────────────
 const Q_GROUPS = [
@@ -156,34 +189,27 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
 
   const scoring = scoreResponses(responses);
   const { energyLoad, decisionStructure, accessStructure, raw } = scoring;
+  const problemIntensity = energyLoad;
+  const problemInflow = 'moderate';
 
-  console.log('Scoring output:', { energyLoad, decisionStructure, accessStructure, raw });
-
-  const simResult = runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructure });
-  const { resolution, oversight, flight } = simResult;
-
-  console.log('Simulation output:', { resolution, oversight, flight });
-
-  const cluster   = DIAGNOSIS_CLUSTERS[`${decisionStructure}/${accessStructure}`] || 'cluster-3';
-  const diagnosis = getDiagnosis(decisionStructure, accessStructure, flight + oversight);
-  const { title } = diagnosis;
-
-  console.log('Diagnosis:', { cluster, title });
+  const diagnosis = getDiagnosis(decisionStructure, accessStructure, 0);
+  var diagnosisBodyPreview = diagnosis.body.replace(/In organisations like yours, roughly.*$/, '').trim();
 
   // Reveal results area
   showStage('results-area', 100);
 
-  // Reset and collapse questionnaire
-  document.querySelectorAll('#questionnaire input[type="radio"]').forEach(function(r) {
-    r.checked = false;
-  });
+  // Collapse questionnaire but preserve responses for review/edit
+  currentGroup = 0;
   document.getElementById('q-group-1').hidden = false;
   document.getElementById('q-group-2').hidden = true;
   document.getElementById('q-group-3').hidden = true;
   document.getElementById('q-step').textContent = '1 of 3';
-  document.getElementById('q-continue-1').disabled = true;
-  document.getElementById('q-continue-2').disabled = true;
-  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('q-continue-1').disabled = !validateGroup(0);
+  document.getElementById('q-continue-2').disabled = !validateGroup(1);
+  document.getElementById('submit-btn').disabled = !validateGroup(2);
+  document.getElementById('form-error-1').hidden = true;
+  document.getElementById('form-error-2').hidden = true;
+  document.getElementById('form-error').hidden = true;
   document.getElementById('questionnaire-content').hidden = true;
   document.getElementById('questionnaire-toggle').hidden = false;
   document.getElementById('questionnaire-toggle').textContent = 'Retake assessment';
@@ -199,7 +225,7 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
   // Diagnosis
   setTimeout(() => {
     document.getElementById('diagnosis-title').textContent = diagnosis.title;
-    document.getElementById('diagnosis-body').textContent  = diagnosis.body;
+    document.getElementById('diagnosis-body').textContent  = diagnosisBodyPreview;
     document.getElementById('diagnosis-links').hidden = false;
   }, 300);
 
@@ -207,7 +233,7 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
   setTimeout(() => {
     drawPositioning(raw);
     document.getElementById('positioning-caption').textContent =
-      `Load: ${energyLoad}; Decision: ${decisionStructure}; Access: ${accessStructure}`;
+      `Intensity: ${problemIntensity}; Inflow: ${problemInflow}; Decision structure: ${decisionStructure}; Access structure: ${accessStructure}`;
   }, 500);
 
   // Show simulation area with empty state immediately
@@ -216,23 +242,59 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
 
   // Parameters caption
   document.getElementById('viz-caption').textContent =
-    `Parameters: ${energyLoad} load; ${decisionStructure} decision; ${accessStructure} access.`;
+    `Parameters: ${problemIntensity} intensity; ${problemInflow} inflow; ${decisionStructure} decision; ${accessStructure} access.`;
 
   // Simulation trigger — runs on button click
-  document.getElementById('run-sim-btn').onclick = function () {
-    document.getElementById('run-sim-btn').hidden = true;
-    drawViz(simResult, energyLoad, decisionStructure, accessStructure);
-    setTimeout(function() {
-      var el = document.getElementById('viz-svg');
-      var navHeight = 72; // 4rem nav bar
-      var y = el.getBoundingClientRect().top + window.pageYOffset - navHeight - 16;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }, 100);
+  document.getElementById('run-sim-btn').onclick = async function () {
+    var runBtn = document.getElementById('run-sim-btn');
+    var originalText = runBtn.textContent;
+    runBtn.disabled = true;
+    runBtn.textContent = 'Running simulation...';
+    try {
+      const simResult = await runGarbageCanSimulationAsync({
+        problemIntensity,
+        problemInflow,
+        decisionStructure,
+        accessStructure
+      });
+
+      const TOTAL_PROBLEMS = 20;
+      const resolvedProblemShare = Math.max(0, Math.min(1, simResult.problemResolved / TOTAL_PROBLEMS));
+      const unresolvedShare = 1 - resolvedProblemShare;
+      const diagnosisWithShare = getDiagnosis(decisionStructure, accessStructure, unresolvedShare);
+      document.getElementById('diagnosis-body').textContent = diagnosisWithShare.body;
+
+      runBtn.hidden = true;
+      drawViz(simResult);
+      setTimeout(function() {
+        var el = document.getElementById('viz-svg');
+        var navHeight = 72; // 4rem nav bar
+        var y = el.getBoundingClientRect().top + window.pageYOffset - navHeight - 16;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }, 100);
+    } finally {
+      runBtn.disabled = false;
+      runBtn.textContent = originalText;
+    }
   };
 
   // Replay button — closure over scoring params
-  document.getElementById('replay-btn').onclick = function () {
-    const newSim = runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructure });
-    drawViz(newSim, energyLoad, decisionStructure, accessStructure);
+  document.getElementById('replay-btn').onclick = async function () {
+    var replayBtn = document.getElementById('replay-btn');
+    var originalText = replayBtn.textContent;
+    replayBtn.disabled = true;
+    replayBtn.textContent = 'Running simulation...';
+    try {
+      const newSim = await runGarbageCanSimulationAsync({
+        problemIntensity,
+        problemInflow,
+        decisionStructure,
+        accessStructure
+      });
+      drawViz(newSim);
+    } finally {
+      replayBtn.disabled = false;
+      replayBtn.textContent = originalText;
+    }
   };
 });

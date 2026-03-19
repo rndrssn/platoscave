@@ -25,12 +25,17 @@
 }
 
 .nav-links {
-  display: none;
+  display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
   align-items: center;
 }
 
-.nav-links.is-open {
+.js-enabled .nav-links {
+  display: none;
+}
+
+.js-enabled .nav-links.is-open {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -58,7 +63,7 @@
 .nav-link--active  { color: var(--sage); }
 
 .nav-mobile-toggle {
-  display: block;
+  display: none;
   font-family: var(--mono);
   font-size: var(--fs-nav-toggle);
   font-weight: 300;
@@ -70,21 +75,8 @@
   padding: 0;
 }
 
-/* ─── Layout — mobile base ───────────────────────────────── */
-main {
-  max-width: 1140px;
-  margin: 0 auto;
-  padding: 0 1.25rem;
-}
-
-.main--narrow { max-width: 720px; }
-
-section {
-  padding: 3rem 0;
-}
-
-section + section {
-  border-top: 1px solid var(--ink-ghost);
+.js-enabled .nav-mobile-toggle {
+  display: block;
 }
 
 /* ─── Hero — mobile base ─────────────────────────────────── */
@@ -148,7 +140,7 @@ section + section {
 
 .contact-role {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -173,7 +165,7 @@ section + section {
 
 .contact-key {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -184,7 +176,7 @@ section + section {
 
 .contact-value {
   font-family: var(--serif);
-  font-size: 0.72rem;
+  font-size: 0.875rem;
   color: var(--ink-mid);
   overflow-wrap: break-word;
   min-width: 0;
@@ -281,7 +273,26 @@ footer {
 .module-entry-link {
   text-decoration: none;
   color: inherit;
-  display: contents;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.module-entry-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.module-entry-link--disabled {
+  cursor: default;
+}
+
+.module-entry-link--disabled .module-title,
+.module-entry-link--disabled .module-descriptor {
+  color: var(--ink-faint);
 }
 
 .module-entry-main {
@@ -353,9 +364,11 @@ footer {
   .hero          { padding-top: calc(4rem + 5rem); padding-bottom: 5rem; }
   .modules-index { padding-top: calc(4rem + 5rem); padding-bottom: 5rem; }
 
-  .nav-links         { display: flex; }
-  .nav-links.is-open { position: static; background: none; border: none; padding: 0; flex-direction: row; }
+  .nav-links { display: flex; }
+  .js-enabled .nav-links { display: flex; }
+  .js-enabled .nav-links.is-open { position: static; background: none; border: none; padding: 0; flex-direction: row; }
   .nav-mobile-toggle { display: none; }
+  .js-enabled .nav-mobile-toggle { display: none; }
 
   .contact-card { padding: 0.55rem 1.5rem; }
 

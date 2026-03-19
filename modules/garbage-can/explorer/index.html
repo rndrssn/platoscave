@@ -2,25 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Simulation explorer for the Garbage Can Model with configurable parameters." />
   <title>Simulation Explorer · The Garbage Can Model · To the Bedrock</title>
   <script src="../../../theme.config.js"></script>
   <script src="../../../js/theme-bootstrap.js"></script>
   <link rel="stylesheet" href="../../../css/main.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- Navigation -->
   <nav class="main-nav">
     <a class="nav-title" href="../../../">To the Bedrock</a>
-    <div class="nav-links">
+    <div class="nav-links" id="primary-nav">
       <a class="nav-link" href="../../../">Home</a>
       <a class="nav-link nav-link--active" href="../../../modules/">Index</a>
     </div>
-    <button class="nav-mobile-toggle" aria-label="Toggle menu">&#x22EF;</button>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
-  <main class="main--narrow">
+  <main id="main-content" class="main--narrow">
     <div class="module-page">
 
       <nav class="module-sub-nav" aria-label="Module sections">
@@ -39,8 +40,8 @@
         <h1 class="module-header-title">Simulation Explorer</h1>
         <p class="module-header-body">
           Run the Garbage Can Model with any parameter combination.
-          Adjust energy load, decision structure, and access structure
-          to see how different configurations shape decision-making.
+          Adjust problem intensity, problem inflow, decision structure,
+          and access structure to see how different configurations shape decision-making.
         </p>
       </header>
 
@@ -52,13 +53,15 @@
           meetings, reviews, committees. <strong>Problems</strong> (dots) seek resolution by attaching
           to a choice opportunity. <strong>Decision makers</strong> (invisible) allocate
           <strong>energy</strong> to the choices they can access each organizational iteration. When cumulative energy
-          meets the demand, a choice <strong>resolves</strong> and closes its attached problems.
+          meets demand, a choice opportunity <strong>closes</strong>.
         </p>
         <p class="field-notes-body">
           The model&#8217;s insight: when problems outnumber capacity, decisions happen by
           <strong>oversight</strong> (the choice opportunity closes while problems are elsewhere) or
           <strong>flight</strong> (problems leave before the choice opportunity closes).
           <strong>Resolution</strong> &#8212; genuinely closing the problem &#8212; becomes rare.
+          In this explorer, pressure has two levers: <strong>problem intensity</strong> (effort per problem)
+          and <strong>problem inflow</strong> (how many new problems arrive each iteration).
         </p>
       </div>
 
@@ -66,8 +69,17 @@
       <div class="explorer-panel" id="panel-a">
         <div class="explorer-selectors">
           <div class="explorer-select-group">
-            <label class="explorer-select-label" for="panel-a-load">Load</label>
+            <label class="explorer-select-label" for="panel-a-load">Problem intensity</label>
             <select class="explorer-select" id="panel-a-load">
+              <option value="" disabled selected>Select&hellip;</option>
+              <option value="light">Light</option>
+              <option value="moderate">Moderate</option>
+              <option value="heavy">Heavy</option>
+            </select>
+          </div>
+          <div class="explorer-select-group">
+            <label class="explorer-select-label" for="panel-a-inflow">Problem inflow</label>
+            <select class="explorer-select" id="panel-a-inflow">
               <option value="" disabled selected>Select&hellip;</option>
               <option value="light">Light</option>
               <option value="moderate">Moderate</option>
@@ -139,6 +151,7 @@
 
           <p class="positioning-caption" id="stochastic-note">Each run varies slightly. The simulation is stochastic.</p>
         </div>
+        <hr class="stage-rule simulation-divider" />
       </div>
 
       <nav class="module-sub-nav" aria-label="Module sections">

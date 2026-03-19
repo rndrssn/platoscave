@@ -8,7 +8,13 @@
  * Python reference: github.com/Mac13kW/Garbage_Can_Model (Workiewicz, 2014)
  *
  * Exposes one function:
- *   runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructure })
+ *   runGarbageCanSimulation({
+ *     problemIntensity,   // preferred
+ *     problemInflow,      // preferred
+ *     energyLoad,         // legacy alias for both dimensions
+ *     decisionStructure,
+ *     accessStructure
+ *   })
  *
  * Returns:
  *   { resolution, oversight, flight, ticks }
@@ -27,9 +33,19 @@ const ITERATIONS = 100;  // Monte Carlo iterations per run
 
 // Net energy load per problem per tick (Light / Moderate / Heavy)
 const NET_ENERGY_LOADS = {
-  light:    1.1,
-  moderate: 2.2,
-  heavy:    3.3,
+  light:    0.9,
+  moderate: 1.6,
+  heavy:    2.4,
+};
+
+// Problem inflow schedules by tick (length = PERIODS, sum = W)
+// Light: slower stream spread across all iterations
+// Moderate: baseline stream (legacy behavior) concentrated in first 10 iterations
+// Heavy: front-loaded stream concentrated early
+const PROBLEM_INFLOW_SCHEDULES = {
+  light:    Array.from({ length: PERIODS }, () => 1),                             // 20 × 1 = 20
+  moderate: Array.from({ length: PERIODS }, (_, t) => (t < 10 ? 2 : 0)),          // 10 × 2 = 20
+  heavy:    Array.from({ length: PERIODS }, (_, t) => (t < 5 ? 4 : 0)),           // 5 × 4 = 20
 };
 
 // State sentinels
@@ -92,7 +108,7 @@ function buildDecisionMatrices() {
  */
 function buildEnergyVectors() {
   const E0 = Array.from({ length: V }, (_, i) => parseFloat(((i + 1) * 0.1 * SOL_COEFF).toFixed(10)));
-  const E1 = new Array(V).fill(0.55 * SOL_COEFF);
+  const E1 = new Array(V).fill(0.65 * SOL_COEFF);
   const E2 = Array.from({ length: V }, (_, i) => parseFloat(((1 - i * 0.1) * SOL_COEFF).toFixed(10)));
   return [E0, E1, E2];
 }
@@ -109,6 +125,21 @@ function shuffle(arr) {
   return a;
 }
 
+function pickRandomMinIndex(values) {
+  let min = values[0];
+  for (let i = 1; i < values.length; i++) {
+    if (values[i] < min) min = values[i];
+  }
+
+  const eps = 1e-12;
+  const minIndices = [];
+  for (let i = 0; i < values.length; i++) {
+    if (Math.abs(values[i] - min) <= eps) minIndices.push(i);
+  }
+
+  return minIndices[Math.floor(Math.random() * minIndices.length)];
+}
+
 
 // ─── Core simulation ──────────────────────────────────────────────────────────
 
@@ -121,12 +152,13 @@ function shuffle(arr) {
  * @param {number[][]} A  - access matrix [W×M]
  * @param {number[][]} D  - decision matrix [V×M]
  * @param {number[]}   E  - energy vector [V]
- * @param {number}     nel - net energy load per problem per tick
+ * @param {number}     nel - problem intensity (net energy load per attached problem per tick)
+ * @param {number[]}   inflowSchedule - problems entering per tick (length PERIODS, sum W)
  * @param {number[]}   entryM - shuffled array of choice indices (entry order)
  * @param {number[]}   entryW - shuffled array of problem indices (entry order)
  * @returns object with state arrays
  */
-function garbageCan(A, D, E, nel, entryM, entryW) {
+function garbageCan(A, D, E, nel, inflowSchedule, entryM, entryW) {
   // State arrays indexed [entity][tick], filled with sentinel values
   const Problems              = Array.from({ length: W }, () => new Array(PERIODS + 1).fill(STATE_INACTIVE));
   const Choices               = Array.from({ length: M }, () => new Array(PERIODS + 1).fill(STATE_INACTIVE));
@@ -141,11 +173,18 @@ function garbageCan(A, D, E, nel, entryM, entryW) {
     for (let i = 0; i < W; i++) Problems[i][t + 1] = Problems[i][t];
     for (let i = 0; i < V; i++) Members[i][t + 1]  = Members[i][t];
 
-    // ── New entrants (ticks 0–9: one choice, two problems per tick) ───────────
+    // ── New entrants: one choice per tick in first 10 ticks + configurable
+    // problem inflow schedule across all ticks ──────────────────────────────────
     if (t < 10) {
-      Choices[entryM[t]][t + 1]          = STATE_ACTIVE;
-      Problems[entryW[2 * t]][t + 1]     = STATE_ACTIVE;
-      Problems[entryW[2 * t + 1]][t + 1] = STATE_ACTIVE;
+      Choices[entryM[t]][t + 1] = STATE_ACTIVE;
+    }
+
+    let enteredSoFar = 0;
+    for (let k = 0; k < t; k++) enteredSoFar += inflowSchedule[k];
+    const entrantsThisTick = inflowSchedule[t];
+    for (let k = 0; k < entrantsThisTick; k++) {
+      const idx = enteredSoFar + k;
+      if (idx < W) Problems[entryW[idx]][t + 1] = STATE_ACTIVE;
     }
 
     // ── Problems attach to choice with minimum energy deficit ─────────────────
@@ -164,10 +203,7 @@ function garbageCan(A, D, E, nel, entryM, entryW) {
         }
 
         if (values.length > 0) {
-          let minIdx = 0;
-          for (let k = 1; k < values.length; k++) {
-            if (values[k] < values[minIdx]) minIdx = k;
-          }
+          const minIdx = pickRandomMinIndex(values);
           const best = indexes[minIdx];
           Problems[b1][t + 1]    = best;
           energyRequiredCalc[best] += nel;
@@ -195,10 +231,7 @@ function garbageCan(A, D, E, nel, entryM, entryW) {
       }
 
       if (values.length > 0) {
-        let minIdx = 0;
-        for (let k = 1; k < values.length; k++) {
-          if (values[k] < values[minIdx]) minIdx = k;
-        }
+        const minIdx = pickRandomMinIndex(values);
         const best = indexes[minIdx];
         Members[c1][t + 1]      = best;
         energySpentCalc[best]  += E[c1];
@@ -419,7 +452,9 @@ const STRUCTURES = ['unsegmented', 'hierarchical', 'specialized'];
  * Run the Garbage Can Model simulation.
  *
  * @param {object} params
- * @param {string} params.energyLoad        - 'light' | 'moderate' | 'heavy'
+ * @param {string} [params.problemIntensity] - 'light' | 'moderate' | 'heavy'
+ * @param {string} [params.problemInflow]    - 'light' | 'moderate' | 'heavy'
+ * @param {string} [params.energyLoad]       - legacy alias for both intensity and inflow
  * @param {string} params.decisionStructure - 'unsegmented' | 'hierarchical' | 'specialized'
  * @param {string} params.accessStructure   - 'unsegmented' | 'hierarchical' | 'specialized'
  *
@@ -429,9 +464,28 @@ const STRUCTURES = ['unsegmented', 'hierarchical', 'specialized'];
  *   flight     {number} - proportion made by flight
  *   ticks      {Array}  - tick-by-tick state from the last iteration (for d3)
  */
-function runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructure }) {
-  const nel = NET_ENERGY_LOADS[energyLoad];
-  if (nel === undefined) throw new Error(`Unknown energyLoad: "${energyLoad}". Use 'light', 'moderate', or 'heavy'.`);
+function buildSimulationContext({
+  problemIntensity,
+  problemInflow,
+  energyLoad,
+  decisionStructure,
+  accessStructure
+}) {
+  const intensityKey = problemIntensity || energyLoad;
+  const inflowKey    = problemInflow || problemIntensity || energyLoad;
+
+  if (intensityKey === undefined) {
+    throw new Error('Missing problemIntensity (or legacy energyLoad). Use "light", "moderate", or "heavy".');
+  }
+  if (inflowKey === undefined) {
+    throw new Error('Missing problemInflow (or problemIntensity/energyLoad fallback). Use "light", "moderate", or "heavy".');
+  }
+
+  const nel = NET_ENERGY_LOADS[intensityKey];
+  if (nel === undefined) throw new Error(`Unknown problemIntensity: "${intensityKey}". Use 'light', 'moderate', or 'heavy'.`);
+
+  const inflowSchedule = PROBLEM_INFLOW_SCHEDULES[inflowKey];
+  if (inflowSchedule === undefined) throw new Error(`Unknown problemInflow: "${inflowKey}". Use 'light', 'moderate', or 'heavy'.`);
 
   const aIdx = STRUCTURES.indexOf(accessStructure);
   if (aIdx === -1) throw new Error(`Unknown accessStructure: "${accessStructure}". Use 'unsegmented', 'hierarchical', or 'specialized'.`);
@@ -443,45 +497,14 @@ function runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructur
   const D = D_MATRIX[dIdx];
   const E = E1; // uniform energy distribution
 
-  let totalResolutions = 0;
-  let totalOversights  = 0;
-  let totalFlights     = 0;
-  let totalQuickies    = 0;
+  return { A, D, E, nel, inflowSchedule };
+}
 
-  let totalProbResolved     = 0;
-  let totalProbDisplaced    = 0;
-  let totalProbAdrift       = 0;
-  let totalProbInForum      = 0;
-  let totalProbNeverEntered = 0;
-
-  let lastResult = null;
-
-  for (let iter = 0; iter < ITERATIONS; iter++) {
-    const entryM = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    const entryW = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
-
-    const result = garbageCan(A, D, E, nel, entryM, entryW);
-    const counts = countDecisionTypes(result.Choices, result.Problems, result.ChoicesEnergyRequired);
-
-    totalResolutions += counts.resolutions;
-    totalOversights  += counts.oversights;
-    totalFlights     += counts.flights;
-    totalQuickies    += counts.quickies;
-
-    const probCounts = countProblemOutcomes(result.Problems, result.Choices);
-    totalProbResolved     += probCounts.resolved;
-    totalProbDisplaced    += probCounts.displaced;
-    totalProbAdrift       += probCounts.adrift;
-    totalProbInForum      += probCounts.inForum;
-    totalProbNeverEntered += probCounts.neverEntered;
-
-    if (iter === ITERATIONS - 1) lastResult = result;
-  }
-
-  const meanResolutions = totalResolutions / ITERATIONS;
-  const meanOversights  = totalOversights  / ITERATIONS;
-  const meanFlights     = totalFlights     / ITERATIONS;
-  const meanQuickies    = totalQuickies    / ITERATIONS;
+function finalizeSimulationResult(agg, lastResult) {
+  const meanResolutions = agg.totalResolutions / agg.iterations;
+  const meanOversights  = agg.totalOversights  / agg.iterations;
+  const meanFlights     = agg.totalFlights     / agg.iterations;
+  const meanQuickies    = agg.totalQuickies    / agg.iterations;
 
   // Quickies fold into oversight for choice-level proportion calculation.
   // resolution + oversight + flight ≈ 1.0
@@ -490,11 +513,11 @@ function runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructur
   const total = meanResolutions + meanOversights + meanFlights + meanQuickies;
 
   // Problem-level means (out of W) — interpretive extension, not canonical GCM
-  const meanProbResolved     = totalProbResolved     / ITERATIONS;
-  const meanProbDisplaced    = totalProbDisplaced    / ITERATIONS;
-  const meanProbAdrift       = totalProbAdrift       / ITERATIONS;
-  const meanProbInForum      = totalProbInForum      / ITERATIONS;
-  const meanProbNeverEntered = totalProbNeverEntered / ITERATIONS;
+  const meanProbResolved     = agg.totalProbResolved     / agg.iterations;
+  const meanProbDisplaced    = agg.totalProbDisplaced    / agg.iterations;
+  const meanProbAdrift       = agg.totalProbAdrift       / agg.iterations;
+  const meanProbInForum      = agg.totalProbInForum      / agg.iterations;
+  const meanProbNeverEntered = agg.totalProbNeverEntered / agg.iterations;
 
   const ticks = buildTickSnapshots(
     lastResult.Choices,
@@ -523,6 +546,92 @@ function runGarbageCanSimulation({ energyLoad, decisionStructure, accessStructur
 
     ticks,
   };
+}
+
+function createSimulationAccumulator(iterations) {
+  return {
+    iterations: iterations,
+    totalResolutions: 0,
+    totalOversights: 0,
+    totalFlights: 0,
+    totalQuickies: 0,
+    totalProbResolved: 0,
+    totalProbDisplaced: 0,
+    totalProbAdrift: 0,
+    totalProbInForum: 0,
+    totalProbNeverEntered: 0
+  };
+}
+
+function runOneSimulationIteration(ctx, agg) {
+  const entryM = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const entryW = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
+
+  const result = garbageCan(ctx.A, ctx.D, ctx.E, ctx.nel, ctx.inflowSchedule, entryM, entryW);
+  const counts = countDecisionTypes(result.Choices, result.Problems, result.ChoicesEnergyRequired);
+
+  agg.totalResolutions += counts.resolutions;
+  agg.totalOversights  += counts.oversights;
+  agg.totalFlights     += counts.flights;
+  agg.totalQuickies    += counts.quickies;
+
+  const probCounts = countProblemOutcomes(result.Problems, result.Choices);
+  agg.totalProbResolved     += probCounts.resolved;
+  agg.totalProbDisplaced    += probCounts.displaced;
+  agg.totalProbAdrift       += probCounts.adrift;
+  agg.totalProbInForum      += probCounts.inForum;
+  agg.totalProbNeverEntered += probCounts.neverEntered;
+
+  return result;
+}
+
+function runGarbageCanSimulation({
+  problemIntensity,
+  problemInflow,
+  energyLoad,
+  decisionStructure,
+  accessStructure
+}) {
+  const ctx = buildSimulationContext({
+    problemIntensity,
+    problemInflow,
+    energyLoad,
+    decisionStructure,
+    accessStructure
+  });
+
+  const agg = createSimulationAccumulator(ITERATIONS);
+  let lastResult = null;
+  for (let iter = 0; iter < ITERATIONS; iter++) {
+    lastResult = runOneSimulationIteration(ctx, agg);
+  }
+
+  return finalizeSimulationResult(agg, lastResult);
+}
+
+function runGarbageCanSimulationAsync(params, options) {
+  var opts = options || {};
+  var chunkSize = Math.max(1, opts.chunkSize || 10);
+  var ctx = buildSimulationContext(params);
+  var agg = createSimulationAccumulator(ITERATIONS);
+  var iter = 0;
+  var lastResult = null;
+
+  return new Promise(function(resolve) {
+    function processChunk() {
+      var end = Math.min(iter + chunkSize, ITERATIONS);
+      while (iter < end) {
+        lastResult = runOneSimulationIteration(ctx, agg);
+        iter++;
+      }
+      if (iter < ITERATIONS) {
+        setTimeout(processChunk, 0);
+        return;
+      }
+      resolve(finalizeSimulationResult(agg, lastResult));
+    }
+    processChunk();
+  });
 }
 
 
@@ -612,5 +721,5 @@ function validateSimulation() {
 if (typeof window === 'undefined' && typeof module !== 'undefined') {
   // Node.js environment
   validateSimulation();
-  module.exports = { runGarbageCanSimulation, validateSimulation };
+  module.exports = { runGarbageCanSimulation, runGarbageCanSimulationAsync, validateSimulation };
 }

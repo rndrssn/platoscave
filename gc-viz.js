@@ -69,6 +69,63 @@ function setMultilineLegendText(textSel, lines, lineGap) {
   });
 }
 
+const GC_LEGEND_ITEMS = [
+  { label: 'Entering',  color: C.rust },
+  { label: 'Searching Choice opportunity (CO)', color: C.rustLight },
+  { label: 'In choice opportunity', color: C.gold },
+  { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
+];
+const TOP_LEGEND_LINE_GAP = 20;
+const BOTTOM_LEGEND_LINE_GAP = 22;
+
+function drawBottomLegend(svg, legendY, sizing) {
+  var legendG = svg.append('g').attr('transform', 'translate(0, ' + legendY + ')');
+  var LEGEND_MARKER_R = sizing.legendMarkerRadius;
+  var LEGEND_TEXT_GAP = 9;
+  var LEGEND_LINE_H = BOTTOM_LEGEND_LINE_GAP;
+
+  GC_LEGEND_ITEMS.forEach(function(item, rowIdx) {
+    var rowY = rowIdx * LEGEND_LINE_H;
+    var markerX = LEGEND_MARKER_R;
+
+    if (item.resolved) {
+      var resolvedR = LEGEND_MARKER_R + 0.5;
+      var resolvedCx = markerX;
+      legendG.append('path')
+        .attr('d', 'M ' + (resolvedCx - resolvedR) + ' ' + rowY +
+                    ' A ' + resolvedR + ' ' + resolvedR + ' 0 0 0 ' + (resolvedCx + resolvedR) + ' ' + rowY +
+                    ' Z')
+        .attr('fill', C.sage)
+        .attr('fill-opacity', 0.35);
+
+      legendG.append('circle')
+        .attr('cx', resolvedCx)
+        .attr('cy', rowY)
+        .attr('r', resolvedR)
+        .attr('fill', 'none')
+        .attr('stroke', C.inkMid)
+        .attr('stroke-width', 0.75);
+    } else {
+      legendG.append('circle')
+        .attr('cx', markerX)
+        .attr('cy', rowY)
+        .attr('r', LEGEND_MARKER_R)
+        .attr('fill', item.color);
+    }
+
+    legendG.append('text')
+      .attr('x', LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
+      .attr('y', rowY + 4)
+      .attr('text-anchor', 'start')
+      .attr('font-family', VIZ_FONT.mono)
+      .attr('font-size', sizing.labelFontSize)
+      .attr('font-weight', '300')
+      .attr('letter-spacing', '0.08em')
+      .attr('fill', C.inkFaint)
+      .text(item.label);
+  });
+}
+
 function ensureVizEventTicker() {
   if (typeof document === 'undefined') return null;
   var svgEl = document.getElementById('viz-svg');
@@ -306,62 +363,11 @@ function drawEmptyState() {
     'Organizational Iteration 0 of 20',
     'Open/close state',
     'Awaiting simulation',
-  ], 16);
+  ], TOP_LEGEND_LINE_GAP);
 
   // Bottom legend (left-aligned, multiline)
   var LEGEND_Y = SVG_H - 70;
-  var legendItems = [
-    { label: 'Entering',  color: C.rust },
-    { label: 'Searching Choice opportunity (CO)', color: C.rustLight },
-    { label: 'In choice opportunity', color: C.gold },
-    { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
-  ];
-
-  var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
-  var LEGEND_MARKER_R = sizing.legendMarkerRadius;
-  var LEGEND_TEXT_GAP = 9;
-  var LEGEND_LINE_H = 18;
-
-  legendItems.forEach(function(item, rowIdx) {
-    var rowY = rowIdx * LEGEND_LINE_H;
-    var markerX = LEGEND_MARKER_R;
-
-    if (item.resolved) {
-      var resolvedR = LEGEND_MARKER_R + 0.5;
-      var resolvedCx = markerX;
-      legendG.append('path')
-        .attr('d', 'M ' + (resolvedCx - resolvedR) + ' ' + rowY +
-                    ' A ' + resolvedR + ' ' + resolvedR + ' 0 0 0 ' + (resolvedCx + resolvedR) + ' ' + rowY +
-                    ' Z')
-        .attr('fill', C.sage)
-        .attr('fill-opacity', 0.35);
-
-      legendG.append('circle')
-        .attr('cx', resolvedCx)
-        .attr('cy', rowY)
-        .attr('r', resolvedR)
-        .attr('fill', 'none')
-        .attr('stroke', C.inkMid)
-        .attr('stroke-width', 0.75);
-    } else {
-      legendG.append('circle')
-        .attr('cx', markerX)
-        .attr('cy', rowY)
-        .attr('r', LEGEND_MARKER_R)
-        .attr('fill', item.color);
-    }
-
-    legendG.append('text')
-      .attr('x', LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
-      .attr('y', rowY + 4)
-      .attr('text-anchor', 'start')
-      .attr('font-family', VIZ_FONT.mono)
-      .attr('font-size', sizing.labelFontSize)
-      .attr('font-weight', '300')
-      .attr('letter-spacing', '0.08em')
-      .attr('fill', C.inkFaint)
-      .text(item.label);
-  });
+  drawBottomLegend(svg, LEGEND_Y, sizing);
 
   // One problem dot in entering state
   svg.append('circle')
@@ -595,12 +601,12 @@ function drawViz(simResult) {
       .text(iterText);
     topLegend.append('tspan')
       .attr('x', 0)
-      .attr('dy', 16)
+      .attr('dy', TOP_LEGEND_LINE_GAP)
       .attr('fill', C.inkFaint)
       .text('Open/close state');
     topLegend.append('tspan')
       .attr('x', 0)
-      .attr('dy', 16)
+      .attr('dy', TOP_LEGEND_LINE_GAP)
       .attr('fill', stateColor || C.inkFaint)
       .text(stateText || 'Awaiting simulation');
   }
@@ -608,58 +614,7 @@ function drawViz(simResult) {
 
   // ── Bottom legend (left-aligned, multiline) ────────────────────────────────
   var LEGEND_Y = SVG_H - 70;
-  var legendItems = [
-    { label: 'Entering',  color: C.rust },
-    { label: 'Searching Choice opportunity (CO)', color: C.rustLight },
-    { label: 'In choice opportunity', color: C.gold },
-    { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
-  ];
-
-  var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
-  var LEGEND_MARKER_R = sizing.legendMarkerRadius;
-  var LEGEND_TEXT_GAP = 9;
-  var LEGEND_LINE_H = 18;
-
-  legendItems.forEach(function(item, rowIdx) {
-    var rowY = rowIdx * LEGEND_LINE_H;
-    var markerX = LEGEND_MARKER_R;
-
-    if (item.resolved) {
-      var resolvedR = LEGEND_MARKER_R + 0.5;
-      var resolvedCx = markerX;
-      legendG.append('path')
-        .attr('d', 'M ' + (resolvedCx - resolvedR) + ' ' + rowY +
-                    ' A ' + resolvedR + ' ' + resolvedR + ' 0 0 0 ' + (resolvedCx + resolvedR) + ' ' + rowY +
-                    ' Z')
-        .attr('fill', C.sage)
-        .attr('fill-opacity', 0.35);
-
-      legendG.append('circle')
-        .attr('cx', resolvedCx)
-        .attr('cy', rowY)
-        .attr('r', resolvedR)
-        .attr('fill', 'none')
-        .attr('stroke', C.inkMid)
-        .attr('stroke-width', 0.75);
-    } else {
-      legendG.append('circle')
-        .attr('cx', markerX)
-        .attr('cy', rowY)
-        .attr('r', LEGEND_MARKER_R)
-        .attr('fill', item.color);
-    }
-
-    legendG.append('text')
-      .attr('x', LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
-      .attr('y', rowY + 4)
-      .attr('text-anchor', 'start')
-      .attr('font-family', VIZ_FONT.mono)
-      .attr('font-size', sizing.labelFontSize)
-      .attr('font-weight', '300')
-      .attr('letter-spacing', '0.08em')
-      .attr('fill', C.inkFaint)
-      .text(item.label);
-  });
+  drawBottomLegend(svg, LEGEND_Y, sizing);
 
   // ── Layer 4: problem dots ──────────────────────────────────────────────────
   const probLayer = svg.append('g');
@@ -938,7 +893,11 @@ function drawViz(simResult) {
     }
     if (eventTickerEl) eventTickerEl.textContent = tickerMsg;
 
-    if (enteringThisTick.size > 0) {
+    var enteredCount = everActive.size;
+    if (enteredCount < W) {
+      stateLabel = `Problems entering/searching (${enteredCount} of ${W})`;
+      stateColor = C.rustLight;
+    } else if (enteringThisTick.size > 0) {
       stateLabel = 'Problems entering';
       stateColor = C.inkFaint;
     } else if (prevTick && !isDeadTick(tickIdx)) {

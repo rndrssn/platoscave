@@ -248,7 +248,7 @@ function drawEmptyState() {
     padH: PAD_H,
   } = VIZ_LAYOUT.empty;
   var squareSide = SVG_W - PAD_H * 2;
-  var squareTop = 92;
+  var squareTop = 116;
   var SVG_H = squareTop + squareSide + 86;
   var CHOICE_Y = squareTop + squareSide / 2;
   var FLOAT_Y0 = squareTop - 32;
@@ -476,7 +476,7 @@ function drawViz(simResult) {
     padH: PAD_H,
   } = VIZ_LAYOUT.live;
   var squareSide = SVG_W - PAD_H * 2;
-  var squareTop = 102;
+  var squareTop = 126;
   var SVG_H = squareTop + squareSide + 96;
   var CHOICE_Y = squareTop + squareSide / 2;
   var FLOAT_Y0 = squareTop - 44;

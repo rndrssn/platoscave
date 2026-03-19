@@ -70,9 +70,9 @@ function setMultilineLegendText(textSel, lines, lineGap) {
 }
 
 const GC_LEGEND_ITEMS = [
-  { label: 'Entering',  color: C.rust },
-  { label: 'Searching for choice opportunity (CO)', color: C.rustLight },
-  { label: 'In choice opportunity', color: C.gold },
+  { label: 'Problem entering',  color: C.rust },
+  { label: 'Problem searching for (CO)', color: C.rustLight },
+  { label: 'In choice opportunity (CO)', color: C.gold },
   { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
 ];
 const TOP_LEGEND_LINE_GAP = 20;
@@ -360,9 +360,8 @@ function drawEmptyState() {
     .attr('letter-spacing', '0.1em')
     .attr('fill', C.inkFaint);
   setMultilineLegendText(topLegend, [
-    'Organisational iteration 0 of 20',
-    'Choice-opportunity event: awaiting first event',
-    'Awaiting simulation',
+    'Iter 0/20',
+    'No event',
   ], TOP_LEGEND_LINE_GAP);
 
   // Bottom legend (left-aligned, multiline)
@@ -597,7 +596,7 @@ function drawViz(simResult) {
     .attr('letter-spacing', '0.1em')
     .attr('fill', C.inkFaint);
 
-  function setTopLegend(iterText, openCloseText, stateText, stateColor) {
+  function setTopLegend(iterText, eventText) {
     topLegend.selectAll('tspan').remove();
     topLegend.append('tspan')
       .attr('x', 0)
@@ -608,18 +607,11 @@ function drawViz(simResult) {
       .attr('x', 0)
       .attr('dy', TOP_LEGEND_LINE_GAP)
       .attr('fill', C.inkFaint)
-      .text(openCloseText || 'Choice-opportunity event: none this iteration');
-    topLegend.append('tspan')
-      .attr('x', 0)
-      .attr('dy', TOP_LEGEND_LINE_GAP)
-      .attr('fill', stateColor || C.inkFaint)
-      .text(stateText || 'Awaiting simulation');
+      .text(eventText || 'No event');
   }
   setTopLegend(
-    'Organisational iteration 0 of 20',
-    'Choice-opportunity event: awaiting first event',
-    'Awaiting simulation',
-    C.inkFaint
+    'Iter 0/20',
+    'No event'
   );
 
   // ── Bottom legend (left-aligned, multiline) ────────────────────────────────
@@ -868,9 +860,6 @@ function drawViz(simResult) {
     allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');
     allProbs.classed('problem-searching', id => tick.problems[id].state === 'floating');
 
-    var stateLabel = 'Energy accumulating';
-    var stateColor = C.inkFaint;
-
     // Event ticker
     var tickerMsg = '';
     if (choicesResolvedThisTick.size > 0) {
@@ -891,22 +880,8 @@ function drawViz(simResult) {
     }
     if (eventTickerEl) eventTickerEl.textContent = '';
 
-    var enteredCount = everActive.size;
-    if (enteredCount < W) {
-      stateLabel = `Problems entering/searching (${enteredCount} of ${W})`;
-      stateColor = C.rustLight;
-    } else if (enteringThisTick.size > 0) {
-      stateLabel = 'Problems entering';
-      stateColor = C.inkFaint;
-    } else if (prevTick && !isDeadTick(tickIdx)) {
-      stateLabel = 'Energy accumulating';
-      stateColor = C.inkFaint;
-    } else if (prevTick && isDeadTick(tickIdx)) {
-      stateLabel = 'System stalled';
-      stateColor = C.rust;
-    }
-    var openCloseText = tickerMsg ? `Choice-opportunity event: ${tickerMsg}` : 'Choice-opportunity event: none this iteration';
-    setTopLegend(`Organisational iteration ${tick.tick} of 20`, openCloseText, stateLabel, stateColor);
+    var eventText = tickerMsg || 'No event';
+    setTopLegend(`Iter ${tick.tick}/20`, eventText);
 
   }
 
@@ -918,10 +893,8 @@ function drawViz(simResult) {
     current++;
     if (current >= ticks.length) {
       setTopLegend(
-        'Organisational iteration 20 of 20',
-        'Choice-opportunity event: no further events',
-        'Showing final run',
-        C.inkFaint
+        'Iter 20/20',
+        'No event'
       );
       if (eventTickerEl) eventTickerEl.textContent = '';
       showEndState(

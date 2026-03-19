@@ -256,16 +256,18 @@ function drawEmptyState() {
 
   var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
   var legendX = 0;
+  var LEGEND_MARKER_R = 5.5;
+  var LEGEND_TEXT_GAP = 9;
 
   legendItems.forEach(function(item) {
     legendG.append('circle')
-      .attr('cx', legendX + 4)
+      .attr('cx', legendX + LEGEND_MARKER_R)
       .attr('cy', 0)
-      .attr('r', 4)
+      .attr('r', LEGEND_MARKER_R)
       .attr('fill', item.color);
 
     legendG.append('text')
-      .attr('x', legendX + 12)
+      .attr('x', legendX + LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
       .attr('y', 4)
       .attr('font-family', VIZ_FONT.mono)
       .attr('font-size', VIZ_FONT_SIZE.label)
@@ -278,8 +280,8 @@ function drawEmptyState() {
   });
 
   // Resolved legend item
-  var resolvedCx = legendX + 5;
-  var resolvedR  = 5;
+  var resolvedCx = legendX + LEGEND_MARKER_R + 0.5;
+  var resolvedR  = LEGEND_MARKER_R + 0.5;
 
   legendG.append('path')
     .attr('d', 'M ' + (resolvedCx - resolvedR) + ' 0' +
@@ -297,7 +299,7 @@ function drawEmptyState() {
     .attr('stroke-width', 0.75);
 
   legendG.append('text')
-    .attr('x', legendX + 14)
+    .attr('x', legendX + resolvedR * 2 + LEGEND_TEXT_GAP)
     .attr('y', 4)
     .attr('font-family', VIZ_FONT.mono)
     .attr('font-size', VIZ_FONT_SIZE.label)
@@ -549,16 +551,18 @@ function drawViz(simResult) {
 
   var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
   var legendX = 0;
+  var LEGEND_MARKER_R = 5.5;
+  var LEGEND_TEXT_GAP = 9;
 
   legendItems.forEach(function(item) {
     legendG.append('circle')
-      .attr('cx', legendX + 4)
+      .attr('cx', legendX + LEGEND_MARKER_R)
       .attr('cy', 0)
-      .attr('r', 4)
+      .attr('r', LEGEND_MARKER_R)
       .attr('fill', item.color);
 
     legendG.append('text')
-      .attr('x', legendX + 12)
+      .attr('x', legendX + LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
       .attr('y', 4)
       .attr('font-family', VIZ_FONT.mono)
       .attr('font-size', VIZ_FONT_SIZE.label)
@@ -572,8 +576,8 @@ function drawViz(simResult) {
 
   // Resolved legend item — semicircle fill at bottom + circle outline
   // Uses an arc path instead of clipping to avoid transform/coordinate issues
-  var resolvedCx = legendX + 5;
-  var resolvedR  = 5;
+  var resolvedCx = legendX + LEGEND_MARKER_R + 0.5;
+  var resolvedR  = LEGEND_MARKER_R + 0.5;
 
   // Bottom-half fill (semicircle arc)
   legendG.append('path')
@@ -593,7 +597,7 @@ function drawViz(simResult) {
     .attr('stroke-width', 0.75);
 
   legendG.append('text')
-    .attr('x', legendX + 14)
+    .attr('x', legendX + resolvedR * 2 + LEGEND_TEXT_GAP)
     .attr('y', 4)
     .attr('font-family', VIZ_FONT.mono)
     .attr('font-size', VIZ_FONT_SIZE.label)

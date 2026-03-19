@@ -107,11 +107,29 @@ function getVizSizing() {
   var isMobile = viewportW > 0 && viewportW <= 640;
 
   return {
+    isMobile: isMobile,
     labelFontSize: isMobile ? '0.9rem' : '0.8rem',
     problemRadius: isMobile ? 4.6 : 4.0,
     legendMarkerRadius: isMobile ? 6.4 : 5.8,
     resolveExitRadius: isMobile ? 2.0 : 1.7,
   };
+}
+
+function buildChoiceCenters(svgW, padH, choiceY, choiceRadius) {
+  var columns = 5;
+  var rowGap = choiceRadius * 2 + 26;
+  var row1Y = choiceY - rowGap / 2;
+  var row2Y = choiceY + rowGap / 2;
+  var trackW = svgW - padH * 2;
+
+  return d3.range(M).map(function(i) {
+    var col = i % columns;
+    var row = i < columns ? 0 : 1;
+    return {
+      x: padH + col * trackW / (columns - 1),
+      y: row === 0 ? row1Y : row2Y,
+    };
+  });
 }
 
 // ─── Positioning diagram ──────────────────────────────────────────────────────
@@ -214,9 +232,7 @@ function drawEmptyState() {
   var eventTickerEl = ensureVizEventTicker();
   if (eventTickerEl) eventTickerEl.textContent = '';
 
-  const choiceX = d3.range(M).map(
-    i => PAD_H + i * (SVG_W - PAD_H * 2) / (M - 1)
-  );
+  const choiceCenters = buildChoiceCenters(SVG_W, PAD_H, CHOICE_Y, CHOICE_R);
 
   // Choice circles
   const choiceLayer = svg.append('g');
@@ -224,8 +240,8 @@ function drawEmptyState() {
     .data(d3.range(M))
     .join('circle')
       .attr('class', 'choice')
-      .attr('cx', i => choiceX[i])
-      .attr('cy', CHOICE_Y)
+      .attr('cx', i => choiceCenters[i].x)
+      .attr('cy', i => choiceCenters[i].y)
       .attr('r', CHOICE_R)
       .attr('fill', 'none')
       .attr('stroke', C.inkGhost)
@@ -237,8 +253,8 @@ function drawEmptyState() {
     .data(d3.range(M))
     .join('text')
       .attr('class', 'choice-label')
-      .attr('x', i => choiceX[i])
-      .attr('y', CHOICE_Y + CHOICE_R + 13)
+      .attr('x', i => choiceCenters[i].x)
+      .attr('y', i => choiceCenters[i].y + CHOICE_R + 13)
       .attr('text-anchor', 'middle')
       .attr('font-family', VIZ_FONT.mono)
       .attr('font-size', sizing.labelFontSize)
@@ -324,7 +340,7 @@ function drawEmptyState() {
   // One problem dot in entering state
   svg.append('circle')
     .attr('class', 'problem')
-    .attr('cx', choiceX[0])
+    .attr('cx', choiceCenters[0].x)
     .attr('cy', FLOAT_Y0)
     .attr('r', PROB_R)
     .attr('fill', C.rust)
@@ -445,16 +461,16 @@ function drawViz(simResult) {
   svg.selectAll('*').remove();
 
   // M (choices) and W (problems) are defined by gc-simulation.js
-  const choiceX = d3.range(M).map(
-    i => PAD_H + i * (SVG_W - PAD_H * 2) / (M - 1)
-  );
+  const choiceCenters = buildChoiceCenters(SVG_W, PAD_H, CHOICE_Y, CHOICE_R);
+  const choiceXByColumn = choiceCenters.slice(0, Math.floor(M / 2)).map(function(c) { return c.x; });
+  const choiceXFallback = choiceXByColumn.length ? choiceXByColumn : [PAD_H];
 
   function floatPos(id) {
     if (id < M) {
-      return { x: choiceX[id], y: FLOAT_Y0 };
+      return { x: choiceCenters[id].x, y: FLOAT_Y0 };
     }
-    const col = id - M;
-    return { x: choiceX[col] + (col % 2 === 0 ? 18 : -18), y: FLOAT_Y1 };
+    const col = (id - M) % choiceXFallback.length;
+    return { x: choiceXFallback[col] + (col % 2 === 0 ? 18 : -18), y: FLOAT_Y1 };
   }
 
   function attachedPos(choiceId, slot, total) {
@@ -463,10 +479,11 @@ function drawViz(simResult) {
     const maxR        = CHOICE_R - PROB_R - 1; // keep dots within boundary
     const r           = maxR * Math.sqrt((slot + 0.5) / total);
     const angle       = slot * goldenAngle;
+    const center      = choiceCenters[choiceId];
 
     return {
-      x: choiceX[choiceId] + r * Math.cos(angle),
-      y: CHOICE_Y          + r * Math.sin(angle),
+      x: center.x + r * Math.cos(angle),
+      y: center.y + r * Math.sin(angle),
     };
   }
 
@@ -476,8 +493,8 @@ function drawViz(simResult) {
     defs.append('clipPath')
       .attr('id', `clip-c${i}`)
       .append('circle')
-        .attr('cx', choiceX[i])
-        .attr('cy', CHOICE_Y)
+        .attr('cx', choiceCenters[i].x)
+        .attr('cy', choiceCenters[i].y)
         .attr('r', CHOICE_R);
   });
 
@@ -488,8 +505,8 @@ function drawViz(simResult) {
     .data(d3.range(M))
     .join('circle')
       .attr('class', 'choice')
-      .attr('cx', i => choiceX[i])
-      .attr('cy', CHOICE_Y)
+      .attr('cx', i => choiceCenters[i].x)
+      .attr('cy', i => choiceCenters[i].y)
       .attr('r', CHOICE_R)
       .attr('fill', 'none')
       .attr('stroke', C.inkGhost)
@@ -505,8 +522,8 @@ function drawViz(simResult) {
     .data(d3.range(M))
     .join('rect')
       .attr('class', 'choice-fill')
-      .attr('x', i => choiceX[i] - CHOICE_R)
-      .attr('y', CHOICE_Y + CHOICE_R)
+      .attr('x', i => choiceCenters[i].x - CHOICE_R)
+      .attr('y', i => choiceCenters[i].y + CHOICE_R)
       .attr('width', CHOICE_R * 2)
       .attr('height', 0)
       .attr('fill', C.sage)
@@ -520,8 +537,8 @@ function drawViz(simResult) {
     .data(d3.range(M))
     .join('text')
       .attr('class', 'choice-label')
-      .attr('x', i => choiceX[i])
-      .attr('y', CHOICE_Y + CHOICE_R + 13)
+      .attr('x', i => choiceCenters[i].x)
+      .attr('y', i => choiceCenters[i].y + CHOICE_R + 13)
       .attr('text-anchor', 'middle')
       .attr('font-family', VIZ_FONT.mono)
       .attr('font-size', sizing.labelFontSize)
@@ -650,8 +667,9 @@ function drawViz(simResult) {
     }
 
     if (p.state === 'resolved') {
-      const cx = typeof p.attachedTo === 'number' ? choiceX[p.attachedTo] : choiceX[0];
-      return { x: cx, y: CHOICE_Y, opacity: 0, fill: C.sage, r: PROB_R };
+      var resolvedIndex = typeof p.attachedTo === 'number' ? p.attachedTo : 0;
+      var resolvedCenter = choiceCenters[resolvedIndex] || choiceCenters[0];
+      return { x: resolvedCenter.x, y: resolvedCenter.y, opacity: 0, fill: C.sage, r: PROB_R };
     }
 
     // attached — fibonacci packing inside choice circle
@@ -780,7 +798,7 @@ function drawViz(simResult) {
       .transition()
         .duration(750)
         .ease(d3.easeCubicInOut)
-        .attr('y',      i => CHOICE_Y + CHOICE_R - (resolvedAtChoice[i] / W) * (CHOICE_R * 2))
+        .attr('y',      i => choiceCenters[i].y + CHOICE_R - (resolvedAtChoice[i] / W) * (CHOICE_R * 2))
         .attr('height', i => (resolvedAtChoice[i] / W) * (CHOICE_R * 2));
 
     // Detect problems entering for the first time this tick
@@ -807,10 +825,11 @@ function drawViz(simResult) {
     // Resolution exit: move to circle centre, shrink to r:1.5, fill sage, then fade
     allProbs.filter(id => resolvedThisTick.has(id))
       .each(function(id) {
-        const cx = choiceX[prevTick.problems[id].attachedTo];
+        var centerIdx = prevTick.problems[id].attachedTo;
+        var center = choiceCenters[centerIdx] || choiceCenters[0];
         d3.select(this).interrupt()
           .transition().duration(500).ease(d3.easeCubicInOut)
-            .attr('cx', cx).attr('cy', CHOICE_Y).attr('r', sizing.resolveExitRadius).attr('fill', C.sage)
+            .attr('cx', center.x).attr('cy', center.y).attr('r', sizing.resolveExitRadius).attr('fill', C.sage)
           .transition().duration(250)
             .attr('opacity', 0);
       });

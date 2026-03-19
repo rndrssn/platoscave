@@ -2,25 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Taxonomy of organisation types in the Garbage Can Model." />
   <title>Taxonomy · The Garbage Can Model · To the Bedrock</title>
   <script src="../../../theme.config.js"></script>
   <script src="../../../js/theme-bootstrap.js"></script>
   <link rel="stylesheet" href="../../../css/main.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- Navigation -->
   <nav class="main-nav">
     <a class="nav-title" href="../../../">To the Bedrock</a>
-    <div class="nav-links">
+    <div class="nav-links" id="primary-nav">
       <a class="nav-link" href="../../../">Home</a>
       <a class="nav-link nav-link--active" href="../../../modules/">Index</a>
     </div>
-    <button class="nav-mobile-toggle" aria-label="Toggle menu">&#x22EF;</button>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
-  <main class="main--narrow">
+  <main id="main-content" class="main--narrow">
     <div class="module-page">
 
       <nav class="module-sub-nav" aria-label="Module sections">
@@ -51,16 +52,17 @@
           <h2 class="essay-heading">The Three Dimensions</h2>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">Energy Load</h3>
+            <h3 class="taxonomy-dimension-title">Problem Pressure (Intensity + Inflow)</h3>
             <p class="essay-body">
-              How much problem-energy the organisation carries relative to its capacity
-              to process it. High load means more problems than the system can resolve
-              in any given organizational iteration. Low load means capacity exceeds demand.
+              How much pressure the organisation carries relative to its capacity to process it.
+              Pressure combines <strong>problem intensity</strong> (effort per problem) and
+              <strong>problem inflow</strong> (new problems per organizational iteration).
+              High pressure means more problem-demand than the system can absorb.
             </p>
             <div class="taxonomy-values">
-              <span class="taxonomy-value"><strong>Light:</strong> capacity exceeds demand. Problems get addressed.</span>
-              <span class="taxonomy-value"><strong>Moderate:</strong> roughly balanced. Some problems resolved, some deferred.</span>
-              <span class="taxonomy-value"><strong>Heavy:</strong> problems overwhelm capacity. Most decisions happen without resolving the underlying issue.</span>
+              <span class="taxonomy-value"><strong>Light:</strong> capacity typically exceeds demand. Most problems find closure.</span>
+              <span class="taxonomy-value"><strong>Moderate:</strong> capacity and demand are often in tension. Some problems close, others circulate.</span>
+              <span class="taxonomy-value"><strong>Heavy:</strong> demand overwhelms capacity. Choice opportunities often close without resolving underlying problems.</span>
             </div>
           </div>
 
@@ -95,7 +97,7 @@
           <h2 class="essay-heading">The Classification Grid</h2>
           <p class="essay-body">
             The combination of decision structure and access structure determines the
-            organisation type. Energy load affects how severely the pattern manifests
+            organisation type. Problem pressure affects how severely the pattern manifests
             but does not change the type.
           </p>
 
@@ -242,9 +244,14 @@
       history.scrollRestoration = 'manual';
     }
     window.scrollTo(0, 0);
-    document.querySelector('.nav-mobile-toggle').addEventListener('click', function () {
-      document.querySelector('.nav-links').classList.toggle('is-open');
-    });
+    const navToggle = document.querySelector('.nav-mobile-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', function () {
+        const isOpen = navLinks.classList.toggle('is-open');
+        navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    }
   </script>
 
 </body>

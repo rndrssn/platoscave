@@ -14,16 +14,22 @@ if ('scrollRestoration' in history) {
 window.scrollTo(0, 0);
 
 // ─── Nav toggle ──────────────────────────────────────────────────────────────
-document.querySelector('.nav-mobile-toggle').addEventListener('click', function() {
-  document.querySelector('.nav-links').classList.toggle('is-open');
-});
+var navToggle = document.querySelector('.nav-mobile-toggle');
+var navLinks = document.querySelector('.nav-links');
+if (navToggle && navLinks) {
+  navToggle.addEventListener('click', function() {
+    var isOpen = navLinks.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+}
 
 // ─── Dropdown helpers ─────────────────────────────────────────────────────────
 function allDropdownsSelected() {
-  var load     = document.getElementById('panel-a-load').value;
-  var decision = document.getElementById('panel-a-decision').value;
-  var access   = document.getElementById('panel-a-access').value;
-  return load !== '' && decision !== '' && access !== '';
+  var intensity = document.getElementById('panel-a-load').value;
+  var inflow    = document.getElementById('panel-a-inflow').value;
+  var decision  = document.getElementById('panel-a-decision').value;
+  var access    = document.getElementById('panel-a-access').value;
+  return intensity !== '' && inflow !== '' && decision !== '' && access !== '';
 }
 
 // ─── Diagnosis helper — updates title/body when all dropdowns have a value ────
@@ -39,7 +45,7 @@ function updateDiagnosis() {
 
   var diagnosis = getDiagnosis(decision, access, 0);
 
-  // Strip the flight-percentage sentence — no simulation result yet
+  // Strip the trailing percentage sentence — no simulation result yet
   var bodyText = diagnosis.body;
   bodyText = bodyText.replace(/In organisations like yours, roughly.*$/, '').trim();
 
@@ -68,7 +74,7 @@ function resetSimulation() {
 }
 
 // ─── Dropdown change — update diagnosis and reset simulation ──────────────────
-['panel-a-load', 'panel-a-decision', 'panel-a-access'].forEach(function(id) {
+['panel-a-load', 'panel-a-inflow', 'panel-a-decision', 'panel-a-access'].forEach(function(id) {
   document.getElementById(id).addEventListener('change', function() {
     updateDiagnosis();
     resetSimulation();
@@ -76,32 +82,52 @@ function resetSimulation() {
 });
 
 // ─── Run simulation button ────────────────────────────────────────────────────
-document.getElementById('run-sim-btn').addEventListener('click', function() {
-  var load     = document.getElementById('panel-a-load').value;
-  var decision = document.getElementById('panel-a-decision').value;
-  var access   = document.getElementById('panel-a-access').value;
+document.getElementById('run-sim-btn').addEventListener('click', async function() {
+  var intensity = document.getElementById('panel-a-load').value;
+  var inflow    = document.getElementById('panel-a-inflow').value;
+  var decision  = document.getElementById('panel-a-decision').value;
+  var access    = document.getElementById('panel-a-access').value;
+  var runBtn = document.getElementById('run-sim-btn');
+  var originalText = runBtn.textContent;
 
-  var simResult = runGarbageCanSimulation({
-    energyLoad: load,
-    decisionStructure: decision,
-    accessStructure: access
-  });
-
-  document.getElementById('run-sim-btn').hidden = true;
-  drawViz(simResult, load, decision, access);
+  runBtn.disabled = true;
+  runBtn.textContent = 'Running simulation...';
+  try {
+    var simResult = await runGarbageCanSimulationAsync({
+      problemIntensity: intensity,
+      problemInflow: inflow,
+      decisionStructure: decision,
+      accessStructure: access
+    });
+    runBtn.hidden = true;
+    drawViz(simResult);
+  } finally {
+    runBtn.disabled = false;
+    runBtn.textContent = originalText;
+  }
 });
 
 // ─── Replay button ────────────────────────────────────────────────────────────
-document.getElementById('replay-btn').addEventListener('click', function() {
-  var load     = document.getElementById('panel-a-load').value;
-  var decision = document.getElementById('panel-a-decision').value;
-  var access   = document.getElementById('panel-a-access').value;
+document.getElementById('replay-btn').addEventListener('click', async function() {
+  var intensity = document.getElementById('panel-a-load').value;
+  var inflow    = document.getElementById('panel-a-inflow').value;
+  var decision  = document.getElementById('panel-a-decision').value;
+  var access    = document.getElementById('panel-a-access').value;
+  var replayBtn = document.getElementById('replay-btn');
+  var originalText = replayBtn.textContent;
 
-  var newSim = runGarbageCanSimulation({
-    energyLoad: load,
-    decisionStructure: decision,
-    accessStructure: access
-  });
-
-  drawViz(newSim, load, decision, access);
+  replayBtn.disabled = true;
+  replayBtn.textContent = 'Running simulation...';
+  try {
+    var newSim = await runGarbageCanSimulationAsync({
+      problemIntensity: intensity,
+      problemInflow: inflow,
+      decisionStructure: decision,
+      accessStructure: access
+    });
+    drawViz(newSim);
+  } finally {
+    replayBtn.disabled = false;
+    replayBtn.textContent = originalText;
+  }
 });

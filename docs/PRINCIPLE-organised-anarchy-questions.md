@@ -4,9 +4,9 @@ type: PRINCIPLE
 title: Organised Anarchy Mapper — Question Spec & Scoring Rules
 status: ACTIVE
 created: 2026-03-13
-updated: 2026-03-13
+updated: 2026-03-19
 owner: Robert Andersson
-relates_to: [SPIKE-organised-anarchy-questions, SPIKE-organised-anarchy-scoring, VISION-product]
+relates_to: [REFERENCE-gc-model-semantics, PRINCIPLE-organised-anarchy-diagnosis, VISION-product]
 tags: [garbage-can, questions, scoring, diagnostic]
 ---
 
@@ -14,7 +14,13 @@ tags: [garbage-can, questions, scoring, diagnostic]
 
 ## Purpose
 
-This document defines the questions presented to a visitor and the rules for translating their answers into the three parameters required by `runGarbageCanSimulation()`.
+This document defines the questions presented to a visitor and the rules for translating answers into scoring output used by the simulation.
+
+The scoring output is:
+- `energyLoad` (mapped to simulation `problemIntensity` in Assess)
+- `decisionStructure`
+- `accessStructure`
+- `raw` continuous scores
 
 The questions serve two simultaneous goals:
 1. **Diagnostic accuracy** — produce meaningfully different parameter sets for different organisation types
@@ -30,7 +36,7 @@ Visitors rate each statement on a 1–5 scale:
 `1 = Strongly disagree` / `2 = Disagree` / `3 = Neither` / `4 = Agree` / `5 = Strongly agree`
 
 ### Energy Load (Questions 1–5)
-*Maps to `energyLoad` parameter — total problem-energy relative to organisational capacity*
+*Maps to scoring output `energyLoad` (then mapped to simulation `problemIntensity`)*
 
 | # | Statement |
 |---|-----------|
@@ -110,7 +116,7 @@ In addition to the thresholded parameter values, preserve the continuous mean sc
 }
 ```
 
-Raw scores feed the positioning diagram in `SPIKE-organised-anarchy-viz`, allowing continuous placement rather than snapping to three discrete positions.
+Raw scores feed the positioning diagram in the Assess flow, allowing continuous placement rather than snapping to three discrete positions.
 
 ---
 
@@ -199,5 +205,6 @@ The questions are good enough when:
 ## References
 
 - `gc-simulation.js` — consumes the parameter output of this scoring spec
-- `SPIKE-organised-anarchy-scoring` — implements this spec in JavaScript
+- `gc-scoring.js` — implements this spec in JavaScript
+- `REFERENCE-gc-model-semantics.md` — canonical naming and metric semantics
 - VISION-product.md — the intellectual intent and voice these questions must reflect

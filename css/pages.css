@@ -108,6 +108,9 @@
 .question-block {
   flex: 1;
   margin-bottom: 0;
+  border: 0;
+  padding: 0;
+  min-inline-size: 0;
 }
 
 .question-text {
@@ -116,6 +119,12 @@
   color: var(--ink-mid);
   line-height: 1.6;
   margin-bottom: 0.75rem;
+}
+
+.question-block > .question-text {
+  display: block;
+  width: 100%;
+  padding: 0;
 }
 
 .question-scale {
@@ -304,6 +313,12 @@
 }
 
 /* ─── Visualization ───────────────────────────────────── */
+.results-section #viz-area,
+#viz-area {
+  margin-top: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
 .figure-eyebrow {
   font-family: var(--mono);
   font-size: 0.6rem;
@@ -319,6 +334,8 @@
   display: block;
   width: 100%;
   overflow: visible;
+  margin-top: 3.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .figure-caption {
@@ -331,6 +348,20 @@
   margin-top: 1.75rem;
   line-height: 2;
 }
+
+.viz-event-ticker {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  color: var(--ink-mid);
+  margin-top: 0.65rem;
+  margin-bottom: 0.2rem;
+  text-align: left;
+  min-height: 1rem;
+}
+
 
 .period-readout {
   font-family: var(--mono);
@@ -738,16 +769,20 @@
 }
 
 .explorer-selectors {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.9rem 1rem;
   margin-bottom: 1.5rem;
+  align-items: start;
+  width: 100%;
 }
 
 .explorer-select-group {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  min-width: 0;
 }
 
 .explorer-select-label {
@@ -757,7 +792,7 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-faint);
-  min-width: 5rem;
+  min-height: 1.2rem;
 }
 
 .explorer-select {
@@ -779,8 +814,9 @@
   border-radius: 0;
   padding: 0.5rem 2rem 0.5rem 0.75rem;
   min-height: 2.2rem;
+  min-width: 0;
   width: 100%;
-  max-width: 16rem;
+  max-width: none;
   box-sizing: border-box;
   cursor: pointer;
   appearance: none;
@@ -793,8 +829,12 @@
 }
 
 .explorer-select:focus {
-  outline: none;
   border-color: var(--ink-mid);
+}
+
+.explorer-select:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
 }
 
 .explorer-diagnosis {
@@ -811,4 +851,14 @@
   display: block;
   width: 100%;
   overflow: visible;
+}
+
+@media (max-width: 640px) {
+  .explorer-selectors {
+    grid-template-columns: 1fr;
+  }
+}
+
+.simulation-divider {
+  margin-top: 2rem;
 }

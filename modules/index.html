@@ -2,25 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Index of interactive modules, including the Garbage Can Model simulation and diagnostics." />
   <title>Index — To the Bedrock</title>
   <script src="../theme.config.js"></script>
   <script src="../js/theme-bootstrap.js"></script>
   <link rel="stylesheet" href="../css/main.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- Navigation -->
   <nav class="main-nav">
     <a class="nav-title" href="../">To the Bedrock</a>
-    <div class="nav-links">
+    <div class="nav-links" id="primary-nav">
       <a class="nav-link" href="../">Home</a>
       <a class="nav-link nav-link--active" href="./">Index</a>
     </div>
-    <button class="nav-mobile-toggle" aria-label="Toggle menu">&#x22EF;</button>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
-  <main class="main--narrow">
+  <main id="main-content" class="main--narrow">
 
     <section class="modules-index">
 
@@ -37,7 +38,7 @@
       <ol class="module-list">
 
         <li class="module-entry module-entry--coming">
-          <a class="module-entry-link" href="emergence-primer/">
+          <div class="module-entry-content module-entry-link--disabled">
             <div class="module-entry-main">
               <div class="module-entry-title-row">
                 <span class="module-number">01 &middot;</span>
@@ -45,12 +46,12 @@
               </div>
               <p class="module-descriptor">Simple rules. Surprising patterns.</p>
             </div>
-            <span class="module-status status-coming">Coming</span>
-          </a>
+            <span class="module-status status-coming">Coming Soon</span>
+          </div>
         </li>
 
         <li class="module-entry module-entry--coming">
-          <a class="module-entry-link" href="maturity/">
+          <div class="module-entry-content module-entry-link--disabled">
             <div class="module-entry-main">
               <div class="module-entry-title-row">
                 <span class="module-number">02 &middot;</span>
@@ -58,8 +59,8 @@
               </div>
               <p class="module-descriptor">Where does your organisation sit?</p>
             </div>
-            <span class="module-status status-coming">Coming</span>
-          </a>
+            <span class="module-status status-coming">Coming Soon</span>
+          </div>
         </li>
 
         <li class="module-entry module-entry--live">
@@ -76,7 +77,7 @@
         </li>
 
         <li class="module-entry module-entry--coming">
-          <a class="module-entry-link" href="mix-mapper/">
+          <div class="module-entry-content module-entry-link--disabled">
             <div class="module-entry-main">
               <div class="module-entry-title-row">
                 <span class="module-number">04 &middot;</span>
@@ -84,8 +85,8 @@
               </div>
               <p class="module-descriptor">High and low software content — and what it implies.</p>
             </div>
-            <span class="module-status status-coming">Coming</span>
-          </a>
+            <span class="module-status status-coming">Coming Soon</span>
+          </div>
         </li>
 
       </ol>
@@ -99,9 +100,14 @@
   </footer>
 
   <script>
-    document.querySelector('.nav-mobile-toggle').addEventListener('click', function () {
-      document.querySelector('.nav-links').classList.toggle('is-open');
-    });
+    const navToggle = document.querySelector('.nav-mobile-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', function () {
+        const isOpen = navLinks.classList.toggle('is-open');
+        navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    }
   </script>
 
 </body>

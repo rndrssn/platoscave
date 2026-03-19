@@ -1,114 +1,113 @@
 # CLAUDE.md
 
-## Project
+<!--
+agent_contract_version: 2
+default_profile: fast
+docs_token_budget: 8000
+default_max_docs: 6
+archive_default: false
+-->
 
-**To the Bedrock** — a personal portfolio site that publishes ideas through interactive tools and visualizations. Plain HTML, CSS, and JavaScript. No framework, no build step. Hosted on GitHub Pages.
+## Purpose
 
-See `docs/VISION-product.md` for the full vision.
+Operational contract for Claude Code in this repository.
 
----
+This file is intentionally short. Canonical policy lives in `/docs`.
 
-## Before you do anything
+## Instruction Precedence
 
-1. Read this file
-2. Read `docs/PRINCIPLE-coding-standards.md` — the rules for all code in this project
-3. Read `docs/DOC-CONVENTIONS.md` — the rules for all docs in `docs/`
-4. Read the `HANDOFF.md` in the repo root — your current task lives there
+When instructions conflict, use this order:
+1. Explicit user task in the current chat
+2. This `CLAUDE.md`
+3. Core docs in `/docs` (see default context pack)
+4. Historical/archive docs (only if explicitly loaded)
 
----
+If unresolved conflict remains, stop and ask.
 
-## Repo structure
+## Default Context Pack (always load first)
 
-```
-/
-├── CLAUDE.md                          ← you are here
-├── HANDOFF.md                         ← current task for Claude Code
-├── theme.config.js                    ← single source of truth for active theme
-├── css/
-│   ├── main.css                       ← CSS import entrypoint
-│   ├── tokens.css                     ← design tokens (default values)
-│   ├── base.css                       ← reset and element defaults
-│   ├── layout.css                     ← global layout primitives
-│   ├── components.css                 ← reusable shared components
-│   ├── utilities.css                  ← utility classes and keyframes
-│   ├── themes.css                     ← theme overrides
-│   └── pages.css                      ← page/module-specific styles
-├── js/
-│   └── theme-bootstrap.js             ← applies configured global theme
-├── gc-simulation.js                   ← garbage can simulation logic (no DOM)
-├── gc-scoring.js                      ← scoring logic (no DOM)
-├── index.html                         ← site root / home page
-├── modules/
-│   └── garbage-can/
-│       └── index.html                 ← module 03 — organised anarchy mapper
-├── docs/
-│   ├── DOC-CONVENTIONS.md             ← naming, frontmatter, doc types
-│   ├── VISION-product.md
-│   ├── PRINCIPLE-coding-standards.md
-│   ├── PRINCIPLE-design-system.md
-│   ├── PRINCIPLE-responsive.md
-│   ├── PRINCIPLE-organised-anarchy-*.md
-│   ├── EPIC-*.md
-│   ├── STORY-*.md
-│   ├── SPIKE-*.md
-│   ├── FIX-*.md
-│   ├── TECH-DEBT-*.md
-│   └── ADR-*.md
-```
+1. `docs/00-core/CORE.md`
+2. `docs/00-core/CORE-loading-rules.md`
+3. `docs/00-core/CORE-quality-gates.md`
+4. `docs/30-tasks/TASK-current-work.md`
+5. `HANDOFF.md` (if present)
 
----
+If `HANDOFF.md` is missing, ask the user for task scope and proceed with explicit assumptions.
 
-## How this project works
+## Conditional Loading Rules
 
-This is a learning project as much as a product. The workflow is:
+- If editing docs: load `docs/DOC-CONVENTIONS.md`.
+- If working on simulation/scoring/diagnosis/viz semantics:
+  - `docs/20-reference/REFERENCE-gc-model-semantics.md`
+  - `docs/10-guides/GUIDE-architecture.md`
+- If working on onboarding/workflow/test process docs:
+  - `docs/10-guides/GUIDE-getting-started.md`
+  - `docs/10-guides/GUIDE-contributing.md`
+- If debugging historical behavior/decisions:
+  - load from `docs/90-archive/*` only when needed.
 
-1. **Claude.ai** — ideation, requirements, troubleshooting, design decisions
-2. **Claude Code + VSCode** — implementation, guided by HANDOFF.md
-3. **Git + GitHub** — version control, branches, GitHub Pages deployment
+## Context and Token Constraints
 
-Claude Code does not freelance. It reads HANDOFF.md and executes what is there. If the handoff is ambiguous, Claude Code asks — it does not guess.
+- Default max docs per run: 6
+- Docs token budget per run: 8k
+- Never load archive/history docs by default.
+- If a doc is long, read relevant sections first; summarize before expanding more.
 
----
+Profiles:
+- `fast`: default pack + one conditional doc max.
+- `deep`: default pack + all relevant conditional docs up to budget.
 
-## Rules — always apply, every task
+## Hard Execution Gates
 
-These come from `docs/PRINCIPLE-coding-standards.md`. Repeating the non-negotiables here:
+For code changes:
+1. Run `node tests/run-all.js`.
+2. If navigation links changed, also run `node tests/test-navigation-links.js` with local server.
 
-- **No inline styles** — CSS classes only, defined in layered CSS files under `css/`
-- **No `<style>` blocks in HTML** — all CSS lives in `css/*.css`
-- **No logic in HTML files** — HTML wires components, logic lives in `.js` files
-- **No hardcoded colors or fonts** — use CSS custom properties from `css/tokens.css` / `css/themes.css`
-- **Global theme is config-driven** — set `window.PLATOSCAVE_THEME` in `theme.config.js`; do not hardcode `data-theme` per page
-- **No external dependencies** without an ADR
-- **Clean directory URLs** — never reference `index.html` in links
-- **JS logic files are DOM-free** — `gc-simulation.js` and `gc-scoring.js` accept inputs, return outputs
+For semantics/labels/rules changes:
+1. Update affected docs in same change.
+2. Ensure terms remain consistent with `docs/20-reference/REFERENCE-gc-model-semantics.md`.
 
----
+## Change-Trigger Matrix
 
-## Branch convention
+- Changed GC model math or outputs:
+  - Update tests + `docs/20-reference/REFERENCE-gc-model-semantics.md` + relevant principle docs.
+- Changed UI labels/readouts:
+  - Update docs reflecting term and unit semantics.
+- Changed contributor/release workflow:
+  - Update `docs/10-guides/GUIDE-testing-and-release.md` and/or `docs/10-guides/GUIDE-contributing.md`.
 
-- `main` — production, deployed to GitHub Pages
-- `develop` — integration branch
-- `experiment/[slug]` — spike branches for exploratory work
+## Critical Paths (minimal map)
 
-Current active branch: check with `git branch --show-current`
+- Theme bootstrap: `theme.config.js`, `js/theme-bootstrap.js`
+- Styles: `css/main.css` + layered css files
+- GC logic: `gc-simulation.js`, `gc-scoring.js`, `gc-diagnosis.js`, `gc-viz.js`
+- GC page wiring: `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js`
+- Tests: `tests/run-all.js`
 
----
+## Task Templates (quick start)
 
-## Docs convention
+### Feature change
+1. Load default pack + relevant guide/reference docs.
+2. Implement.
+3. Add/update tests.
+4. Run required test commands.
+5. Update docs affected by behavior/semantics change.
 
-All docs follow `docs/DOC-CONVENTIONS.md`. Key points:
+### Bug fix
+1. Reproduce.
+2. Patch minimal scope.
+3. Add regression test where feasible.
+4. Run required test commands.
+5. Document behavior change if user-facing semantics changed.
 
-- Every doc has a `TYPE-slug.md` filename
-- Every doc has YAML frontmatter with id, type, title, status, created, updated
-- Use `relates_to` to link docs together
-- SPIKEs pair with `experiment/` branches
-- When creating or editing any doc, read DOC-CONVENTIONS.md first
+### Docs-only change
+1. Load `docs/DOC-CONVENTIONS.md` + target docs.
+2. Keep docs aligned with code source-of-truth.
+3. Validate links/references if conventions changed.
 
----
+## Final Response Contract
 
-## Current focus
-
-Module 03 — The Garbage Can Model (organised anarchy mapper). An interactive simulation where users answer 12 questions about their organisation and receive a diagnosis with a d3.js visualization of the garbage can model in action.
-
-The task is always in HANDOFF.md. Do that and nothing else.
+When finishing, report:
+1. What changed (files + intent)
+2. Tests/checks run and result
+3. Any residual risks or follow-ups

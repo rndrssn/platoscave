@@ -26,3 +26,18 @@
   animation: dot-pulse 1s ease-in-out infinite;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .fade-in,
+  .problem-attached,
+  .problem-searching {
+    animation: none !important;
+  }
+
+  .module-entry,
+  .module-card,
+  .submit-btn,
+  .nav-link,
+  .footer-link {
+    transition: none !important;
+  }
+}

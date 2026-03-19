@@ -815,6 +815,46 @@
   padding-top: 1rem;
 }
 
+/* Desktop-only simulation compaction (15% vertical) */
+@media (min-width: 640px) {
+  #section-simulation.results-section,
+  #viz-area.explorer-results-section {
+    --gc-sim-compact-y: 0.7;
+    padding-top: calc(2rem * var(--gc-sim-compact-y));
+    padding-bottom: calc(3rem * var(--gc-sim-compact-y));
+    margin-top: calc(1.25rem * var(--gc-sim-compact-y));
+    margin-bottom: calc(1.5rem * var(--gc-sim-compact-y));
+  }
+
+  #section-simulation .stage-label,
+  #viz-area.explorer-results-section .stage-label {
+    margin-top: calc(2.5rem * var(--gc-sim-compact-y));
+    margin-bottom: calc(1.25rem * var(--gc-sim-compact-y));
+  }
+
+  #section-simulation #viz-svg,
+  #viz-area.explorer-results-section #viz-svg {
+    margin-top: calc(1.5rem * var(--gc-sim-compact-y));
+    margin-bottom: calc(1.5rem * var(--gc-sim-compact-y));
+  }
+
+  #section-simulation .submit-row,
+  #viz-area.explorer-results-section .submit-row {
+    margin-top: calc(2rem * var(--gc-sim-compact-y));
+  }
+
+  #section-simulation .replay-btn,
+  #viz-area.explorer-results-section .replay-btn {
+    margin-top: calc(1rem * var(--gc-sim-compact-y));
+  }
+
+  #section-simulation .submit-btn,
+  #viz-area.explorer-results-section .submit-btn {
+    padding-top: calc(0.75rem * var(--gc-sim-compact-y));
+    padding-bottom: calc(0.75rem * var(--gc-sim-compact-y));
+  }
+}
+
 .explorer-results-section .simulation-divider {
   margin-bottom: 4.5rem;
 }

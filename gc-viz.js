@@ -43,7 +43,8 @@ function readCssNumber(name, fallback) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-const CHOICE_RADIUS = 30;
+const CHOICE_RADIUS = 34;
+const DESKTOP_VIZ_VERTICAL_COMPACT = 0.7;
 
 const GC_VIZ_DEFAULTS = (typeof window !== 'undefined' && window.GC_VIZ_CONFIG)
   ? window.GC_VIZ_CONFIG
@@ -127,9 +128,9 @@ function setMultilineLegendText(textSel, lines, lineGapEm) {
 }
 
 const GC_LEGEND_ITEMS = [
-  { label: 'Problem entering',  color: C.rust },
-  { label: 'Problem searching for choice opportunity', color: C.gold },
-  { label: 'In choice opportunity (CO)', color: C.sageLight },
+  { label: 'Problem entering org',  color: C.rust },
+  { label: 'Problem searching for CO', color: C.gold },
+  { label: 'Problem in CO', color: C.sageLight },
   { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
 ];
 function getSimulationDefaultsFromWindow() {
@@ -247,6 +248,17 @@ function getVizSizing() {
   };
 }
 
+function resolveVizLayout(mode, sizing) {
+  var base = VIZ_LAYOUT[mode] || {};
+  var layout = Object.assign({}, base);
+  if (sizing.isMobile) return layout;
+
+  layout.squareTop = Math.round(layout.squareTop * DESKTOP_VIZ_VERTICAL_COMPACT);
+  layout.bottomLegendPad = Math.round(layout.bottomLegendPad * DESKTOP_VIZ_VERTICAL_COMPACT);
+  layout.bottomLegendOffset = Math.round(layout.bottomLegendOffset * DESKTOP_VIZ_VERTICAL_COMPACT);
+  return layout;
+}
+
 function buildChoiceCenters(svgW, padH, choiceY, choiceRadius, choiceCount) {
   var goldenAngle = Math.PI * (3 - Math.sqrt(5));
   var trackW = svgW - padH * 2;
@@ -353,6 +365,7 @@ function drawPositioning(raw) {
 function drawEmptyState(options) {
   var dims = resolveVizDimensions(null, options);
   var sizing = getVizSizing();
+  var layout = resolveVizLayout('empty', sizing);
   const {
     svgW: SVG_W,
     choiceRadius: CHOICE_R,
@@ -361,7 +374,7 @@ function drawEmptyState(options) {
     bottomLegendPad,
     bottomLegendOffset,
     enteringOffset,
-  } = VIZ_LAYOUT.empty;
+  } = layout;
   var squareSide = SVG_W - PAD_H * 2;
   var SVG_H = squareTop + squareSide + bottomLegendPad;
   var CHOICE_Y = squareTop + squareSide / 2;
@@ -505,6 +518,7 @@ function drawViz(simResult, options) {
   var eventTickerEl = ensureVizEventTicker();
   if (eventTickerEl) eventTickerEl.textContent = '';
   var sizing = getVizSizing();
+  var layout = resolveVizLayout('live', sizing);
 
   // Choice-level percentages (canonical GCM decision styles)
   // Rounded to nearest 5% — at 100 Monte Carlo iterations, finer precision is noise
@@ -533,7 +547,7 @@ function drawViz(simResult, options) {
     bottomLegendOffset,
     floatY0Offset,
     floatY1Offset,
-  } = VIZ_LAYOUT.live;
+  } = layout;
   var squareSide = SVG_W - PAD_H * 2;
   var SVG_H = squareTop + squareSide + bottomLegendPad;
   var CHOICE_Y = squareTop + squareSide / 2;

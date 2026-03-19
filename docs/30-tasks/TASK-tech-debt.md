@@ -15,7 +15,7 @@ token_cost_estimate: low
 
 # Active Technical Debt Queue
 
-Use `docs/TECH-DEBT-tracker.md` as the detailed tracker.
+Use `docs/30-tasks/TECH-DEBT-tracker.md` as the detailed tracker.
 
 This task file is the retrieval target for agents. Keep it short and current.
 

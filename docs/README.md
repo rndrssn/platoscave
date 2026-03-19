@@ -21,6 +21,8 @@ token_cost_estimate: low
 - `docs/10-guides/` — operational runbooks
 - `docs/20-reference/` — domain/source-of-truth references
 - `docs/30-tasks/` — active task retrieval targets
+- `docs/40-principles/` — principle-level policy and narrative contracts
+- `docs/50-vision/` — product vision and framing
 - `docs/90-archive/` — historical docs (opt-in only)
 
 ## Agent default pack

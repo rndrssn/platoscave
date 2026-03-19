@@ -1,3 +1,18 @@
+---
+id: REFERENCE-css-architecture-detail
+type: REFERENCE
+title: CSS Architecture Detailed Reference
+status: ACTIVE
+created: 2026-03-15
+updated: 2026-03-19
+owner: Robert Andersson
+relates_to: [REFERENCE-css-architecture, PRINCIPLE-design-system]
+tags: [css, architecture, layers, themes]
+load_when: [css_changes, theme_changes]
+do_not_load_when: [pure_logic_changes]
+token_cost_estimate: low
+---
+
 # CSS Architecture
 
 This project uses plain CSS with a layered import structure.

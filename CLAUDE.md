@@ -36,7 +36,7 @@ If `HANDOFF.md` is missing, ask the user for task scope and proceed with explici
 
 ## Conditional Loading Rules
 
-- If editing docs: load `docs/10-guides/DOC-CONVENTIONS.md`.
+- If editing docs: load `docs/DOC-CONVENTIONS.md`.
 - If working on simulation/scoring/diagnosis/viz semantics:
   - `docs/20-reference/REFERENCE-gc-model-semantics.md`
   - `docs/10-guides/GUIDE-architecture.md`
@@ -101,7 +101,7 @@ For semantics/labels/rules changes:
 5. Document behavior change if user-facing semantics changed.
 
 ### Docs-only change
-1. Load `docs/10-guides/DOC-CONVENTIONS.md` + target docs.
+1. Load `docs/DOC-CONVENTIONS.md` + target docs.
 2. Keep docs aligned with code source-of-truth.
 3. Validate links/references if conventions changed.
 

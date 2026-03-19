@@ -116,18 +116,35 @@ function getVizSizing() {
 }
 
 function buildChoiceCenters(svgW, padH, choiceY, choiceRadius) {
-  var columns = 5;
-  var rowGap = choiceRadius * 2 + 26;
-  var row1Y = choiceY - rowGap / 2;
-  var row2Y = choiceY + rowGap / 2;
+  var goldenAngle = Math.PI * (3 - Math.sqrt(5));
   var trackW = svgW - padH * 2;
+  var squareSide = trackW;
+  var squareLeft = padH;
+  var squareTop = choiceY - squareSide / 2;
+  var inset = choiceRadius + 4;
+  var usableSide = Math.max(0, squareSide - inset * 2);
 
-  return d3.range(M).map(function(i) {
-    var col = i % columns;
-    var row = i < columns ? 0 : 1;
+  var points = d3.range(M).map(function(i) {
+    var idx = i + 1;
+    var t = (idx - 0.5) / M;
+    var r = 0.5 * Math.sqrt(t);
+    var theta = idx * goldenAngle;
     return {
-      x: padH + col * trackW / (columns - 1),
-      y: row === 0 ? row1Y : row2Y,
+      x: 0.5 + r * Math.cos(theta),
+      y: 0.5 + r * Math.sin(theta),
+    };
+  });
+
+  // Keep CO labels in stable reading order: left-to-right, top-to-bottom.
+  points.sort(function(a, b) {
+    if (a.y !== b.y) return a.y - b.y;
+    return a.x - b.x;
+  });
+
+  return points.map(function(p) {
+    return {
+      x: squareLeft + inset + p.x * usableSide,
+      y: squareTop + inset + p.y * usableSide,
     };
   });
 }
@@ -217,12 +234,14 @@ function drawEmptyState() {
   var sizing = getVizSizing();
   const {
     svgW: SVG_W,
-    svgH: SVG_H,
-    choiceY: CHOICE_Y,
     choiceRadius: CHOICE_R,
     padH: PAD_H,
-    floatY0: FLOAT_Y0,
   } = VIZ_LAYOUT.empty;
+  var squareSide = SVG_W - PAD_H * 2;
+  var squareTop = 92;
+  var SVG_H = squareTop + squareSide + 86;
+  var CHOICE_Y = squareTop + squareSide / 2;
+  var FLOAT_Y0 = squareTop - 32;
   const PROB_R = sizing.problemRadius;
 
   const svg = d3.select('#viz-svg')
@@ -446,13 +465,15 @@ function drawViz(simResult) {
 
   const {
     svgW: SVG_W,
-    svgH: SVG_H,
-    choiceY: CHOICE_Y,
     choiceRadius: CHOICE_R,
     padH: PAD_H,
-    floatY0: FLOAT_Y0,
-    floatY1: FLOAT_Y1,
   } = VIZ_LAYOUT.live;
+  var squareSide = SVG_W - PAD_H * 2;
+  var squareTop = 102;
+  var SVG_H = squareTop + squareSide + 96;
+  var CHOICE_Y = squareTop + squareSide / 2;
+  var FLOAT_Y0 = squareTop - 44;
+  var FLOAT_Y1 = squareTop - 18;
   const PROB_R = sizing.problemRadius;
 
   const svg = d3.select('#viz-svg')
@@ -462,15 +483,15 @@ function drawViz(simResult) {
 
   // M (choices) and W (problems) are defined by gc-simulation.js
   const choiceCenters = buildChoiceCenters(SVG_W, PAD_H, CHOICE_Y, CHOICE_R);
-  const choiceXByColumn = choiceCenters.slice(0, Math.floor(M / 2)).map(function(c) { return c.x; });
-  const choiceXFallback = choiceXByColumn.length ? choiceXByColumn : [PAD_H];
+  const floatTracks = choiceCenters.map(function(c) { return c.x; }).sort(function(a, b) { return a - b; });
+  const choiceXFallback = floatTracks.length ? floatTracks : [PAD_H];
 
   function floatPos(id) {
     if (id < M) {
       return { x: choiceCenters[id].x, y: FLOAT_Y0 };
     }
     const col = (id - M) % choiceXFallback.length;
-    return { x: choiceXFallback[col] + (col % 2 === 0 ? 18 : -18), y: FLOAT_Y1 };
+    return { x: choiceXFallback[col], y: FLOAT_Y1 };
   }
 
   function attachedPos(choiceId, slot, total) {
@@ -858,12 +879,12 @@ function drawViz(simResult) {
             .attr('opacity', 0.85).attr('fill', C.inkFaint);
       });
 
-    // All other problems: standard position transition (staggered for organic feel)
+    // All other problems: deterministic position transition
     allProbs.filter(id => !resolvedThisTick.has(id) && !flightSet.has(id) && !oversightSet.has(id) && !enteringThisTick.has(id))
       .interrupt()
       .transition()
-        .delay(id => Math.random() * 220)
-        .duration(id => 900 + Math.random() * 350)
+        .delay(0)
+        .duration(900)
         .ease(d3.easeCubicInOut)
         .attr('cx',      id => probAttrs(tick, id).x)
         .attr('cy',      id => probAttrs(tick, id).y)

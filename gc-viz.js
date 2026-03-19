@@ -381,7 +381,7 @@ function drawEmptyState() {
 // ─── End state summary ────────────────────────────────────────────────────────
 function showEndState(
   pctRes, pctOver, pctFli,
-  probResolved, probDisplaced, probAdrift, probInForum,
+  probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
   lastTick
 ) {
   function setReadout(id, toneClass, label, text) {
@@ -899,7 +899,7 @@ function drawViz(simResult) {
       if (eventTickerEl) eventTickerEl.textContent = '';
       showEndState(
         pctRes, pctOver, pctFli,
-        probResolved, probDisplaced, probAdrift, probInForum,
+        probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
         ticks[ticks.length - 1]
       );
       return;

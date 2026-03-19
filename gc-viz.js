@@ -51,6 +51,33 @@ function formatChoiceOpportunityLabel(idxZeroBased) {
   return `CO${idxZeroBased + 1}`;
 }
 
+function formatChoiceOpportunityList(ids, limit) {
+  var max = typeof limit === 'number' ? limit : 3;
+  var labels = ids.slice(0, max).map(formatChoiceOpportunityLabel);
+  var text = labels.join(', ');
+  if (ids.length > max) text += ` · +${ids.length - max} more`;
+  return text;
+}
+
+function ensureVizEventTicker() {
+  if (typeof document === 'undefined') return null;
+  var svgEl = document.getElementById('viz-svg');
+  if (!svgEl) return null;
+
+  var tickerEl = document.getElementById('viz-event-ticker');
+  if (!tickerEl) {
+    tickerEl = document.createElement('p');
+    tickerEl.id = 'viz-event-ticker';
+    tickerEl.className = 'viz-event-ticker';
+  }
+
+  if (svgEl.nextElementSibling !== tickerEl) {
+    svgEl.insertAdjacentElement('afterend', tickerEl);
+  }
+
+  return tickerEl;
+}
+
 const CHOICE_RADIUS = 30;
 
 const VIZ_LAYOUT = {
@@ -92,9 +119,9 @@ function drawPositioning(raw) {
   svg.selectAll('*').remove();
 
   const tracks = [
-    { label: 'Load',     score: raw.energyScore,   lo: 'Light',      hi: 'Heavy',  min: 1, max: 5 },
-    { label: 'Decision', score: raw.decisionScore,  lo: 'Restricted', hi: 'Open',   min: 1, max: 5 },
-    { label: 'Access',   score: raw.accessScore,    lo: 'Directed',   hi: 'Open',   min: 1, max: 5 },
+    { label: 'Pressure', score: raw.energyScore,   lo: 'Light',       hi: 'Heavy',        min: 1, max: 5 },
+    { label: 'Decision', score: raw.decisionScore, lo: 'Unsegmented', hi: 'Specialized',  min: 1, max: 5 },
+    { label: 'Access',   score: raw.accessScore,   lo: 'Unsegmented', hi: 'Specialized',  min: 1, max: 5 },
   ];
 
   const g = svg.selectAll('g.track')
@@ -111,7 +138,7 @@ function drawPositioning(raw) {
     .attr('font-weight', '300')
     .attr('fill', C.inkFaint)
     .attr('letter-spacing', '0.1em')
-    .text(d => d.label.toUpperCase());
+    .text(d => d.label);
 
   g.append('text')
     .attr('x', PAD_L)
@@ -122,7 +149,7 @@ function drawPositioning(raw) {
     .attr('fill', C.inkGhost)
     .attr('text-anchor', 'start')
     .attr('letter-spacing', '0.08em')
-    .text(d => d.lo.toUpperCase());
+    .text(d => d.lo);
 
   g.append('text')
     .attr('x', PAD_L + TRACKW)
@@ -133,7 +160,7 @@ function drawPositioning(raw) {
     .attr('fill', C.inkGhost)
     .attr('text-anchor', 'end')
     .attr('letter-spacing', '0.08em')
-    .text(d => d.hi.toUpperCase());
+    .text(d => d.hi);
 
   g.append('line')
     .attr('x1', PAD_L)
@@ -171,6 +198,8 @@ function drawEmptyState() {
     .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`);
 
   svg.selectAll('*').remove();
+  var eventTickerEl = ensureVizEventTicker();
+  if (eventTickerEl) eventTickerEl.textContent = '';
 
   const choiceX = d3.range(M).map(
     i => PAD_H + i * (SVG_W - PAD_H * 2) / (M - 1)
@@ -243,7 +272,7 @@ function drawEmptyState() {
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.08em')
       .attr('fill', C.inkFaint)
-      .text(item.label.toUpperCase());
+      .text(item.label);
 
     legendX += item.label.length * 10 + 55;
   });
@@ -275,7 +304,7 @@ function drawEmptyState() {
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.08em')
     .attr('fill', C.inkFaint)
-    .text('RESOLVED');
+    .text('RESOLVED PROBLEMS (CUM.)');
 
   // One problem dot in entering state
   svg.append('circle')
@@ -293,6 +322,16 @@ function showEndState(
   probResolved, probDisplaced, probAdrift, probInForum,
   lastTick
 ) {
+  function setReadout(id, toneClass, label, text) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = '';
+    var span = document.createElement('span');
+    span.className = toneClass;
+    span.textContent = label;
+    el.appendChild(span);
+    el.appendChild(document.createTextNode(': ' + text));
+  }
 
   // Stop any pulsating on dots
   d3.select('#viz-svg').selectAll('circle.problem')
@@ -321,50 +360,40 @@ function showEndState(
   }
 
   document.getElementById('sum-thisrun-label').textContent =
-    'This run (organizational iteration ' + PERIODS + ')';
-  document.getElementById('sum-thisrun-resolved').innerHTML =
-    '<span class="outcome-resolved">Resolved</span>: ' + runResolved + ' of ' + W + ' problems';
-  document.getElementById('sum-thisrun-inforum').innerHTML =
-    '<span class="outcome-unresolved">In choice opportunity</span>: ' + runInForum + ' of ' + W + ' problems';
-  document.getElementById('sum-thisrun-adrift').innerHTML =
-    '<span class="outcome-flight">Adrift</span>: ' + runAdrift + ' of ' + W + ' problems';
-  document.getElementById('sum-thisrun-choices-resolved').innerHTML =
-    '<span class="outcome-resolved">Choices resolved</span>: ' + runChoicesResolved + ' of ' + M;
-  document.getElementById('sum-thisrun-choices-open').innerHTML =
-    '<span class="outcome-unresolved">Choices still open</span>: ' + runChoicesOpen + ' of ' + M;
+    'Single run snapshot (organizational iteration ' + PERIODS + ')';
+  setReadout('sum-thisrun-resolved', 'outcome-resolved', 'Resolved', runResolved + ' of ' + W + ' problems');
+  setReadout('sum-thisrun-inforum', 'outcome-unresolved', 'In choice opportunity', runInForum + ' of ' + W + ' problems');
+  setReadout('sum-thisrun-adrift', 'outcome-flight', 'Adrift', runAdrift + ' of ' + W + ' problems');
+  setReadout('sum-thisrun-choices-resolved', 'outcome-resolved', 'Choice opportunities concluded', runChoicesResolved + ' of ' + M);
+  setReadout('sum-thisrun-choices-open', 'outcome-unresolved', 'Choice opportunities active', runChoicesOpen + ' of ' + M);
 
   // Primary: canonical GCM decision styles (choice-level)
   document.getElementById('sum-header').textContent =
-    'Across 100 simulations, on average:';
+    'Across 100 simulations (Monte Carlo average):';
 
   document.getElementById('sum-choices-label').textContent =
-    `How the ${M} choice opportunities closed`;
-  document.getElementById('sum-choice-resolution').innerHTML =
-    `<span class="outcome-resolved">Deliberation</span>: ${pctRes}% \u2014 choice opportunity closed after sustained engagement`;
-  document.getElementById('sum-choice-oversight').innerHTML =
-    `<span class="outcome-oversight">Oversight</span>: ${pctOver}% \u2014 choice opportunity closed with no problem attached`;
-  document.getElementById('sum-choice-flight').innerHTML =
-    `<span class="outcome-flight">Flight</span>: ${pctFli}% \u2014 choice opportunity closed after problems fled`;
+    'Choice closure style shares';
+  setReadout('sum-choice-resolution', 'outcome-resolved', 'Deliberation', `${pctRes}% \u2014 choice opportunity closed after sustained engagement`);
+  setReadout('sum-choice-oversight', 'outcome-oversight', 'Oversight', `${pctOver}% \u2014 choice opportunity closed with no problem attached`);
+  setReadout('sum-choice-flight', 'outcome-flight', 'Flight', `${pctFli}% \u2014 choice opportunity closed after problems fled`);
 
   // Supplementary: problem fates (interpretive extension)
   document.getElementById('sum-problems-label').textContent =
     `What happened to the ${W} problems`;
-  document.getElementById('sum-prob-resolved').innerHTML =
-    `<span class="outcome-resolved">Resolved</span>: ${probResolved} of ${W} \u2014 genuinely closed at a choice opportunity`;
-  document.getElementById('sum-prob-displaced').innerHTML =
-    `<span class="outcome-oversight">Displaced</span>: ${probDisplaced} of ${W} \u2014 choice opportunity closed without resolving this problem`;
-  document.getElementById('sum-prob-adrift').innerHTML =
-    `<span class="outcome-flight">Adrift</span>: ${probAdrift} of ${W} \u2014 detached from choice opportunity or never attached`;
-  document.getElementById('sum-prob-inforum').innerHTML =
-    `<span class="outcome-unresolved">In choice opportunity</span>: ${probInForum} of ${W} \u2014 still attached to an open choice opportunity at organizational iteration ${PERIODS}`;
+  setReadout('sum-prob-resolved', 'outcome-resolved', 'Resolved', `${probResolved} of ${W} \u2014 genuinely closed at a choice opportunity`);
+  setReadout('sum-prob-displaced', 'outcome-oversight', 'Displaced', `${probDisplaced} of ${W} \u2014 choice opportunity closed without resolving this problem`);
+  setReadout('sum-prob-adrift', 'outcome-flight', 'Adrift', `${probAdrift} of ${W} \u2014 detached from choice opportunity or never attached`);
+  setReadout('sum-prob-inforum', 'outcome-unresolved', 'In choice opportunity', `${probInForum} of ${W} \u2014 still attached to an open choice opportunity at organizational iteration ${PERIODS}`);
 
   document.getElementById('replay-btn').hidden      = false;
   document.getElementById('stochastic-note').hidden = false;
 }
 
 // ─── Visualization ────────────────────────────────────────────────────────────
-function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
+function drawViz(simResult) {
   const { ticks, resolution, oversight, flight } = simResult;
+  var eventTickerEl = ensureVizEventTicker();
+  if (eventTickerEl) eventTickerEl.textContent = '';
 
   // Choice-level percentages (canonical GCM decision styles)
   // Rounded to nearest 5% — at 100 Monte Carlo iterations, finer precision is noise
@@ -376,7 +405,7 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
   const probResolved  = Math.round(simResult.problemResolved);
   const probDisplaced = Math.round(simResult.problemDisplaced);
   const probAdrift    = Math.round(simResult.problemAdrift);
-  const probInForum   = Math.max(0, W - probResolved - probDisplaced - probAdrift);
+  const probInForum   = Math.round(simResult.problemInForum);
 
   // Reset summary state
   document.getElementById('sim-summary').hidden   = true;
@@ -536,7 +565,7 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.08em')
       .attr('fill', C.inkFaint)
-      .text(item.label.toUpperCase());
+      .text(item.label);
 
     legendX += item.label.length * 10 + 55;
   });
@@ -571,7 +600,7 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.08em')
     .attr('fill', C.inkFaint)
-    .text('RESOLVED');
+    .text('RESOLVED PROBLEMS (CUM.)');
 
   // ── Layer 4: problem dots ──────────────────────────────────────────────────
   const probLayer = svg.append('g');
@@ -638,11 +667,13 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
 
   function renderTick(tickIdx, prevTick) {
     const tick = ticks[tickIdx];
+    const choicesOpenedThisTick = [];
+    const choicesResolvedThisTick = new Set();
 
     svg.selectAll('circle.choice')
       .data(tick.choices)
       .transition()
-        .duration(600)
+        .duration(750)
         .ease(d3.easeCubicInOut)
         .attr('stroke', d => {
           if (d.state === 'resolved') return C.inkGhost;
@@ -694,8 +725,10 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
     const oversightSet     = new Set();
 
     if (prevTick) {
-      const choicesResolvedThisTick = new Set();
       for (let c = 0; c < M; c++) {
+        if (prevTick.choices[c].state === 'inactive' && tick.choices[c].state === 'active') {
+          choicesOpenedThisTick.push(c);
+        }
         if (prevTick.choices[c].state === 'active' && tick.choices[c].state === 'resolved') {
           choicesResolvedThisTick.add(c);
         }
@@ -727,7 +760,7 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
     svg.selectAll('rect.choice-fill')
       .data(d3.range(M))
       .transition()
-        .duration(600)
+        .duration(750)
         .ease(d3.easeCubicInOut)
         .attr('y',      i => CHOICE_Y + CHOICE_R - (resolvedAtChoice[i] / W) * (CHOICE_R * 2))
         .attr('height', i => (resolvedAtChoice[i] / W) * (CHOICE_R * 2));
@@ -749,7 +782,7 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
         const attrs = probAttrs(tick, id);
         d3.select(this).interrupt()
           .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', 1).attr('opacity', 0)
-          .transition().duration(400).ease(d3.easeCubicOut)
+          .transition().duration(500).ease(d3.easeCubicOut)
             .attr('r', attrs.r).attr('opacity', attrs.opacity).attr('fill', attrs.fill);
       });
 
@@ -758,9 +791,9 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       .each(function(id) {
         const cx = choiceX[prevTick.problems[id].attachedTo];
         d3.select(this).interrupt()
-          .transition().duration(400).ease(d3.easeCubicInOut)
+          .transition().duration(500).ease(d3.easeCubicInOut)
             .attr('cx', cx).attr('cy', CHOICE_Y).attr('r', 1.5).attr('fill', C.sage)
-          .transition().duration(200)
+          .transition().duration(250)
             .attr('opacity', 0);
       });
 
@@ -769,9 +802,9 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       .each(function(id) {
         const fp = floatPos(id);
         d3.select(this).interrupt()
-          .transition().duration(200)
+          .transition().duration(250)
             .attr('fill', C.rust)
-          .transition().duration(400).ease(d3.easeCubicInOut)
+          .transition().duration(500).ease(d3.easeCubicInOut)
             .attr('cx', fp.x).attr('cy', fp.y).attr('r', PROB_R)
             .attr('opacity', 0.85).attr('fill', C.inkFaint);
       });
@@ -781,9 +814,9 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
       .each(function(id) {
         const fp = floatPos(id);
         d3.select(this).interrupt()
-          .transition().duration(200)
+          .transition().duration(250)
             .attr('fill', C.slate)
-          .transition().duration(400).ease(d3.easeCubicInOut)
+          .transition().duration(500).ease(d3.easeCubicInOut)
             .attr('cx', fp.x).attr('cy', fp.y).attr('r', PROB_R)
             .attr('opacity', 0.85).attr('fill', C.inkFaint);
       });
@@ -792,8 +825,8 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
     allProbs.filter(id => !resolvedThisTick.has(id) && !flightSet.has(id) && !oversightSet.has(id) && !enteringThisTick.has(id))
       .interrupt()
       .transition()
-        .delay(id => Math.random() * 150)
-        .duration(id => 700 + Math.random() * 300)
+        .delay(id => Math.random() * 220)
+        .duration(id => 900 + Math.random() * 350)
         .ease(d3.easeCubicInOut)
         .attr('cx',      id => probAttrs(tick, id).x)
         .attr('cy',      id => probAttrs(tick, id).y)
@@ -807,15 +840,55 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
 
     counterText.text(`Organizational Iteration ${tick.tick} of 20`);
 
+    // Event ticker
+    var tickerMsg = '';
+    if (choicesResolvedThisTick.size > 0) {
+      const choiceIds = Array.from(choicesResolvedThisTick).sort((a, b) => a - b);
+      if (choiceIds.length === 1) {
+        const c = choiceIds[0];
+        var resolvedCount = 0;
+        var displacedCount = 0;
+        for (let id = 0; id < W; id++) {
+          if (prevTick.problems[id].state === 'attached' && prevTick.problems[id].attachedTo === c) {
+            if (tick.problems[id].state === 'resolved') resolvedCount++;
+            if (tick.problems[id].state === 'floating') displacedCount++;
+          }
+        }
+        var outcomeText;
+        if (resolvedCount > 0) {
+          outcomeText = `${resolvedCount} problem${resolvedCount === 1 ? '' : 's'} resolved`;
+        } else if (displacedCount > 0) {
+          outcomeText = 'no problem resolved';
+        } else {
+          outcomeText = 'closed';
+        }
+        tickerMsg = `${formatChoiceOpportunityLabel(c)} closed (energy threshold reached; ${outcomeText})`;
+      } else {
+        tickerMsg = `${formatChoiceOpportunityList(choiceIds, 3)} closed this iteration`;
+      }
+    } else if (choicesOpenedThisTick.length > 0) {
+      const opened = choicesOpenedThisTick.sort((a, b) => a - b);
+      if (opened.length === 1) {
+        tickerMsg = `${formatChoiceOpportunityLabel(opened[0])} opened`;
+      } else {
+        tickerMsg = `${formatChoiceOpportunityList(opened, 3)} opened this iteration`;
+      }
+    }
+    if (eventTickerEl) eventTickerEl.textContent = tickerMsg;
+
     // Phase label
-    if (tick.tick <= 10) {
-      phaseText.text('Problems entering');
+    if (enteringThisTick.size > 0) {
+      phaseText
+        .attr('fill', C.inkFaint)
+        .text('Problems entering');
     } else if (prevTick && !isDeadTick(tickIdx)) {
-      phaseText.text('Energy accumulating');
+      phaseText
+        .attr('fill', C.inkFaint)
+        .text('Energy accumulating');
     } else if (prevTick && isDeadTick(tickIdx)) {
       phaseText.transition().duration(400)
         .attr('fill', C.rust)
-        .text('System locked');
+        .text('System stalled');
     }
 
   }
@@ -829,6 +902,7 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
     if (current >= ticks.length) {
       counterText.text('Organizational Iteration 20 of 20 \u00B7 showing final run');
       phaseText.text('');
+      if (eventTickerEl) eventTickerEl.textContent = '';
       showEndState(
         pctRes, pctOver, pctFli,
         probResolved, probDisplaced, probAdrift, probInForum,
@@ -839,14 +913,14 @@ function drawViz(simResult, energyLoad, decisionStructure, accessStructure) {
     renderTick(current, ticks[current - 1]);
     var delay;
     if (current <= 10) {
-      delay = 1000;
-    } else if (isDeadTick(current)) {
-      delay = 600;
-    } else {
       delay = 1200;
+    } else if (isDeadTick(current)) {
+      delay = 800;
+    } else {
+      delay = 1450;
     }
     setTimeout(stepTick, delay);
   }
 
-  setTimeout(stepTick, 800);
+  setTimeout(stepTick, 1000);
 }

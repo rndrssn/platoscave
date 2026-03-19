@@ -20,3 +20,35 @@ body {
 }
 
 img, svg { max-width: 100%; display: block; }
+
+/* ─── Skip link ─────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0.75rem;
+  z-index: 1000;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--paper-dark);
+  border: 1px solid var(--ink-ghost);
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+}
+
+.skip-link:focus-visible {
+  top: 0.75rem;
+}
+
+/* ─── Keyboard focus visibility ─────────────────────────── */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+}

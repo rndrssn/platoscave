@@ -6,7 +6,7 @@ status: DRAFT
 created: 2026-03-15
 updated: 2026-03-15
 owner: Robert Andersson
-relates_to: [SPIKE-organised-anarchy-sim, PRINCIPLE-coding-standards]
+relates_to: [TECH-DEBT-tracker, PRINCIPLE-coding-standards, GUIDE-architecture]
 tags: [javascript, refactor, simulation, separation-of-concerns]
 ---
 

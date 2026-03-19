@@ -13,6 +13,8 @@ Every markdown file in `docs/` must belong to exactly one of the following types
 | `VISION` | Why the product exists. North star. | Rarely changes |
 | `STRATEGY` | How we pursue the vision. | Changes occasionally |
 | `PRINCIPLE` | Rules that govern decisions (design, tech, UX) | Changes occasionally |
+| `GUIDE` | Operational runbooks for contributors (setup, architecture, testing, release, contributing) | Changes occasionally |
+| `REFERENCE` | Canonical domain definitions and terminology contracts | Changes occasionally |
 | `ROADMAP` | What we're building and when | Changes regularly |
 | `EPIC` | A large, self-contained chunk of work | Changes regularly |
 | `STORY` | A single user-facing feature or capability | Changes regularly |
@@ -64,6 +66,8 @@ VISION-product.md
 STRATEGY-go-to-market.md
 PRINCIPLE-design-system.md
 PRINCIPLE-coding-standards.md
+GUIDE-getting-started.md
+REFERENCE-gc-model-semantics.md
 ROADMAP-2026-q2.md
 EPIC-navigation.md
 STORY-mobile-responsive-nav.md
@@ -87,7 +91,9 @@ SPIKE-three-js-particle-system.md
 
 ## 3. Frontmatter Standard
 
-Every `.md` file in `docs/` must begin with a YAML frontmatter block. Claude Code should always include this when creating or editing docs.
+All newly created docs must include a YAML frontmatter block.
+
+Legacy docs without frontmatter should be upgraded when they are next meaningfully edited.
 
 ### Full frontmatter template
 ```yaml
@@ -123,7 +129,7 @@ tags: []
 | Status | Meaning | Applicable types |
 |--------|---------|-----------------|
 | `DRAFT` | Work in progress, not ready to act on | All |
-| `ACTIVE` | Current and authoritative | VISION, STRATEGY, PRINCIPLE |
+| `ACTIVE` | Current and authoritative | VISION, STRATEGY, PRINCIPLE, GUIDE, REFERENCE |
 | `IN-PROGRESS` | Being actively worked on | EPIC, STORY, TASK, FIX, SPIKE |
 | `DONE` | Completed | EPIC, STORY, TASK, FIX |
 | `DEPRECATED` | No longer relevant, kept for reference | All |
@@ -140,9 +146,12 @@ Use the `relates_to` field to link documents together. This creates a navigable 
 - A `STORY` should relate to its parent `EPIC`
 - A `TASK` or `FIX` should relate to its parent `STORY` or `EPIC`
 - A `PRINCIPLE` should relate to `VISION` or `STRATEGY` where applicable
+- A `GUIDE` should relate to relevant `PRINCIPLE` and `REFERENCE` docs
+- A `REFERENCE` should relate to the `PRINCIPLE` docs that consume it
 - An `ADR` should relate to the `EPIC` or `STORY` that prompted the decision
 - A `SPIKE` should relate to the `EPIC` or `STORY` it is informing
 - When a `SPIKE` is `VALIDATED`, the resulting `STORY` should relate back to the `SPIKE`
+- Every `relates_to` entry must resolve to an existing doc id or filename stem in `docs/`
 
 ### Example
 ```yaml
@@ -179,6 +188,8 @@ This keeps experimental work isolated from `develop` while remaining tracked in 
 ## 6. Folder Structure
 
 All docs live in the `docs/` folder at the repo root. No subfolders are needed at this stage — the filename prefix provides enough organisation.
+
+Exception: `README.md` is allowed in `docs/` as the canonical index entrypoint.
 
 ```
 docs/

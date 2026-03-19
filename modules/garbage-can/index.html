@@ -2,25 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Narrative introduction to the Garbage Can Model of organisational choice." />
   <title>Organised Anarchy · The Garbage Can Model · To the Bedrock</title>
   <script src="../../theme.config.js"></script>
   <script src="../../js/theme-bootstrap.js"></script>
   <link rel="stylesheet" href="../../css/main.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- Navigation -->
   <nav class="main-nav">
     <a class="nav-title" href="../../">To the Bedrock</a>
-    <div class="nav-links">
+    <div class="nav-links" id="primary-nav">
       <a class="nav-link" href="../../">Home</a>
       <a class="nav-link nav-link--active" href="../../modules/">Index</a>
     </div>
-    <button class="nav-mobile-toggle" aria-label="Toggle menu">&#x22EF;</button>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
-  <main class="main--narrow">
+  <main id="main-content" class="main--narrow">
     <div class="module-page">
 
       <nav class="module-sub-nav" aria-label="Module sections">
@@ -39,9 +40,9 @@
         <h1 class="module-header-title">Organised Anarchy</h1>
         <p class="module-header-body">
           In 1972, Cohen, March and Olsen asked a simple question: what if organisations
-          do not make decisions the way they think they do? What if the process is not
-          rational deliberation but something closer to a collision of independent streams,
-          each following its own logic, meeting more or less at random?
+          do not decide the way they think they do? What if decisions emerge from collisions
+          between independent streams, meeting more or less by chance inside
+          <strong>garbage cans</strong>?
         </p>
         <div class="module-tags">
           <span class="module-tag">Garbage Can Model</span>
@@ -59,7 +60,7 @@
           <p class="essay-body">
             The Garbage Can Model describes organisations as the intersection of four
             independent streams: <strong>problems</strong> that need attention,
-            <strong>solutions</strong> that exist whether or not a matching problem has been
+            <strong>solutions</strong> that exist (or are introduced) whether or not a matching problem has been
             identified, <strong>participants</strong> whose attention drifts between choice opportunities,
             and <strong>choice opportunities</strong> where decisions could be made.
           </p>
@@ -68,7 +69,8 @@
             evaluated, and a decision is made. In the garbage can model, these streams
             collide inside choice opportunities with no guarantee that the problem in the
             room matches the solution being offered, or that the participants present are
-            the ones who understand either.
+            the ones who understand either problem or solution.
+            The streams meet inside the <strong>garbage can</strong>.
           </p>
         </section>
 
@@ -82,13 +84,13 @@
             <strong>Deliberation</strong> occurs when a problem attaches to a choice
             opportunity, sufficient energy accumulates, and the problem is genuinely
             resolved. This is what organisations believe happens most of the time.
-            The model suggests it is the exception.
+            The garbage can model suggests it is the exception.
           </p>
           <p class="essay-body">
             <strong>Oversight</strong> occurs when a choice opportunity resolves with
             no problem attached. The meeting happened, the budget was approved, the
-            decision was recorded. But the underlying problem was elsewhere, unaddressed.
-            The organisation produced a decision without producing a resolution.
+            decision was recorded. But the underlying problem was elsewhere, unaddressed and largely
+            misunderstood. The organisation produced a decision without producing a resolution.
           </p>
           <p class="essay-body">
             <strong>Flight</strong> occurs when problems leave a choice opportunity
@@ -102,17 +104,16 @@
           <h2 class="essay-heading">Organised Anarchy</h2>
           <p class="essay-body">
             Cohen, March and Olsen coined the term <em>organised anarchy</em> to
-            describe institutions characterised by three properties: problematic
-            preferences (the organisation's goals are unclear or inconsistent),
-            unclear technology (the organisation does not fully understand its own
-            processes), and fluid participation (who shows up to which decision
-            varies unpredictably).
+            describe organisations characterised by three properties: <em>fuzzy
+            preferences</em> (the organisation's goals are unclear, ill-defined, or inconsistent),
+            <em>unclear technology</em> (members do not fully understand how the organisation
+            actually produces outcomes), and <em>fluid participation</em> in decision-making
+            (who shows up to which decision varies unpredictably).
           </p>
           <p class="essay-body">
             Universities were the original case study. But the description applies
             to any organisation where the work is emergent, the environment is
             complex, and the management instruments were designed for a simpler system.
-            This is what this site calls <em>The Mix</em>.
           </p>
         </section>
 
@@ -120,21 +121,22 @@
           <h2 class="essay-heading">Why This Matters</h2>
           <p class="essay-body">
             Most organisations operate as if decisions are made rationally: a problem
-            is identified, options are weighed, a choice is made. Governance structures,
-            reporting lines, and capital allocation processes are all built on this
-            assumption. The garbage can model reveals what happens when that assumption
-            is wrong.
+            is identified and defined, options are weighed, and a choice is made.
+            Operating models, governance structures, reporting lines, and capital
+            allocation processes are often built on this <em>rationality assumption</em>.
+            The Garbage Can Model shows what happens when that assumption is wrong.
           </p>
           <p class="essay-body">
-            In heavy-load organisations, problems outnumber the system's capacity to
-            resolve them. Choice opportunities close without addressing the issues that were raised.
-            Problems migrate between meetings, never finding a home. The organisation
-            produces decisions at a steady rate, but the problems persist.
+            In high-pressure organisations, problems outnumber the system's capacity to
+            resolve them. Choice opportunities close without addressing the issues that were
+            raised. Problems migrate between meetings, reviews, and committees, never finding
+            a stable place to be resolved. The organisation keeps producing decisions, while
+            many problems remain unresolved.
           </p>
           <p class="essay-body">
             The gap between the decisions being made and the problems being experienced
-            is not a failure of communication or competence. It is a structural property
-            of the system. The instruments were designed for a different kind of organisation.
+            is not a failure of allocation, communication or competence, but a structural property
+            of the system.
           </p>
         </section>
 
@@ -190,9 +192,14 @@
       history.scrollRestoration = 'manual';
     }
     window.scrollTo(0, 0);
-    document.querySelector('.nav-mobile-toggle').addEventListener('click', function () {
-      document.querySelector('.nav-links').classList.toggle('is-open');
-    });
+    const navToggle = document.querySelector('.nav-mobile-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', function () {
+        const isOpen = navLinks.classList.toggle('is-open');
+        navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    }
   </script>
 
 </body>

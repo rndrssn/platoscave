@@ -6,7 +6,7 @@ status: IN-PROGRESS
 created: 2026-03-16
 updated: 2026-03-16
 owner: Robert Andersson
-relates_to: [VISION-product, SPIKE-organised-anarchy-mapper, PRINCIPLE-coding-standards, PRINCIPLE-design-system, PRINCIPLE-punctuation]
+relates_to: [VISION-product, PRINCIPLE-coding-standards, PRINCIPLE-design-system, PRINCIPLE-punctuation, PRINCIPLE-organised-anarchy-questions, PRINCIPLE-organised-anarchy-diagnosis]
 tags: [garbage-can, restructure, architecture, ux]
 ---
 

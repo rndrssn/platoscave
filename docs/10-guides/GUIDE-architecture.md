@@ -1,0 +1,45 @@
+---
+id: GUIDE-architecture
+type: GUIDE
+title: Front-End Architecture Guide
+status: ACTIVE
+created: 2026-03-19
+updated: 2026-03-19
+owner: Robert Andersson
+relates_to: [CORE, REFERENCE-gc-model-semantics, CSS-ARCHITECTURE]
+tags: [architecture, frontend]
+load_when: [feature_work, gc_logic_changes]
+do_not_load_when: [copy_only_changes]
+token_cost_estimate: medium
+---
+
+# Front-End Architecture Guide
+
+## Layers
+
+- HTML: structure and script wiring.
+- CSS: layered files via `css/main.css`.
+- JS logic: `gc-simulation.js`, `gc-scoring.js`, `gc-diagnosis.js`, `gc-viz.js`.
+- JS page wiring: Assess and Explorer scripts under `modules/garbage-can/`.
+
+## GC Flow
+
+Assess:
+1. collect questionnaire responses
+2. score to structures and load
+3. map `energyLoad` to `problemIntensity`
+4. run async simulation
+5. render visualization and summaries
+
+Explorer:
+1. direct parameter selection
+2. diagnosis preview
+3. async simulation run/replay
+4. visualization and summaries
+
+## Alignment contract
+
+Any change to model semantics must update:
+1. code
+2. tests
+3. `docs/20-reference/REFERENCE-gc-model-semantics.md`

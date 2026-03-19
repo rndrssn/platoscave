@@ -11,6 +11,9 @@ function runWithTheme(themeValue) {
   let removed = false;
 
   const documentElement = {
+    classList: {
+      add() {},
+    },
     setAttribute(name, value) {
       setCall = { name, value };
     },

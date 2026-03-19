@@ -2,25 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Self-assessment and simulation for diagnosing organisational decision dynamics." />
   <title>Self-Assessment · The Garbage Can Model · To the Bedrock</title>
   <script src="../../../theme.config.js"></script>
   <script src="../../../js/theme-bootstrap.js"></script>
   <link rel="stylesheet" href="../../../css/main.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- Navigation -->
   <nav class="main-nav">
     <a class="nav-title" href="../../../">To the Bedrock</a>
-    <div class="nav-links">
+    <div class="nav-links" id="primary-nav">
       <a class="nav-link" href="../../../">Home</a>
       <a class="nav-link nav-link--active" href="../../../modules/">Index</a>
     </div>
-    <button class="nav-mobile-toggle" aria-label="Toggle menu">&#x22EF;</button>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
-  <main class="main--narrow">
+  <main id="main-content" class="main--narrow">
     <div class="module-page">
 
       <nav class="module-sub-nav" aria-label="Module sections">
@@ -57,10 +58,10 @@
           <form id="questionnaire" novalidate>
 
           <div class="q-section q-card" id="q-group-1">
-            <p class="q-section-label">01 &middot; Energy load</p>
+            <p class="q-section-label">01 &middot; Problem pressure</p>
 
-            <div class="question-block">
-              <p class="question-text">Your organisation&#8217;s goals shift often enough that work started under one priority gets abandoned for another.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">Your organisation&#8217;s goals shift often enough that work started under one priority gets abandoned for another.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -72,10 +73,10 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="question-block">
-              <p class="question-text">If you asked three colleagues how a decision typically gets made in your organisation, you would get three different answers.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">If you asked three colleagues how a decision typically gets made in your organisation, you would get three different answers.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -87,10 +88,10 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="question-block">
-              <p class="question-text">Your organisation carries a backlog of unresolved issues that everyone knows about but no one has the mandate to close.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">Your organisation carries a backlog of unresolved issues that everyone knows about but no one has the mandate to close.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -102,10 +103,10 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="question-block">
-              <p class="question-text">Institutional memory in your organisation lives in people&#8217;s heads rather than anywhere it can be reliably accessed.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">Institutional memory in your organisation lives in people&#8217;s heads rather than anywhere it can be reliably accessed.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -117,10 +118,10 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="question-block">
-              <p class="question-text">It is difficult to point to a decision your organisation made this year that definitively closed a problem.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">It is difficult to point to a decision your organisation made this year that definitively closed a problem.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -132,7 +133,7 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
+            </fieldset>
             <div class="submit-row">
               <button type="button" class="submit-btn" id="q-continue-1" disabled>Continue</button>
               <p class="form-error" id="form-error-1" hidden>Please answer all questions in this section.</p>
@@ -142,8 +143,8 @@
           <div class="q-section q-card" id="q-group-2" hidden>
             <p class="q-section-label">02 &middot; Access structure</p>
 
-            <div class="question-block">
-              <p class="question-text">Problems in your organisation tend to find their way to the right people and the right choice opportunity.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">Problems in your organisation tend to find their way to the right people and the right choice opportunity.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -155,10 +156,10 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="question-block">
-              <p class="question-text">In your organisation, who hears about a problem depends more on who raised it than on who should deal with it.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">In your organisation, who hears about a problem depends more on who raised it than on who should deal with it.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -170,10 +171,10 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="question-block">
-              <p class="question-text">Your organisation has choice opportunities for making decisions but it is rarely clear which choice opportunity owns which type of problem.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">Your organisation has choice opportunities for making decisions but it is rarely clear which choice opportunity owns which type of problem.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -185,7 +186,7 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
+            </fieldset>
             <div class="submit-row">
               <button type="button" class="submit-btn" id="q-continue-2" disabled>Continue</button>
               <p class="form-error" id="form-error-2" hidden>Please answer all questions in this section.</p>
@@ -195,8 +196,8 @@
           <div class="q-section q-card" id="q-group-3" hidden>
             <p class="q-section-label">03 &middot; Decision structure</p>
 
-            <div class="question-block">
-              <p class="question-text">In your organisation, seniority determines who gets a seat at the table more than relevance to the problem.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">In your organisation, seniority determines who gets a seat at the table more than relevance to the problem.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -208,10 +209,10 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="question-block">
-              <p class="question-text">The people closest to a problem are rarely the ones who decide how it gets resolved.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">The people closest to a problem are rarely the ones who decide how it gets resolved.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -223,10 +224,10 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="question-block">
-              <p class="question-text">The people with the most relevant expertise are often not the ones with the final say.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">The people with the most relevant expertise are often not the ones with the final say.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -238,10 +239,10 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="question-block">
-              <p class="question-text">Decisions in your organisation are often announced rather than made &mdash; the real decision happened somewhere else.</p>
+            <fieldset class="question-block">
+              <legend class="question-text">Decisions in your organisation are often announced rather than made &mdash; the real decision happened somewhere else.</legend>
               <div class="question-scale">
                 <span class="scale-pole">Disagree</span>
                 <div class="scale-options">
@@ -253,8 +254,7 @@
                 </div>
                 <span class="scale-pole scale-pole--right">Agree</span>
               </div>
-            </div>
-          </div>
+            </fieldset>
 
             <div class="submit-row">
               <button type="submit" class="submit-btn" id="submit-btn" disabled>Diagnose this organisation</button>
@@ -271,7 +271,7 @@
 
         <!-- Mini-nav -->
         <nav class="results-nav results-nav--static" id="results-nav" aria-label="Results navigation">
-          <a class="results-nav-link results-nav-link--active" href="#section-diagnosis" data-section="section-diagnosis">
+          <a class="results-nav-link results-nav-link--active" href="#section-diagnosis" data-section="section-diagnosis" aria-current="page">
             <span class="results-nav-dot">&#183;</span> Diagnosis
           </a>
           <a class="results-nav-link" href="#section-positioning" data-section="section-positioning">
@@ -312,13 +312,15 @@
               meetings, reviews, committees. <strong>Problems</strong> (dots) seek resolution by attaching
               to a choice opportunity. <strong>Decision makers</strong> (invisible) allocate
               <strong>energy</strong> to the choices they can access each organizational iteration. When cumulative energy
-              meets the demand, a choice <strong>resolves</strong> and closes its attached problems.
+              meets demand, a choice opportunity <strong>closes</strong>.
             </p>
             <p class="field-notes-body">
               The model&#8217;s insight: when problems outnumber capacity, decisions happen by
               <strong>oversight</strong> (the choice opportunity closes while problems are elsewhere) or
               <strong>flight</strong> (problems leave before the choice opportunity closes).
               <strong>Resolution</strong> &#8212; genuinely closing the problem &#8212; becomes rare.
+              Here, pressure is represented by both <strong>problem intensity</strong> (effort per problem)
+              and <strong>problem inflow</strong> (how many new problems arrive each iteration).
             </p>
           </div>
 
@@ -359,6 +361,7 @@
 
               <p class="positioning-caption" id="stochastic-note">Each run varies slightly. The simulation is stochastic.</p>
             </div>
+            <hr class="stage-rule simulation-divider" />
           </div>
         </section>
 

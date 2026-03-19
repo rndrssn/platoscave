@@ -51,8 +51,8 @@ const GC_VIZ_DEFAULTS = (typeof window !== 'undefined' && window.GC_VIZ_CONFIG)
       defaults: { choices: 10, problems: 20, periods: 20, textScale: 'default' },
       textScale: { compact: 0.9, default: 1, large: 1.12 },
       layout: {
-        empty: { svgW: 900, choiceRadius: CHOICE_RADIUS, padH: 55, squareTop: 116, bottomLegendPad: 86, bottomLegendOffset: 70, enteringOffset: -32 },
-        live: { svgW: 900, choiceRadius: CHOICE_RADIUS, padH: 35, squareTop: 126, bottomLegendPad: 96, bottomLegendOffset: 70, floatY0Offset: -44, floatY1Offset: -18 },
+        empty: { svgW: 900, choiceRadius: CHOICE_RADIUS, padH: 55, squareTop: 102, bottomLegendPad: 66, bottomLegendOffset: 56, enteringOffset: -32 },
+        live: { svgW: 900, choiceRadius: CHOICE_RADIUS, padH: 35, squareTop: 108, bottomLegendPad: 74, bottomLegendOffset: 56, floatY0Offset: -36, floatY1Offset: -14 },
       },
     };
 const VIZ_LAYOUT = {
@@ -60,22 +60,25 @@ const VIZ_LAYOUT = {
     svgW: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.svgW) || 900,
     choiceRadius: CHOICE_RADIUS,
     padH: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.padH) || 55,
-    squareTop: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.squareTop) || 116,
-    bottomLegendPad: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.bottomLegendPad) || 86,
-    bottomLegendOffset: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.bottomLegendOffset) || 70,
+    squareTop: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.squareTop) || 102,
+    bottomLegendPad: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.bottomLegendPad) || 66,
+    bottomLegendOffset: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.bottomLegendOffset) || 56,
     enteringOffset: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.enteringOffset) || -32,
   },
   live: {
     svgW: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.svgW) || 900,
     choiceRadius: CHOICE_RADIUS,
     padH: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.padH) || 35,
-    squareTop: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.squareTop) || 126,
-    bottomLegendPad: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.bottomLegendPad) || 96,
-    bottomLegendOffset: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.bottomLegendOffset) || 70,
-    floatY0Offset: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.floatY0Offset) || -44,
-    floatY1Offset: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.floatY1Offset) || -18,
+    squareTop: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.squareTop) || 108,
+    bottomLegendPad: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.bottomLegendPad) || 74,
+    bottomLegendOffset: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.bottomLegendOffset) || 56,
+    floatY0Offset: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.floatY0Offset) || -36,
+    floatY1Offset: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.floatY1Offset) || -14,
   },
 };
+const CHOICE_STROKE_WIDTH = 1.8;
+const CHOICE_STROKE_WIDTH_RESOLVED = 1.2;
+const LEGEND_RESOLVED_STROKE_WIDTH = 1.2;
 const TOP_LEGEND_LINE_GAP_EM = readCssNumber('--viz-lh-top', 1.55);
 const BOTTOM_LEGEND_LINE_STEP = readCssNumber('--viz-fs-legend', 13) * readCssNumber('--viz-lh-legend', 1.7);
 
@@ -160,7 +163,7 @@ function drawBottomLegend(svg, legendY, sizing) {
         .attr('r', resolvedR)
         .attr('fill', 'none')
         .attr('stroke', C.inkMid)
-        .attr('stroke-width', 0.75);
+        .attr('stroke-width', LEGEND_RESOLVED_STROKE_WIDTH);
     } else {
       legendG.append('circle')
         .attr('cx', markerX)
@@ -364,7 +367,7 @@ function drawEmptyState(options) {
       .attr('r', CHOICE_R)
       .attr('fill', 'none')
       .attr('stroke', C.inkGhost)
-      .attr('stroke-width', 1);
+      .attr('stroke-width', CHOICE_STROKE_WIDTH);
 
   // Choice labels
   const labelLayer = svg.append('g');
@@ -571,7 +574,7 @@ function drawViz(simResult, options) {
       .attr('r', CHOICE_R)
       .attr('fill', 'none')
       .attr('stroke', C.inkGhost)
-      .attr('stroke-width', 1)
+      .attr('stroke-width', CHOICE_STROKE_WIDTH)
       .each(function() {
         d3.select(this).append('title');
       });
@@ -691,8 +694,8 @@ function drawViz(simResult, options) {
           return C.inkGhost;
         })
         .attr('stroke-width', d => {
-          if (d.state === 'resolved') return 0.5;
-          return 1;
+          if (d.state === 'resolved') return CHOICE_STROKE_WIDTH_RESOLVED;
+          return CHOICE_STROKE_WIDTH;
         })
         .attr('opacity', d => {
           if (d.state === 'resolved') return 0.4;

@@ -86,7 +86,6 @@ const VIZ_LAYOUT = {
     svgH: 300,
     choiceY: 140,
     choiceRadius: CHOICE_RADIUS,
-    problemRadius: 3.5,
     padH: 55,
     floatY0: 50,
   },
@@ -95,12 +94,25 @@ const VIZ_LAYOUT = {
     svgH: 340,
     choiceY: 140,
     choiceRadius: CHOICE_RADIUS,
-    problemRadius: 3.5,
     padH: 35,
     floatY0: 50,
     floatY1: 75,
   },
 };
+
+function getVizSizing() {
+  var svgEl = typeof document !== 'undefined' ? document.getElementById('viz-svg') : null;
+  var viewportW = svgEl && svgEl.clientWidth ? svgEl.clientWidth : 0;
+  if (!viewportW && typeof window !== 'undefined') viewportW = window.innerWidth || 0;
+  var isMobile = viewportW > 0 && viewportW <= 640;
+
+  return {
+    labelFontSize: isMobile ? '0.9rem' : '0.8rem',
+    problemRadius: isMobile ? 4.6 : 4.0,
+    legendMarkerRadius: isMobile ? 6.4 : 5.8,
+    resolveExitRadius: isMobile ? 2.0 : 1.7,
+  };
+}
 
 // ─── Positioning diagram ──────────────────────────────────────────────────────
 function drawPositioning(raw) {
@@ -184,15 +196,16 @@ function drawPositioning(raw) {
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 function drawEmptyState() {
+  var sizing = getVizSizing();
   const {
     svgW: SVG_W,
     svgH: SVG_H,
     choiceY: CHOICE_Y,
     choiceRadius: CHOICE_R,
-    problemRadius: PROB_R,
     padH: PAD_H,
     floatY0: FLOAT_Y0,
   } = VIZ_LAYOUT.empty;
+  const PROB_R = sizing.problemRadius;
 
   const svg = d3.select('#viz-svg')
     .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`);
@@ -228,7 +241,7 @@ function drawEmptyState() {
       .attr('y', CHOICE_Y + CHOICE_R + 13)
       .attr('text-anchor', 'middle')
       .attr('font-family', VIZ_FONT.mono)
-      .attr('font-size', VIZ_FONT_SIZE.label)
+      .attr('font-size', sizing.labelFontSize)
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.1em')
       .attr('fill', C.inkFaint)
@@ -240,7 +253,7 @@ function drawEmptyState() {
     .attr('x', 0)
     .attr('y', 16)
     .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', VIZ_FONT_SIZE.label)
+    .attr('font-size', sizing.labelFontSize)
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.1em')
     .attr('fill', C.inkFaint)
@@ -256,7 +269,7 @@ function drawEmptyState() {
 
   var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
   var legendX = 0;
-  var LEGEND_MARKER_R = 5.5;
+  var LEGEND_MARKER_R = sizing.legendMarkerRadius;
   var LEGEND_TEXT_GAP = 9;
 
   legendItems.forEach(function(item) {
@@ -270,7 +283,7 @@ function drawEmptyState() {
       .attr('x', legendX + LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
       .attr('y', 4)
       .attr('font-family', VIZ_FONT.mono)
-      .attr('font-size', VIZ_FONT_SIZE.label)
+      .attr('font-size', sizing.labelFontSize)
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.08em')
       .attr('fill', C.inkFaint)
@@ -302,7 +315,7 @@ function drawEmptyState() {
     .attr('x', legendX + resolvedR * 2 + LEGEND_TEXT_GAP)
     .attr('y', 4)
     .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', VIZ_FONT_SIZE.label)
+    .attr('font-size', sizing.labelFontSize)
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.08em')
     .attr('fill', C.inkFaint)
@@ -396,6 +409,7 @@ function drawViz(simResult) {
   const { ticks, resolution, oversight, flight } = simResult;
   var eventTickerEl = ensureVizEventTicker();
   if (eventTickerEl) eventTickerEl.textContent = '';
+  var sizing = getVizSizing();
 
   // Choice-level percentages (canonical GCM decision styles)
   // Rounded to nearest 5% — at 100 Monte Carlo iterations, finer precision is noise
@@ -419,11 +433,11 @@ function drawViz(simResult) {
     svgH: SVG_H,
     choiceY: CHOICE_Y,
     choiceRadius: CHOICE_R,
-    problemRadius: PROB_R,
     padH: PAD_H,
     floatY0: FLOAT_Y0,
     floatY1: FLOAT_Y1,
   } = VIZ_LAYOUT.live;
+  const PROB_R = sizing.problemRadius;
 
   const svg = d3.select('#viz-svg')
     .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`);
@@ -510,7 +524,7 @@ function drawViz(simResult) {
       .attr('y', CHOICE_Y + CHOICE_R + 13)
       .attr('text-anchor', 'middle')
       .attr('font-family', VIZ_FONT.mono)
-      .attr('font-size', VIZ_FONT_SIZE.label)
+      .attr('font-size', sizing.labelFontSize)
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.1em')
       .attr('fill', C.inkFaint)
@@ -522,7 +536,7 @@ function drawViz(simResult) {
     .attr('x', 0)
     .attr('y', 16)
     .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', VIZ_FONT_SIZE.label)
+    .attr('font-size', sizing.labelFontSize)
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.1em')
     .attr('fill', C.inkFaint)
@@ -534,7 +548,7 @@ function drawViz(simResult) {
     .attr('y', 16)
     .attr('text-anchor', 'end')
     .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', VIZ_FONT_SIZE.label)
+    .attr('font-size', sizing.labelFontSize)
     .attr('font-weight', '300')
     .attr('font-style', 'italic')
     .attr('letter-spacing', '0.08em')
@@ -551,7 +565,7 @@ function drawViz(simResult) {
 
   var legendG = svg.append('g').attr('transform', 'translate(0, ' + LEGEND_Y + ')');
   var legendX = 0;
-  var LEGEND_MARKER_R = 5.5;
+  var LEGEND_MARKER_R = sizing.legendMarkerRadius;
   var LEGEND_TEXT_GAP = 9;
 
   legendItems.forEach(function(item) {
@@ -565,7 +579,7 @@ function drawViz(simResult) {
       .attr('x', legendX + LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
       .attr('y', 4)
       .attr('font-family', VIZ_FONT.mono)
-      .attr('font-size', VIZ_FONT_SIZE.label)
+      .attr('font-size', sizing.labelFontSize)
       .attr('font-weight', '300')
       .attr('letter-spacing', '0.08em')
       .attr('fill', C.inkFaint)
@@ -600,7 +614,7 @@ function drawViz(simResult) {
     .attr('x', legendX + resolvedR * 2 + LEGEND_TEXT_GAP)
     .attr('y', 4)
     .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', VIZ_FONT_SIZE.label)
+    .attr('font-size', sizing.labelFontSize)
     .attr('font-weight', '300')
     .attr('letter-spacing', '0.08em')
     .attr('fill', C.inkFaint)
@@ -796,7 +810,7 @@ function drawViz(simResult) {
         const cx = choiceX[prevTick.problems[id].attachedTo];
         d3.select(this).interrupt()
           .transition().duration(500).ease(d3.easeCubicInOut)
-            .attr('cx', cx).attr('cy', CHOICE_Y).attr('r', 1.5).attr('fill', C.sage)
+            .attr('cx', cx).attr('cy', CHOICE_Y).attr('r', sizing.resolveExitRadius).attr('fill', C.sage)
           .transition().duration(250)
             .attr('opacity', 0);
       });

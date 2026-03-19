@@ -340,7 +340,7 @@
 
 .figure-caption {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -351,7 +351,7 @@
 
 .viz-event-ticker {
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 300;
   letter-spacing: 0.08em;
   line-height: 1.5;
@@ -365,12 +365,21 @@
 
 .period-readout {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--ink-mid);
   margin-top: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .figure-caption,
+  .viz-event-ticker,
+  .period-readout {
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+  }
 }
 
 /* ─── Footer nav ──────────────────────────────────────── */

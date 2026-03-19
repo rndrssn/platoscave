@@ -21,5 +21,5 @@ This task file is the retrieval target for agents. Keep it short and current.
 
 ## Current items
 
-- Verify and complete `gc-simulation.js` decomposition plan if still needed.
+- Re-evaluate whether `gc-simulation.js` file split is still needed after metadata decoupling from `gc-viz.js`.
 - Continue reducing duplicate policy text in docs.

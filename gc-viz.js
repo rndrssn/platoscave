@@ -7,7 +7,7 @@
  * D3 rendering for the Garbage Can Model simulation.
  * Source of truth: modules/garbage-can/assess/index.html
  *
- * Dependencies: d3.js, gc-simulation.js (for M, W, PERIODS constants)
+ * Dependencies: d3.js, gc-viz-config.js
  *
  * Exposes:
  *   C                - color tokens
@@ -16,7 +16,6 @@
  */
 
 // ─── Color tokens ─────────────────────────────────────────────────────────────
-// M (choices) and W (problems) are already defined by gc-simulation.js
 function readCssVar(name, fallback) {
   if (typeof window === 'undefined' || typeof document === 'undefined') return fallback;
   const root = document.documentElement;
@@ -39,15 +38,46 @@ const C = {
   sageLight: readCssVar('--viz-sage-light', '#6B8F62'),
 };
 
-const VIZ_FONT = {
-  mono: readCssVar('--viz-font-mono', readCssVar('--mono', "'DM Mono', monospace")),
-};
+function readCssNumber(name, fallback) {
+  const parsed = parseFloat(readCssVar(name, String(fallback)));
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
 
-const VIZ_FONT_SIZE = {
-  trackLabel: readCssVar('--viz-fs-track-label', '9px'),
-  trackEnd: readCssVar('--viz-fs-track-end', '8px'),
-  label: readCssVar('--viz-fs-label', '0.75rem'),
+const CHOICE_RADIUS = 30;
+
+const GC_VIZ_DEFAULTS = (typeof window !== 'undefined' && window.GC_VIZ_CONFIG)
+  ? window.GC_VIZ_CONFIG
+  : {
+      defaults: { choices: 10, problems: 20, periods: 20, textScale: 'default' },
+      textScale: { compact: 0.9, default: 1, large: 1.12 },
+      layout: {
+        empty: { svgW: 900, choiceRadius: CHOICE_RADIUS, padH: 55, squareTop: 116, bottomLegendPad: 86, bottomLegendOffset: 70, enteringOffset: -32 },
+        live: { svgW: 900, choiceRadius: CHOICE_RADIUS, padH: 35, squareTop: 126, bottomLegendPad: 96, bottomLegendOffset: 70, floatY0Offset: -44, floatY1Offset: -18 },
+      },
+    };
+const VIZ_LAYOUT = {
+  empty: {
+    svgW: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.svgW) || 900,
+    choiceRadius: CHOICE_RADIUS,
+    padH: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.padH) || 55,
+    squareTop: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.squareTop) || 116,
+    bottomLegendPad: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.bottomLegendPad) || 86,
+    bottomLegendOffset: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.bottomLegendOffset) || 70,
+    enteringOffset: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.enteringOffset) || -32,
+  },
+  live: {
+    svgW: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.svgW) || 900,
+    choiceRadius: CHOICE_RADIUS,
+    padH: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.padH) || 35,
+    squareTop: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.squareTop) || 126,
+    bottomLegendPad: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.bottomLegendPad) || 96,
+    bottomLegendOffset: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.bottomLegendOffset) || 70,
+    floatY0Offset: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.floatY0Offset) || -44,
+    floatY1Offset: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.floatY1Offset) || -18,
+  },
 };
+const TOP_LEGEND_LINE_GAP_EM = readCssNumber('--viz-lh-top', 1.55);
+const BOTTOM_LEGEND_LINE_STEP = readCssNumber('--viz-fs-legend', 13) * readCssNumber('--viz-lh-legend', 1.7);
 
 function formatChoiceOpportunityLabel(idxZeroBased) {
   return `CO${idxZeroBased + 1}`;
@@ -61,12 +91,12 @@ function formatChoiceOpportunityList(ids, limit) {
   return text;
 }
 
-function setMultilineLegendText(textSel, lines, lineGap) {
+function setMultilineLegendText(textSel, lines, lineGapEm) {
   textSel.selectAll('tspan').remove();
   lines.forEach(function(line, idx) {
     textSel.append('tspan')
       .attr('x', textSel.attr('x'))
-      .attr('dy', idx === 0 ? 0 : lineGap)
+      .attr('dy', idx === 0 ? 0 : `${lineGapEm}em`)
       .text(line);
   });
 }
@@ -77,14 +107,38 @@ const GC_LEGEND_ITEMS = [
   { label: 'In choice opportunity (CO)', color: C.sageLight },
   { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
 ];
-const TOP_LEGEND_LINE_GAP = 20;
-const BOTTOM_LEGEND_LINE_GAP = 22;
+function getSimulationDefaultsFromWindow() {
+  if (typeof window !== 'undefined' && typeof window.getGarbageCanDefaults === 'function') {
+    return window.getGarbageCanDefaults();
+  }
+  return null;
+}
+
+function resolveVizDimensions(simResult, options) {
+  var defaults = GC_VIZ_DEFAULTS.defaults || {};
+  var fromSimMeta = simResult && simResult.meta ? simResult.meta : {};
+  var fromSimulation = getSimulationDefaultsFromWindow() || {};
+  var opts = options || {};
+  var svgEl = typeof document !== 'undefined' ? document.getElementById('viz-svg') : null;
+  var domScale = svgEl ? svgEl.getAttribute('data-viz-scale') : null;
+  var choices = fromSimMeta.choices || fromSimulation.choices || opts.choices || defaults.choices || 10;
+  var problems = fromSimMeta.problems || fromSimulation.problems || opts.problems || defaults.problems || 20;
+  var periods = fromSimMeta.periods || fromSimulation.periods || opts.periods || defaults.periods || 20;
+  var textScale = opts.textScale || domScale || fromSimMeta.textScale || defaults.textScale || 'default';
+  return { choices: choices, problems: problems, periods: periods, textScale: textScale };
+}
+
+function resolveTextScale(scalePresetOrNumber) {
+  if (typeof scalePresetOrNumber === 'number') return scalePresetOrNumber;
+  var scales = GC_VIZ_DEFAULTS.textScale || {};
+  return scales[scalePresetOrNumber] || scales.default || 1;
+}
 
 function drawBottomLegend(svg, legendY, sizing) {
   var legendG = svg.append('g').attr('transform', 'translate(0, ' + legendY + ')');
   var LEGEND_MARKER_R = sizing.legendMarkerRadius;
   var LEGEND_TEXT_GAP = 9;
-  var LEGEND_LINE_H = BOTTOM_LEGEND_LINE_GAP;
+  var LEGEND_LINE_H = BOTTOM_LEGEND_LINE_STEP;
 
   GC_LEGEND_ITEMS.forEach(function(item, rowIdx) {
     var rowY = rowIdx * LEGEND_LINE_H;
@@ -116,16 +170,23 @@ function drawBottomLegend(svg, legendY, sizing) {
     }
 
     legendG.append('text')
+      .attr('class', 'gc-viz__legend-text')
       .attr('x', LEGEND_MARKER_R * 2 + LEGEND_TEXT_GAP)
       .attr('y', rowY + 4)
       .attr('text-anchor', 'start')
-      .attr('font-family', VIZ_FONT.mono)
-      .attr('font-size', sizing.labelFontSize)
-      .attr('font-weight', '300')
-      .attr('letter-spacing', '0.08em')
-      .attr('fill', C.inkFaint)
       .text(item.label);
   });
+}
+
+function createTopLegend(svg) {
+  var topLegend = svg.append('text')
+    .attr('class', 'viz-counter gc-viz__top-legend')
+    .attr('x', 0)
+    .attr('y', 16);
+
+  return function setTopLegend(iterText, eventText) {
+    setMultilineLegendText(topLegend, [iterText, eventText || 'No event'], TOP_LEGEND_LINE_GAP_EM);
+  };
 }
 
 function ensureVizEventTicker() {
@@ -147,28 +208,6 @@ function ensureVizEventTicker() {
   return tickerEl;
 }
 
-const CHOICE_RADIUS = 30;
-
-const VIZ_LAYOUT = {
-  empty: {
-    svgW: 900,
-    svgH: 300,
-    choiceY: 140,
-    choiceRadius: CHOICE_RADIUS,
-    padH: 55,
-    floatY0: 50,
-  },
-  live: {
-    svgW: 900,
-    svgH: 340,
-    choiceY: 140,
-    choiceRadius: CHOICE_RADIUS,
-    padH: 35,
-    floatY0: 50,
-    floatY1: 75,
-  },
-};
-
 function getVizSizing() {
   var svgEl = typeof document !== 'undefined' ? document.getElementById('viz-svg') : null;
   var viewportW = svgEl && svgEl.clientWidth ? svgEl.clientWidth : 0;
@@ -177,14 +216,13 @@ function getVizSizing() {
 
   return {
     isMobile: isMobile,
-    labelFontSize: isMobile ? '0.9rem' : '0.8rem',
     problemRadius: isMobile ? 4.6 : 4.0,
     legendMarkerRadius: isMobile ? 6.4 : 5.8,
     resolveExitRadius: isMobile ? 2.0 : 1.7,
   };
 }
 
-function buildChoiceCenters(svgW, padH, choiceY, choiceRadius) {
+function buildChoiceCenters(svgW, padH, choiceY, choiceRadius, choiceCount) {
   var goldenAngle = Math.PI * (3 - Math.sqrt(5));
   var trackW = svgW - padH * 2;
   var squareSide = trackW;
@@ -193,9 +231,9 @@ function buildChoiceCenters(svgW, padH, choiceY, choiceRadius) {
   var inset = choiceRadius + 4;
   var usableSide = Math.max(0, squareSide - inset * 2);
 
-  var points = d3.range(M).map(function(i) {
+  var points = d3.range(choiceCount).map(function(i) {
     var idx = i + 1;
-    var t = (idx - 0.5) / M;
+    var t = (idx - 0.5) / choiceCount;
     var r = 0.5 * Math.sqrt(t);
     var theta = idx * goldenAngle;
     return {
@@ -247,35 +285,23 @@ function drawPositioning(raw) {
       .attr('transform', (d, i) => `translate(0, ${i * TRACKH + 4})`);
 
   g.append('text')
+    .attr('class', 'gc-viz__track-label')
     .attr('x', 0)
     .attr('y', 22)
-    .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', VIZ_FONT_SIZE.trackLabel)
-    .attr('font-weight', '300')
-    .attr('fill', C.inkFaint)
-    .attr('letter-spacing', '0.1em')
     .text(d => d.label);
 
   g.append('text')
+    .attr('class', 'gc-viz__track-end')
     .attr('x', PAD_L)
     .attr('y', 13)
-    .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', VIZ_FONT_SIZE.trackEnd)
-    .attr('font-weight', '300')
-    .attr('fill', C.inkGhost)
     .attr('text-anchor', 'start')
-    .attr('letter-spacing', '0.08em')
     .text(d => d.lo);
 
   g.append('text')
+    .attr('class', 'gc-viz__track-end')
     .attr('x', PAD_L + TRACKW)
     .attr('y', 13)
-    .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', VIZ_FONT_SIZE.trackEnd)
-    .attr('font-weight', '300')
-    .attr('fill', C.inkGhost)
     .attr('text-anchor', 'end')
-    .attr('letter-spacing', '0.08em')
     .text(d => d.hi);
 
   g.append('line')
@@ -299,33 +325,38 @@ function drawPositioning(raw) {
 }
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
-function drawEmptyState() {
+function drawEmptyState(options) {
+  var dims = resolveVizDimensions(null, options);
   var sizing = getVizSizing();
   const {
     svgW: SVG_W,
     choiceRadius: CHOICE_R,
     padH: PAD_H,
+    squareTop,
+    bottomLegendPad,
+    bottomLegendOffset,
+    enteringOffset,
   } = VIZ_LAYOUT.empty;
   var squareSide = SVG_W - PAD_H * 2;
-  var squareTop = 116;
-  var SVG_H = squareTop + squareSide + 86;
+  var SVG_H = squareTop + squareSide + bottomLegendPad;
   var CHOICE_Y = squareTop + squareSide / 2;
-  var FLOAT_Y0 = squareTop - 32;
+  var FLOAT_Y0 = squareTop + enteringOffset;
   const PROB_R = sizing.problemRadius;
 
   const svg = d3.select('#viz-svg')
     .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`);
+  svg.style('--viz-scale', String(resolveTextScale(dims.textScale)));
 
   svg.selectAll('*').remove();
   var eventTickerEl = ensureVizEventTicker();
   if (eventTickerEl) eventTickerEl.textContent = '';
 
-  const choiceCenters = buildChoiceCenters(SVG_W, PAD_H, CHOICE_Y, CHOICE_R);
+  const choiceCenters = buildChoiceCenters(SVG_W, PAD_H, CHOICE_Y, CHOICE_R, dims.choices);
 
   // Choice circles
   const choiceLayer = svg.append('g');
   choiceLayer.selectAll('circle.choice')
-    .data(d3.range(M))
+    .data(d3.range(dims.choices))
     .join('circle')
       .attr('class', 'choice')
       .attr('cx', i => choiceCenters[i].x)
@@ -338,36 +369,20 @@ function drawEmptyState() {
   // Choice labels
   const labelLayer = svg.append('g');
   labelLayer.selectAll('text.choice-label')
-    .data(d3.range(M))
+    .data(d3.range(dims.choices))
     .join('text')
-      .attr('class', 'choice-label')
+      .attr('class', 'choice-label gc-viz__choice-label')
       .attr('x', i => choiceCenters[i].x)
       .attr('y', i => choiceCenters[i].y + CHOICE_R + 13)
       .attr('text-anchor', 'middle')
-      .attr('font-family', VIZ_FONT.mono)
-      .attr('font-size', sizing.labelFontSize)
-      .attr('font-weight', '300')
-      .attr('letter-spacing', '0.1em')
-      .attr('fill', C.inkFaint)
       .text(i => formatChoiceOpportunityLabel(i));
 
   // Top legend (left-aligned, multiline)
-  var topLegend = svg.append('text')
-    .attr('class', 'viz-counter')
-    .attr('x', 0)
-    .attr('y', 16)
-    .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', sizing.labelFontSize)
-    .attr('font-weight', '300')
-    .attr('letter-spacing', '0.1em')
-    .attr('fill', C.inkFaint);
-  setMultilineLegendText(topLegend, [
-    'Iter 0/20',
-    'No event',
-  ], TOP_LEGEND_LINE_GAP);
+  var setTopLegend = createTopLegend(svg);
+  setTopLegend(`Iter 0/${dims.periods}`, 'No event');
 
   // Bottom legend (left-aligned, multiline)
-  var LEGEND_Y = SVG_H - 70;
+  var LEGEND_Y = SVG_H - bottomLegendOffset;
   drawBottomLegend(svg, LEGEND_Y, sizing);
 
   // One problem dot in entering state
@@ -384,7 +399,8 @@ function drawEmptyState() {
 function showEndState(
   pctRes, pctOver, pctFli,
   probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
-  lastTick
+  lastTick,
+  dims
 ) {
   function setReadout(id, toneClass, label, text) {
     var el = document.getElementById(id);
@@ -426,13 +442,13 @@ function showEndState(
   }
 
   document.getElementById('sum-thisrun-label').textContent =
-    'Single run snapshot (organisational iteration ' + PERIODS + ')';
-  setReadout('sum-thisrun-resolved', 'outcome-resolved', 'Resolved', runResolved + ' of ' + W + ' problems');
-  setReadout('sum-thisrun-inforum', 'outcome-unresolved', 'In choice opportunity', runInForum + ' of ' + W + ' problems');
-  setReadout('sum-thisrun-adrift', 'outcome-flight', 'Adrift', runAdrift + ' of ' + W + ' problems');
-  setReadout('sum-thisrun-never-entered', 'outcome-unresolved', 'Never entered', runNeverEntered + ' of ' + W + ' problems');
-  setReadout('sum-thisrun-choices-resolved', 'outcome-resolved', 'Choice opportunities concluded', runChoicesResolved + ' of ' + M);
-  setReadout('sum-thisrun-choices-open', 'outcome-unresolved', 'Choice opportunities active', runChoicesOpen + ' of ' + M);
+    'Single run snapshot (organisational iteration ' + dims.periods + ')';
+  setReadout('sum-thisrun-resolved', 'outcome-resolved', 'Resolved', runResolved + ' of ' + dims.problems + ' problems');
+  setReadout('sum-thisrun-inforum', 'outcome-unresolved', 'In choice opportunity', runInForum + ' of ' + dims.problems + ' problems');
+  setReadout('sum-thisrun-adrift', 'outcome-flight', 'Adrift', runAdrift + ' of ' + dims.problems + ' problems');
+  setReadout('sum-thisrun-never-entered', 'outcome-unresolved', 'Never entered', runNeverEntered + ' of ' + dims.problems + ' problems');
+  setReadout('sum-thisrun-choices-resolved', 'outcome-resolved', 'Choice opportunities concluded', runChoicesResolved + ' of ' + dims.choices);
+  setReadout('sum-thisrun-choices-open', 'outcome-unresolved', 'Choice opportunities active', runChoicesOpen + ' of ' + dims.choices);
 
   // Primary: canonical GCM decision styles (choice-level)
   document.getElementById('sum-header').textContent =
@@ -446,20 +462,21 @@ function showEndState(
 
   // Supplementary: problem fates (interpretive extension)
   document.getElementById('sum-problems-label').textContent =
-    `What happened to the ${W} problems`;
-  setReadout('sum-prob-resolved', 'outcome-resolved', 'Resolved', `${probResolved} of ${W} \u2014 genuinely closed at a choice opportunity`);
-  setReadout('sum-prob-displaced', 'outcome-oversight', 'Displaced', `${probDisplaced} of ${W} \u2014 choice opportunity closed without resolving this problem`);
-  setReadout('sum-prob-adrift', 'outcome-flight', 'Adrift', `${probAdrift} of ${W} \u2014 detached from a choice opportunity after entry`);
-  setReadout('sum-prob-never-entered', 'outcome-unresolved', 'Never entered', `${probNeverEntered} of ${W} \u2014 never attached to any choice opportunity by organisational iteration ${PERIODS}`);
-  setReadout('sum-prob-inforum', 'outcome-unresolved', 'In choice opportunity', `${probInForum} of ${W} \u2014 still attached to an open choice opportunity at organisational iteration ${PERIODS}`);
+    `What happened to the ${dims.problems} problems`;
+  setReadout('sum-prob-resolved', 'outcome-resolved', 'Resolved', `${probResolved} of ${dims.problems} \u2014 genuinely closed at a choice opportunity`);
+  setReadout('sum-prob-displaced', 'outcome-oversight', 'Displaced', `${probDisplaced} of ${dims.problems} \u2014 choice opportunity closed without resolving this problem`);
+  setReadout('sum-prob-adrift', 'outcome-flight', 'Adrift', `${probAdrift} of ${dims.problems} \u2014 detached from a choice opportunity after entry`);
+  setReadout('sum-prob-never-entered', 'outcome-unresolved', 'Never entered', `${probNeverEntered} of ${dims.problems} \u2014 never attached to any choice opportunity by organisational iteration ${dims.periods}`);
+  setReadout('sum-prob-inforum', 'outcome-unresolved', 'In choice opportunity', `${probInForum} of ${dims.problems} \u2014 still attached to an open choice opportunity at organisational iteration ${dims.periods}`);
 
   document.getElementById('replay-btn').hidden      = false;
   document.getElementById('stochastic-note').hidden = false;
 }
 
 // ─── Visualization ────────────────────────────────────────────────────────────
-function drawViz(simResult) {
+function drawViz(simResult, options) {
   const { ticks, resolution, oversight, flight } = simResult;
+  var dims = resolveVizDimensions(simResult, options);
   var eventTickerEl = ensureVizEventTicker();
   if (eventTickerEl) eventTickerEl.textContent = '';
   var sizing = getVizSizing();
@@ -470,7 +487,7 @@ function drawViz(simResult) {
   const pctOver = Math.round(simResult.oversight  * 20) * 5;
   const pctFli  = 100 - pctRes - pctOver;
 
-  // Problem-level counts (out of W=20, interpretive extension)
+  // Problem-level counts (out of configured problem count, interpretive extension)
   const probResolved  = Math.round(simResult.problemResolved);
   const probDisplaced = Math.round(simResult.problemDisplaced);
   const probAdrift    = Math.round(simResult.problemAdrift);
@@ -486,30 +503,34 @@ function drawViz(simResult) {
     svgW: SVG_W,
     choiceRadius: CHOICE_R,
     padH: PAD_H,
+    squareTop,
+    bottomLegendPad,
+    bottomLegendOffset,
+    floatY0Offset,
+    floatY1Offset,
   } = VIZ_LAYOUT.live;
   var squareSide = SVG_W - PAD_H * 2;
-  var squareTop = 126;
-  var SVG_H = squareTop + squareSide + 96;
+  var SVG_H = squareTop + squareSide + bottomLegendPad;
   var CHOICE_Y = squareTop + squareSide / 2;
-  var FLOAT_Y0 = squareTop - 44;
-  var FLOAT_Y1 = squareTop - 18;
+  var FLOAT_Y0 = squareTop + floatY0Offset;
+  var FLOAT_Y1 = squareTop + floatY1Offset;
   const PROB_R = sizing.problemRadius;
 
   const svg = d3.select('#viz-svg')
     .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`);
+  svg.style('--viz-scale', String(resolveTextScale(dims.textScale)));
 
   svg.selectAll('*').remove();
 
-  // M (choices) and W (problems) are defined by gc-simulation.js
-  const choiceCenters = buildChoiceCenters(SVG_W, PAD_H, CHOICE_Y, CHOICE_R);
+  const choiceCenters = buildChoiceCenters(SVG_W, PAD_H, CHOICE_Y, CHOICE_R, dims.choices);
   const floatTracks = choiceCenters.map(function(c) { return c.x; }).sort(function(a, b) { return a - b; });
   const choiceXFallback = floatTracks.length ? floatTracks : [PAD_H];
 
   function floatPos(id) {
-    if (id < M) {
+    if (id < dims.choices) {
       return { x: choiceCenters[id].x, y: FLOAT_Y0 };
     }
-    const col = (id - M) % choiceXFallback.length;
+    const col = (id - dims.choices) % choiceXFallback.length;
     return { x: choiceXFallback[col], y: FLOAT_Y1 };
   }
 
@@ -529,7 +550,7 @@ function drawViz(simResult) {
 
   // ── clipPath defs — one per choice circle ──────────────────────────────────
   const defs = svg.append('defs');
-  d3.range(M).forEach(i => {
+  d3.range(dims.choices).forEach(i => {
     defs.append('clipPath')
       .attr('id', `clip-c${i}`)
       .append('circle')
@@ -542,7 +563,7 @@ function drawViz(simResult) {
   const choiceLayer = svg.append('g');
 
   choiceLayer.selectAll('circle.choice')
-    .data(d3.range(M))
+    .data(d3.range(dims.choices))
     .join('circle')
       .attr('class', 'choice')
       .attr('cx', i => choiceCenters[i].x)
@@ -559,7 +580,7 @@ function drawViz(simResult) {
   const fillLayer = svg.append('g');
 
   fillLayer.selectAll('rect.choice-fill')
-    .data(d3.range(M))
+    .data(d3.range(dims.choices))
     .join('rect')
       .attr('class', 'choice-fill')
       .attr('x', i => choiceCenters[i].x - CHOICE_R)
@@ -574,57 +595,27 @@ function drawViz(simResult) {
   const labelLayer = svg.append('g');
 
   labelLayer.selectAll('text.choice-label')
-    .data(d3.range(M))
+    .data(d3.range(dims.choices))
     .join('text')
-      .attr('class', 'choice-label')
+      .attr('class', 'choice-label gc-viz__choice-label')
       .attr('x', i => choiceCenters[i].x)
       .attr('y', i => choiceCenters[i].y + CHOICE_R + 13)
       .attr('text-anchor', 'middle')
-      .attr('font-family', VIZ_FONT.mono)
-      .attr('font-size', sizing.labelFontSize)
-      .attr('font-weight', '300')
-      .attr('letter-spacing', '0.1em')
-      .attr('fill', C.inkFaint)
       .text(i => formatChoiceOpportunityLabel(i));
 
   // ── Top legend (left-aligned, multiline) ───────────────────────────────────
-  var topLegend = svg.append('text')
-    .attr('class', 'viz-counter')
-    .attr('x', 0)
-    .attr('y', 16)
-    .attr('font-family', VIZ_FONT.mono)
-    .attr('font-size', sizing.labelFontSize)
-    .attr('font-weight', '300')
-    .attr('letter-spacing', '0.1em')
-    .attr('fill', C.inkFaint);
-
-  function setTopLegend(iterText, eventText) {
-    topLegend.selectAll('tspan').remove();
-    topLegend.append('tspan')
-      .attr('x', 0)
-      .attr('dy', 0)
-      .attr('fill', C.inkFaint)
-      .text(iterText);
-    topLegend.append('tspan')
-      .attr('x', 0)
-      .attr('dy', TOP_LEGEND_LINE_GAP)
-      .attr('fill', C.inkFaint)
-      .text(eventText || 'No event');
-  }
-  setTopLegend(
-    'Iter 0/20',
-    'No event'
-  );
+  var setTopLegend = createTopLegend(svg);
+  setTopLegend(`Iter 0/${dims.periods}`, 'No event');
 
   // ── Bottom legend (left-aligned, multiline) ────────────────────────────────
-  var LEGEND_Y = SVG_H - 70;
+  var LEGEND_Y = SVG_H - bottomLegendOffset;
   drawBottomLegend(svg, LEGEND_Y, sizing);
 
   // ── Layer 4: problem dots ──────────────────────────────────────────────────
   const probLayer = svg.append('g');
 
   probLayer.selectAll('circle.problem')
-    .data(d3.range(W), d => d)
+    .data(d3.range(dims.problems), d => d)
     .join('circle')
       .attr('class', 'problem')
       .attr('cx', id => floatPos(id).x)
@@ -665,7 +656,7 @@ function drawViz(simResult) {
   }
 
   // Cumulative resolved-at-choice counts — one entry per choice, never decreases
-  const resolvedAtChoice = Array(M).fill(0);
+  const resolvedAtChoice = Array(dims.choices).fill(0);
 
   // Problem IDs that have ever been active (for entrance animation)
   const everActive = new Set();
@@ -674,10 +665,10 @@ function drawViz(simResult) {
     if (tickIdx === 0) return false;
     const prev = ticks[tickIdx - 1];
     const curr = ticks[tickIdx];
-    for (let i = 0; i < M; i++) {
+    for (let i = 0; i < dims.choices; i++) {
       if (prev.choices[i].state !== curr.choices[i].state) return false;
     }
-    for (let i = 0; i < W; i++) {
+    for (let i = 0; i < dims.problems; i++) {
       if (prev.problems[i].state !== curr.problems[i].state) return false;
       if (prev.problems[i].attachedTo !== curr.problems[i].attachedTo) return false;
     }
@@ -744,7 +735,7 @@ function drawViz(simResult) {
     const oversightSet     = new Set();
 
     if (prevTick) {
-      for (let c = 0; c < M; c++) {
+      for (let c = 0; c < dims.choices; c++) {
         if (prevTick.choices[c].state === 'inactive' && tick.choices[c].state === 'active') {
           choicesOpenedThisTick.push(c);
         }
@@ -752,7 +743,7 @@ function drawViz(simResult) {
           choicesResolvedThisTick.add(c);
         }
       }
-      for (let id = 0; id < W; id++) {
+      for (let id = 0; id < dims.problems; id++) {
         const ps = prevTick.problems[id].state;
         const cs = tick.problems[id].state;
         if (ps === 'attached' && cs === 'resolved') {
@@ -770,30 +761,30 @@ function drawViz(simResult) {
 
     // Fill level — cumulative count of problems resolved at each choice
     if (prevTick) {
-      for (let id = 0; id < W; id++) {
+      for (let id = 0; id < dims.problems; id++) {
         if (tick.problems[id].state === 'resolved' && prevTick.problems[id].state !== 'resolved') {
           resolvedAtChoice[tick.problems[id].attachedTo]++;
         }
       }
     }
     svg.selectAll('rect.choice-fill')
-      .data(d3.range(M))
+      .data(d3.range(dims.choices))
       .transition()
         .duration(750)
         .ease(d3.easeCubicInOut)
-        .attr('y',      i => choiceCenters[i].y + CHOICE_R - (resolvedAtChoice[i] / W) * (CHOICE_R * 2))
-        .attr('height', i => (resolvedAtChoice[i] / W) * (CHOICE_R * 2));
+        .attr('y',      i => choiceCenters[i].y + CHOICE_R - (resolvedAtChoice[i] / dims.problems) * (CHOICE_R * 2))
+        .attr('height', i => (resolvedAtChoice[i] / dims.problems) * (CHOICE_R * 2));
 
     // Detect problems entering for the first time this tick
     const enteringThisTick = new Set();
-    for (let id = 0; id < W; id++) {
+    for (let id = 0; id < dims.problems; id++) {
       if (tick.problems[id].state !== 'inactive' && !everActive.has(id)) {
         enteringThisTick.add(id);
         everActive.add(id);
       }
     }
 
-    const allProbs = svg.selectAll('circle.problem').data(d3.range(W), d => d);
+    const allProbs = svg.selectAll('circle.problem').data(d3.range(dims.problems), d => d);
 
     // Entrance sequence: show clear entering/searching motion before final state
     allProbs.filter(id => enteringThisTick.has(id))
@@ -885,7 +876,7 @@ function drawViz(simResult) {
     if (eventTickerEl) eventTickerEl.textContent = '';
 
     var eventText = tickerMsg || 'No event';
-    setTopLegend(`Iter ${tick.tick}/20`, eventText);
+    setTopLegend(`Iter ${tick.tick}/${dims.periods}`, eventText);
 
   }
 
@@ -897,14 +888,15 @@ function drawViz(simResult) {
     current++;
     if (current >= ticks.length) {
       setTopLegend(
-        'Iter 20/20',
+        `Iter ${dims.periods}/${dims.periods}`,
         'No event'
       );
       if (eventTickerEl) eventTickerEl.textContent = '';
       showEndState(
         pctRes, pctOver, pctFli,
         probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
-        ticks[ticks.length - 1]
+        ticks[ticks.length - 1],
+        dims
       );
       return;
     }

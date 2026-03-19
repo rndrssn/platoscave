@@ -76,4 +76,11 @@
   --viz-fs-track-label: 10px;
   --viz-fs-track-end:   10px;
   --viz-fs-label:       13px;
+  --viz-fs-legend:      13px;
+  --viz-fs-co-label:    13px;
+  --viz-fs-top-legend:  13px;
+  --viz-lh-top:         1.55;
+  --viz-lh-legend:      1.7;
+  --viz-scale:          1;
+  --viz-scale-mobile:   0.96;
 }

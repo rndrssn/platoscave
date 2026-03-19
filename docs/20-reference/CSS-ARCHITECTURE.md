@@ -19,13 +19,15 @@ This project uses plain CSS with a layered import structure.
 
 ## File order
 `css/main.css` imports in this order:
-1. `tokens.css`
-2. `base.css`
-3. `layout.css`
-4. `components.css`
-5. `utilities.css`
-6. `themes.css`
-7. `pages.css`
+1. `fonts.css`
+2. `tokens.css`
+3. `base.css`
+4. `layout.css`
+5. `components.css`
+6. `utilities.css`
+7. `themes.css`
+8. `gc-viz.css`
+9. `pages.css`
 
 Keep this order stable unless there is a clear cascade reason.
 
@@ -36,6 +38,7 @@ Keep this order stable unless there is a clear cascade reason.
 - `components.css`: reusable UI components (cards, nav blocks, buttons, shared module UI)
 - `utilities.css`: small utility classes and shared keyframes
 - `themes.css`: theme overrides using token reassignment
+- `gc-viz.css`: GC visualization-specific styles and typography classes
 - `pages.css`: page/module-specific styles
 
 ## Theming
@@ -47,6 +50,7 @@ Keep this order stable unless there is a clear cascade reason.
 
 ## JS/SVG styling contract
 - `gc-viz.js` reads visual token values from CSS custom properties with fallback values
+- SVG text styling for GC viz is class-based in CSS (`gc-viz.css`), not inline font attributes in D3
 - Keep behavioral simulation constants separate from visual constants
 - Keep intentional visual differences explicit (`VIZ_LAYOUT.empty` vs `VIZ_LAYOUT.live`)
 

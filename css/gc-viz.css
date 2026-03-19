@@ -1,0 +1,113 @@
+/* ─── GC Viz (shared assess + explorer) ───────────────────────── */
+
+.results-section #viz-area,
+#viz-area {
+  margin-top: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+#viz-svg {
+  --viz-scale-local: var(--viz-scale, 1);
+  display: block;
+  width: 100%;
+  overflow: visible;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+#viz-svg .gc-viz__legend-text,
+#viz-svg .gc-viz__choice-label,
+#viz-svg .gc-viz__top-legend,
+#positioning-svg .gc-viz__track-label,
+#positioning-svg .gc-viz__track-end {
+  font-family: var(--viz-font-mono, var(--mono));
+  font-weight: 300;
+}
+
+#viz-svg .gc-viz__legend-text {
+  font-size: calc(var(--viz-fs-legend, 13px) * var(--viz-scale-local));
+  letter-spacing: 0.08em;
+  fill: var(--viz-ink-faint, var(--ink-faint));
+}
+
+#viz-svg .gc-viz__choice-label {
+  font-size: calc(var(--viz-fs-co-label, 13px) * var(--viz-scale-local));
+  letter-spacing: 0.1em;
+  fill: var(--viz-ink-faint, var(--ink-faint));
+}
+
+#viz-svg .gc-viz__top-legend {
+  font-size: calc(var(--viz-fs-top-legend, 13px) * var(--viz-scale-local));
+  letter-spacing: 0.1em;
+  fill: var(--viz-ink-faint, var(--ink-faint));
+}
+
+#positioning-svg .gc-viz__track-label {
+  font-size: var(--viz-fs-track-label, 10px);
+  letter-spacing: 0.1em;
+  fill: var(--viz-ink-faint, var(--ink-faint));
+}
+
+#positioning-svg .gc-viz__track-end {
+  font-size: var(--viz-fs-track-end, 10px);
+  letter-spacing: 0.08em;
+  fill: var(--viz-ink-ghost, var(--ink-ghost));
+}
+
+.figure-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  margin-top: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.figure-caption {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-mid);
+  margin-top: 1.75rem;
+  line-height: 2;
+}
+
+.viz-event-ticker {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  color: var(--ink-mid);
+  margin-top: 0.65rem;
+  margin-bottom: 0.2rem;
+  text-align: left;
+  min-height: 1rem;
+}
+
+.period-readout {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-mid);
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  #viz-svg {
+    --viz-scale-local: var(--viz-scale-mobile, var(--viz-scale, 1));
+  }
+
+  .figure-caption,
+  .viz-event-ticker,
+  .period-readout {
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+  }
+}

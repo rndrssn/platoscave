@@ -7,7 +7,7 @@ const vm = require('vm');
 function loadSimulationModule() {
   const sourcePath = path.join(__dirname, '..', '..', 'gc-simulation.js');
   const source = fs.readFileSync(sourcePath, 'utf8');
-  const wrapped = source + '\nmodule.exports = { runGarbageCanSimulation, runGarbageCanSimulationAsync, validateSimulation };\n';
+  const wrapped = source + '\nmodule.exports = { runGarbageCanSimulation, runGarbageCanSimulationAsync, validateSimulation, getGarbageCanDefaults };\n';
 
   const context = {
     module: { exports: {} },

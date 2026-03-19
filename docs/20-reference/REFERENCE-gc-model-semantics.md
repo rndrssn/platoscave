@@ -63,3 +63,12 @@ Problem-level outcomes:
 - `gc-scoring.js`
 - `gc-diagnosis.js`
 - `gc-viz.js`
+- `gc-viz-config.js`
+
+## Renderer metadata contract
+
+- Simulation results include `meta` with:
+  - `choices`
+  - `problems`
+  - `periods`
+- `gc-viz.js` should consume these values (or simulation defaults) rather than hardcoded module globals.

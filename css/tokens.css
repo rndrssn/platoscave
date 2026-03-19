@@ -69,7 +69,9 @@
   --viz-ochre:      var(--ochre);
   --viz-gold:       var(--gold);
   --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
   --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
   --viz-font-mono:  var(--mono);
   --viz-fs-track-label: 10px;
   --viz-fs-track-end:   10px;

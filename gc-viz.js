@@ -34,7 +34,9 @@ const C = {
   ochre:     readCssVar('--viz-ochre', '#9A7B3A'),
   gold:      readCssVar('--viz-gold', '#B8943A'),
   slate:     readCssVar('--viz-slate', '#3D4F5C'),
+  slateLight: readCssVar('--viz-slate-light', '#5A7080'),
   sage:      readCssVar('--viz-sage', '#4A6741'),
+  sageLight: readCssVar('--viz-sage-light', '#6B8F62'),
 };
 
 const VIZ_FONT = {
@@ -70,9 +72,9 @@ function setMultilineLegendText(textSel, lines, lineGap) {
 }
 
 const GC_LEGEND_ITEMS = [
-  { label: 'Entering',  color: C.rust },
-  { label: 'Searching Choice opportunity (CO)', color: C.rustLight },
-  { label: 'In choice opportunity', color: C.gold },
+  { label: 'Problem entering',  color: C.rust },
+  { label: 'Problem searching for choice opportunity', color: C.gold },
+  { label: 'In choice opportunity (CO)', color: C.sageLight },
   { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
 ];
 const TOP_LEGEND_LINE_GAP = 20;
@@ -360,9 +362,8 @@ function drawEmptyState() {
     .attr('letter-spacing', '0.1em')
     .attr('fill', C.inkFaint);
   setMultilineLegendText(topLegend, [
-    'Organizational Iteration 0 of 20',
-    'Open/close: awaiting events',
-    'Awaiting simulation',
+    'Iter 0/20',
+    'No event',
   ], TOP_LEGEND_LINE_GAP);
 
   // Bottom legend (left-aligned, multiline)
@@ -382,7 +383,7 @@ function drawEmptyState() {
 // ─── End state summary ────────────────────────────────────────────────────────
 function showEndState(
   pctRes, pctOver, pctFli,
-  probResolved, probDisplaced, probAdrift, probInForum,
+  probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
   lastTick
 ) {
   function setReadout(id, toneClass, label, text) {
@@ -407,6 +408,7 @@ function showEndState(
   var runResolved = 0;
   var runInForum  = 0;
   var runAdrift   = 0;
+  var runNeverEntered = 0;
   var runChoicesResolved = 0;
   var runChoicesOpen     = 0;
 
@@ -415,6 +417,7 @@ function showEndState(
       if (p.state === 'resolved') runResolved++;
       else if (p.state === 'attached') runInForum++;
       else if (p.state === 'floating') runAdrift++;
+      else if (p.state === 'inactive') runNeverEntered++;
     });
     lastTick.choices.forEach(function(c) {
       if (c.state === 'resolved') runChoicesResolved++;
@@ -423,10 +426,11 @@ function showEndState(
   }
 
   document.getElementById('sum-thisrun-label').textContent =
-    'Single run snapshot (organizational iteration ' + PERIODS + ')';
+    'Single run snapshot (organisational iteration ' + PERIODS + ')';
   setReadout('sum-thisrun-resolved', 'outcome-resolved', 'Resolved', runResolved + ' of ' + W + ' problems');
   setReadout('sum-thisrun-inforum', 'outcome-unresolved', 'In choice opportunity', runInForum + ' of ' + W + ' problems');
   setReadout('sum-thisrun-adrift', 'outcome-flight', 'Adrift', runAdrift + ' of ' + W + ' problems');
+  setReadout('sum-thisrun-never-entered', 'outcome-unresolved', 'Never entered', runNeverEntered + ' of ' + W + ' problems');
   setReadout('sum-thisrun-choices-resolved', 'outcome-resolved', 'Choice opportunities concluded', runChoicesResolved + ' of ' + M);
   setReadout('sum-thisrun-choices-open', 'outcome-unresolved', 'Choice opportunities active', runChoicesOpen + ' of ' + M);
 
@@ -445,8 +449,9 @@ function showEndState(
     `What happened to the ${W} problems`;
   setReadout('sum-prob-resolved', 'outcome-resolved', 'Resolved', `${probResolved} of ${W} \u2014 genuinely closed at a choice opportunity`);
   setReadout('sum-prob-displaced', 'outcome-oversight', 'Displaced', `${probDisplaced} of ${W} \u2014 choice opportunity closed without resolving this problem`);
-  setReadout('sum-prob-adrift', 'outcome-flight', 'Adrift', `${probAdrift} of ${W} \u2014 detached from choice opportunity or never attached`);
-  setReadout('sum-prob-inforum', 'outcome-unresolved', 'In choice opportunity', `${probInForum} of ${W} \u2014 still attached to an open choice opportunity at organizational iteration ${PERIODS}`);
+  setReadout('sum-prob-adrift', 'outcome-flight', 'Adrift', `${probAdrift} of ${W} \u2014 detached from a choice opportunity after entry`);
+  setReadout('sum-prob-never-entered', 'outcome-unresolved', 'Never entered', `${probNeverEntered} of ${W} \u2014 never attached to any choice opportunity by organisational iteration ${PERIODS}`);
+  setReadout('sum-prob-inforum', 'outcome-unresolved', 'In choice opportunity', `${probInForum} of ${W} \u2014 still attached to an open choice opportunity at organisational iteration ${PERIODS}`);
 
   document.getElementById('replay-btn').hidden      = false;
   document.getElementById('stochastic-note').hidden = false;
@@ -470,6 +475,7 @@ function drawViz(simResult) {
   const probDisplaced = Math.round(simResult.problemDisplaced);
   const probAdrift    = Math.round(simResult.problemAdrift);
   const probInForum   = Math.round(simResult.problemInForum);
+  const probNeverEntered = Math.round(simResult.problemNeverEntered);
 
   // Reset summary state
   document.getElementById('sim-summary').hidden   = true;
@@ -592,7 +598,7 @@ function drawViz(simResult) {
     .attr('letter-spacing', '0.1em')
     .attr('fill', C.inkFaint);
 
-  function setTopLegend(iterText, openCloseText, stateText, stateColor) {
+  function setTopLegend(iterText, eventText) {
     topLegend.selectAll('tspan').remove();
     topLegend.append('tspan')
       .attr('x', 0)
@@ -603,18 +609,11 @@ function drawViz(simResult) {
       .attr('x', 0)
       .attr('dy', TOP_LEGEND_LINE_GAP)
       .attr('fill', C.inkFaint)
-      .text(openCloseText || 'Open/close: none this iteration');
-    topLegend.append('tspan')
-      .attr('x', 0)
-      .attr('dy', TOP_LEGEND_LINE_GAP)
-      .attr('fill', stateColor || C.inkFaint)
-      .text(stateText || 'Awaiting simulation');
+      .text(eventText || 'No event');
   }
   setTopLegend(
-    'Organizational Iteration 0 of 20',
-    'Open/close: awaiting events',
-    'Awaiting simulation',
-    C.inkFaint
+    'Iter 0/20',
+    'No event'
   );
 
   // ── Bottom legend (left-aligned, multiline) ────────────────────────────────
@@ -647,7 +646,7 @@ function drawViz(simResult) {
 
     if (p.state === 'floating') {
       const fp = floatPos(id);
-      return { x: fp.x, y: fp.y, opacity: 0.9, fill: C.rustLight, r: PROB_R };
+      return { x: fp.x, y: fp.y, opacity: 0.9, fill: C.gold, r: PROB_R };
     }
 
     if (p.state === 'resolved') {
@@ -662,7 +661,7 @@ function drawViz(simResult) {
       .filter(q => q.state === 'attached' && q.attachedTo === p.attachedTo);
     const slot = siblings.findIndex(q => q.id === id);
     const pos  = attachedPos(p.attachedTo, slot, siblings.length);
-    return { x: pos.x, y: pos.y, opacity: 1, fill: C.gold, r: PROB_R };
+    return { x: pos.x, y: pos.y, opacity: 1, fill: C.sageLight, r: PROB_R };
   }
 
   // Cumulative resolved-at-choice counts — one entry per choice, never decreases
@@ -730,7 +729,7 @@ function drawViz(simResult) {
       if (p.state === 'inactive') {
         text = '';
       } else if (p.state === 'floating') {
-        text = 'Problem searching for a choice opportunity';
+        text = 'Problem searching for choice opportunity';
       } else if (p.state === 'attached') {
         text = 'Problem attached to choice opportunity ' + formatChoiceOpportunityLabel(p.attachedTo);
       } else if (p.state === 'resolved') {
@@ -803,8 +802,10 @@ function drawViz(simResult) {
         const fp = floatPos(id);
         d3.select(this).interrupt()
           .attr('cx', fp.x).attr('cy', fp.y).attr('r', 1).attr('opacity', 0).attr('fill', C.rust)
-          .transition().duration(320).ease(d3.easeCubicOut)
-            .attr('r', PROB_R).attr('opacity', 0.95).attr('fill', C.rustLight)
+          .transition().duration(220).ease(d3.easeCubicOut)
+            .attr('r', PROB_R).attr('opacity', 0.95).attr('fill', C.rust)
+          .transition().duration(280).ease(d3.easeCubicInOut)
+            .attr('fill', C.gold)
           .transition().duration(450).ease(d3.easeCubicInOut)
             .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', attrs.r)
             .attr('opacity', attrs.opacity).attr('fill', attrs.fill);
@@ -863,32 +864,13 @@ function drawViz(simResult) {
     allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');
     allProbs.classed('problem-searching', id => tick.problems[id].state === 'floating');
 
-    var stateLabel = 'Energy accumulating';
-    var stateColor = C.inkFaint;
-
     // Event ticker
     var tickerMsg = '';
     if (choicesResolvedThisTick.size > 0) {
       const choiceIds = Array.from(choicesResolvedThisTick).sort((a, b) => a - b);
       if (choiceIds.length === 1) {
         const c = choiceIds[0];
-        var resolvedCount = 0;
-        var displacedCount = 0;
-        for (let id = 0; id < W; id++) {
-          if (prevTick.problems[id].state === 'attached' && prevTick.problems[id].attachedTo === c) {
-            if (tick.problems[id].state === 'resolved') resolvedCount++;
-            if (tick.problems[id].state === 'floating') displacedCount++;
-          }
-        }
-        var outcomeText;
-        if (resolvedCount > 0) {
-          outcomeText = `${resolvedCount} problem${resolvedCount === 1 ? '' : 's'} resolved`;
-        } else if (displacedCount > 0) {
-          outcomeText = 'no problem resolved';
-        } else {
-          outcomeText = 'closed';
-        }
-        tickerMsg = `${formatChoiceOpportunityLabel(c)} closed (energy threshold reached; ${outcomeText})`;
+        tickerMsg = `${formatChoiceOpportunityLabel(c)} closed`;
       } else {
         tickerMsg = `${formatChoiceOpportunityList(choiceIds, 3)} closed this iteration`;
       }
@@ -902,22 +884,8 @@ function drawViz(simResult) {
     }
     if (eventTickerEl) eventTickerEl.textContent = '';
 
-    var enteredCount = everActive.size;
-    if (enteredCount < W) {
-      stateLabel = `Problems entering/searching (${enteredCount} of ${W})`;
-      stateColor = C.rustLight;
-    } else if (enteringThisTick.size > 0) {
-      stateLabel = 'Problems entering';
-      stateColor = C.inkFaint;
-    } else if (prevTick && !isDeadTick(tickIdx)) {
-      stateLabel = 'Energy accumulating';
-      stateColor = C.inkFaint;
-    } else if (prevTick && isDeadTick(tickIdx)) {
-      stateLabel = 'System stalled';
-      stateColor = C.rust;
-    }
-    var openCloseText = tickerMsg ? `Open/close: ${tickerMsg}` : 'Open/close: none this iteration';
-    setTopLegend(`Organizational Iteration ${tick.tick} of 20`, openCloseText, stateLabel, stateColor);
+    var eventText = tickerMsg || 'No event';
+    setTopLegend(`Iter ${tick.tick}/20`, eventText);
 
   }
 
@@ -929,15 +897,13 @@ function drawViz(simResult) {
     current++;
     if (current >= ticks.length) {
       setTopLegend(
-        'Organizational Iteration 20 of 20',
-        'Open/close: final state',
-        'Showing final run',
-        C.inkFaint
+        'Iter 20/20',
+        'No event'
       );
       if (eventTickerEl) eventTickerEl.textContent = '';
       showEndState(
         pctRes, pctOver, pctFli,
-        probResolved, probDisplaced, probAdrift, probInForum,
+        probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
         ticks[ticks.length - 1]
       );
       return;

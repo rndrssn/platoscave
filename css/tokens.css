@@ -73,14 +73,14 @@
   --viz-sage:       var(--sage);
   --viz-sage-light: var(--sage-light);
   --viz-font-mono:  var(--mono);
-  --viz-fs-track-label: 10px;
-  --viz-fs-track-end:   10px;
-  --viz-fs-label:       13px;
-  --viz-fs-legend:      13px;
-  --viz-fs-co-label:    13px;
-  --viz-fs-top-legend:  13px;
+  --viz-fs-track-label: 12px;
+  --viz-fs-track-end:   12px;
+  --viz-fs-label:       16px;
+  --viz-fs-legend:      16px;
+  --viz-fs-co-label:    16px;
+  --viz-fs-top-legend:  16px;
   --viz-lh-top:         1.55;
   --viz-lh-legend:      1.7;
   --viz-scale:          1;
-  --viz-scale-mobile:   0.96;
+  --viz-scale-mobile:   1.06;
 }

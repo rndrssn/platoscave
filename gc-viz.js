@@ -98,6 +98,7 @@ const TIMING = {
   densitySlowMs: 240,
   densityFastMs: -140,
   deadTickFastMs: -120,
+  resolvePauseMs: 340,
   baseEarlyMs: 1850, // iter 1-5
   baseMidMs: 1450,   // iter 6-10
   baseLateMs: 1080,  // iter 11-20
@@ -704,7 +705,7 @@ function drawViz(simResult, options) {
 
   function analyzeTickChange(currTick, prevTick) {
     if (!prevTick) {
-      return { eventText: 'No event', eventful: false, density: 0, isDead: false };
+      return { eventText: 'No event', eventful: false, density: 0, isDead: false, hasResolution: false };
     }
     const choicesOpenedThisTick = [];
     const choicesResolvedThisTick = new Set();
@@ -748,7 +749,7 @@ function drawViz(simResult, options) {
     const isDead = changedChoices === 0 && changedProblems === 0;
     const eventful = choicesOpenedThisTick.length > 0 || choicesResolvedThisTick.size > 0 || flights > 0 || oversights > 0;
 
-    return { eventText, eventful, density, isDead };
+    return { eventText, eventful, density, isDead, hasResolution: choicesResolvedThisTick.size > 0 };
   }
 
   function computeTickTiming(iterTick, analysis) {
@@ -760,6 +761,7 @@ function drawViz(simResult, options) {
     if (analysis.density >= 0.45) adjusted += TIMING.densitySlowMs;
     else if (analysis.density <= 0.08) adjusted += TIMING.densityFastMs;
     if (analysis.eventful) adjusted += TIMING.eventPauseMs;
+    if (analysis.hasResolution) adjusted += TIMING.resolvePauseMs;
     if (analysis.isDead) adjusted += TIMING.deadTickFastMs;
 
     var tickMs = Math.max(TIMING.minTickMs, Math.min(TIMING.maxTickMs, adjusted));
@@ -853,6 +855,34 @@ function drawViz(simResult, options) {
           }
         }
       }
+    }
+
+    // Resolution pulse on the CO itself to make closures visually unmissable.
+    if (choicesResolvedThisTick.size > 0) {
+      var pulseData = Array.from(choicesResolvedThisTick).map(function(choiceId) {
+        return choiceCenters[choiceId];
+      });
+
+      svg.append('g')
+        .attr('class', 'choice-resolve-pulse')
+        .selectAll('circle.resolve-pulse')
+        .data(pulseData)
+        .join('circle')
+          .attr('class', 'resolve-pulse')
+          .attr('cx', function(d) { return d.x; })
+          .attr('cy', function(d) { return d.y; })
+          .attr('r', CHOICE_R * 0.95)
+          .attr('fill', 'none')
+          .attr('stroke', C.sage)
+          .attr('stroke-width', 1.8)
+          .attr('opacity', 0.9)
+          .transition()
+            .duration(sd(460))
+            .ease(d3.easeCubicOut)
+            .attr('r', CHOICE_R * 1.42)
+            .attr('stroke-width', 0.9)
+            .attr('opacity', 0)
+            .remove();
     }
 
     // Fill level — cumulative count of problems resolved at each choice

@@ -23,7 +23,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - Active site-wide theme is set in [`theme.config.js`](theme.config.js)
 - Edit only `window.PLATOSCAVE_THEME = '...'` in `theme.config.js` to switch all pages
   - Examples: `'default'`, `'urban-grid1'`, `'decision-collision-cold'`, `'new-yorker'`
-- CSS architecture guide: [`docs/CSS-ARCHITECTURE.md`](docs/CSS-ARCHITECTURE.md)
+- CSS architecture guide: [`docs/20-reference/CSS-ARCHITECTURE.md`](docs/20-reference/CSS-ARCHITECTURE.md)
 
 ## Credits
 

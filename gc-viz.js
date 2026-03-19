@@ -791,14 +791,18 @@ function drawViz(simResult) {
 
     const allProbs = svg.selectAll('circle.problem').data(d3.range(W), d => d);
 
-    // Entrance fade-in: scale up from r:1, opacity 0 → target state
+    // Entrance sequence: show clear entering/searching motion before final state
     allProbs.filter(id => enteringThisTick.has(id))
       .each(function(id) {
         const attrs = probAttrs(tick, id);
+        const fp = floatPos(id);
         d3.select(this).interrupt()
-          .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', 1).attr('opacity', 0)
-          .transition().duration(500).ease(d3.easeCubicOut)
-            .attr('r', attrs.r).attr('opacity', attrs.opacity).attr('fill', attrs.fill);
+          .attr('cx', fp.x).attr('cy', fp.y).attr('r', 1).attr('opacity', 0).attr('fill', C.rust)
+          .transition().duration(320).ease(d3.easeCubicOut)
+            .attr('r', PROB_R).attr('opacity', 0.95).attr('fill', C.rustLight)
+          .transition().duration(450).ease(d3.easeCubicInOut)
+            .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', attrs.r)
+            .attr('opacity', attrs.opacity).attr('fill', attrs.fill);
       });
 
     // Resolution exit: move to circle centre, shrink to r:1.5, fill sage, then fade

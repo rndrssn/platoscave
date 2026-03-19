@@ -44,7 +44,7 @@ function readCssNumber(name, fallback) {
 }
 
 const CHOICE_RADIUS = 34;
-const DESKTOP_VIZ_VERTICAL_COMPACT = 0.7;
+const DESKTOP_CO_FIELD_HEIGHT_SCALE = 0.78;
 
 const GC_VIZ_DEFAULTS = (typeof window !== 'undefined' && window.GC_VIZ_CONFIG)
   ? window.GC_VIZ_CONFIG
@@ -235,9 +235,13 @@ function ensureVizEventTicker() {
 }
 
 function getVizSizing() {
-  var svgEl = typeof document !== 'undefined' ? document.getElementById('viz-svg') : null;
-  var viewportW = svgEl && svgEl.clientWidth ? svgEl.clientWidth : 0;
-  if (!viewportW && typeof window !== 'undefined') viewportW = window.innerWidth || 0;
+  var viewportW = 0;
+  if (typeof window !== 'undefined') {
+    viewportW = window.innerWidth || 0;
+  }
+  if (!viewportW && typeof document !== 'undefined' && document.documentElement) {
+    viewportW = document.documentElement.clientWidth || 0;
+  }
   var isMobile = viewportW > 0 && viewportW <= 640;
 
   return {
@@ -250,23 +254,25 @@ function getVizSizing() {
 
 function resolveVizLayout(mode, sizing) {
   var base = VIZ_LAYOUT[mode] || {};
-  var layout = Object.assign({}, base);
-  if (sizing.isMobile) return layout;
-
-  layout.squareTop = Math.round(layout.squareTop * DESKTOP_VIZ_VERTICAL_COMPACT);
-  layout.bottomLegendPad = Math.round(layout.bottomLegendPad * DESKTOP_VIZ_VERTICAL_COMPACT);
-  layout.bottomLegendOffset = Math.round(layout.bottomLegendOffset * DESKTOP_VIZ_VERTICAL_COMPACT);
-  return layout;
+  return Object.assign({}, base);
 }
 
-function buildChoiceCenters(svgW, padH, choiceY, choiceRadius, choiceCount) {
+function resolveChoiceFieldBox(layout, sizing) {
+  var fieldW = layout.svgW - layout.padH * 2;
+  var fieldH = sizing.isMobile ? fieldW : Math.round(fieldW * DESKTOP_CO_FIELD_HEIGHT_SCALE);
+  return {
+    left: layout.padH,
+    top: layout.squareTop,
+    width: fieldW,
+    height: fieldH,
+  };
+}
+
+function buildChoiceCenters(fieldBox, choiceRadius, choiceCount) {
   var goldenAngle = Math.PI * (3 - Math.sqrt(5));
-  var trackW = svgW - padH * 2;
-  var squareSide = trackW;
-  var squareLeft = padH;
-  var squareTop = choiceY - squareSide / 2;
   var inset = choiceRadius + 4;
-  var usableSide = Math.max(0, squareSide - inset * 2);
+  var usableW = Math.max(0, fieldBox.width - inset * 2);
+  var usableH = Math.max(0, fieldBox.height - inset * 2);
 
   var points = d3.range(choiceCount).map(function(i) {
     var idx = i + 1;
@@ -287,8 +293,8 @@ function buildChoiceCenters(svgW, padH, choiceY, choiceRadius, choiceCount) {
 
   return points.map(function(p) {
     return {
-      x: squareLeft + inset + p.x * usableSide,
-      y: squareTop + inset + p.y * usableSide,
+      x: fieldBox.left + inset + p.x * usableW,
+      y: fieldBox.top + inset + p.y * usableH,
     };
   });
 }
@@ -369,16 +375,14 @@ function drawEmptyState(options) {
   const {
     svgW: SVG_W,
     choiceRadius: CHOICE_R,
-    padH: PAD_H,
-    squareTop,
     bottomLegendPad,
     bottomLegendOffset,
     enteringOffset,
   } = layout;
-  var squareSide = SVG_W - PAD_H * 2;
-  var SVG_H = squareTop + squareSide + bottomLegendPad;
-  var CHOICE_Y = squareTop + squareSide / 2;
-  var FLOAT_Y0 = squareTop + enteringOffset;
+  var fieldBox = resolveChoiceFieldBox(layout, sizing);
+  var SVG_H = fieldBox.top + fieldBox.height + bottomLegendPad;
+  var CHOICE_Y = fieldBox.top + fieldBox.height / 2;
+  var FLOAT_Y0 = fieldBox.top + enteringOffset;
   const PROB_R = sizing.problemRadius;
 
   const svg = d3.select('#viz-svg')
@@ -389,7 +393,7 @@ function drawEmptyState(options) {
   var eventTickerEl = ensureVizEventTicker();
   if (eventTickerEl) eventTickerEl.textContent = '';
 
-  const choiceCenters = buildChoiceCenters(SVG_W, PAD_H, CHOICE_Y, CHOICE_R, dims.choices);
+  const choiceCenters = buildChoiceCenters(fieldBox, CHOICE_R, dims.choices);
 
   // Choice circles
   const choiceLayer = svg.append('g');
@@ -541,18 +545,16 @@ function drawViz(simResult, options) {
   const {
     svgW: SVG_W,
     choiceRadius: CHOICE_R,
-    padH: PAD_H,
-    squareTop,
     bottomLegendPad,
     bottomLegendOffset,
     floatY0Offset,
     floatY1Offset,
   } = layout;
-  var squareSide = SVG_W - PAD_H * 2;
-  var SVG_H = squareTop + squareSide + bottomLegendPad;
-  var CHOICE_Y = squareTop + squareSide / 2;
-  var FLOAT_Y0 = squareTop + floatY0Offset;
-  var FLOAT_Y1 = squareTop + floatY1Offset;
+  var fieldBox = resolveChoiceFieldBox(layout, sizing);
+  var SVG_H = fieldBox.top + fieldBox.height + bottomLegendPad;
+  var CHOICE_Y = fieldBox.top + fieldBox.height / 2;
+  var FLOAT_Y0 = fieldBox.top + floatY0Offset;
+  var FLOAT_Y1 = fieldBox.top + floatY1Offset;
   const PROB_R = sizing.problemRadius;
 
   const svg = d3.select('#viz-svg')
@@ -561,9 +563,9 @@ function drawViz(simResult, options) {
 
   svg.selectAll('*').remove();
 
-  const choiceCenters = buildChoiceCenters(SVG_W, PAD_H, CHOICE_Y, CHOICE_R, dims.choices);
+  const choiceCenters = buildChoiceCenters(fieldBox, CHOICE_R, dims.choices);
   const floatTracks = choiceCenters.map(function(c) { return c.x; }).sort(function(a, b) { return a - b; });
-  const choiceXFallback = floatTracks.length ? floatTracks : [PAD_H];
+  const choiceXFallback = floatTracks.length ? floatTracks : [layout.padH];
 
   function floatPos(id) {
     if (id < dims.choices) {

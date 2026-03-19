@@ -34,7 +34,9 @@ const C = {
   ochre:     readCssVar('--viz-ochre', '#9A7B3A'),
   gold:      readCssVar('--viz-gold', '#B8943A'),
   slate:     readCssVar('--viz-slate', '#3D4F5C'),
+  slateLight: readCssVar('--viz-slate-light', '#5A7080'),
   sage:      readCssVar('--viz-sage', '#4A6741'),
+  sageLight: readCssVar('--viz-sage-light', '#6B8F62'),
 };
 
 const VIZ_FONT = {
@@ -71,8 +73,8 @@ function setMultilineLegendText(textSel, lines, lineGap) {
 
 const GC_LEGEND_ITEMS = [
   { label: 'Problem entering',  color: C.rust },
-  { label: 'Problem searching for (CO)', color: C.rustLight },
-  { label: 'In choice opportunity (CO)', color: C.gold },
+  { label: 'Problem searching for choice opportunity', color: C.gold },
+  { label: 'In choice opportunity (CO)', color: C.sageLight },
   { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
 ];
 const TOP_LEGEND_LINE_GAP = 20;
@@ -644,7 +646,7 @@ function drawViz(simResult) {
 
     if (p.state === 'floating') {
       const fp = floatPos(id);
-      return { x: fp.x, y: fp.y, opacity: 0.9, fill: C.rustLight, r: PROB_R };
+      return { x: fp.x, y: fp.y, opacity: 0.9, fill: C.gold, r: PROB_R };
     }
 
     if (p.state === 'resolved') {
@@ -659,7 +661,7 @@ function drawViz(simResult) {
       .filter(q => q.state === 'attached' && q.attachedTo === p.attachedTo);
     const slot = siblings.findIndex(q => q.id === id);
     const pos  = attachedPos(p.attachedTo, slot, siblings.length);
-    return { x: pos.x, y: pos.y, opacity: 1, fill: C.gold, r: PROB_R };
+    return { x: pos.x, y: pos.y, opacity: 1, fill: C.sageLight, r: PROB_R };
   }
 
   // Cumulative resolved-at-choice counts — one entry per choice, never decreases
@@ -727,7 +729,7 @@ function drawViz(simResult) {
       if (p.state === 'inactive') {
         text = '';
       } else if (p.state === 'floating') {
-        text = 'Problem searching for a choice opportunity';
+        text = 'Problem searching for choice opportunity';
       } else if (p.state === 'attached') {
         text = 'Problem attached to choice opportunity ' + formatChoiceOpportunityLabel(p.attachedTo);
       } else if (p.state === 'resolved') {
@@ -800,8 +802,10 @@ function drawViz(simResult) {
         const fp = floatPos(id);
         d3.select(this).interrupt()
           .attr('cx', fp.x).attr('cy', fp.y).attr('r', 1).attr('opacity', 0).attr('fill', C.rust)
-          .transition().duration(320).ease(d3.easeCubicOut)
-            .attr('r', PROB_R).attr('opacity', 0.95).attr('fill', C.rustLight)
+          .transition().duration(220).ease(d3.easeCubicOut)
+            .attr('r', PROB_R).attr('opacity', 0.95).attr('fill', C.rust)
+          .transition().duration(280).ease(d3.easeCubicInOut)
+            .attr('fill', C.gold)
           .transition().duration(450).ease(d3.easeCubicInOut)
             .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', attrs.r)
             .attr('opacity', attrs.opacity).attr('fill', attrs.fill);

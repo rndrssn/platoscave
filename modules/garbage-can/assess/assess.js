@@ -173,11 +173,11 @@ function showStage(id, delay) {
 }
 
 function focusSimulationCanvas() {
-  var section = document.getElementById('section-simulation');
-  if (!section) return;
+  var svg = document.getElementById('viz-svg');
+  if (!svg) return;
   var navHeight = 72; // 4rem nav bar
-  if (typeof section.getBoundingClientRect === 'function') {
-    var y = section.getBoundingClientRect().top + window.pageYOffset - navHeight - 6;
+  if (typeof svg.getBoundingClientRect === 'function') {
+    var y = svg.getBoundingClientRect().top + window.pageYOffset - navHeight - 6;
     window.scrollTo({ top: y, behavior: 'smooth' });
   }
 }
@@ -249,10 +249,6 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
   // Show simulation area with empty state immediately
   document.getElementById('viz-area').hidden = false;
   drawEmptyState();
-
-  // Parameters caption
-  document.getElementById('viz-caption').textContent =
-    `Parameters: ${problemIntensity} intensity; ${problemInflow} inflow; ${decisionStructure} decision; ${accessStructure} access.`;
 
   // Simulation trigger — runs on button click
   document.getElementById('run-sim-btn').onclick = async function () {

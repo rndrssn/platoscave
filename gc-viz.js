@@ -59,7 +59,7 @@ function readCssNumber(name, fallback) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-const CHOICE_RADIUS = 34;
+const CHOICE_RADIUS = 36;
 const DESKTOP_CO_FIELD_HEIGHT_SCALE = 0.78;
 
 const GC_VIZ_DEFAULTS = (typeof window !== 'undefined' && window.GC_VIZ_CONFIG)
@@ -492,12 +492,21 @@ function showEndState(
     labelSpan.textContent = label;
     el.appendChild(labelSpan);
 
-    var metricSpan = document.createElement('span');
-    metricSpan.className = 'summary-metric';
-    metricSpan.textContent = metric;
-    el.appendChild(metricSpan);
+    if (metric) {
+      var metricSpan = document.createElement('span');
+      metricSpan.className = 'summary-metric';
+      metricSpan.textContent = metric;
+      el.appendChild(metricSpan);
+    }
 
-    if (detail) {
+    if (Array.isArray(detail)) {
+      detail.forEach(function(line) {
+        var stacked = document.createElement('span');
+        stacked.className = 'summary-detail summary-detail--stack';
+        stacked.textContent = line;
+        el.appendChild(stacked);
+      });
+    } else if (detail) {
       var detailSpan = document.createElement('span');
       detailSpan.className = 'summary-detail';
       detailSpan.textContent = detail;
@@ -557,14 +566,27 @@ function showEndState(
   setReadout('sum-choice-resolution', 'outcome-resolved', 'Deliberation', `${pctRes}%`, 'choice opportunity closed after sustained engagement');
   setReadout('sum-choice-oversight', 'outcome-oversight', 'Oversight', `${pctOver}%`, 'choice opportunity closed with no problem attached');
   setReadout('sum-choice-flight', 'outcome-flight', 'Flight', `${pctFli}%`, 'choice opportunity closed after problems fled');
-  var runPerCo = runResolvedByChoice.map(function(v, i) {
-    return formatChoiceOpportunityLabel(i) + ' ' + v;
-  }).join(' · ');
-  var meanArr = Array.isArray(choiceResolvedPerCoMean) ? choiceResolvedPerCoMean : [];
-  var meanPerCo = meanArr.length ? meanArr.map(function(v, i) {
-    return formatChoiceOpportunityLabel(i) + ' ' + v.toFixed(1);
-  }).join(' · ') : 'n/a';
-  setReadout('sum-choice-perco', 'outcome-unresolved', 'Per-CO closure', 'Run: ' + runPerCo, 'MC mean: ' + meanPerCo);
+  function formatPerCoLines(prefix, values, decimals) {
+    var lines = [];
+    var chunkSize = 5;
+    for (var start = 0; start < values.length; start += chunkSize) {
+      var chunk = values.slice(start, start + chunkSize);
+      var body = chunk.map(function(v, idx) {
+        var coIdx = start + idx;
+        var valText = decimals === 0 ? String(v) : Number(v).toFixed(decimals);
+        return formatChoiceOpportunityLabel(coIdx) + ' ' + valText;
+      }).join(' · ');
+      lines.push((start === 0 ? (prefix + ': ') : '    ') + body);
+    }
+    return lines;
+  }
+  var meanArr = Array.isArray(choiceResolvedPerCoMean) && choiceResolvedPerCoMean.length === dims.choices
+    ? choiceResolvedPerCoMean
+    : new Array(dims.choices).fill(0);
+  var perCoLines = []
+    .concat(formatPerCoLines('Run', runResolvedByChoice, 0))
+    .concat(formatPerCoLines('MC mean', meanArr, 1));
+  setReadout('sum-choice-perco', 'outcome-unresolved', 'Per-CO closure', '', perCoLines);
 
   // Supplementary: problem fates (interpretive extension)
   document.getElementById('sum-problems-label').textContent =

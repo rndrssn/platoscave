@@ -57,6 +57,10 @@
   color: var(--ink-faint);
   text-decoration: none;
   transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.1rem;
 }
 
 .nav-link:hover    { color: var(--ink-mid); }
@@ -73,6 +77,8 @@
   border: none;
   cursor: pointer;
   padding: 0;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
 }
 
 .js-enabled .nav-mobile-toggle {
@@ -214,6 +220,10 @@ footer {
 }
 
 .footer-link:hover {
+  color: var(--ink-faint);
+}
+
+.footer-link--current {
   color: var(--ink-faint);
 }
 
@@ -476,6 +486,12 @@ footer {
   padding: 1rem 0;
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--ink-ghost);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+  position: relative;
 }
 
 .results-nav-link {
@@ -487,6 +503,12 @@ footer {
   color: var(--ink-ghost);
   text-decoration: none;
   transition: color 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  scroll-snap-align: start;
+  flex: 0 0 auto;
 }
 
 .results-nav-link:hover {
@@ -505,6 +527,25 @@ footer {
 
 .results-nav-link--active .results-nav-dot {
   color: var(--sage);
+}
+
+@media (max-width: 640px) {
+  .results-nav::after {
+    content: "Scroll \2192";
+    position: sticky;
+    right: 0;
+    margin-left: auto;
+    padding-left: 0.9rem;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-ghost);
+    background: linear-gradient(90deg, transparent 0%, var(--paper) 28%);
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+  }
 }
 
 /* Nav behaviour variants — toggle by changing the class on .results-nav */

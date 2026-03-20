@@ -544,13 +544,38 @@ footer {
   border-bottom: none;
 }
 
+/* ─── Result card ────────────────────────────────────── */
+.result-card {
+  background: var(--paper-dark);
+  border: 2px solid var(--paper-deep);
+  border-top: 2px solid var(--sage);
+  padding: 2.25rem 1.5rem;
+  max-width: 560px;
+}
+
+@media (min-width: 640px) {
+  .result-card {
+    padding: 2.25rem 2.5rem;
+  }
+}
+
+.card-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-bottom: 1rem;
+}
+
 /* ─── Simulation summary card ────────────────────────── */
 .sim-summary-card {
   background: var(--paper-dark);
   border: 2px solid var(--paper-deep);
   border-top: 2px solid var(--sage);
   padding: 2.25rem 1.5rem;
-  margin-top: 2.5rem;
+  margin-top: 1.5rem;
   max-width: 560px;
 }
 

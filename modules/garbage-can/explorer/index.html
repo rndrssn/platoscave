@@ -68,43 +68,61 @@
 
       <!-- Parameter selectors — page-level controls -->
       <div class="explorer-panel" id="panel-a">
-        <div class="explorer-selectors">
-          <div class="explorer-select-group">
-            <label class="explorer-select-label" for="panel-a-load">Problem intensity</label>
-            <select class="explorer-select" id="panel-a-load">
-              <option value="" disabled selected>Select&hellip;</option>
-              <option value="light">Light</option>
-              <option value="moderate">Moderate</option>
-              <option value="heavy">Heavy</option>
-            </select>
-          </div>
-          <div class="explorer-select-group">
-            <label class="explorer-select-label" for="panel-a-inflow">Problem inflow</label>
-            <select class="explorer-select" id="panel-a-inflow">
-              <option value="" disabled selected>Select&hellip;</option>
-              <option value="light">Light</option>
-              <option value="moderate">Moderate</option>
-              <option value="heavy">Heavy</option>
-            </select>
-          </div>
-          <div class="explorer-select-group">
-            <label class="explorer-select-label" for="panel-a-decision">Decision</label>
-            <select class="explorer-select" id="panel-a-decision">
-              <option value="" disabled selected>Select&hellip;</option>
-              <option value="unsegmented">Unsegmented</option>
-              <option value="hierarchical">Hierarchical</option>
-              <option value="specialized">Specialized</option>
-            </select>
-          </div>
-          <div class="explorer-select-group">
-            <label class="explorer-select-label" for="panel-a-access">Access</label>
-            <select class="explorer-select" id="panel-a-access">
-              <option value="" disabled selected>Select&hellip;</option>
-              <option value="unsegmented">Unsegmented</option>
-              <option value="hierarchical">Hierarchical</option>
-              <option value="specialized">Specialized</option>
-            </select>
-          </div>
+        <p class="stage-label">Scenario setup</p>
+        <h2 class="explorer-setup-title">Define the organisational context</h2>
+        <p class="explorer-setup-body">
+          Set pressure and structure before running the simulation.
+          This configuration determines how problems, participants, and choice opportunities interact.
+        </p>
+
+        <div class="explorer-select-clusters">
+          <section class="explorer-select-cluster" aria-labelledby="pressure-heading">
+            <p class="explorer-cluster-title" id="pressure-heading">Problem pressure</p>
+            <div class="explorer-selectors explorer-selectors--pair">
+              <div class="explorer-select-group">
+                <label class="explorer-select-label" for="panel-a-load">Problem intensity</label>
+                <select class="explorer-select" id="panel-a-load">
+                  <option value="" disabled selected>Select&hellip;</option>
+                  <option value="light">Light</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="heavy">Heavy</option>
+                </select>
+              </div>
+              <div class="explorer-select-group">
+                <label class="explorer-select-label" for="panel-a-inflow">Problem inflow</label>
+                <select class="explorer-select" id="panel-a-inflow">
+                  <option value="" disabled selected>Select&hellip;</option>
+                  <option value="light">Light</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="heavy">Heavy</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <section class="explorer-select-cluster" aria-labelledby="structure-heading">
+            <p class="explorer-cluster-title" id="structure-heading">Organisational structure</p>
+            <div class="explorer-selectors explorer-selectors--pair">
+              <div class="explorer-select-group">
+                <label class="explorer-select-label" for="panel-a-decision">Decision</label>
+                <select class="explorer-select" id="panel-a-decision">
+                  <option value="" disabled selected>Select&hellip;</option>
+                  <option value="unsegmented">Unsegmented</option>
+                  <option value="hierarchical">Hierarchical</option>
+                  <option value="specialized">Specialized</option>
+                </select>
+              </div>
+              <div class="explorer-select-group">
+                <label class="explorer-select-label" for="panel-a-access">Access</label>
+                <select class="explorer-select" id="panel-a-access">
+                  <option value="" disabled selected>Select&hellip;</option>
+                  <option value="unsegmented">Unsegmented</option>
+                  <option value="hierarchical">Hierarchical</option>
+                  <option value="specialized">Specialized</option>
+                </select>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
 

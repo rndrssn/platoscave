@@ -749,6 +749,47 @@
   }
 }
 
+.explorer-setup-title {
+  font-family: var(--serif-alt);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.15rem, 2.3vw, 1.45rem);
+  line-height: 1.2;
+  color: var(--ink);
+  margin-bottom: 0.6rem;
+}
+
+.explorer-setup-body {
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  color: var(--ink-mid);
+  line-height: 1.7;
+  max-width: 62ch;
+  margin-bottom: 1rem;
+}
+
+.explorer-select-clusters {
+  display: grid;
+  gap: 1rem;
+}
+
+.explorer-select-cluster {
+  background: var(--paper-dark);
+  border: 2px solid var(--paper-deep);
+  border-top: 2px solid var(--ink-ghost);
+  padding: 1rem;
+}
+
+.explorer-cluster-title {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-bottom: 0.7rem;
+}
+
 .explorer-selectors {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));

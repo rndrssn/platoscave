@@ -81,30 +81,32 @@ const CHOICE_STROKE_WIDTH = 1.8;
 const CHOICE_STROKE_WIDTH_RESOLVED = 1.2;
 const LEGEND_RESOLVED_STROKE_WIDTH = 1.2;
 const MOTION = {
+  open: { pulseMs: 400, startScale: 0.9, endScale: 1.35 },
   enter: { popInMs: 260, searchShiftMs: 300, settleMs: 520, overshootRadius: 1.55 },
-  attach: { pullMs: 520, holdMs: 140, settleMs: 320, overshootRadius: 1.22 },
-  search: { driftMs: 620, pulseMs: 360, jitterAmp: 3.4 },
+  attach: { pullMs: 780, holdMs: 180, settleMs: 420, overshootRadius: 1.22 },
+  search: { driftMs: 1040, pulseMs: 620, jitterAmp: 3.4 },
   adrift: { swayMs: 520, pulseMs: 420, swayAmp: 3.8 },
   resolve: { convergeMs: 520, holdMs: 170, fadeMs: 260, overshootRadius: 1.45 },
-  flight: { flashMs: 200, ejectMs: 560, overshootRadius: 1.3 },
-  oversight: { flashMs: 220, ejectMs: 560, overshootRadius: 1.3 },
+  flight: { flashMs: 260, ejectMs: 980, overshootRadius: 1.3 },
+  oversight: { flashMs: 280, ejectMs: 980, overshootRadius: 1.3 },
 };
 const TIMING = {
-  legendLeadMs: 110,
-  finalPauseMs: 520,
-  minTickMs: 850,
-  maxTickMs: 2200,
-  motionFraction: 0.76,
-  eventPauseMs: 280,
-  densitySlowMs: 240,
+  legendLeadMs: 220,
+  openingLeadMs: 220,
+  finalPauseMs: 1100,
+  minTickMs: 1400,
+  maxTickMs: 3600,
+  motionFraction: 0.62,
+  eventPauseMs: 460,
+  densitySlowMs: 340,
   densityFastMs: -140,
   deadTickFastMs: -120,
-  resolvePauseMs: 550,
-  enteringPauseMs: 220,
-  searchingPauseMs: 180,
-  baseEarlyMs: 1850, // iter 1-5
-  baseMidMs: 1450,   // iter 6-10
-  baseLateMs: 1080,  // iter 11-20
+  resolvePauseMs: 820,
+  enteringPauseMs: 360,
+  searchingPauseMs: 320,
+  baseEarlyMs: 2600, // iter 1-5
+  baseMidMs: 2250,   // iter 6-10
+  baseLateMs: 1850,  // iter 11-20
 };
 const TOP_LEGEND_LINE_GAP_EM = readCssNumber('--viz-lh-top', 1.55);
 const BOTTOM_LEGEND_LINE_STEP = readCssNumber('--viz-fs-legend', 13) * readCssNumber('--viz-lh-legend', 1.7);
@@ -714,6 +716,7 @@ function drawViz(simResult, options) {
         density: 0,
         isDead: false,
         hasResolution: false,
+        hasOpening: false,
         hasEntering: false,
         hasSearching: false,
       };
@@ -770,6 +773,7 @@ function drawViz(simResult, options) {
       density,
       isDead,
       hasResolution: choicesResolvedThisTick.size > 0,
+      hasOpening: choicesOpenedThisTick.length > 0,
       hasEntering: enteringCount > 0,
       hasSearching: searchingCount > 0,
     };
@@ -906,6 +910,34 @@ function drawViz(simResult, options) {
             .ease(d3.easeCubicOut)
             .attr('r', CHOICE_R * 1.42)
             .attr('stroke-width', 0.9)
+            .attr('opacity', 0)
+            .remove();
+    }
+
+    // Opening pulse on newly opened COs.
+    if (choicesOpenedThisTick.length > 0) {
+      var openPulseData = choicesOpenedThisTick.map(function(choiceId) {
+        return choiceCenters[choiceId];
+      });
+
+      svg.append('g')
+        .attr('class', 'choice-open-pulse')
+        .selectAll('circle.open-pulse')
+        .data(openPulseData)
+        .join('circle')
+          .attr('class', 'open-pulse')
+          .attr('cx', function(d) { return d.x; })
+          .attr('cy', function(d) { return d.y; })
+          .attr('r', CHOICE_R * MOTION.open.startScale)
+          .attr('fill', 'none')
+          .attr('stroke', C.inkFaint)
+          .attr('stroke-width', 1.4)
+          .attr('opacity', 0.85)
+          .transition()
+            .duration(sd(MOTION.open.pulseMs))
+            .ease(d3.easeCubicOut)
+            .attr('r', CHOICE_R * MOTION.open.endScale)
+            .attr('stroke-width', 0.8)
             .attr('opacity', 0)
             .remove();
     }
@@ -1161,9 +1193,10 @@ function drawViz(simResult, options) {
 
     // Prime attention before movement.
     setTopLegend(`Iter ${currTick.tick}/${dims.periods}`, analysis.eventText);
+    var preMotionDelay = analysis.hasOpening ? TIMING.openingLeadMs : 0;
     setTimeout(function() {
       renderTick(current, prevTick, timing.motionMs);
-    }, TIMING.legendLeadMs);
+    }, TIMING.legendLeadMs + preMotionDelay);
 
     if (current === ticks.length - 1) {
       setTimeout(function() {

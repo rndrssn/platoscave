@@ -33,3 +33,6 @@ HANDOFF*.md
 
 #SPIKES
 SPIKE-*.md
+
+# Local scratch artifacts
+scribs

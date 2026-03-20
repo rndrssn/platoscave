@@ -416,15 +416,52 @@ footer {
   font-weight: 400;
   text-transform: none;
   letter-spacing: 0.01em;
-  line-height: 1.45;
+  line-height: 1.5;
   color: var(--ink-mid);
-  margin-top: 0.35rem;
+  margin-top: 0.5rem;
+  display: grid;
+  grid-template-columns: minmax(9.5rem, 13rem) minmax(0, 1fr);
+  column-gap: 0.6rem;
+  row-gap: 0.1rem;
+  align-items: baseline;
+}
+
+.summary-label {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82em;
+}
+
+.summary-metric {
+  color: var(--ink-mid);
+  font-weight: 500;
+}
+
+.summary-detail {
+  grid-column: 2;
+  color: var(--ink-faint);
+  font-size: 0.92em;
+  line-height: 1.35;
 }
 
 .outcome-resolved   { color: var(--sage); font-weight: 400; }
 .outcome-flight     { color: var(--rust);  font-weight: 400; }
 .outcome-oversight  { color: var(--slate); font-weight: 400; }
+.outcome-searching  { color: var(--gold); font-weight: 400; }
+.outcome-in-co      { color: var(--sage-light); font-weight: 400; }
 .outcome-unresolved { color: var(--ink-faint); font-weight: 400; }
+
+@media (max-width: 640px) {
+  .sim-summary-card .period-readout {
+    grid-template-columns: minmax(7.6rem, 9.6rem) minmax(0, 1fr);
+  }
+
+  .summary-detail {
+    grid-column: 1 / -1;
+    margin-left: 0;
+  }
+}
 
 /* ─── Results mini-nav ───────────────────────────────── */
 .results-nav {

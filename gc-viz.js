@@ -38,12 +38,29 @@ const C = {
   sageLight: readCssVar('--viz-sage-light', '#6B8F62'),
 };
 
+const MARKER = {
+  enteringFill: C.rustLight,
+  enteringStroke: C.rust,
+  searchingFill: C.gold,
+  searchingStroke: C.ochre,
+  inCoFill: C.sageLight,
+  inCoStroke: C.sage,
+  resolvedFill: C.sage,
+  resolvedStroke: C.sageLight,
+  flightFill: C.rust,
+  flightStroke: C.rustLight,
+  oversightFill: C.slate,
+  oversightStroke: C.slateLight,
+};
+const CHOICE_LABEL_Y_OFFSET = 16;
+
 function readCssNumber(name, fallback) {
   const parsed = parseFloat(readCssVar(name, String(fallback)));
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-const CHOICE_RADIUS = 30;
+const CHOICE_RADIUS = 34;
+const DESKTOP_CO_FIELD_HEIGHT_SCALE = 0.78;
 
 const GC_VIZ_DEFAULTS = (typeof window !== 'undefined' && window.GC_VIZ_CONFIG)
   ? window.GC_VIZ_CONFIG
@@ -79,6 +96,36 @@ const VIZ_LAYOUT = {
 const CHOICE_STROKE_WIDTH = 1.8;
 const CHOICE_STROKE_WIDTH_RESOLVED = 1.2;
 const LEGEND_RESOLVED_STROKE_WIDTH = 1.2;
+const MOTION = {
+  open: { pulseMs: 400, startScale: 0.9, endScale: 1.35 },
+  enter: { popInMs: 260, holdMs: 840, searchShiftMs: 300, settleMs: 520, overshootRadius: 1.55, staggerMs: 120 },
+  attach: { pullMs: 780, holdMs: 180, settleMs: 420, overshootRadius: 1.22 },
+  search: { driftMs: 1040, pulseMs: 620, jitterAmp: 3.4 },
+  adrift: { swayMs: 520, pulseMs: 420, swayAmp: 3.8 },
+  resolve: { convergeMs: 520, holdMs: 170, fadeMs: 260, overshootRadius: 1.45 },
+  flight: { flashMs: 260, ejectMs: 980, overshootRadius: 1.3 },
+  oversight: { flashMs: 280, ejectMs: 980, overshootRadius: 1.3 },
+};
+const TIMING = {
+  legendLeadMs: 220,
+  openingLeadMs: 220,
+  finalPauseMs: 1100,
+  minTickMs: 1400,
+  maxTickMs: 3600,
+  motionFraction: 0.62,
+  eventPauseMs: 460,
+  densitySlowMs: 340,
+  densityFastMs: -140,
+  deadTickFastMs: -120,
+  resolvePauseMs: 820,
+  enteringPauseMs: 640,
+  enteringDensityPauseMs: 100,
+  enteringDensityPauseCapMs: 320,
+  searchingPauseMs: 320,
+  baseEarlyMs: 2600, // iter 1-5
+  baseMidMs: 2250,   // iter 6-10
+  baseLateMs: 1850,  // iter 11-20
+};
 const TOP_LEGEND_LINE_GAP_EM = readCssNumber('--viz-lh-top', 1.55);
 const BOTTOM_LEGEND_LINE_STEP = readCssNumber('--viz-fs-legend', 13) * readCssNumber('--viz-lh-legend', 1.7);
 
@@ -105,10 +152,10 @@ function setMultilineLegendText(textSel, lines, lineGapEm) {
 }
 
 const GC_LEGEND_ITEMS = [
-  { label: 'Problem entering',  color: C.rust },
-  { label: 'Problem searching for choice opportunity', color: C.gold },
-  { label: 'In choice opportunity (CO)', color: C.sageLight },
-  { label: 'RESOLVED PROBLEMS (CUM.)', color: C.sage, resolved: true },
+  { label: 'Problem entering org',  color: MARKER.enteringFill, stroke: MARKER.enteringStroke },
+  { label: 'Problem searching for CO', color: MARKER.searchingFill, stroke: MARKER.searchingStroke },
+  { label: 'Problem in CO', color: MARKER.inCoFill, stroke: MARKER.inCoStroke },
+  { label: 'RESOLVED PROBLEMS (CUM.)', color: MARKER.resolvedFill, stroke: MARKER.resolvedStroke, resolved: true },
 ];
 function getSimulationDefaultsFromWindow() {
   if (typeof window !== 'undefined' && typeof window.getGarbageCanDefaults === 'function') {
@@ -162,14 +209,16 @@ function drawBottomLegend(svg, legendY, sizing) {
         .attr('cy', rowY)
         .attr('r', resolvedR)
         .attr('fill', 'none')
-        .attr('stroke', C.inkMid)
+        .attr('stroke', item.stroke || C.inkMid)
         .attr('stroke-width', LEGEND_RESOLVED_STROKE_WIDTH);
     } else {
       legendG.append('circle')
         .attr('cx', markerX)
         .attr('cy', rowY)
         .attr('r', LEGEND_MARKER_R)
-        .attr('fill', item.color);
+        .attr('fill', item.color)
+        .attr('stroke', item.stroke || item.color)
+        .attr('stroke-width', 0.8);
     }
 
     legendG.append('text')
@@ -212,9 +261,13 @@ function ensureVizEventTicker() {
 }
 
 function getVizSizing() {
-  var svgEl = typeof document !== 'undefined' ? document.getElementById('viz-svg') : null;
-  var viewportW = svgEl && svgEl.clientWidth ? svgEl.clientWidth : 0;
-  if (!viewportW && typeof window !== 'undefined') viewportW = window.innerWidth || 0;
+  var viewportW = 0;
+  if (typeof window !== 'undefined') {
+    viewportW = window.innerWidth || 0;
+  }
+  if (!viewportW && typeof document !== 'undefined' && document.documentElement) {
+    viewportW = document.documentElement.clientWidth || 0;
+  }
   var isMobile = viewportW > 0 && viewportW <= 640;
 
   return {
@@ -225,14 +278,27 @@ function getVizSizing() {
   };
 }
 
-function buildChoiceCenters(svgW, padH, choiceY, choiceRadius, choiceCount) {
+function resolveVizLayout(mode, sizing) {
+  var base = VIZ_LAYOUT[mode] || {};
+  return Object.assign({}, base);
+}
+
+function resolveChoiceFieldBox(layout, sizing) {
+  var fieldW = layout.svgW - layout.padH * 2;
+  var fieldH = sizing.isMobile ? fieldW : Math.round(fieldW * DESKTOP_CO_FIELD_HEIGHT_SCALE);
+  return {
+    left: layout.padH,
+    top: layout.squareTop,
+    width: fieldW,
+    height: fieldH,
+  };
+}
+
+function buildChoiceCenters(fieldBox, choiceRadius, choiceCount) {
   var goldenAngle = Math.PI * (3 - Math.sqrt(5));
-  var trackW = svgW - padH * 2;
-  var squareSide = trackW;
-  var squareLeft = padH;
-  var squareTop = choiceY - squareSide / 2;
   var inset = choiceRadius + 4;
-  var usableSide = Math.max(0, squareSide - inset * 2);
+  var usableW = Math.max(0, fieldBox.width - inset * 2);
+  var usableH = Math.max(0, fieldBox.height - inset * 2);
 
   var points = d3.range(choiceCount).map(function(i) {
     var idx = i + 1;
@@ -253,8 +319,8 @@ function buildChoiceCenters(svgW, padH, choiceY, choiceRadius, choiceCount) {
 
   return points.map(function(p) {
     return {
-      x: squareLeft + inset + p.x * usableSide,
-      y: squareTop + inset + p.y * usableSide,
+      x: fieldBox.left + inset + p.x * usableW,
+      y: fieldBox.top + inset + p.y * usableH,
     };
   });
 }
@@ -331,19 +397,18 @@ function drawPositioning(raw) {
 function drawEmptyState(options) {
   var dims = resolveVizDimensions(null, options);
   var sizing = getVizSizing();
+  var layout = resolveVizLayout('empty', sizing);
   const {
     svgW: SVG_W,
     choiceRadius: CHOICE_R,
-    padH: PAD_H,
-    squareTop,
     bottomLegendPad,
     bottomLegendOffset,
     enteringOffset,
-  } = VIZ_LAYOUT.empty;
-  var squareSide = SVG_W - PAD_H * 2;
-  var SVG_H = squareTop + squareSide + bottomLegendPad;
-  var CHOICE_Y = squareTop + squareSide / 2;
-  var FLOAT_Y0 = squareTop + enteringOffset;
+  } = layout;
+  var fieldBox = resolveChoiceFieldBox(layout, sizing);
+  var SVG_H = fieldBox.top + fieldBox.height + bottomLegendPad;
+  var CHOICE_Y = fieldBox.top + fieldBox.height / 2;
+  var FLOAT_Y0 = fieldBox.top + enteringOffset;
   const PROB_R = sizing.problemRadius;
 
   const svg = d3.select('#viz-svg')
@@ -354,7 +419,19 @@ function drawEmptyState(options) {
   var eventTickerEl = ensureVizEventTicker();
   if (eventTickerEl) eventTickerEl.textContent = '';
 
-  const choiceCenters = buildChoiceCenters(SVG_W, PAD_H, CHOICE_Y, CHOICE_R, dims.choices);
+  const choiceCenters = buildChoiceCenters(fieldBox, CHOICE_R, dims.choices);
+
+  // Dedicated horizontal spawn lane for entering problems.
+  svg.append('line')
+    .attr('class', 'entering-lane')
+    .attr('x1', fieldBox.left)
+    .attr('x2', fieldBox.left + fieldBox.width)
+    .attr('y1', FLOAT_Y0)
+    .attr('y2', FLOAT_Y0)
+    .attr('stroke', C.rustLight)
+    .attr('stroke-width', 0.8)
+    .attr('stroke-dasharray', '3 5')
+    .attr('opacity', 0.24);
 
   // Choice circles
   const choiceLayer = svg.append('g');
@@ -376,7 +453,7 @@ function drawEmptyState(options) {
     .join('text')
       .attr('class', 'choice-label gc-viz__choice-label')
       .attr('x', i => choiceCenters[i].x)
-      .attr('y', i => choiceCenters[i].y + CHOICE_R + 13)
+      .attr('y', i => choiceCenters[i].y + CHOICE_R + CHOICE_LABEL_Y_OFFSET)
       .attr('text-anchor', 'middle')
       .text(i => formatChoiceOpportunityLabel(i));
 
@@ -405,15 +482,26 @@ function showEndState(
   lastTick,
   dims
 ) {
-  function setReadout(id, toneClass, label, text) {
+  function setReadout(id, toneClass, label, metric, detail) {
     var el = document.getElementById(id);
     if (!el) return;
     el.textContent = '';
-    var span = document.createElement('span');
-    span.className = toneClass;
-    span.textContent = label;
-    el.appendChild(span);
-    el.appendChild(document.createTextNode(': ' + text));
+    var labelSpan = document.createElement('span');
+    labelSpan.className = toneClass + ' summary-label';
+    labelSpan.textContent = label;
+    el.appendChild(labelSpan);
+
+    var metricSpan = document.createElement('span');
+    metricSpan.className = 'summary-metric';
+    metricSpan.textContent = metric;
+    el.appendChild(metricSpan);
+
+    if (detail) {
+      var detailSpan = document.createElement('span');
+      detailSpan.className = 'summary-detail';
+      detailSpan.textContent = detail;
+      el.appendChild(detailSpan);
+    }
   }
 
   // Stop any pulsating on dots
@@ -428,8 +516,8 @@ function showEndState(
   var runInForum  = 0;
   var runAdrift   = 0;
   var runNeverEntered = 0;
-  var runChoicesResolved = 0;
-  var runChoicesOpen     = 0;
+  var runChoicesClosed = 0;
+  var runChoicesOpen   = 0;
 
   if (lastTick) {
     lastTick.problems.forEach(function(p) {
@@ -439,38 +527,38 @@ function showEndState(
       else if (p.state === 'inactive') runNeverEntered++;
     });
     lastTick.choices.forEach(function(c) {
-      if (c.state === 'resolved') runChoicesResolved++;
+      if (c.state === 'closed') runChoicesClosed++;
       else if (c.state === 'active') runChoicesOpen++;
     });
   }
 
   document.getElementById('sum-thisrun-label').textContent =
     'Single run snapshot (organisational iteration ' + dims.periods + ')';
-  setReadout('sum-thisrun-resolved', 'outcome-resolved', 'Resolved', runResolved + ' of ' + dims.problems + ' problems');
-  setReadout('sum-thisrun-inforum', 'outcome-unresolved', 'In choice opportunity', runInForum + ' of ' + dims.problems + ' problems');
-  setReadout('sum-thisrun-adrift', 'outcome-flight', 'Adrift', runAdrift + ' of ' + dims.problems + ' problems');
+  setReadout('sum-thisrun-resolved', 'outcome-resolved', 'Problem resolved', runResolved + ' of ' + dims.problems + ' problems');
+  setReadout('sum-thisrun-inforum', 'outcome-in-co', 'Problem in choice opportunity', runInForum + ' of ' + dims.problems + ' problems');
+  setReadout('sum-thisrun-adrift', 'outcome-searching', 'Problem adrift', runAdrift + ' of ' + dims.problems + ' problems');
   setReadout('sum-thisrun-never-entered', 'outcome-unresolved', 'Never entered', runNeverEntered + ' of ' + dims.problems + ' problems');
-  setReadout('sum-thisrun-choices-resolved', 'outcome-resolved', 'Choice opportunities concluded', runChoicesResolved + ' of ' + dims.choices);
+  setReadout('sum-thisrun-choices-resolved', 'outcome-resolved', 'Choice opportunities closed', runChoicesClosed + ' of ' + dims.choices);
   setReadout('sum-thisrun-choices-open', 'outcome-unresolved', 'Choice opportunities active', runChoicesOpen + ' of ' + dims.choices);
 
   // Primary: canonical GCM decision styles (choice-level)
   document.getElementById('sum-header').textContent =
-    'Across 100 simulations (Monte Carlo average):';
+    'Across 100 simulations (Monte Carlo mean at iteration ' + dims.periods + '):';
 
   document.getElementById('sum-choices-label').textContent =
-    'Choice closure style shares';
-  setReadout('sum-choice-resolution', 'outcome-resolved', 'Deliberation', `${pctRes}% \u2014 choice opportunity closed after sustained engagement`);
-  setReadout('sum-choice-oversight', 'outcome-oversight', 'Oversight', `${pctOver}% \u2014 choice opportunity closed with no problem attached`);
-  setReadout('sum-choice-flight', 'outcome-flight', 'Flight', `${pctFli}% \u2014 choice opportunity closed after problems fled`);
+    'How did choice opportunities close';
+  setReadout('sum-choice-resolution', 'outcome-resolved', 'Deliberation', `${pctRes}%`, 'choice opportunity closed after sustained engagement');
+  setReadout('sum-choice-oversight', 'outcome-oversight', 'Oversight', `${pctOver}%`, 'choice opportunity closed with no problem attached');
+  setReadout('sum-choice-flight', 'outcome-flight', 'Flight', `${pctFli}%`, 'choice opportunity closed after problems fled');
 
   // Supplementary: problem fates (interpretive extension)
   document.getElementById('sum-problems-label').textContent =
     `What happened to the ${dims.problems} problems`;
-  setReadout('sum-prob-resolved', 'outcome-resolved', 'Resolved', `${probResolved} of ${dims.problems} \u2014 genuinely closed at a choice opportunity`);
-  setReadout('sum-prob-displaced', 'outcome-oversight', 'Displaced', `${probDisplaced} of ${dims.problems} \u2014 choice opportunity closed without resolving this problem`);
-  setReadout('sum-prob-adrift', 'outcome-flight', 'Adrift', `${probAdrift} of ${dims.problems} \u2014 detached from a choice opportunity after entry`);
-  setReadout('sum-prob-never-entered', 'outcome-unresolved', 'Never entered', `${probNeverEntered} of ${dims.problems} \u2014 never attached to any choice opportunity by organisational iteration ${dims.periods}`);
-  setReadout('sum-prob-inforum', 'outcome-unresolved', 'In choice opportunity', `${probInForum} of ${dims.problems} \u2014 still attached to an open choice opportunity at organisational iteration ${dims.periods}`);
+  setReadout('sum-prob-resolved', 'outcome-resolved', 'Problem resolved', `${probResolved} of ${dims.problems}`, 'genuinely closed at a choice opportunity');
+  setReadout('sum-prob-displaced', 'outcome-oversight', 'Displaced', `${probDisplaced} of ${dims.problems}`, 'choice opportunity closed without resolving this problem');
+  setReadout('sum-prob-adrift', 'outcome-searching', 'Problem adrift', `${probAdrift} of ${dims.problems}`, 'detached from a choice opportunity after entry');
+  setReadout('sum-prob-never-entered', 'outcome-unresolved', 'Never entered', `${probNeverEntered} of ${dims.problems}`, `never attached to any choice opportunity by organisational iteration ${dims.periods}`);
+  setReadout('sum-prob-inforum', 'outcome-in-co', 'Problem in choice opportunity', `${probInForum} of ${dims.problems}`, `still attached to an open choice opportunity at organisational iteration ${dims.periods}`);
 
   document.getElementById('replay-btn').hidden      = false;
   document.getElementById('stochastic-note').hidden = false;
@@ -483,6 +571,7 @@ function drawViz(simResult, options) {
   var eventTickerEl = ensureVizEventTicker();
   if (eventTickerEl) eventTickerEl.textContent = '';
   var sizing = getVizSizing();
+  var layout = resolveVizLayout('live', sizing);
 
   // Choice-level percentages (canonical GCM decision styles)
   // Rounded to nearest 5% — at 100 Monte Carlo iterations, finer precision is noise
@@ -505,18 +594,16 @@ function drawViz(simResult, options) {
   const {
     svgW: SVG_W,
     choiceRadius: CHOICE_R,
-    padH: PAD_H,
-    squareTop,
     bottomLegendPad,
     bottomLegendOffset,
     floatY0Offset,
     floatY1Offset,
-  } = VIZ_LAYOUT.live;
-  var squareSide = SVG_W - PAD_H * 2;
-  var SVG_H = squareTop + squareSide + bottomLegendPad;
-  var CHOICE_Y = squareTop + squareSide / 2;
-  var FLOAT_Y0 = squareTop + floatY0Offset;
-  var FLOAT_Y1 = squareTop + floatY1Offset;
+  } = layout;
+  var fieldBox = resolveChoiceFieldBox(layout, sizing);
+  var SVG_H = fieldBox.top + fieldBox.height + bottomLegendPad;
+  var CHOICE_Y = fieldBox.top + fieldBox.height / 2;
+  var FLOAT_Y0 = fieldBox.top + floatY0Offset;
+  var FLOAT_Y1 = fieldBox.top + floatY1Offset;
   const PROB_R = sizing.problemRadius;
 
   const svg = d3.select('#viz-svg')
@@ -525,9 +612,21 @@ function drawViz(simResult, options) {
 
   svg.selectAll('*').remove();
 
-  const choiceCenters = buildChoiceCenters(SVG_W, PAD_H, CHOICE_Y, CHOICE_R, dims.choices);
+  const choiceCenters = buildChoiceCenters(fieldBox, CHOICE_R, dims.choices);
   const floatTracks = choiceCenters.map(function(c) { return c.x; }).sort(function(a, b) { return a - b; });
-  const choiceXFallback = floatTracks.length ? floatTracks : [PAD_H];
+  const choiceXFallback = floatTracks.length ? floatTracks : [layout.padH];
+
+  // Dedicated horizontal spawn lane for entering problems.
+  svg.append('line')
+    .attr('class', 'entering-lane')
+    .attr('x1', fieldBox.left)
+    .attr('x2', fieldBox.left + fieldBox.width)
+    .attr('y1', FLOAT_Y0)
+    .attr('y2', FLOAT_Y0)
+    .attr('stroke', C.rustLight)
+    .attr('stroke-width', 0.8)
+    .attr('stroke-dasharray', '3 5')
+    .attr('opacity', 0.24);
 
   function floatPos(id) {
     if (id < dims.choices) {
@@ -535,6 +634,14 @@ function drawViz(simResult, options) {
     }
     const col = (id - dims.choices) % choiceXFallback.length;
     return { x: choiceXFallback[col], y: FLOAT_Y1 };
+  }
+
+  function enteringLanePos(id) {
+    var slot = id % dims.problems;
+    var laneInset = 8;
+    var laneW = Math.max(0, fieldBox.width - laneInset * 2);
+    var x = fieldBox.left + laneInset + ((slot + 0.5) / Math.max(1, dims.problems)) * laneW;
+    return { x: x, y: FLOAT_Y0 };
   }
 
   function attachedPos(choiceId, slot, total) {
@@ -602,7 +709,7 @@ function drawViz(simResult, options) {
     .join('text')
       .attr('class', 'choice-label gc-viz__choice-label')
       .attr('x', i => choiceCenters[i].x)
-      .attr('y', i => choiceCenters[i].y + CHOICE_R + 13)
+      .attr('y', i => choiceCenters[i].y + CHOICE_R + CHOICE_LABEL_Y_OFFSET)
       .attr('text-anchor', 'middle')
       .text(i => formatChoiceOpportunityLabel(i));
 
@@ -625,6 +732,8 @@ function drawViz(simResult, options) {
       .attr('cy', id => floatPos(id).y)
       .attr('r', PROB_R)
       .attr('fill', C.inkGhost)
+      .attr('stroke', 'none')
+      .attr('stroke-width', 0)
       .attr('opacity', 0)
       .each(function() {
         d3.select(this).append('title');
@@ -635,18 +744,18 @@ function drawViz(simResult, options) {
 
     if (p.state === 'inactive') {
       const fp = floatPos(id);
-      return { x: fp.x, y: fp.y, opacity: 0, fill: C.inkGhost, r: PROB_R };
+      return { x: fp.x, y: fp.y, opacity: 0, fill: C.inkGhost, stroke: 'none', strokeWidth: 0, r: PROB_R };
     }
 
     if (p.state === 'floating') {
       const fp = floatPos(id);
-      return { x: fp.x, y: fp.y, opacity: 0.9, fill: C.gold, r: PROB_R };
+      return { x: fp.x, y: fp.y, opacity: 0.92, fill: MARKER.searchingFill, stroke: MARKER.searchingStroke, strokeWidth: 0.85, r: PROB_R };
     }
 
     if (p.state === 'resolved') {
       var resolvedIndex = typeof p.attachedTo === 'number' ? p.attachedTo : 0;
       var resolvedCenter = choiceCenters[resolvedIndex] || choiceCenters[0];
-      return { x: resolvedCenter.x, y: resolvedCenter.y, opacity: 0, fill: C.sage, r: PROB_R };
+      return { x: resolvedCenter.x, y: resolvedCenter.y, opacity: 0, fill: MARKER.resolvedFill, stroke: MARKER.resolvedStroke, strokeWidth: 0.8, r: PROB_R };
     }
 
     // attached — fibonacci packing inside choice circle
@@ -655,7 +764,7 @@ function drawViz(simResult, options) {
       .filter(q => q.state === 'attached' && q.attachedTo === p.attachedTo);
     const slot = siblings.findIndex(q => q.id === id);
     const pos  = attachedPos(p.attachedTo, slot, siblings.length);
-    return { x: pos.x, y: pos.y, opacity: 1, fill: C.sageLight, r: PROB_R };
+    return { x: pos.x, y: pos.y, opacity: 1, fill: MARKER.inCoFill, stroke: MARKER.inCoStroke, strokeWidth: 0.85, r: PROB_R };
   }
 
   // Cumulative resolved-at-choice counts — one entry per choice, never decreases
@@ -664,41 +773,137 @@ function drawViz(simResult, options) {
   // Problem IDs that have ever been active (for entrance animation)
   const everActive = new Set();
 
-  function isDeadTick(tickIdx) {
-    if (tickIdx === 0) return false;
-    const prev = ticks[tickIdx - 1];
-    const curr = ticks[tickIdx];
-    for (let i = 0; i < dims.choices; i++) {
-      if (prev.choices[i].state !== curr.choices[i].state) return false;
+  function analyzeTickChange(currTick, prevTick) {
+    if (!prevTick) {
+      return {
+        eventText: 'No event',
+        eventful: false,
+        density: 0,
+        isDead: false,
+        hasResolution: false,
+        hasOpening: false,
+        hasEntering: false,
+        hasSearching: false,
+      };
     }
-    for (let i = 0; i < dims.problems; i++) {
-      if (prev.problems[i].state !== curr.problems[i].state) return false;
-      if (prev.problems[i].attachedTo !== curr.problems[i].attachedTo) return false;
+    const choicesOpenedThisTick = [];
+    const choicesOpenedAndClosedThisTick = [];
+    const choicesResolvedThisTick = new Set();
+    let changedChoices = 0;
+    let changedProblems = 0;
+    let flights = 0;
+    let oversights = 0;
+    let enteringCount = 0;
+    let searchingCount = 0;
+
+    for (let c = 0; c < dims.choices; c++) {
+      const prevState = prevTick.choices[c].state;
+      const currState = currTick.choices[c].state;
+      if (prevState !== currState) changedChoices++;
+      if (prevState === 'inactive' && currState === 'active') choicesOpenedThisTick.push(c);
+      if (prevState === 'inactive' && currState === 'closed') {
+        choicesOpenedAndClosedThisTick.push(c);
+        choicesResolvedThisTick.add(c);
+      }
+      if (prevState === 'active' && currState === 'closed') choicesResolvedThisTick.add(c);
     }
-    return true;
+
+    for (let id = 0; id < dims.problems; id++) {
+      const pp = prevTick.problems[id];
+      const cp = currTick.problems[id];
+      if (pp.state !== cp.state) changedProblems++;
+      if (pp.attachedTo !== cp.attachedTo) changedProblems++;
+      if (pp.state === 'inactive' && cp.state !== 'inactive') enteringCount++;
+      if (pp.state !== 'floating' && cp.state === 'floating') searchingCount++;
+      if (pp.state === 'attached' && cp.state === 'floating') {
+        if (choicesResolvedThisTick.has(pp.attachedTo)) oversights++;
+        else flights++;
+      }
+    }
+
+    let eventText = 'No event';
+    if (choicesOpenedAndClosedThisTick.length > 0) {
+      const direct = choicesOpenedAndClosedThisTick.sort((a, b) => a - b);
+      if (direct.length === 1) eventText = `${formatChoiceOpportunityLabel(direct[0])} opened and closed`;
+      else eventText = `${direct.map(formatChoiceOpportunityLabel).join(', ')} opened and closed`;
+    } else if (choicesResolvedThisTick.size > 0) {
+      const choiceIds = Array.from(choicesResolvedThisTick).sort((a, b) => a - b);
+      if (choiceIds.length === 1) eventText = `${formatChoiceOpportunityLabel(choiceIds[0])} closed`;
+      else eventText = `${choiceIds.map(formatChoiceOpportunityLabel).join(', ')} closed`;
+    } else if (choicesOpenedThisTick.length > 0) {
+      const opened = choicesOpenedThisTick.sort((a, b) => a - b);
+      if (opened.length === 1) eventText = `${formatChoiceOpportunityLabel(opened[0])} opened`;
+      else eventText = `${formatChoiceOpportunityList(opened, 3)} opened this iteration`;
+    }
+
+    const problemDenominator = Math.max(1, dims.problems * 2);
+    const density = (changedChoices / Math.max(1, dims.choices)) * 0.5 + (changedProblems / problemDenominator) * 0.5;
+    const isDead = changedChoices === 0 && changedProblems === 0;
+    const eventful = choicesOpenedThisTick.length > 0 || choicesOpenedAndClosedThisTick.length > 0 || choicesResolvedThisTick.size > 0 || flights > 0 || oversights > 0;
+
+    return {
+      eventText,
+      eventful,
+      density,
+      isDead,
+      hasResolution: choicesResolvedThisTick.size > 0,
+      hasOpening: choicesOpenedThisTick.length > 0 || choicesOpenedAndClosedThisTick.length > 0,
+      hasEntering: enteringCount > 0,
+      enteringCount: enteringCount,
+      hasSearching: searchingCount > 0,
+    };
   }
 
-  function renderTick(tickIdx, prevTick) {
+  function computeTickTiming(iterTick, analysis) {
+    var base = TIMING.baseLateMs;
+    if (iterTick <= 5) base = TIMING.baseEarlyMs;
+    else if (iterTick <= 10) base = TIMING.baseMidMs;
+
+    var adjusted = base;
+    if (analysis.density >= 0.45) adjusted += TIMING.densitySlowMs;
+    else if (analysis.density <= 0.08) adjusted += TIMING.densityFastMs;
+    if (analysis.eventful) adjusted += TIMING.eventPauseMs;
+    if (analysis.hasResolution) adjusted += TIMING.resolvePauseMs;
+    if (analysis.hasEntering) adjusted += TIMING.enteringPauseMs;
+    if (analysis.enteringCount > 1) {
+      adjusted += Math.min(
+        TIMING.enteringDensityPauseCapMs,
+        (analysis.enteringCount - 1) * TIMING.enteringDensityPauseMs
+      );
+    }
+    if (analysis.hasSearching) adjusted += TIMING.searchingPauseMs;
+    if (analysis.isDead) adjusted += TIMING.deadTickFastMs;
+
+    var tickMs = Math.max(TIMING.minTickMs, Math.min(TIMING.maxTickMs, adjusted));
+    var motionMs = Math.max(360, Math.round(tickMs * TIMING.motionFraction));
+    return { tickMs, motionMs };
+  }
+
+  function renderTick(tickIdx, prevTick, motionBudgetMs) {
     const tick = ticks[tickIdx];
+    const motionScale = Math.max(0.5, Math.min(2.5, (motionBudgetMs || 900) / 900));
+    function sd(ms) {
+      return Math.max(80, Math.round(ms * motionScale));
+    }
     const choicesOpenedThisTick = [];
     const choicesResolvedThisTick = new Set();
 
     svg.selectAll('circle.choice')
       .data(tick.choices)
       .transition()
-        .duration(750)
+        .duration(sd(750))
         .ease(d3.easeCubicInOut)
         .attr('stroke', d => {
-          if (d.state === 'resolved') return C.inkGhost;
+          if (d.state === 'closed') return C.inkGhost;
           if (d.state === 'active')   return C.inkFaint;
           return C.inkGhost;
         })
         .attr('stroke-width', d => {
-          if (d.state === 'resolved') return CHOICE_STROKE_WIDTH_RESOLVED;
+          if (d.state === 'closed') return CHOICE_STROKE_WIDTH_RESOLVED;
           return CHOICE_STROKE_WIDTH;
         })
         .attr('opacity', d => {
-          if (d.state === 'resolved') return 0.4;
+          if (d.state === 'closed') return 0.4;
           return 1;
         });
 
@@ -708,8 +913,8 @@ function drawViz(simResult, options) {
       var text;
       if (state === 'inactive') {
         text = 'Choice opportunity: not yet entered';
-      } else if (state === 'resolved') {
-        text = 'Resolved: this choice opportunity has closed';
+      } else if (state === 'closed') {
+        text = 'Closed: this choice opportunity has closed';
       } else {
         text = 'Choice opportunity: where decisions could be made';
       }
@@ -742,7 +947,10 @@ function drawViz(simResult, options) {
         if (prevTick.choices[c].state === 'inactive' && tick.choices[c].state === 'active') {
           choicesOpenedThisTick.push(c);
         }
-        if (prevTick.choices[c].state === 'active' && tick.choices[c].state === 'resolved') {
+        if (prevTick.choices[c].state === 'inactive' && tick.choices[c].state === 'closed') {
+          choicesResolvedThisTick.add(c);
+        }
+        if (prevTick.choices[c].state === 'active' && tick.choices[c].state === 'closed') {
           choicesResolvedThisTick.add(c);
         }
       }
@@ -762,6 +970,62 @@ function drawViz(simResult, options) {
       }
     }
 
+    // Resolution pulse on the CO itself to make closures visually unmissable.
+    if (choicesResolvedThisTick.size > 0) {
+      var pulseData = Array.from(choicesResolvedThisTick).map(function(choiceId) {
+        return choiceCenters[choiceId];
+      });
+
+      svg.append('g')
+        .attr('class', 'choice-resolve-pulse')
+        .selectAll('circle.resolve-pulse')
+        .data(pulseData)
+        .join('circle')
+          .attr('class', 'resolve-pulse')
+          .attr('cx', function(d) { return d.x; })
+          .attr('cy', function(d) { return d.y; })
+          .attr('r', CHOICE_R * 0.95)
+          .attr('fill', 'none')
+          .attr('stroke', C.sage)
+          .attr('stroke-width', 1.8)
+          .attr('opacity', 0.9)
+          .transition()
+            .duration(sd(460))
+            .ease(d3.easeCubicOut)
+            .attr('r', CHOICE_R * 1.42)
+            .attr('stroke-width', 0.9)
+            .attr('opacity', 0)
+            .remove();
+    }
+
+    // Opening pulse on newly opened COs.
+    if (choicesOpenedThisTick.length > 0) {
+      var openPulseData = choicesOpenedThisTick.map(function(choiceId) {
+        return choiceCenters[choiceId];
+      });
+
+      svg.append('g')
+        .attr('class', 'choice-open-pulse')
+        .selectAll('circle.open-pulse')
+        .data(openPulseData)
+        .join('circle')
+          .attr('class', 'open-pulse')
+          .attr('cx', function(d) { return d.x; })
+          .attr('cy', function(d) { return d.y; })
+          .attr('r', CHOICE_R * MOTION.open.startScale)
+          .attr('fill', 'none')
+          .attr('stroke', C.inkFaint)
+          .attr('stroke-width', 1.4)
+          .attr('opacity', 0.85)
+          .transition()
+            .duration(sd(MOTION.open.pulseMs))
+            .ease(d3.easeCubicOut)
+            .attr('r', CHOICE_R * MOTION.open.endScale)
+            .attr('stroke-width', 0.8)
+            .attr('opacity', 0)
+            .remove();
+    }
+
     // Fill level — cumulative count of problems resolved at each choice
     if (prevTick) {
       for (let id = 0; id < dims.problems; id++) {
@@ -773,19 +1037,31 @@ function drawViz(simResult, options) {
     svg.selectAll('rect.choice-fill')
       .data(d3.range(dims.choices))
       .transition()
-        .duration(750)
+        .duration(sd(750))
         .ease(d3.easeCubicInOut)
         .attr('y',      i => choiceCenters[i].y + CHOICE_R - (resolvedAtChoice[i] / dims.problems) * (CHOICE_R * 2))
         .attr('height', i => (resolvedAtChoice[i] / dims.problems) * (CHOICE_R * 2));
 
     // Detect problems entering for the first time this tick
     const enteringThisTick = new Set();
+    const attachedThisTick = new Set();
+    const searchingThisTick = new Set();
     for (let id = 0; id < dims.problems; id++) {
-      if (tick.problems[id].state !== 'inactive' && !everActive.has(id)) {
+      var currState = tick.problems[id].state;
+      var prevState = prevTick ? prevTick.problems[id].state : 'inactive';
+      if (currState !== 'inactive' && !everActive.has(id)) {
         enteringThisTick.add(id);
         everActive.add(id);
       }
+      if (prevTick && prevState !== 'attached' && currState === 'attached') {
+        attachedThisTick.add(id);
+      }
+      if (prevTick && prevState !== 'floating' && currState === 'floating' && !enteringThisTick.has(id)) {
+        searchingThisTick.add(id);
+      }
     }
+    const enteringIds = Array.from(enteringThisTick).sort(function(a, b) { return a - b; });
+    const enteringOrder = new Map(enteringIds.map(function(id, idx) { return [id, idx]; }));
 
     const allProbs = svg.selectAll('circle.problem').data(d3.range(dims.problems), d => d);
 
@@ -793,16 +1069,84 @@ function drawViz(simResult, options) {
     allProbs.filter(id => enteringThisTick.has(id))
       .each(function(id) {
         const attrs = probAttrs(tick, id);
-        const fp = floatPos(id);
+        const lane = enteringLanePos(id);
+        const enterR = Math.max(PROB_R * MOTION.enter.overshootRadius, PROB_R + 1.2);
+        const enterDelay = sd((enteringOrder.get(id) || 0) * MOTION.enter.staggerMs);
+        svg.append('circle')
+          .attr('class', 'problem-enter-ring')
+          .attr('cx', lane.x)
+          .attr('cy', lane.y)
+          .attr('r', PROB_R * 0.8)
+          .attr('fill', 'none')
+          .attr('stroke', C.rust)
+          .attr('stroke-width', 1.2)
+          .attr('opacity', 0.82)
+          .transition()
+            .delay(enterDelay)
+            .duration(sd(420))
+            .ease(d3.easeCubicOut)
+            .attr('r', PROB_R * 2.2)
+            .attr('opacity', 0)
+            .remove();
         d3.select(this).interrupt()
-          .attr('cx', fp.x).attr('cy', fp.y).attr('r', 1).attr('opacity', 0).attr('fill', C.rust)
-          .transition().duration(220).ease(d3.easeCubicOut)
-            .attr('r', PROB_R).attr('opacity', 0.95).attr('fill', C.rust)
-          .transition().duration(280).ease(d3.easeCubicInOut)
-            .attr('fill', C.gold)
-          .transition().duration(450).ease(d3.easeCubicInOut)
+          .attr('cx', lane.x).attr('cy', lane.y).attr('r', 1).attr('opacity', 0).attr('fill', MARKER.enteringFill).attr('stroke', MARKER.enteringStroke).attr('stroke-width', 0.95)
+          .transition().delay(enterDelay).duration(sd(MOTION.enter.popInMs)).ease(d3.easeCubicOut)
+            .attr('r', enterR).attr('opacity', 0.98).attr('fill', MARKER.enteringFill)
+          .transition().duration(sd(MOTION.enter.holdMs)).ease(d3.easeLinear)
+            .attr('r', enterR).attr('opacity', 0.98).attr('fill', MARKER.enteringFill)
+          .transition().duration(sd(MOTION.enter.searchShiftMs)).ease(d3.easeCubicInOut)
+            .attr('r', PROB_R).attr('opacity', 0.92)
+            .attr('fill', MARKER.searchingFill).attr('stroke', MARKER.searchingStroke).attr('stroke-width', 0.85)
+          .transition().duration(sd(MOTION.enter.settleMs)).ease(d3.easeCubicInOut)
             .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', attrs.r)
-            .attr('opacity', attrs.opacity).attr('fill', attrs.fill);
+            .attr('opacity', attrs.opacity).attr('fill', attrs.fill).attr('stroke', attrs.stroke || 'none').attr('stroke-width', attrs.strokeWidth || 0);
+      });
+
+    // Attachment signature: searching -> attach gets a brief pull-and-settle
+    allProbs.filter(id => attachedThisTick.has(id) && !resolvedThisTick.has(id))
+      .each(function(id) {
+        const attrs = probAttrs(tick, id);
+        const from = prevTick ? probAttrs(prevTick, id) : floatPos(id);
+        const overR = Math.max(PROB_R * MOTION.attach.overshootRadius, PROB_R + 0.9);
+        d3.select(this).interrupt()
+          .attr('cx', from.x).attr('cy', from.y).attr('r', PROB_R).attr('opacity', Math.max(from.opacity || 0.85, 0.85)).attr('fill', MARKER.searchingFill).attr('stroke', MARKER.searchingStroke).attr('stroke-width', 0.85)
+          .transition().duration(sd(MOTION.attach.pullMs)).ease(d3.easeCubicOut)
+            .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', overR).attr('opacity', 1).attr('fill', attrs.fill).attr('stroke', attrs.stroke || MARKER.inCoStroke).attr('stroke-width', attrs.strokeWidth || 0.85)
+          .transition().duration(sd(MOTION.attach.holdMs)).ease(d3.easeLinear)
+            .attr('r', overR)
+          .transition().duration(sd(MOTION.attach.settleMs)).ease(d3.easeCubicInOut)
+            .attr('r', attrs.r).attr('opacity', attrs.opacity).attr('stroke', attrs.stroke || 'none').attr('stroke-width', attrs.strokeWidth || 0);
+      });
+
+    // Searching signature: brief drift jitter + pulse when newly adrift
+    allProbs.filter(id => searchingThisTick.has(id) && !flightSet.has(id) && !oversightSet.has(id))
+      .each(function(id) {
+        const attrs = probAttrs(tick, id);
+        const from = prevTick ? probAttrs(prevTick, id) : floatPos(id);
+        const j = MOTION.search.jitterAmp;
+        const jx = ((id % 2) ? 1 : -1) * j;
+        const jy = ((id % 3) - 1) * (j * 0.6);
+        svg.append('circle')
+          .attr('class', 'problem-search-ring')
+          .attr('cx', attrs.x)
+          .attr('cy', attrs.y)
+          .attr('r', PROB_R * 0.9)
+          .attr('fill', 'none')
+          .attr('stroke', C.gold)
+          .attr('stroke-width', 1.1)
+          .attr('opacity', 0.78)
+          .transition()
+            .duration(sd(520))
+            .ease(d3.easeCubicOut)
+            .attr('r', PROB_R * 2.4)
+            .attr('opacity', 0)
+            .remove();
+        d3.select(this).interrupt()
+          .attr('cx', from.x).attr('cy', from.y).attr('r', PROB_R).attr('opacity', Math.max(from.opacity || 0.8, 0.8)).attr('fill', MARKER.searchingFill).attr('stroke', MARKER.searchingStroke).attr('stroke-width', 0.85)
+          .transition().duration(sd(MOTION.search.driftMs)).ease(d3.easeCubicInOut)
+            .attr('cx', attrs.x + jx).attr('cy', attrs.y + jy).attr('r', PROB_R * 1.12).attr('fill', MARKER.searchingFill).attr('stroke', MARKER.searchingStroke).attr('stroke-width', 0.9).attr('opacity', 0.95)
+          .transition().duration(sd(MOTION.search.pulseMs)).ease(d3.easeCubicOut)
+            .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', attrs.r).attr('fill', attrs.fill).attr('stroke', attrs.stroke || 'none').attr('stroke-width', attrs.strokeWidth || 0).attr('opacity', attrs.opacity);
       });
 
     // Resolution exit: move to circle centre, shrink to r:1.5, fill sage, then fade
@@ -810,109 +1154,156 @@ function drawViz(simResult, options) {
       .each(function(id) {
         var centerIdx = prevTick.problems[id].attachedTo;
         var center = choiceCenters[centerIdx] || choiceCenters[0];
+        var resolveR = Math.max(sizing.resolveExitRadius * MOTION.resolve.overshootRadius, sizing.resolveExitRadius + 0.8);
         d3.select(this).interrupt()
-          .transition().duration(500).ease(d3.easeCubicInOut)
-            .attr('cx', center.x).attr('cy', center.y).attr('r', sizing.resolveExitRadius).attr('fill', C.sage)
-          .transition().duration(250)
+          .transition().duration(sd(170)).ease(d3.easeCubicOut)
+            .attr('r', PROB_R * 1.25).attr('fill', MARKER.resolvedStroke).attr('stroke', MARKER.resolvedStroke).attr('stroke-width', 0.9).attr('opacity', 1)
+          .transition().duration(sd(MOTION.resolve.convergeMs)).ease(d3.easeCubicInOut)
+            .attr('cx', center.x).attr('cy', center.y).attr('r', resolveR).attr('fill', MARKER.resolvedFill).attr('stroke', MARKER.resolvedStroke).attr('stroke-width', 0.8).attr('opacity', 0.95)
+          .transition().duration(sd(MOTION.resolve.holdMs)).ease(d3.easeLinear)
+            .attr('r', resolveR).attr('opacity', 0.95)
+          .transition().duration(sd(MOTION.resolve.fadeMs)).ease(d3.easeCubicOut)
+            .attr('r', sizing.resolveExitRadius)
             .attr('opacity', 0);
       });
+
+    // Resolved-problem pulse: local highlight at the closure point.
+    if (resolvedThisTick.size > 0) {
+      var resolvedPulseData = Array.from(resolvedThisTick).map(function(id) {
+        var centerIdx = prevTick.problems[id].attachedTo;
+        return choiceCenters[centerIdx] || choiceCenters[0];
+      });
+
+      svg.append('g')
+        .attr('class', 'problem-resolve-pulse')
+        .selectAll('circle.problem-resolve-pulse-ring')
+        .data(resolvedPulseData)
+        .join('circle')
+          .attr('class', 'problem-resolve-pulse-ring')
+          .attr('cx', function(d) { return d.x; })
+          .attr('cy', function(d) { return d.y; })
+          .attr('r', PROB_R * 0.85)
+          .attr('fill', 'none')
+          .attr('stroke', C.sageLight)
+          .attr('stroke-width', 1.4)
+          .attr('opacity', 0.85)
+          .transition()
+            .duration(sd(430))
+            .ease(d3.easeCubicOut)
+            .attr('r', PROB_R * 2.1)
+            .attr('stroke-width', 0.8)
+            .attr('opacity', 0)
+            .remove();
+    }
 
     // Flight exit: flash rust, then move to float position
     allProbs.filter(id => flightSet.has(id))
       .each(function(id) {
         const fp = floatPos(id);
+        const flightR = Math.max(PROB_R * MOTION.flight.overshootRadius, PROB_R + 1);
         d3.select(this).interrupt()
-          .transition().duration(250)
-            .attr('fill', C.rust)
-          .transition().duration(500).ease(d3.easeCubicInOut)
-            .attr('cx', fp.x).attr('cy', fp.y).attr('r', PROB_R)
-            .attr('opacity', 0.85).attr('fill', C.inkFaint);
+          .transition().duration(sd(MOTION.flight.flashMs))
+            .attr('r', flightR).attr('fill', MARKER.flightFill).attr('stroke', MARKER.flightStroke).attr('stroke-width', 0.9).attr('opacity', 1)
+          .transition().duration(sd(MOTION.flight.ejectMs)).ease(d3.easeCubicInOut)
+            .attr('cx', fp.x).attr('cy', fp.y).attr('r', PROB_R * 0.95)
+            .attr('opacity', 0.85).attr('fill', C.inkFaint).attr('stroke', MARKER.flightStroke).attr('stroke-width', 0.75);
       });
 
     // Oversight exit: flash slate, then move to float position
     allProbs.filter(id => oversightSet.has(id))
       .each(function(id) {
         const fp = floatPos(id);
+        const overR = Math.max(PROB_R * MOTION.oversight.overshootRadius, PROB_R + 1);
         d3.select(this).interrupt()
-          .transition().duration(250)
-            .attr('fill', C.slate)
-          .transition().duration(500).ease(d3.easeCubicInOut)
-            .attr('cx', fp.x).attr('cy', fp.y).attr('r', PROB_R)
-            .attr('opacity', 0.85).attr('fill', C.inkFaint);
+          .transition().duration(sd(MOTION.oversight.flashMs))
+            .attr('r', overR).attr('fill', MARKER.oversightFill).attr('stroke', MARKER.oversightStroke).attr('stroke-width', 0.9).attr('opacity', 1)
+          .transition().duration(sd(MOTION.oversight.ejectMs)).ease(d3.easeCubicInOut)
+            .attr('cx', fp.x).attr('cy', fp.y).attr('r', PROB_R * 0.95)
+            .attr('opacity', 0.85).attr('fill', C.inkFaint).attr('stroke', MARKER.oversightStroke).attr('stroke-width', 0.75);
       });
 
     // All other problems: deterministic position transition
-    allProbs.filter(id => !resolvedThisTick.has(id) && !flightSet.has(id) && !oversightSet.has(id) && !enteringThisTick.has(id))
+    allProbs.filter(id =>
+      !resolvedThisTick.has(id) &&
+      !flightSet.has(id) &&
+      !oversightSet.has(id) &&
+      !enteringThisTick.has(id) &&
+      !attachedThisTick.has(id) &&
+      !searchingThisTick.has(id)
+    )
       .interrupt()
       .transition()
         .delay(0)
-        .duration(900)
+        .duration(sd(900))
         .ease(d3.easeCubicInOut)
         .attr('cx',      id => probAttrs(tick, id).x)
         .attr('cy',      id => probAttrs(tick, id).y)
         .attr('r',       id => probAttrs(tick, id).r)
         .attr('opacity', id => probAttrs(tick, id).opacity)
-        .attr('fill',    id => probAttrs(tick, id).fill);
+        .attr('fill',    id => probAttrs(tick, id).fill)
+        .attr('stroke',  id => probAttrs(tick, id).stroke || 'none')
+        .attr('stroke-width', id => probAttrs(tick, id).strokeWidth || 0);
+
+    // Ongoing adrift signature: floating problems breathe and sway subtly.
+    allProbs.filter(id =>
+      tick.problems[id].state === 'floating' &&
+      !searchingThisTick.has(id) &&
+      !flightSet.has(id) &&
+      !oversightSet.has(id) &&
+      !resolvedThisTick.has(id)
+    )
+      .each(function(id) {
+        var attrs = probAttrs(tick, id);
+        var sway = ((id % 2) ? 1 : -1) * MOTION.adrift.swayAmp;
+        d3.select(this).interrupt()
+          .transition().duration(sd(MOTION.adrift.swayMs)).ease(d3.easeCubicInOut)
+            .attr('cx', attrs.x + sway).attr('cy', attrs.y).attr('r', PROB_R * 1.1).attr('opacity', 0.96).attr('fill', MARKER.searchingFill).attr('stroke', MARKER.searchingStroke).attr('stroke-width', 0.9)
+          .transition().duration(sd(MOTION.adrift.pulseMs)).ease(d3.easeCubicOut)
+            .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', PROB_R).attr('opacity', attrs.opacity).attr('fill', attrs.fill).attr('stroke', attrs.stroke || 'none').attr('stroke-width', attrs.strokeWidth || 0);
+      });
 
     // Sync pulse class — attached dots breathe, others do not
     allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');
     allProbs.classed('problem-searching', id => tick.problems[id].state === 'floating');
 
-    // Event ticker
-    var tickerMsg = '';
-    if (choicesResolvedThisTick.size > 0) {
-      const choiceIds = Array.from(choicesResolvedThisTick).sort((a, b) => a - b);
-      if (choiceIds.length === 1) {
-        const c = choiceIds[0];
-        tickerMsg = `${formatChoiceOpportunityLabel(c)} closed`;
-      } else {
-        tickerMsg = `${formatChoiceOpportunityList(choiceIds, 3)} closed this iteration`;
-      }
-    } else if (choicesOpenedThisTick.length > 0) {
-      const opened = choicesOpenedThisTick.sort((a, b) => a - b);
-      if (opened.length === 1) {
-        tickerMsg = `${formatChoiceOpportunityLabel(opened[0])} opened`;
-      } else {
-        tickerMsg = `${formatChoiceOpportunityList(opened, 3)} opened this iteration`;
-      }
-    }
+    // Event ticker lives in top legend; keep external ticker empty
     if (eventTickerEl) eventTickerEl.textContent = '';
-
-    var eventText = tickerMsg || 'No event';
-    setTopLegend(`Iter ${tick.tick}/${dims.periods}`, eventText);
-
   }
 
-  renderTick(0, null);
+  renderTick(0, null, 900);
 
   let current = 0;
 
   function stepTick() {
     current++;
-    if (current >= ticks.length) {
-      setTopLegend(
-        `Iter ${dims.periods}/${dims.periods}`,
-        'No event'
-      );
-      if (eventTickerEl) eventTickerEl.textContent = '';
-      showEndState(
-        pctRes, pctOver, pctFli,
-        probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
-        ticks[ticks.length - 1],
-        dims
-      );
+    if (current >= ticks.length) return;
+
+    const prevTick = ticks[current - 1];
+    const currTick = ticks[current];
+    const analysis = analyzeTickChange(currTick, prevTick);
+    const timing = computeTickTiming(currTick.tick, analysis);
+
+    // Prime attention before movement.
+    setTopLegend(`Iter ${currTick.tick}/${dims.periods}`, analysis.eventText);
+    var preMotionDelay = analysis.hasOpening ? TIMING.openingLeadMs : 0;
+    setTimeout(function() {
+      renderTick(current, prevTick, timing.motionMs);
+    }, TIMING.legendLeadMs + preMotionDelay);
+
+    if (current === ticks.length - 1) {
+      setTimeout(function() {
+        if (eventTickerEl) eventTickerEl.textContent = '';
+        showEndState(
+          pctRes, pctOver, pctFli,
+          probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
+          ticks[ticks.length - 1],
+          dims
+        );
+      }, timing.tickMs + TIMING.finalPauseMs);
       return;
     }
-    renderTick(current, ticks[current - 1]);
-    var delay;
-    if (current <= 10) {
-      delay = 1200;
-    } else if (isDeadTick(current)) {
-      delay = 800;
-    } else {
-      delay = 1450;
-    }
-    setTimeout(stepTick, delay);
+
+    setTimeout(stepTick, timing.tickMs);
   }
 
   setTimeout(stepTick, 1000);

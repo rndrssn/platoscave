@@ -16,7 +16,7 @@ function countLastTickProblems(lastTick) {
 
 function countLastTickChoices(lastTick) {
   return {
-    resolved: lastTick.choices.filter((c) => c.state === 'resolved').length,
+    closed: lastTick.choices.filter((c) => c.state === 'closed').length,
     open: lastTick.choices.filter((c) => c.state === 'active').length,
     inactive: lastTick.choices.filter((c) => c.state === 'inactive').length,
   };
@@ -42,7 +42,7 @@ for (const params of combinations) {
   assert.strictEqual(p.resolved + p.inForum + p.adrift + p.neverEntered, 20, 'last tick problem partition must equal 20');
 
   const c = countLastTickChoices(lastTick);
-  assert.strictEqual(c.resolved + c.open + c.inactive, 10, 'last tick choice partition must equal 10');
+  assert.strictEqual(c.closed + c.open + c.inactive, 10, 'last tick choice partition must equal 10');
 
   // Monte Carlo problem means should always be internally coherent.
   const problemMeanTotal = sim.problemResolved + sim.problemDisplaced + sim.problemAdrift + sim.problemInForum + sim.problemNeverEntered;

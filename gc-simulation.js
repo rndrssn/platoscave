@@ -390,6 +390,18 @@ function countProblemOutcomes(Problems, Choices) {
   return { resolved, displaced, adrift, inForum, neverEntered };
 }
 
+function countResolvedByChoice(Problems) {
+  const resolvedByChoice = new Array(M).fill(0);
+  for (let i = 0; i < W; i++) {
+    const endState = Problems[i][PERIODS];
+    if (endState >= 90) {
+      const choiceId = endState - 100;
+      if (choiceId >= 0 && choiceId < M) resolvedByChoice[choiceId]++;
+    }
+  }
+  return resolvedByChoice;
+}
+
 
 // ─── Tick snapshot builder ────────────────────────────────────────────────────
 
@@ -518,6 +530,9 @@ function finalizeSimulationResult(agg, lastResult) {
   const meanProbAdrift       = agg.totalProbAdrift       / agg.iterations;
   const meanProbInForum      = agg.totalProbInForum      / agg.iterations;
   const meanProbNeverEntered = agg.totalProbNeverEntered / agg.iterations;
+  const meanResolvedByChoice = agg.totalResolvedByChoice.map(function(sum) {
+    return sum / agg.iterations;
+  });
 
   const ticks = buildTickSnapshots(
     lastResult.Choices,
@@ -536,6 +551,7 @@ function finalizeSimulationResult(agg, lastResult) {
     choiceResolution: meanResolutions,
     choiceOversight:  meanOversights + meanQuickies,
     choiceFlight:     meanFlights,
+    choiceResolvedPerCoMean: meanResolvedByChoice,
 
     // Problem-level mean counts (out of W=20, interpretive extension)
     problemResolved:     meanProbResolved,
@@ -575,7 +591,8 @@ function createSimulationAccumulator(iterations) {
     totalProbDisplaced: 0,
     totalProbAdrift: 0,
     totalProbInForum: 0,
-    totalProbNeverEntered: 0
+    totalProbNeverEntered: 0,
+    totalResolvedByChoice: new Array(M).fill(0)
   };
 }
 
@@ -597,6 +614,10 @@ function runOneSimulationIteration(ctx, agg) {
   agg.totalProbAdrift       += probCounts.adrift;
   agg.totalProbInForum      += probCounts.inForum;
   agg.totalProbNeverEntered += probCounts.neverEntered;
+  const resolvedByChoice = countResolvedByChoice(result.Problems);
+  for (let i = 0; i < M; i++) {
+    agg.totalResolvedByChoice[i] += resolvedByChoice[i];
+  }
 
   return result;
 }
@@ -733,11 +754,19 @@ function validateSimulation() {
   return results;
 }
 
-// Run validation automatically when loaded outside a browser module context
-if (typeof window === 'undefined' && typeof module !== 'undefined') {
-  // Node.js environment
-  validateSimulation();
+// Node.js exports (import-safe: no side effects on require)
+if (typeof module !== 'undefined') {
   module.exports = { runGarbageCanSimulation, runGarbageCanSimulationAsync, validateSimulation, getGarbageCanDefaults };
+}
+
+// Run validation only when executed directly in Node, not when required as a module.
+if (
+  typeof window === 'undefined' &&
+  typeof module !== 'undefined' &&
+  typeof require !== 'undefined' &&
+  require.main === module
+) {
+  validateSimulation();
 }
 
 if (typeof window !== 'undefined') {

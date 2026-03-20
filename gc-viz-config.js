@@ -16,7 +16,7 @@ const GC_VIZ_CONFIG = Object.freeze({
   layout: Object.freeze({
     empty: Object.freeze({
       svgW: 900,
-      choiceRadius: 30,
+      choiceRadius: 34,
       padH: 55,
       squareTop: 102,
       bottomLegendPad: 66,
@@ -25,7 +25,7 @@ const GC_VIZ_CONFIG = Object.freeze({
     }),
     live: Object.freeze({
       svgW: 900,
-      choiceRadius: 30,
+      choiceRadius: 34,
       padH: 35,
       squareTop: 108,
       bottomLegendPad: 74,

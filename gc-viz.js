@@ -81,10 +81,10 @@ const CHOICE_STROKE_WIDTH = 1.8;
 const CHOICE_STROKE_WIDTH_RESOLVED = 1.2;
 const LEGEND_RESOLVED_STROKE_WIDTH = 1.2;
 const MOTION = {
-  enter: { popInMs: 180, searchShiftMs: 220, settleMs: 460, overshootRadius: 1.35 },
+  enter: { popInMs: 260, searchShiftMs: 300, settleMs: 520, overshootRadius: 1.55 },
   attach: { pullMs: 520, holdMs: 140, settleMs: 320, overshootRadius: 1.22 },
-  search: { driftMs: 420, pulseMs: 230, jitterAmp: 2.4 },
-  adrift: { swayMs: 340, pulseMs: 260, swayAmp: 2.2 },
+  search: { driftMs: 620, pulseMs: 360, jitterAmp: 3.4 },
+  adrift: { swayMs: 520, pulseMs: 420, swayAmp: 3.8 },
   resolve: { convergeMs: 520, holdMs: 170, fadeMs: 260, overshootRadius: 1.45 },
   flight: { flashMs: 200, ejectMs: 560, overshootRadius: 1.3 },
   oversight: { flashMs: 220, ejectMs: 560, overshootRadius: 1.3 },
@@ -100,6 +100,8 @@ const TIMING = {
   densityFastMs: -140,
   deadTickFastMs: -120,
   resolvePauseMs: 550,
+  enteringPauseMs: 220,
+  searchingPauseMs: 180,
   baseEarlyMs: 1850, // iter 1-5
   baseMidMs: 1450,   // iter 6-10
   baseLateMs: 1080,  // iter 11-20
@@ -706,7 +708,15 @@ function drawViz(simResult, options) {
 
   function analyzeTickChange(currTick, prevTick) {
     if (!prevTick) {
-      return { eventText: 'No event', eventful: false, density: 0, isDead: false, hasResolution: false };
+      return {
+        eventText: 'No event',
+        eventful: false,
+        density: 0,
+        isDead: false,
+        hasResolution: false,
+        hasEntering: false,
+        hasSearching: false,
+      };
     }
     const choicesOpenedThisTick = [];
     const choicesResolvedThisTick = new Set();
@@ -714,13 +724,15 @@ function drawViz(simResult, options) {
     let changedProblems = 0;
     let flights = 0;
     let oversights = 0;
+    let enteringCount = 0;
+    let searchingCount = 0;
 
     for (let c = 0; c < dims.choices; c++) {
       const prevState = prevTick.choices[c].state;
       const currState = currTick.choices[c].state;
       if (prevState !== currState) changedChoices++;
       if (prevState === 'inactive' && currState === 'active') choicesOpenedThisTick.push(c);
-      if (prevState === 'active' && currState === 'resolved') choicesResolvedThisTick.add(c);
+      if (prevState === 'active' && currState === 'closed') choicesResolvedThisTick.add(c);
     }
 
     for (let id = 0; id < dims.problems; id++) {
@@ -728,6 +740,8 @@ function drawViz(simResult, options) {
       const cp = currTick.problems[id];
       if (pp.state !== cp.state) changedProblems++;
       if (pp.attachedTo !== cp.attachedTo) changedProblems++;
+      if (pp.state === 'inactive' && cp.state !== 'inactive') enteringCount++;
+      if (pp.state !== 'floating' && cp.state === 'floating') searchingCount++;
       if (pp.state === 'attached' && cp.state === 'floating') {
         if (choicesResolvedThisTick.has(pp.attachedTo)) oversights++;
         else flights++;
@@ -738,7 +752,7 @@ function drawViz(simResult, options) {
     if (choicesResolvedThisTick.size > 0) {
       const choiceIds = Array.from(choicesResolvedThisTick).sort((a, b) => a - b);
       if (choiceIds.length === 1) eventText = `${formatChoiceOpportunityLabel(choiceIds[0])} closed`;
-      else eventText = `${formatChoiceOpportunityList(choiceIds, 3)} closed this iteration`;
+      else eventText = `${choiceIds.map(formatChoiceOpportunityLabel).join(', ')} closed`;
     } else if (choicesOpenedThisTick.length > 0) {
       const opened = choicesOpenedThisTick.sort((a, b) => a - b);
       if (opened.length === 1) eventText = `${formatChoiceOpportunityLabel(opened[0])} opened`;
@@ -750,7 +764,15 @@ function drawViz(simResult, options) {
     const isDead = changedChoices === 0 && changedProblems === 0;
     const eventful = choicesOpenedThisTick.length > 0 || choicesResolvedThisTick.size > 0 || flights > 0 || oversights > 0;
 
-    return { eventText, eventful, density, isDead, hasResolution: choicesResolvedThisTick.size > 0 };
+    return {
+      eventText,
+      eventful,
+      density,
+      isDead,
+      hasResolution: choicesResolvedThisTick.size > 0,
+      hasEntering: enteringCount > 0,
+      hasSearching: searchingCount > 0,
+    };
   }
 
   function computeTickTiming(iterTick, analysis) {
@@ -763,6 +785,8 @@ function drawViz(simResult, options) {
     else if (analysis.density <= 0.08) adjusted += TIMING.densityFastMs;
     if (analysis.eventful) adjusted += TIMING.eventPauseMs;
     if (analysis.hasResolution) adjusted += TIMING.resolvePauseMs;
+    if (analysis.hasEntering) adjusted += TIMING.enteringPauseMs;
+    if (analysis.hasSearching) adjusted += TIMING.searchingPauseMs;
     if (analysis.isDead) adjusted += TIMING.deadTickFastMs;
 
     var tickMs = Math.max(TIMING.minTickMs, Math.min(TIMING.maxTickMs, adjusted));
@@ -929,6 +953,21 @@ function drawViz(simResult, options) {
         const attrs = probAttrs(tick, id);
         const fp = floatPos(id);
         const enterR = Math.max(PROB_R * MOTION.enter.overshootRadius, PROB_R + 1.2);
+        svg.append('circle')
+          .attr('class', 'problem-enter-ring')
+          .attr('cx', fp.x)
+          .attr('cy', fp.y)
+          .attr('r', PROB_R * 0.8)
+          .attr('fill', 'none')
+          .attr('stroke', C.rust)
+          .attr('stroke-width', 1.2)
+          .attr('opacity', 0.82)
+          .transition()
+            .duration(sd(420))
+            .ease(d3.easeCubicOut)
+            .attr('r', PROB_R * 2.2)
+            .attr('opacity', 0)
+            .remove();
         d3.select(this).interrupt()
           .attr('cx', fp.x).attr('cy', fp.y).attr('r', 1).attr('opacity', 0).attr('fill', C.rust)
           .transition().duration(sd(MOTION.enter.popInMs)).ease(d3.easeCubicOut)
@@ -965,6 +1004,21 @@ function drawViz(simResult, options) {
         const j = MOTION.search.jitterAmp;
         const jx = ((id % 2) ? 1 : -1) * j;
         const jy = ((id % 3) - 1) * (j * 0.6);
+        svg.append('circle')
+          .attr('class', 'problem-search-ring')
+          .attr('cx', attrs.x)
+          .attr('cy', attrs.y)
+          .attr('r', PROB_R * 0.9)
+          .attr('fill', 'none')
+          .attr('stroke', C.gold)
+          .attr('stroke-width', 1.1)
+          .attr('opacity', 0.78)
+          .transition()
+            .duration(sd(520))
+            .ease(d3.easeCubicOut)
+            .attr('r', PROB_R * 2.4)
+            .attr('opacity', 0)
+            .remove();
         d3.select(this).interrupt()
           .attr('cx', from.x).attr('cy', from.y).attr('r', PROB_R).attr('opacity', Math.max(from.opacity || 0.8, 0.8)).attr('fill', C.gold)
           .transition().duration(sd(MOTION.search.driftMs)).ease(d3.easeCubicInOut)

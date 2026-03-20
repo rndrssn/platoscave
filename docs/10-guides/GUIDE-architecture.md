@@ -42,6 +42,8 @@ Explorer:
 1. Simulation returns renderer metadata (`meta.choices`, `meta.problems`, `meta.periods`).
 2. `gc-viz.js` reads dimensions from simulation metadata/defaults instead of hardcoded simulation globals.
 3. Visualization typography is controlled by CSS tokens and classes (see `docs/20-reference/REFERENCE-gc-viz-typography.md`), not inline D3 font attrs.
+4. CO event semantics are computed from a shared delta function and reused by legend + motion rendering to avoid drift.
+5. Node imports of `gc-simulation.js` must be side-effect free; validation runs only when executed directly.
 
 ## Alignment contract
 

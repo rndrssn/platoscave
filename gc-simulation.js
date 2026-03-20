@@ -397,7 +397,7 @@ function countProblemOutcomes(Problems, Choices) {
  * Convert raw state arrays into a d3-consumable ticks array.
  * Each tick records the state of every choice and problem.
  *
- * Choice states: 'inactive' | 'active' | 'resolved'
+ * Choice states: 'inactive' | 'active' | 'closed'
  * Problem states: 'inactive' | 'floating' | 'attached' | 'resolved'
  */
 function buildTickSnapshots(Choices, Problems, ChoicesEnergyRequired, ChoicesEnergySpent) {
@@ -409,7 +409,7 @@ function buildTickSnapshots(Choices, Problems, ChoicesEnergyRequired, ChoicesEne
       const raw = Choices[i][t];
       choices.push({
         id:              i,
-        state:           raw === STATE_INACTIVE ? 'inactive' : raw === STATE_RESOLVED ? 'resolved' : 'active',
+        state:           raw === STATE_INACTIVE ? 'inactive' : raw === STATE_RESOLVED ? 'closed' : 'active',
         energyRequired:  ChoicesEnergyRequired[i][t],
         energySpent:     ChoicesEnergySpent[i][t],
       });

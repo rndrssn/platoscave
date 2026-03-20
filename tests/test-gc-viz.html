@@ -244,11 +244,11 @@
           .duration(600)
           .ease(d3.easeCubicInOut)
           .attr('stroke', d => {
-            if (d.state === 'resolved') return C.sage;
+            if (d.state === 'closed') return C.sage;
             if (d.state === 'active')   return C.inkFaint;
             return C.inkGhost;
           })
-          .attr('stroke-width', d => d.state === 'resolved' ? 1.5 : 1);
+          .attr('stroke-width', d => d.state === 'closed' ? 1.5 : 1);
 
       // Problems: move and recolor
       svg.selectAll('circle.problem')

@@ -84,7 +84,8 @@ const MOTION = {
   enter: { popInMs: 180, searchShiftMs: 220, settleMs: 460, overshootRadius: 1.35 },
   attach: { pullMs: 520, holdMs: 140, settleMs: 320, overshootRadius: 1.22 },
   search: { driftMs: 420, pulseMs: 230, jitterAmp: 2.4 },
-  resolve: { convergeMs: 520, fadeMs: 260, overshootRadius: 1.45 },
+  adrift: { swayMs: 340, pulseMs: 260, swayAmp: 2.2 },
+  resolve: { convergeMs: 520, holdMs: 170, fadeMs: 260, overshootRadius: 1.45 },
   flight: { flashMs: 200, ejectMs: 560, overshootRadius: 1.3 },
   oversight: { flashMs: 220, ejectMs: 560, overshootRadius: 1.3 },
 };
@@ -98,7 +99,7 @@ const TIMING = {
   densitySlowMs: 240,
   densityFastMs: -140,
   deadTickFastMs: -120,
-  resolvePauseMs: 340,
+  resolvePauseMs: 550,
   baseEarlyMs: 1850, // iter 1-5
   baseMidMs: 1450,   // iter 6-10
   baseLateMs: 1080,  // iter 11-20
@@ -468,8 +469,8 @@ function showEndState(
   var runInForum  = 0;
   var runAdrift   = 0;
   var runNeverEntered = 0;
-  var runChoicesResolved = 0;
-  var runChoicesOpen     = 0;
+  var runChoicesClosed = 0;
+  var runChoicesOpen   = 0;
 
   if (lastTick) {
     lastTick.problems.forEach(function(p) {
@@ -479,7 +480,7 @@ function showEndState(
       else if (p.state === 'inactive') runNeverEntered++;
     });
     lastTick.choices.forEach(function(c) {
-      if (c.state === 'resolved') runChoicesResolved++;
+      if (c.state === 'closed') runChoicesClosed++;
       else if (c.state === 'active') runChoicesOpen++;
     });
   }
@@ -490,7 +491,7 @@ function showEndState(
   setReadout('sum-thisrun-inforum', 'outcome-unresolved', 'In choice opportunity', runInForum + ' of ' + dims.problems + ' problems');
   setReadout('sum-thisrun-adrift', 'outcome-flight', 'Adrift', runAdrift + ' of ' + dims.problems + ' problems');
   setReadout('sum-thisrun-never-entered', 'outcome-unresolved', 'Never entered', runNeverEntered + ' of ' + dims.problems + ' problems');
-  setReadout('sum-thisrun-choices-resolved', 'outcome-resolved', 'Choice opportunities concluded', runChoicesResolved + ' of ' + dims.choices);
+  setReadout('sum-thisrun-choices-resolved', 'outcome-resolved', 'Choice opportunities closed', runChoicesClosed + ' of ' + dims.choices);
   setReadout('sum-thisrun-choices-open', 'outcome-unresolved', 'Choice opportunities active', runChoicesOpen + ' of ' + dims.choices);
 
   // Primary: canonical GCM decision styles (choice-level)
@@ -784,16 +785,16 @@ function drawViz(simResult, options) {
         .duration(sd(750))
         .ease(d3.easeCubicInOut)
         .attr('stroke', d => {
-          if (d.state === 'resolved') return C.inkGhost;
+          if (d.state === 'closed') return C.inkGhost;
           if (d.state === 'active')   return C.inkFaint;
           return C.inkGhost;
         })
         .attr('stroke-width', d => {
-          if (d.state === 'resolved') return CHOICE_STROKE_WIDTH_RESOLVED;
+          if (d.state === 'closed') return CHOICE_STROKE_WIDTH_RESOLVED;
           return CHOICE_STROKE_WIDTH;
         })
         .attr('opacity', d => {
-          if (d.state === 'resolved') return 0.4;
+          if (d.state === 'closed') return 0.4;
           return 1;
         });
 
@@ -803,8 +804,8 @@ function drawViz(simResult, options) {
       var text;
       if (state === 'inactive') {
         text = 'Choice opportunity: not yet entered';
-      } else if (state === 'resolved') {
-        text = 'Resolved: this choice opportunity has closed';
+      } else if (state === 'closed') {
+        text = 'Closed: this choice opportunity has closed';
       } else {
         text = 'Choice opportunity: where decisions could be made';
       }
@@ -837,7 +838,7 @@ function drawViz(simResult, options) {
         if (prevTick.choices[c].state === 'inactive' && tick.choices[c].state === 'active') {
           choicesOpenedThisTick.push(c);
         }
-        if (prevTick.choices[c].state === 'active' && tick.choices[c].state === 'resolved') {
+        if (prevTick.choices[c].state === 'active' && tick.choices[c].state === 'closed') {
           choicesResolvedThisTick.add(c);
         }
       }
@@ -979,12 +980,45 @@ function drawViz(simResult, options) {
         var center = choiceCenters[centerIdx] || choiceCenters[0];
         var resolveR = Math.max(sizing.resolveExitRadius * MOTION.resolve.overshootRadius, sizing.resolveExitRadius + 0.8);
         d3.select(this).interrupt()
+          .transition().duration(sd(170)).ease(d3.easeCubicOut)
+            .attr('r', PROB_R * 1.25).attr('fill', C.sageLight).attr('opacity', 1)
           .transition().duration(sd(MOTION.resolve.convergeMs)).ease(d3.easeCubicInOut)
             .attr('cx', center.x).attr('cy', center.y).attr('r', resolveR).attr('fill', C.sage).attr('opacity', 0.95)
+          .transition().duration(sd(MOTION.resolve.holdMs)).ease(d3.easeLinear)
+            .attr('r', resolveR).attr('opacity', 0.95)
           .transition().duration(sd(MOTION.resolve.fadeMs)).ease(d3.easeCubicOut)
             .attr('r', sizing.resolveExitRadius)
             .attr('opacity', 0);
       });
+
+    // Resolved-problem pulse: local highlight at the closure point.
+    if (resolvedThisTick.size > 0) {
+      var resolvedPulseData = Array.from(resolvedThisTick).map(function(id) {
+        var centerIdx = prevTick.problems[id].attachedTo;
+        return choiceCenters[centerIdx] || choiceCenters[0];
+      });
+
+      svg.append('g')
+        .attr('class', 'problem-resolve-pulse')
+        .selectAll('circle.problem-resolve-pulse-ring')
+        .data(resolvedPulseData)
+        .join('circle')
+          .attr('class', 'problem-resolve-pulse-ring')
+          .attr('cx', function(d) { return d.x; })
+          .attr('cy', function(d) { return d.y; })
+          .attr('r', PROB_R * 0.85)
+          .attr('fill', 'none')
+          .attr('stroke', C.sageLight)
+          .attr('stroke-width', 1.4)
+          .attr('opacity', 0.85)
+          .transition()
+            .duration(sd(430))
+            .ease(d3.easeCubicOut)
+            .attr('r', PROB_R * 2.1)
+            .attr('stroke-width', 0.8)
+            .attr('opacity', 0)
+            .remove();
+    }
 
     // Flight exit: flash rust, then move to float position
     allProbs.filter(id => flightSet.has(id))
@@ -1031,6 +1065,24 @@ function drawViz(simResult, options) {
         .attr('r',       id => probAttrs(tick, id).r)
         .attr('opacity', id => probAttrs(tick, id).opacity)
         .attr('fill',    id => probAttrs(tick, id).fill);
+
+    // Ongoing adrift signature: floating problems breathe and sway subtly.
+    allProbs.filter(id =>
+      tick.problems[id].state === 'floating' &&
+      !searchingThisTick.has(id) &&
+      !flightSet.has(id) &&
+      !oversightSet.has(id) &&
+      !resolvedThisTick.has(id)
+    )
+      .each(function(id) {
+        var attrs = probAttrs(tick, id);
+        var sway = ((id % 2) ? 1 : -1) * MOTION.adrift.swayAmp;
+        d3.select(this).interrupt()
+          .transition().duration(sd(MOTION.adrift.swayMs)).ease(d3.easeCubicInOut)
+            .attr('cx', attrs.x + sway).attr('cy', attrs.y).attr('r', PROB_R * 1.1).attr('opacity', 0.96).attr('fill', C.gold)
+          .transition().duration(sd(MOTION.adrift.pulseMs)).ease(d3.easeCubicOut)
+            .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', PROB_R).attr('opacity', attrs.opacity).attr('fill', attrs.fill);
+      });
 
     // Sync pulse class — attached dots breathe, others do not
     allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');

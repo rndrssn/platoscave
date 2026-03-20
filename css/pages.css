@@ -386,6 +386,10 @@
   max-width: 560px;
 }
 
+.context-card {
+  margin-top: 1rem;
+}
+
 @media (min-width: 640px) {
   .field-notes-card {
     padding: 1.25rem 2.5rem 1.25rem 2rem;

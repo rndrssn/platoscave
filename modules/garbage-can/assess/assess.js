@@ -70,6 +70,13 @@ function clearSvg(id) {
   while (el.firstChild) el.removeChild(el.firstChild);
 }
 
+function formatDiagnosisResult(text) {
+  var cleaned = (text || '').trim().replace(/\s+/g, ' ');
+  if (!cleaned) return '';
+  var withoutPrefix = cleaned.replace(/^Your diagnosis is\s+/i, '');
+  return 'Your diagnosis is ' + withoutPrefix.charAt(0).toLowerCase() + withoutPrefix.slice(1);
+}
+
 function resetQuestionnaireUi(preserveAnswers) {
   currentGroup = 0;
   document.getElementById('q-group-1').hidden = false;
@@ -355,7 +362,7 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
   // Diagnosis
   setTimeout(() => {
     document.getElementById('diagnosis-title').textContent = diagnosis.title;
-    document.getElementById('diagnosis-body').textContent  = diagnosisBodyPreview;
+    document.getElementById('diagnosis-body').textContent  = formatDiagnosisResult(diagnosisBodyPreview);
     document.getElementById('diagnosis-links').hidden = false;
   }, 300);
 
@@ -387,7 +394,7 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
       const resolvedProblemShare = Math.max(0, Math.min(1, simResult.problemResolved / TOTAL_PROBLEMS));
       const unresolvedShare = 1 - resolvedProblemShare;
       const diagnosisWithShare = getDiagnosis(decisionStructure, accessStructure, unresolvedShare);
-      document.getElementById('diagnosis-body').textContent = diagnosisWithShare.body;
+      document.getElementById('diagnosis-body').textContent = formatDiagnosisResult(diagnosisWithShare.body);
 
       runBtn.hidden = true;
       drawViz(simResult);

@@ -459,7 +459,7 @@ function drawEmptyState(options) {
 
   // Top legend (left-aligned, multiline)
   var setTopLegend = createTopLegend(svg);
-  setTopLegend(`Iter 0/${dims.periods}`, 'No CO open/close event');
+  setTopLegend(`Org. iteration 0/${dims.periods}`, 'No CO open/close event');
 
   // Bottom legend (left-aligned, multiline)
   var LEGEND_Y = SVG_H - bottomLegendOffset;
@@ -553,7 +553,7 @@ function showEndState(
     'Across 100 simulations (Monte Carlo mean at iteration ' + dims.periods + '):';
 
   document.getElementById('sum-choices-label').textContent =
-    'How did choice opportunities close';
+    'How did choice opportunities close?';
   setReadout('sum-choice-resolution', 'outcome-resolved', 'Deliberation', `${pctRes}%`, 'choice opportunity closed after sustained engagement');
   setReadout('sum-choice-oversight', 'outcome-oversight', 'Oversight', `${pctOver}%`, 'choice opportunity closed with no problem attached');
   setReadout('sum-choice-flight', 'outcome-flight', 'Flight', `${pctFli}%`, 'choice opportunity closed after problems fled');
@@ -568,7 +568,7 @@ function showEndState(
 
   // Supplementary: problem fates (interpretive extension)
   document.getElementById('sum-problems-label').textContent =
-    `What happened to the ${dims.problems} problems`;
+    `What happened to the ${dims.problems} problems?`;
   setReadout('sum-prob-resolved', 'outcome-resolved', 'Problem resolved', `${probResolved} of ${dims.problems}`, 'genuinely closed at a choice opportunity');
   setReadout('sum-prob-displaced', 'outcome-oversight', 'Displaced', `${probDisplaced} of ${dims.problems}`, 'choice opportunity closed without resolving this problem');
   setReadout('sum-prob-adrift', 'outcome-searching', 'Problem adrift', `${probAdrift} of ${dims.problems}`, 'detached from a choice opportunity after entry');
@@ -731,7 +731,7 @@ function drawViz(simResult, options) {
 
   // ── Top legend (left-aligned, multiline) ───────────────────────────────────
   var setTopLegend = createTopLegend(svg);
-  setTopLegend(`Iter 0/${dims.periods}`, 'No CO open/close event');
+  setTopLegend(`Org. iteration 0/${dims.periods}`, 'No CO open/close event');
 
   // ── Bottom legend (left-aligned, multiline) ────────────────────────────────
   var LEGEND_Y = SVG_H - bottomLegendOffset;
@@ -1298,7 +1298,7 @@ function drawViz(simResult, options) {
     const timing = computeTickTiming(currTick.tick, analysis);
 
     // Prime attention before movement.
-    setTopLegend(`Iter ${currTick.tick}/${dims.periods}`, analysis.eventText);
+    setTopLegend(`Org. iteration ${currTick.tick}/${dims.periods}`, analysis.eventText);
     var preMotionDelay = analysis.hasOpening ? TIMING.openingLeadMs : 0;
     setTimeout(function() {
       renderTick(current, prevTick, timing.motionMs);

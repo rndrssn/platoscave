@@ -17,13 +17,22 @@
     <a class="nav-title" href="../../">To the Bedrock</a>
     <div class="nav-links" id="primary-nav">
       <a class="nav-link" href="../../">Home</a>
-      <a class="nav-link nav-link--active" href="../../modules/">Index</a>
+      <a class="nav-link nav-link--active" href="../../modules/" aria-current="page">Index</a>
     </div>
     <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
   <main id="main-content" class="main--narrow">
     <div class="module-page">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <ol class="breadcrumbs-list">
+          <li class="breadcrumbs-item"><a class="breadcrumbs-link" href="../../">Home</a></li>
+          <li class="breadcrumbs-sep" aria-hidden="true">&middot;</li>
+          <li class="breadcrumbs-item"><a class="breadcrumbs-link" href="../">Index</a></li>
+          <li class="breadcrumbs-sep" aria-hidden="true">&middot;</li>
+          <li class="breadcrumbs-item"><span class="breadcrumbs-current" aria-current="page">The Mix Mapper</span></li>
+        </ol>
+      </nav>
 
       <header class="module-header">
         <p class="module-header-number">04 &middot; The Mix Mapper</p>
@@ -33,7 +42,7 @@
 
       <!-- Footer nav -->
       <nav class="module-footer-nav" aria-label="Module navigation">
-        <a class="footer-nav-link" href="../garbage-can/">&larr; Previous</a>
+        <a class="footer-nav-link" href="../garbage-can/">&larr; Previous: The Garbage Can Model</a>
         <span></span>
       </nav>
 

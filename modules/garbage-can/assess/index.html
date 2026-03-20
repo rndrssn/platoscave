@@ -53,7 +53,11 @@
 
       <!-- Stage 1 — The questionnaire -->
       <section id="stage-1" class="stage is-visible">
-        <button class="collapsible-toggle" id="questionnaire-toggle" type="button" hidden>Retake assessment</button>
+        <div class="assess-actions" id="assess-actions">
+          <button class="collapsible-toggle" id="questionnaire-toggle" type="button" hidden>Start new assessment</button>
+          <button class="collapsible-toggle" id="edit-answers-btn" type="button" hidden>Edit answers</button>
+        </div>
+        <p id="assess-status" class="visually-hidden" aria-live="polite"></p>
         <div id="questionnaire-content">
           <p class="q-step-indicator" id="q-step">1 of 3</p>
           <form id="questionnaire" novalidate>
@@ -282,6 +286,7 @@
             <span class="results-nav-dot">&#183;</span> GC Simulation
           </a>
         </nav>
+        <p class="positioning-caption assess-answer-summary" id="assess-answer-summary" hidden></p>
 
         <!-- Section: Diagnosis -->
         <section id="section-diagnosis" class="results-section">

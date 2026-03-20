@@ -45,6 +45,9 @@ Problem-level outcomes:
 - In choice opportunity
 - Never entered
 
+Renderer-support metrics:
+- `choiceResolvedPerCoMean` (Monte Carlo mean resolved problems per CO, length = number of COs)
+
 ## Labeling rules
 
 1. Keep choice-level and problem-level metrics in separate sections.

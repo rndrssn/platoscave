@@ -39,7 +39,7 @@ For each iteration transition (`tick N-1 -> tick N`):
    - flights/oversights/resolutions
    - overall change density
 2. Compute adaptive `tickMs` and `motionMs`.
-3. Update top legend first.
+3. Update top legend first (`No CO open/close event` when no discrete CO transition).
 4. Wait lead delay(s): `legendLeadMs` and optional `openingLeadMs`.
 5. Run D3 transitions in `renderTick(...)`.
 6. Schedule next tick after `tickMs`.
@@ -64,23 +64,25 @@ For each iteration transition (`tick N-1 -> tick N`):
 - Motion budget:
   - `motionMs = max(360, round(tickMs * motionFraction))`
 
-## Current usability-biased profile (slow)
+## Current usability-biased profile
 
 ### Tick pacing (`TIMING`)
 
 - `legendLeadMs: 220`
 - `openingLeadMs: 220`
 - `finalPauseMs: 1100`
-- `minTickMs: 1400`
+- `minTickMs: 1600`
 - `maxTickMs: 3600`
-- `motionFraction: 0.62`
+- `motionFraction: 0.72`
 - `eventPauseMs: 460`
 - `densitySlowMs: 340`
-- `densityFastMs: -140`
+- `densityFastMs: -80`
 - `deadTickFastMs: -120`
 - `resolvePauseMs: 820`
-- `enteringPauseMs: 360`
-- `searchingPauseMs: 320`
+- `enteringPauseMs: 760`
+- `enteringDensityPauseMs: 120`
+- `enteringDensityPauseCapMs: 420`
+- `searchingPauseMs: 520`
 - `baseEarlyMs: 2600`
 - `baseMidMs: 2250`
 - `baseLateMs: 1850`
@@ -90,11 +92,13 @@ For each iteration transition (`tick N-1 -> tick N`):
 - Open cue:
   - `open.pulseMs: 400`
 - Enter/search/adrift:
-  - `enter.popInMs: 260`
-  - `enter.searchShiftMs: 300`
-  - `enter.settleMs: 520`
-  - `search.driftMs: 1040`
-  - `search.pulseMs: 620`
+  - `enter.popInMs: 320`
+  - `enter.holdMs: 980`
+  - `enter.searchShiftMs: 420`
+  - `enter.settleMs: 620`
+  - `enter.staggerMs: 150` (for multiple entries in one tick)
+  - `search.driftMs: 1380`
+  - `search.pulseMs: 760`
   - `adrift.swayMs: 520`
   - `adrift.pulseMs: 420`
 - Migration exits:
@@ -157,4 +161,3 @@ node tests/test-assess-integration.js
 node tests/test-explorer-integration.js
 node tests/test-gc-summary-consistency.js
 ```
-

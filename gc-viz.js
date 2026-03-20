@@ -75,7 +75,7 @@ const GC_VIZ_DEFAULTS = (typeof window !== 'undefined' && window.GC_VIZ_CONFIG)
 const VIZ_LAYOUT = {
   empty: {
     svgW: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.svgW) || 900,
-    choiceRadius: CHOICE_RADIUS,
+    choiceRadius: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.choiceRadius) || CHOICE_RADIUS,
     padH: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.padH) || 55,
     squareTop: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.squareTop) || 102,
     bottomLegendPad: (GC_VIZ_DEFAULTS.layout.empty && GC_VIZ_DEFAULTS.layout.empty.bottomLegendPad) || 66,
@@ -84,7 +84,7 @@ const VIZ_LAYOUT = {
   },
   live: {
     svgW: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.svgW) || 900,
-    choiceRadius: CHOICE_RADIUS,
+    choiceRadius: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.choiceRadius) || CHOICE_RADIUS,
     padH: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.padH) || 35,
     squareTop: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.squareTop) || 108,
     bottomLegendPad: (GC_VIZ_DEFAULTS.layout.live && GC_VIZ_DEFAULTS.layout.live.bottomLegendPad) || 74,
@@ -98,9 +98,9 @@ const CHOICE_STROKE_WIDTH_RESOLVED = 1.2;
 const LEGEND_RESOLVED_STROKE_WIDTH = 1.2;
 const MOTION = {
   open: { pulseMs: 400, startScale: 0.9, endScale: 1.35 },
-  enter: { popInMs: 260, holdMs: 840, searchShiftMs: 300, settleMs: 520, overshootRadius: 1.55, staggerMs: 120 },
+  enter: { popInMs: 320, holdMs: 980, searchShiftMs: 420, settleMs: 620, overshootRadius: 1.55, staggerMs: 150 },
   attach: { pullMs: 780, holdMs: 180, settleMs: 420, overshootRadius: 1.22 },
-  search: { driftMs: 1040, pulseMs: 620, jitterAmp: 3.4 },
+  search: { driftMs: 1380, pulseMs: 760, jitterAmp: 3.4 },
   adrift: { swayMs: 520, pulseMs: 420, swayAmp: 3.8 },
   resolve: { convergeMs: 520, holdMs: 170, fadeMs: 260, overshootRadius: 1.45 },
   flight: { flashMs: 260, ejectMs: 980, overshootRadius: 1.3 },
@@ -110,18 +110,18 @@ const TIMING = {
   legendLeadMs: 220,
   openingLeadMs: 220,
   finalPauseMs: 1100,
-  minTickMs: 1400,
+  minTickMs: 1600,
   maxTickMs: 3600,
-  motionFraction: 0.62,
+  motionFraction: 0.72,
   eventPauseMs: 460,
   densitySlowMs: 340,
-  densityFastMs: -140,
+  densityFastMs: -80,
   deadTickFastMs: -120,
   resolvePauseMs: 820,
-  enteringPauseMs: 640,
-  enteringDensityPauseMs: 100,
-  enteringDensityPauseCapMs: 320,
-  searchingPauseMs: 320,
+  enteringPauseMs: 760,
+  enteringDensityPauseMs: 120,
+  enteringDensityPauseCapMs: 420,
+  searchingPauseMs: 520,
   baseEarlyMs: 2600, // iter 1-5
   baseMidMs: 2250,   // iter 6-10
   baseLateMs: 1850,  // iter 11-20
@@ -237,7 +237,7 @@ function createTopLegend(svg) {
     .attr('y', 16);
 
   return function setTopLegend(iterText, eventText) {
-    setMultilineLegendText(topLegend, [iterText, eventText || 'No event'], TOP_LEGEND_LINE_GAP_EM);
+    setMultilineLegendText(topLegend, [iterText, eventText || 'No CO open/close event'], TOP_LEGEND_LINE_GAP_EM);
   };
 }
 
@@ -459,7 +459,7 @@ function drawEmptyState(options) {
 
   // Top legend (left-aligned, multiline)
   var setTopLegend = createTopLegend(svg);
-  setTopLegend(`Iter 0/${dims.periods}`, 'No event');
+  setTopLegend(`Iter 0/${dims.periods}`, 'No CO open/close event');
 
   // Bottom legend (left-aligned, multiline)
   var LEGEND_Y = SVG_H - bottomLegendOffset;
@@ -479,6 +479,7 @@ function drawEmptyState(options) {
 function showEndState(
   pctRes, pctOver, pctFli,
   probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
+  choiceResolvedPerCoMean,
   lastTick,
   dims
 ) {
@@ -518,10 +519,16 @@ function showEndState(
   var runNeverEntered = 0;
   var runChoicesClosed = 0;
   var runChoicesOpen   = 0;
+  var runResolvedByChoice = new Array(dims.choices).fill(0);
 
   if (lastTick) {
     lastTick.problems.forEach(function(p) {
-      if (p.state === 'resolved') runResolved++;
+      if (p.state === 'resolved') {
+        runResolved++;
+        if (typeof p.attachedTo === 'number' && p.attachedTo >= 0 && p.attachedTo < dims.choices) {
+          runResolvedByChoice[p.attachedTo]++;
+        }
+      }
       else if (p.state === 'attached') runInForum++;
       else if (p.state === 'floating') runAdrift++;
       else if (p.state === 'inactive') runNeverEntered++;
@@ -550,6 +557,14 @@ function showEndState(
   setReadout('sum-choice-resolution', 'outcome-resolved', 'Deliberation', `${pctRes}%`, 'choice opportunity closed after sustained engagement');
   setReadout('sum-choice-oversight', 'outcome-oversight', 'Oversight', `${pctOver}%`, 'choice opportunity closed with no problem attached');
   setReadout('sum-choice-flight', 'outcome-flight', 'Flight', `${pctFli}%`, 'choice opportunity closed after problems fled');
+  var runPerCo = runResolvedByChoice.map(function(v, i) {
+    return formatChoiceOpportunityLabel(i) + ' ' + v;
+  }).join(' · ');
+  var meanArr = Array.isArray(choiceResolvedPerCoMean) ? choiceResolvedPerCoMean : [];
+  var meanPerCo = meanArr.length ? meanArr.map(function(v, i) {
+    return formatChoiceOpportunityLabel(i) + ' ' + v.toFixed(1);
+  }).join(' · ') : 'n/a';
+  setReadout('sum-choice-perco', 'outcome-unresolved', 'Per-CO closure', 'Run: ' + runPerCo, 'MC mean: ' + meanPerCo);
 
   // Supplementary: problem fates (interpretive extension)
   document.getElementById('sum-problems-label').textContent =
@@ -585,6 +600,7 @@ function drawViz(simResult, options) {
   const probAdrift    = Math.round(simResult.problemAdrift);
   const probInForum   = Math.round(simResult.problemInForum);
   const probNeverEntered = Math.round(simResult.problemNeverEntered);
+  const choiceResolvedPerCoMean = Array.isArray(simResult.choiceResolvedPerCoMean) ? simResult.choiceResolvedPerCoMean : [];
 
   // Reset summary state
   document.getElementById('sim-summary').hidden   = true;
@@ -715,7 +731,7 @@ function drawViz(simResult, options) {
 
   // ── Top legend (left-aligned, multiline) ───────────────────────────────────
   var setTopLegend = createTopLegend(svg);
-  setTopLegend(`Iter 0/${dims.periods}`, 'No event');
+  setTopLegend(`Iter 0/${dims.periods}`, 'No CO open/close event');
 
   // ── Bottom legend (left-aligned, multiline) ────────────────────────────────
   var LEGEND_Y = SVG_H - bottomLegendOffset;
@@ -773,10 +789,31 @@ function drawViz(simResult, options) {
   // Problem IDs that have ever been active (for entrance animation)
   const everActive = new Set();
 
+  function collectChoiceDelta(prevTick, currTick) {
+    const openedIds = [];
+    const openedAndClosedIds = [];
+    const resolvedIds = new Set();
+    let changedChoices = 0;
+
+    for (let c = 0; c < dims.choices; c++) {
+      const prevState = prevTick.choices[c].state;
+      const currState = currTick.choices[c].state;
+      if (prevState !== currState) changedChoices++;
+      if (prevState === 'inactive' && currState === 'active') openedIds.push(c);
+      if (prevState === 'inactive' && currState === 'closed') {
+        openedAndClosedIds.push(c);
+        resolvedIds.add(c);
+      }
+      if (prevState === 'active' && currState === 'closed') resolvedIds.add(c);
+    }
+
+    return { openedIds, openedAndClosedIds, resolvedIds, changedChoices };
+  }
+
   function analyzeTickChange(currTick, prevTick) {
     if (!prevTick) {
       return {
-        eventText: 'No event',
+        eventText: 'No CO open/close event',
         eventful: false,
         density: 0,
         isDead: false,
@@ -786,68 +823,52 @@ function drawViz(simResult, options) {
         hasSearching: false,
       };
     }
-    const choicesOpenedThisTick = [];
-    const choicesOpenedAndClosedThisTick = [];
-    const choicesResolvedThisTick = new Set();
-    let changedChoices = 0;
+    const choiceDelta = collectChoiceDelta(prevTick, currTick);
     let changedProblems = 0;
     let flights = 0;
     let oversights = 0;
     let enteringCount = 0;
     let searchingCount = 0;
 
-    for (let c = 0; c < dims.choices; c++) {
-      const prevState = prevTick.choices[c].state;
-      const currState = currTick.choices[c].state;
-      if (prevState !== currState) changedChoices++;
-      if (prevState === 'inactive' && currState === 'active') choicesOpenedThisTick.push(c);
-      if (prevState === 'inactive' && currState === 'closed') {
-        choicesOpenedAndClosedThisTick.push(c);
-        choicesResolvedThisTick.add(c);
-      }
-      if (prevState === 'active' && currState === 'closed') choicesResolvedThisTick.add(c);
-    }
-
     for (let id = 0; id < dims.problems; id++) {
       const pp = prevTick.problems[id];
       const cp = currTick.problems[id];
-      if (pp.state !== cp.state) changedProblems++;
-      if (pp.attachedTo !== cp.attachedTo) changedProblems++;
+      if (pp.state !== cp.state || pp.attachedTo !== cp.attachedTo) changedProblems++;
       if (pp.state === 'inactive' && cp.state !== 'inactive') enteringCount++;
-      if (pp.state !== 'floating' && cp.state === 'floating') searchingCount++;
+      if (pp.state !== 'floating' && cp.state === 'floating' && pp.state !== 'inactive') searchingCount++;
       if (pp.state === 'attached' && cp.state === 'floating') {
-        if (choicesResolvedThisTick.has(pp.attachedTo)) oversights++;
+        if (choiceDelta.resolvedIds.has(pp.attachedTo)) oversights++;
         else flights++;
       }
     }
 
-    let eventText = 'No event';
-    if (choicesOpenedAndClosedThisTick.length > 0) {
-      const direct = choicesOpenedAndClosedThisTick.sort((a, b) => a - b);
+    let eventText = 'No CO open/close event';
+    if (choiceDelta.openedAndClosedIds.length > 0) {
+      const direct = choiceDelta.openedAndClosedIds.sort((a, b) => a - b);
       if (direct.length === 1) eventText = `${formatChoiceOpportunityLabel(direct[0])} opened and closed`;
       else eventText = `${direct.map(formatChoiceOpportunityLabel).join(', ')} opened and closed`;
-    } else if (choicesResolvedThisTick.size > 0) {
-      const choiceIds = Array.from(choicesResolvedThisTick).sort((a, b) => a - b);
+    } else if (choiceDelta.resolvedIds.size > 0) {
+      const choiceIds = Array.from(choiceDelta.resolvedIds).sort((a, b) => a - b);
       if (choiceIds.length === 1) eventText = `${formatChoiceOpportunityLabel(choiceIds[0])} closed`;
       else eventText = `${choiceIds.map(formatChoiceOpportunityLabel).join(', ')} closed`;
-    } else if (choicesOpenedThisTick.length > 0) {
-      const opened = choicesOpenedThisTick.sort((a, b) => a - b);
+    } else if (choiceDelta.openedIds.length > 0) {
+      const opened = choiceDelta.openedIds.sort((a, b) => a - b);
       if (opened.length === 1) eventText = `${formatChoiceOpportunityLabel(opened[0])} opened`;
       else eventText = `${formatChoiceOpportunityList(opened, 3)} opened this iteration`;
     }
 
     const problemDenominator = Math.max(1, dims.problems * 2);
-    const density = (changedChoices / Math.max(1, dims.choices)) * 0.5 + (changedProblems / problemDenominator) * 0.5;
-    const isDead = changedChoices === 0 && changedProblems === 0;
-    const eventful = choicesOpenedThisTick.length > 0 || choicesOpenedAndClosedThisTick.length > 0 || choicesResolvedThisTick.size > 0 || flights > 0 || oversights > 0;
+    const density = (choiceDelta.changedChoices / Math.max(1, dims.choices)) * 0.5 + (changedProblems / problemDenominator) * 0.5;
+    const isDead = choiceDelta.changedChoices === 0 && changedProblems === 0;
+    const eventful = choiceDelta.openedIds.length > 0 || choiceDelta.openedAndClosedIds.length > 0 || choiceDelta.resolvedIds.size > 0 || flights > 0 || oversights > 0;
 
     return {
       eventText,
       eventful,
       density,
       isDead,
-      hasResolution: choicesResolvedThisTick.size > 0,
-      hasOpening: choicesOpenedThisTick.length > 0 || choicesOpenedAndClosedThisTick.length > 0,
+      hasResolution: choiceDelta.resolvedIds.size > 0,
+      hasOpening: choiceDelta.openedIds.length > 0 || choiceDelta.openedAndClosedIds.length > 0,
       hasEntering: enteringCount > 0,
       enteringCount: enteringCount,
       hasSearching: searchingCount > 0,
@@ -943,17 +964,10 @@ function drawViz(simResult, options) {
     const oversightSet     = new Set();
 
     if (prevTick) {
-      for (let c = 0; c < dims.choices; c++) {
-        if (prevTick.choices[c].state === 'inactive' && tick.choices[c].state === 'active') {
-          choicesOpenedThisTick.push(c);
-        }
-        if (prevTick.choices[c].state === 'inactive' && tick.choices[c].state === 'closed') {
-          choicesResolvedThisTick.add(c);
-        }
-        if (prevTick.choices[c].state === 'active' && tick.choices[c].state === 'closed') {
-          choicesResolvedThisTick.add(c);
-        }
-      }
+      const choiceDelta = collectChoiceDelta(prevTick, tick);
+      choiceDelta.openedIds.forEach(function(c) { choicesOpenedThisTick.push(c); });
+      choiceDelta.openedAndClosedIds.forEach(function(c) { choicesResolvedThisTick.add(c); });
+      choiceDelta.resolvedIds.forEach(function(c) { choicesResolvedThisTick.add(c); });
       for (let id = 0; id < dims.problems; id++) {
         const ps = prevTick.problems[id].state;
         const cs = tick.problems[id].state;
@@ -1296,6 +1310,7 @@ function drawViz(simResult, options) {
         showEndState(
           pctRes, pctOver, pctFli,
           probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
+          choiceResolvedPerCoMean,
           ticks[ticks.length - 1],
           dims
         );

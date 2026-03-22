@@ -644,7 +644,6 @@
   padding-bottom: 1.25rem;
   margin-top: 0.55rem;
   margin-bottom: 2rem;
-  border-top: 1px solid var(--paper-deep);
   border-bottom: 1px solid var(--ink-ghost);
   overflow-x: auto;
   overflow-y: hidden;

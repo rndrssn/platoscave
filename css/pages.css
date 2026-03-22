@@ -336,6 +336,10 @@
   margin-top: 6rem;
 }
 
+.module-footer-nav--section {
+  margin-top: 3rem;
+}
+
 .footer-nav-link {
   font-family: var(--mono);
   font-size: var(--fs-link-footer-nav);
@@ -860,10 +864,6 @@
   margin-top: 2rem;
 }
 
-.module-sub-nav--explorer-footer {
-  margin-top: 8rem;
-}
-
 .results-section#explorer-diagnosis {
   border-bottom: none;
   padding-bottom: 1rem;
@@ -878,10 +878,6 @@
 }
 
 @media (max-width: 640px) {
-  .module-sub-nav--explorer-footer {
-    margin-top: 6rem;
-  }
-
   .explorer-results-section .simulation-divider {
     margin-bottom: 3.5rem;
   }

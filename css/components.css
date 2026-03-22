@@ -57,10 +57,33 @@
   color: var(--ink-faint);
   text-decoration: none;
   transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  border-bottom: 1px solid transparent;
+  position: relative;
 }
 
 .nav-link:hover    { color: var(--ink-mid); }
-.nav-link--active  { color: var(--sage); }
+.nav-link--active  {
+  color: var(--ink-mid);
+  font-weight: 400;
+}
+
+.nav-link::before {
+  content: "";
+  width: 0.24rem;
+  height: 0.24rem;
+  border-radius: 999px;
+  background: transparent;
+  display: inline-block;
+  margin-right: 0.3rem;
+  flex: 0 0 auto;
+}
+
+.nav-link--active::before {
+  background: var(--sage);
+}
 
 .nav-mobile-toggle {
   display: none;

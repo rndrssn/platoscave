@@ -17,24 +17,13 @@
     <a class="nav-title" href="../../../">To the Bedrock</a>
     <div class="nav-links" id="primary-nav">
       <a class="nav-link" href="../../../">Home</a>
-      <a class="nav-link nav-link--active" href="../../../modules/" aria-current="page">Index</a>
+      <a class="nav-link nav-link--active" href="../../../modules/">Modules</a>
     </div>
     <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
   <main id="main-content" class="main--narrow">
     <div class="module-page">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <ol class="breadcrumbs-list">
-          <li class="breadcrumbs-item"><a class="breadcrumbs-link" href="../../../">Home</a></li>
-          <li class="breadcrumbs-sep" aria-hidden="true">&middot;</li>
-          <li class="breadcrumbs-item"><a class="breadcrumbs-link" href="../../">Index</a></li>
-          <li class="breadcrumbs-sep" aria-hidden="true">&middot;</li>
-          <li class="breadcrumbs-item"><a class="breadcrumbs-link" href="../">The Garbage Can Model</a></li>
-          <li class="breadcrumbs-sep" aria-hidden="true">&middot;</li>
-          <li class="breadcrumbs-item"><span class="breadcrumbs-current" aria-current="page">Self-Assessment</span></li>
-        </ol>
-      </nav>
 
       <nav class="module-sub-nav" aria-label="Module sections">
         <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">03.1</span> Narrative</a>
@@ -43,7 +32,7 @@
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="../explorer/"><span class="module-sub-nav-number">03.3</span> Explorer</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="../assess/" aria-current="page"><span class="module-sub-nav-number">03.4</span> Self-Assessment</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="../assess/"><span class="module-sub-nav-number">03.4</span> Self-Assessment</a>
       </nav>
 
       <!-- Module header -->
@@ -64,11 +53,7 @@
 
       <!-- Stage 1 — The questionnaire -->
       <section id="stage-1" class="stage is-visible">
-        <div class="assess-actions" id="assess-actions">
-          <button class="collapsible-toggle" id="questionnaire-toggle" type="button" hidden>Start new assessment</button>
-          <button class="collapsible-toggle" id="edit-answers-btn" type="button" hidden>Edit answers</button>
-        </div>
-        <p id="assess-status" class="visually-hidden" aria-live="polite"></p>
+        <button class="collapsible-toggle" id="questionnaire-toggle" type="button" hidden>Retake assessment</button>
         <div id="questionnaire-content">
           <p class="q-step-indicator" id="q-step">1 of 3</p>
           <form id="questionnaire" novalidate>
@@ -297,26 +282,15 @@
             <span class="results-nav-dot">&#183;</span> GC Simulation
           </a>
         </nav>
-        <p class="positioning-caption assess-answer-summary" id="assess-answer-summary" hidden></p>
 
         <!-- Section: Diagnosis -->
         <section id="section-diagnosis" class="results-section">
           <p class="stage-label">Diagnosis</p>
-          <div class="result-card">
-            <p class="card-eyebrow">Result</p>
-            <h2 class="diagnosis-title" id="diagnosis-title"></h2>
-            <p class="diagnosis-body" id="diagnosis-body"></p>
-            <div class="diagnosis-links" id="diagnosis-links" hidden>
-              <a class="diagnosis-link" href="../taxonomy/">Read more about the organisation types</a>
-              <a class="diagnosis-link" href="../">Understand the model</a>
-            </div>
-          </div>
-          <div class="field-notes-card context-card">
-            <p class="field-notes-title">How to read</p>
-            <p class="field-notes-body">
-              In this model, this diagnosis describes the structural pattern your answers map to.
-              It is not a performance grade. Use it as a lens for interpreting the simulation and where problems get resolved, displaced, or left adrift.
-            </p>
+          <h2 class="diagnosis-title" id="diagnosis-title"></h2>
+          <p class="diagnosis-body" id="diagnosis-body"></p>
+          <div class="diagnosis-links" id="diagnosis-links" hidden>
+            <a class="diagnosis-link" href="../taxonomy/">Read more about the organisation types</a>
+            <a class="diagnosis-link" href="../">Understand the model</a>
           </div>
         </section>
 
@@ -354,7 +328,7 @@
           <!-- Simulation area — shown after form submit with empty state -->
           <div id="viz-area" hidden>
             <svg id="viz-svg"></svg>
-            <p class="figure-caption" id="viz-caption" hidden></p>
+            <p class="figure-caption" id="viz-caption"></p>
 
             <!-- Trigger button — visible with empty state, hidden on click -->
             <div class="submit-row">
@@ -404,14 +378,14 @@
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="../explorer/"><span class="module-sub-nav-number">03.3</span> Explorer</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="../assess/" aria-current="page"><span class="module-sub-nav-number">03.4</span> Self-Assessment</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="../assess/"><span class="module-sub-nav-number">03.4</span> Self-Assessment</a>
       </nav>
 
     </div>
   </main>
 
   <footer>
-    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Colophon</a></p>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
   </footer>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>

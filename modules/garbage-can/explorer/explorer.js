@@ -60,13 +60,6 @@ function allDropdownsSelected() {
   return intensity !== '' && inflow !== '' && decision !== '' && access !== '';
 }
 
-function formatDiagnosisResult(text) {
-  var cleaned = (text || '').trim().replace(/\s+/g, ' ');
-  if (!cleaned) return '';
-  var withoutPrefix = cleaned.replace(/^Your diagnosis is\s+/i, '');
-  return 'Your diagnosis is ' + withoutPrefix.charAt(0).toLowerCase() + withoutPrefix.slice(1);
-}
-
 // ─── Diagnosis helper — updates title/body when all dropdowns have a value ────
 function updateDiagnosis() {
   if (!allDropdownsSelected()) {
@@ -87,7 +80,7 @@ function updateDiagnosis() {
   bodyText = bodyText.replace(/In organisations like yours, roughly.*$/, '').trim();
 
   document.getElementById('explorer-diagnosis-title').textContent = diagnosis.title;
-  document.getElementById('explorer-diagnosis-body').textContent  = formatDiagnosisResult(bodyText);
+  document.getElementById('explorer-diagnosis-body').textContent  = bodyText;
   document.getElementById('explorer-diagnosis').hidden = false;
   document.getElementById('explorer-sim-trigger').hidden = false;
   if (resultsNav) resultsNav.hidden = false;

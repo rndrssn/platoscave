@@ -23,150 +23,26 @@ if (navToggle && navLinks) {
   });
 }
 
-var stageEl = document.getElementById('stage-1');
-var questionnaireContentEl = document.getElementById('questionnaire-content');
-var resultsAreaEl = document.getElementById('results-area');
-var retakeBtnEl = document.getElementById('questionnaire-toggle');
-var editBtnEl = document.getElementById('edit-answers-btn');
-var statusLiveEl = document.getElementById('assess-status');
-var answerSummaryEl = document.getElementById('assess-answer-summary');
-
-function emitAssessEvent(name, detail) {
-  if (typeof window !== 'undefined' && Array.isArray(window.dataLayer)) {
-    window.dataLayer.push({ event: name, detail: detail || {} });
+// ─── Questionnaire collapse/expand ───────────────────────────────────────────
+document.getElementById('questionnaire-toggle').addEventListener('click', function () {
+  var content = document.getElementById('questionnaire-content');
+  content.hidden = !content.hidden;
+  this.textContent = content.hidden ? 'Retake assessment' : 'Hide questionnaire';
+  if (!content.hidden) {
+    document.getElementById('stage-1').classList.remove('stage-collapsed');
+    document.getElementById('results-area').classList.remove('is-visible');
+    document.getElementById('diagnosis-title').textContent = '';
+    document.getElementById('diagnosis-body').textContent = '';
+    document.getElementById('diagnosis-links').hidden = true;
+    var positioningSvg = document.getElementById('positioning-svg');
+    if (positioningSvg) { while (positioningSvg.firstChild) positioningSvg.removeChild(positioningSvg.firstChild); }
+    var vizSvg = document.getElementById('viz-svg');
+    if (vizSvg) { while (vizSvg.firstChild) vizSvg.removeChild(vizSvg.firstChild); }
+    document.getElementById('viz-area').hidden = true;
+    document.getElementById('sim-summary').hidden = true;
+    document.getElementById('run-sim-btn').hidden = false;
   }
-  try {
-    if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
-      window.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
-    }
-  } catch (_) {
-    // noop
-  }
-}
-
-function announceStatus(text) {
-  if (!statusLiveEl) return;
-  statusLiveEl.textContent = '';
-  setTimeout(function() {
-    statusLiveEl.textContent = text;
-  }, 40);
-}
-
-function persistMode(mode) {
-  if (typeof window === 'undefined' || !window.location || typeof history === 'undefined' || typeof history.replaceState !== 'function') return;
-  try {
-    var url = new URL(window.location.href);
-    if (mode === 'results') url.searchParams.set('mode', 'results');
-    else url.searchParams.delete('mode');
-    history.replaceState(null, '', url.toString());
-  } catch (_) {
-    // noop
-  }
-}
-
-function clearSvg(id) {
-  var el = document.getElementById(id);
-  if (!el) return;
-  while (el.firstChild) el.removeChild(el.firstChild);
-}
-
-function formatDiagnosisResult(text) {
-  var cleaned = (text || '').trim().replace(/\s+/g, ' ');
-  if (!cleaned) return '';
-  var withoutPrefix = cleaned.replace(/^Your diagnosis is\s+/i, '');
-  return 'Your diagnosis is ' + withoutPrefix.charAt(0).toLowerCase() + withoutPrefix.slice(1);
-}
-
-function resetQuestionnaireUi(preserveAnswers) {
-  currentGroup = 0;
-  document.getElementById('q-group-1').hidden = false;
-  document.getElementById('q-group-2').hidden = true;
-  document.getElementById('q-group-3').hidden = true;
-  document.getElementById('q-step').textContent = '1 of 3';
-
-  if (!preserveAnswers) {
-    for (var i = 0; i < 12; i++) {
-      var radios = document.querySelectorAll('input[name="q' + i + '"]');
-      radios.forEach(function(r) { r.checked = false; });
-    }
-  }
-
-  document.getElementById('q-continue-1').disabled = !validateGroup(0);
-  document.getElementById('q-continue-2').disabled = !validateGroup(1);
-  document.getElementById('submit-btn').disabled = !validateGroup(2);
-  document.getElementById('form-error-1').hidden = true;
-  document.getElementById('form-error-2').hidden = true;
-  document.getElementById('form-error').hidden = true;
-}
-
-function resetResultsUi() {
-  document.getElementById('diagnosis-title').textContent = '';
-  document.getElementById('diagnosis-body').textContent = '';
-  document.getElementById('diagnosis-links').hidden = true;
-  document.getElementById('positioning-caption').textContent = '';
-  clearSvg('positioning-svg');
-  clearSvg('viz-svg');
-  document.getElementById('viz-area').hidden = true;
-  document.getElementById('sim-summary').hidden = true;
-  document.getElementById('run-sim-btn').hidden = false;
-  document.getElementById('replay-btn').hidden = true;
-  document.getElementById('stochastic-note').hidden = true;
-  if (answerSummaryEl) {
-    answerSummaryEl.hidden = true;
-    answerSummaryEl.textContent = '';
-  }
-}
-
-function enterEditingState(scrollToTop) {
-  questionnaireContentEl.hidden = false;
-  stageEl.classList.remove('stage-collapsed');
-  resultsAreaEl.hidden = true;
-  resultsAreaEl.classList.remove('is-visible');
-  retakeBtnEl.hidden = true;
-  if (editBtnEl) editBtnEl.hidden = true;
-  persistMode('editing');
-  announceStatus('Questionnaire ready for editing.');
-  if (scrollToTop) {
-    var y = stageEl.getBoundingClientRect().top + window.pageYOffset - 72;
-    window.scrollTo({ top: y, behavior: 'smooth' });
-  }
-}
-
-function enterResultsState() {
-  questionnaireContentEl.hidden = true;
-  stageEl.classList.add('stage-collapsed');
-  resultsAreaEl.hidden = false;
-  resultsAreaEl.classList.add('is-visible');
-  retakeBtnEl.hidden = false;
-  retakeBtnEl.textContent = 'Start new assessment';
-  if (editBtnEl) editBtnEl.hidden = false;
-  persistMode('results');
-  announceStatus('Results ready. Use Start new assessment or Edit answers.');
-}
-
-var hasCompletedSimulationRun = false;
-function confirmRetakeIfNeeded() {
-  if (!hasCompletedSimulationRun) return true;
-  if (typeof window === 'undefined' || typeof window.confirm !== 'function') return true;
-  return window.confirm('Start a new assessment? This will clear answers and current results.');
-}
-
-retakeBtnEl.addEventListener('click', function() {
-  if (!confirmRetakeIfNeeded()) return;
-  emitAssessEvent('assess_retake', { completedRun: hasCompletedSimulationRun });
-  hasCompletedSimulationRun = false;
-  resetQuestionnaireUi(false);
-  resetResultsUi();
-  enterEditingState(true);
 });
-
-if (editBtnEl) {
-  editBtnEl.addEventListener('click', function() {
-    emitAssessEvent('assess_edit_answers', {});
-    resetQuestionnaireUi(true);
-    enterEditingState(true);
-  });
-}
 
 // ─── Results mini-nav ────────────────────────────────────────────────────────
 var resultsNavLinks = Array.from(document.querySelectorAll('.results-nav-link'));
@@ -291,18 +167,17 @@ Q_GROUPS[2].questions.forEach(function(qName) {
 function showStage(id, delay) {
   setTimeout(() => {
     const el = document.getElementById(id);
-    el.hidden = false;
     el.classList.add('is-visible');
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, delay);
 }
 
 function focusSimulationCanvas() {
-  var svg = document.getElementById('viz-svg');
-  if (!svg) return;
+  var section = document.getElementById('section-simulation');
+  if (!section) return;
   var navHeight = 72; // 4rem nav bar
-  if (typeof svg.getBoundingClientRect === 'function') {
-    var y = svg.getBoundingClientRect().top + window.pageYOffset - navHeight - 6;
+  if (typeof section.getBoundingClientRect === 'function') {
+    var y = section.getBoundingClientRect().top + window.pageYOffset - navHeight - 6;
     window.scrollTo({ top: y, behavior: 'smooth' });
   }
 }
@@ -330,39 +205,37 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
   const diagnosis = getDiagnosis(decisionStructure, accessStructure, 0);
   var diagnosisBodyPreview = diagnosis.body.replace(/In organisations like yours, roughly.*$/, '').trim();
 
-  function buildAnswerSummary(rawScores) {
-    if (!answerSummaryEl) return;
-    var parts = [
-      'Pressure score: ' + rawScores.energyScore.toFixed(2),
-      'Access score: ' + rawScores.accessScore.toFixed(2),
-      'Decision score: ' + rawScores.decisionScore.toFixed(2),
-    ];
-    answerSummaryEl.textContent = 'Previous answers summary · ' + parts.join(' · ');
-    answerSummaryEl.hidden = false;
-  }
-
   // Reveal results area
   showStage('results-area', 100);
-  enterResultsState();
-  buildAnswerSummary(raw);
-  emitAssessEvent('assess_submit', {
-    problemIntensity: problemIntensity,
-    problemInflow: problemInflow,
-    decisionStructure: decisionStructure,
-    accessStructure: accessStructure
-  });
+
+  // Collapse questionnaire but preserve responses for review/edit
+  currentGroup = 0;
+  document.getElementById('q-group-1').hidden = false;
+  document.getElementById('q-group-2').hidden = true;
+  document.getElementById('q-group-3').hidden = true;
+  document.getElementById('q-step').textContent = '1 of 3';
+  document.getElementById('q-continue-1').disabled = !validateGroup(0);
+  document.getElementById('q-continue-2').disabled = !validateGroup(1);
+  document.getElementById('submit-btn').disabled = !validateGroup(2);
+  document.getElementById('form-error-1').hidden = true;
+  document.getElementById('form-error-2').hidden = true;
+  document.getElementById('form-error').hidden = true;
+  document.getElementById('questionnaire-content').hidden = true;
+  document.getElementById('questionnaire-toggle').hidden = false;
+  document.getElementById('questionnaire-toggle').textContent = 'Retake assessment';
+  document.getElementById('stage-1').classList.add('stage-collapsed');
 
   // Reset simulation area
-  hasCompletedSimulationRun = false;
-  resetResultsUi();
-  document.getElementById('viz-area').hidden = false;
-  drawEmptyState();
-  buildAnswerSummary(raw);
+  document.getElementById('viz-area').hidden = true;
+  document.getElementById('run-sim-btn').hidden = false;
+  document.getElementById('sim-summary').hidden = true;
+  document.getElementById('replay-btn').hidden = true;
+  document.getElementById('stochastic-note').hidden = true;
 
   // Diagnosis
   setTimeout(() => {
     document.getElementById('diagnosis-title').textContent = diagnosis.title;
-    document.getElementById('diagnosis-body').textContent  = formatDiagnosisResult(diagnosisBodyPreview);
+    document.getElementById('diagnosis-body').textContent  = diagnosisBodyPreview;
     document.getElementById('diagnosis-links').hidden = false;
   }, 300);
 
@@ -375,6 +248,11 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
 
   // Show simulation area with empty state immediately
   document.getElementById('viz-area').hidden = false;
+  drawEmptyState();
+
+  // Parameters caption
+  document.getElementById('viz-caption').textContent =
+    `Parameters: ${problemIntensity} intensity; ${problemInflow} inflow; ${decisionStructure} decision; ${accessStructure} access.`;
 
   // Simulation trigger — runs on button click
   document.getElementById('run-sim-btn').onclick = async function () {
@@ -394,18 +272,10 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
       const resolvedProblemShare = Math.max(0, Math.min(1, simResult.problemResolved / TOTAL_PROBLEMS));
       const unresolvedShare = 1 - resolvedProblemShare;
       const diagnosisWithShare = getDiagnosis(decisionStructure, accessStructure, unresolvedShare);
-      document.getElementById('diagnosis-body').textContent = formatDiagnosisResult(diagnosisWithShare.body);
+      document.getElementById('diagnosis-body').textContent = diagnosisWithShare.body;
 
       runBtn.hidden = true;
       drawViz(simResult);
-      hasCompletedSimulationRun = true;
-      emitAssessEvent('assess_simulation_run', {
-        problemIntensity: problemIntensity,
-        problemInflow: problemInflow,
-        decisionStructure: decisionStructure,
-        accessStructure: accessStructure
-      });
-      announceStatus('Simulation run complete.');
       setTimeout(focusSimulationCanvas, 100);
     } finally {
       runBtn.disabled = false;
@@ -427,8 +297,6 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
         accessStructure
       });
       drawViz(newSim);
-      hasCompletedSimulationRun = true;
-      emitAssessEvent('assess_simulation_rerun', {});
       setTimeout(focusSimulationCanvas, 100);
     } finally {
       replayBtn.disabled = false;
@@ -436,8 +304,3 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
     }
   };
 });
-
-// Start in explicit editing state to avoid blank results whitespace on load.
-resultsAreaEl.hidden = true;
-resultsAreaEl.classList.remove('is-visible');
-enterEditingState(false);

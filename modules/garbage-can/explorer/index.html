@@ -17,31 +17,20 @@
     <a class="nav-title" href="../../../">To the Bedrock</a>
     <div class="nav-links" id="primary-nav">
       <a class="nav-link" href="../../../">Home</a>
-      <a class="nav-link nav-link--active" href="../../../modules/" aria-current="page">Index</a>
+      <a class="nav-link nav-link--active" href="../../../modules/">Modules</a>
     </div>
     <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
   <main id="main-content" class="main--narrow">
     <div class="module-page">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <ol class="breadcrumbs-list">
-          <li class="breadcrumbs-item"><a class="breadcrumbs-link" href="../../../">Home</a></li>
-          <li class="breadcrumbs-sep" aria-hidden="true">&middot;</li>
-          <li class="breadcrumbs-item"><a class="breadcrumbs-link" href="../../">Index</a></li>
-          <li class="breadcrumbs-sep" aria-hidden="true">&middot;</li>
-          <li class="breadcrumbs-item"><a class="breadcrumbs-link" href="../">The Garbage Can Model</a></li>
-          <li class="breadcrumbs-sep" aria-hidden="true">&middot;</li>
-          <li class="breadcrumbs-item"><span class="breadcrumbs-current" aria-current="page">Explorer</span></li>
-        </ol>
-      </nav>
 
       <nav class="module-sub-nav" aria-label="Module sections">
         <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">03.1</span> Narrative</a>
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="../taxonomy/"><span class="module-sub-nav-number">03.2</span> Taxonomy</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="../explorer/" aria-current="page"><span class="module-sub-nav-number">03.3</span> Explorer</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="../explorer/"><span class="module-sub-nav-number">03.3</span> Explorer</a>
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="../assess/"><span class="module-sub-nav-number">03.4</span> Self-Assessment</a>
       </nav>
@@ -59,9 +48,9 @@
 
       <!-- Field notes card -->
       <div class="field-notes-card">
-        <p class="field-notes-title">How to read</p>
+        <p class="field-notes-title">The Garbage Can Model</p>
         <p class="field-notes-body">
-          In this model, <strong>choice opportunities</strong> (circles) are places where decisions could be made:
+          <strong>Choice opportunities</strong> (circles) are places where decisions could be made:
           meetings, reviews, committees. <strong>Problems</strong> (dots) seek resolution by attaching
           to a choice opportunity. <strong>Decision makers</strong> (invisible) allocate
           <strong>energy</strong> to the choices they can access each organisational iteration. When cumulative energy
@@ -79,61 +68,43 @@
 
       <!-- Parameter selectors — page-level controls -->
       <div class="explorer-panel" id="panel-a">
-        <p class="stage-label">Scenario setup</p>
-        <h2 class="explorer-setup-title">Define the organisational context</h2>
-        <p class="explorer-setup-body">
-          Set pressure and structure before running the simulation.
-          This configuration determines how problems, participants, and choice opportunities interact.
-        </p>
-
-        <div class="explorer-select-clusters">
-          <section class="explorer-select-cluster" aria-labelledby="pressure-heading">
-            <p class="explorer-cluster-title" id="pressure-heading">Problem pressure</p>
-            <div class="explorer-selectors explorer-selectors--pair">
-              <div class="explorer-select-group">
-                <label class="explorer-select-label" for="panel-a-load">Problem intensity</label>
-                <select class="explorer-select" id="panel-a-load">
-                  <option value="" disabled selected>Select&hellip;</option>
-                  <option value="light">Light</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="heavy">Heavy</option>
-                </select>
-              </div>
-              <div class="explorer-select-group">
-                <label class="explorer-select-label" for="panel-a-inflow">Problem inflow</label>
-                <select class="explorer-select" id="panel-a-inflow">
-                  <option value="" disabled selected>Select&hellip;</option>
-                  <option value="light">Light</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="heavy">Heavy</option>
-                </select>
-              </div>
-            </div>
-          </section>
-
-          <section class="explorer-select-cluster" aria-labelledby="structure-heading">
-            <p class="explorer-cluster-title" id="structure-heading">Organisational structure</p>
-            <div class="explorer-selectors explorer-selectors--pair">
-              <div class="explorer-select-group">
-                <label class="explorer-select-label" for="panel-a-decision">Decision</label>
-                <select class="explorer-select" id="panel-a-decision">
-                  <option value="" disabled selected>Select&hellip;</option>
-                  <option value="unsegmented">Unsegmented</option>
-                  <option value="hierarchical">Hierarchical</option>
-                  <option value="specialized">Specialized</option>
-                </select>
-              </div>
-              <div class="explorer-select-group">
-                <label class="explorer-select-label" for="panel-a-access">Access</label>
-                <select class="explorer-select" id="panel-a-access">
-                  <option value="" disabled selected>Select&hellip;</option>
-                  <option value="unsegmented">Unsegmented</option>
-                  <option value="hierarchical">Hierarchical</option>
-                  <option value="specialized">Specialized</option>
-                </select>
-              </div>
-            </div>
-          </section>
+        <div class="explorer-selectors">
+          <div class="explorer-select-group">
+            <label class="explorer-select-label" for="panel-a-load">Problem intensity</label>
+            <select class="explorer-select" id="panel-a-load">
+              <option value="" disabled selected>Select&hellip;</option>
+              <option value="light">Light</option>
+              <option value="moderate">Moderate</option>
+              <option value="heavy">Heavy</option>
+            </select>
+          </div>
+          <div class="explorer-select-group">
+            <label class="explorer-select-label" for="panel-a-inflow">Problem inflow</label>
+            <select class="explorer-select" id="panel-a-inflow">
+              <option value="" disabled selected>Select&hellip;</option>
+              <option value="light">Light</option>
+              <option value="moderate">Moderate</option>
+              <option value="heavy">Heavy</option>
+            </select>
+          </div>
+          <div class="explorer-select-group">
+            <label class="explorer-select-label" for="panel-a-decision">Decision</label>
+            <select class="explorer-select" id="panel-a-decision">
+              <option value="" disabled selected>Select&hellip;</option>
+              <option value="unsegmented">Unsegmented</option>
+              <option value="hierarchical">Hierarchical</option>
+              <option value="specialized">Specialized</option>
+            </select>
+          </div>
+          <div class="explorer-select-group">
+            <label class="explorer-select-label" for="panel-a-access">Access</label>
+            <select class="explorer-select" id="panel-a-access">
+              <option value="" disabled selected>Select&hellip;</option>
+              <option value="unsegmented">Unsegmented</option>
+              <option value="hierarchical">Hierarchical</option>
+              <option value="specialized">Specialized</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -149,8 +120,7 @@
       <!-- Diagnosis — appears when all dropdowns are set -->
       <section id="explorer-diagnosis" class="results-section" hidden>
         <p class="stage-label">Diagnosis</p>
-        <div class="result-card">
-          <p class="card-eyebrow">Result</p>
+        <div class="sim-summary-card">
           <h2 class="diagnosis-title" id="explorer-diagnosis-title"></h2>
           <p class="diagnosis-body" id="explorer-diagnosis-body"></p>
           <div class="diagnosis-links">
@@ -203,7 +173,7 @@
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="../taxonomy/"><span class="module-sub-nav-number">03.2</span> Taxonomy</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="../explorer/" aria-current="page"><span class="module-sub-nav-number">03.3</span> Explorer</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="../explorer/"><span class="module-sub-nav-number">03.3</span> Explorer</a>
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="../assess/"><span class="module-sub-nav-number">03.4</span> Self-Assessment</a>
       </nav>
@@ -212,7 +182,7 @@
   </main>
 
   <footer>
-    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Colophon</a></p>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
   </footer>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>

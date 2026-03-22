@@ -6,9 +6,20 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 **Live site:** https://rndrssn.github.io/platoscave/
 
+## Site Structure
+
+- **Home** (`/`) — identity and orientation
+- **Modules** (`/modules/`) — interactive artifacts (numbered `xx`, `xx.yy`)
+- **Notes** (`/notes/`) — narrative context, stories, and reflections (text-first)
+- **Site Notes** (`/colophon/`) — utility/meta information
+
 ## Modules
 
 - **03 · The Garbage Can Model** — An interactive implementation of Cohen, March & Olsen's 1972 model of organizational decision-making. Includes a narrative essay, taxonomy of organization types, simulation explorer, and self-assessment questionnaire.
+  - **03.1 Narrative** (`/modules/garbage-can/`)
+  - **03.2 Taxonomy** (`/modules/garbage-can/taxonomy/`)
+  - **03.3 Explorer** (`/modules/garbage-can/explorer/`)
+  - **03.4 Self-Assessment** (`/modules/garbage-can/assess/`)
 
 ## Built With
 

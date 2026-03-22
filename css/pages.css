@@ -27,6 +27,20 @@
   margin-bottom: 0.75rem;
 }
 
+.module-context-number {
+  margin-bottom: 0.5rem;
+}
+
+.module-context-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.module-context-link:hover {
+  color: var(--ink-mid);
+}
+
 .module-header-title {
   font-family: var(--serif-alt);
   font-weight: 300;
@@ -622,38 +636,63 @@
   align-items: center;
   flex-wrap: nowrap;
   gap: 0.5rem;
+  padding-top: 0.35rem;
   padding-bottom: 1.25rem;
-  margin-top: 4rem;
+  margin-top: 0.55rem;
   margin-bottom: 2rem;
+  border-top: 1px solid var(--paper-deep);
   border-bottom: 1px solid var(--ink-ghost);
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+  position: relative;
 }
 
 .module-sub-nav-link {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--sage);
-  text-decoration: none;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  text-decoration: none !important;
   transition: color 0.2s ease;
   white-space: nowrap;
   flex: 0 0 auto;
+  scroll-snap-align: start;
+  min-height: 2.4rem;
+  display: inline-flex;
+  align-items: center;
 }
 
 .module-sub-nav-link:hover {
-  color: var(--sage);
+  color: var(--ink-mid);
+  text-decoration: none !important;
+}
+
+.module-sub-nav-link:visited,
+.module-sub-nav-link:focus-visible {
+  text-decoration: none !important;
 }
 
 .module-sub-nav-link.module-sub-nav-link--active {
   color: var(--ink);
   font-weight: 400;
-  pointer-events: none;
-  text-decoration: none;
+  text-decoration: none !important;
+  position: relative;
+}
+
+.module-sub-nav-link.module-sub-nav-link--active::before {
+  content: "";
+  width: 0.28rem;
+  height: 0.28rem;
+  border-radius: 999px;
+  background: var(--sage);
+  display: inline-block;
+  margin-right: 0.35rem;
+  flex: 0 0 auto;
 }
 
 .module-sub-nav-dot {
@@ -669,6 +708,25 @@
     overflow-x: visible;
     overflow-y: visible;
     scrollbar-width: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .module-sub-nav::after {
+    content: "Scroll \2192";
+    position: sticky;
+    right: 0;
+    margin-left: auto;
+    padding-left: 0.9rem;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-ghost);
+    background: linear-gradient(90deg, transparent 0%, var(--paper) 28%);
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
   }
 }
 

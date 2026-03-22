@@ -31,8 +31,12 @@ Thumbs.db
 #Handoff
 HANDOFF*.md
 
-#SPIKES
-SPIKE-*.md
+#Docs
+docs/
+
+#LLM
+CLAUDE.md
+
 
 # Local scratch artifacts
 scribs

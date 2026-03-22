@@ -336,6 +336,10 @@
   margin-top: 6rem;
 }
 
+.module-footer-nav--section {
+  margin-top: 3rem;
+}
+
 .footer-nav-link {
   font-family: var(--mono);
   font-size: var(--fs-link-footer-nav);
@@ -640,7 +644,6 @@
   padding-bottom: 1.25rem;
   margin-top: 0.55rem;
   margin-bottom: 2rem;
-  border-top: 1px solid var(--paper-deep);
   border-bottom: 1px solid var(--ink-ghost);
   overflow-x: auto;
   overflow-y: hidden;
@@ -860,10 +863,6 @@
   margin-top: 2rem;
 }
 
-.module-sub-nav--explorer-footer {
-  margin-top: 8rem;
-}
-
 .results-section#explorer-diagnosis {
   border-bottom: none;
   padding-bottom: 1rem;
@@ -878,10 +877,6 @@
 }
 
 @media (max-width: 640px) {
-  .module-sub-nav--explorer-footer {
-    margin-top: 6rem;
-  }
-
   .explorer-results-section .simulation-divider {
     margin-bottom: 3.5rem;
   }

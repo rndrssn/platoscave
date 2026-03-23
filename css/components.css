@@ -56,6 +56,19 @@
   animation: nav-popover-in 180ms ease-out both;
 }
 
+@media (max-width: 640px) {
+  .js-enabled .nav-links.is-open {
+    max-height: min(70vh, 20rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .js-enabled .nav-links.is-open .nav-link {
+    line-height: 1.35;
+    white-space: normal;
+  }
+}
+
 .nav-link {
   font-family: var(--mono);
   font-size: var(--fs-link-nav);
@@ -586,6 +599,15 @@ footer {
   padding: 1rem 0;
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--ink-ghost);
+}
+
+@media (max-width: 640px) {
+  .results-nav {
+    flex-wrap: wrap;
+    row-gap: 0.45rem;
+    column-gap: 1rem;
+    align-items: center;
+  }
 }
 
 .results-nav-link {

@@ -356,6 +356,20 @@
   text-decoration: underline;
 }
 
+.footer-nav-label-short {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .module-footer-nav--section .footer-nav-label-full {
+    display: none;
+  }
+
+  .module-footer-nav--section .footer-nav-label-short {
+    display: inline;
+  }
+}
+
 /* ─── Field notes card ───────────────────────────────── */
 .field-notes-card {
   background: var(--paper);
@@ -670,6 +684,10 @@
   align-items: center;
 }
 
+.module-sub-nav-number {
+  margin-right: 0.28rem;
+}
+
 .module-sub-nav-link:hover {
   color: var(--ink-mid);
   text-decoration: none !important;
@@ -715,21 +733,12 @@
 }
 
 @media (max-width: 640px) {
-  .module-sub-nav::after {
-    content: "Scroll \2192";
-    position: sticky;
-    right: 0;
-    margin-left: auto;
-    padding-left: 0.9rem;
-    font-family: var(--mono);
-    font-size: 0.64rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-ghost);
-    background: linear-gradient(90deg, transparent 0%, var(--paper) 28%);
-    display: inline-flex;
-    align-items: center;
-    flex: 0 0 auto;
+  .module-sub-nav {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    overflow-y: visible;
+    scroll-snap-type: none;
+    row-gap: 0.35rem;
   }
 }
 

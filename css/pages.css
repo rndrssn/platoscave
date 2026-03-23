@@ -143,19 +143,20 @@
 
 .question-scale {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0;
 }
 
 .scale-pole {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-faint);
   flex: 1;
   line-height: 1.4;
+  padding-top: 0.05rem;
 }
 
 .scale-pole--right {

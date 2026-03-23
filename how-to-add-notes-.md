@@ -77,3 +77,37 @@ git push origin <branch>
 After merge to the deployed branch, the note is live at:
 
 `/notes/<slug>/`
+
+## 5) How to update tags
+
+Tags are generated, not edited directly in `tags/`.
+
+Where to edit tags:
+- Note tags: each note frontmatter in `content/notes/published/*.md`
+  - Example: `tags: ["garbage can model", "organised anarchy"]`
+- Module tags: `content/meta/modules.json`
+  - Example: `"tags": ["garbage can model", "organised anarchy", "decision-making"]`
+
+Rebuild after any tag change:
+
+```bash
+node scripts/build-notes.js
+```
+
+This regenerates:
+- `tags/index.html`
+- `tags/<tag>/index.html`
+- `data/tags-index.json`
+- and note pages/index that show tag chips and related links
+
+Publish tag changes:
+
+```bash
+git add content/notes/published content/meta/modules.json notes tags data scripts/build-notes.js
+git commit -m "Update note/module tags"
+git push origin <branch>
+```
+
+Important:
+- Do not manually edit files under `tags/`; they are generated.
+- A tag appears on the live site only after rebuild + commit + deploy.

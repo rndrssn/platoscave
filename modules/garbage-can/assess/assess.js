@@ -7,22 +7,6 @@
  * Dependencies: d3.js, gc-simulation.js, gc-scoring.js, gc-diagnosis.js, gc-viz.js
  */
 
-// ─── Scroll restoration ──────────────────────────────────────────────────────
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
-}
-window.scrollTo(0, 0);
-
-// ─── Nav toggle ──────────────────────────────────────────────────────────────
-var navToggle = document.querySelector('.nav-mobile-toggle');
-var navLinks = document.querySelector('.nav-links');
-if (navToggle && navLinks) {
-  navToggle.addEventListener('click', function () {
-    var isOpen = navLinks.classList.toggle('is-open');
-    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  });
-}
-
 // ─── Questionnaire collapse/expand ───────────────────────────────────────────
 document.getElementById('questionnaire-toggle').addEventListener('click', function () {
   var content = document.getElementById('questionnaire-content');

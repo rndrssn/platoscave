@@ -302,10 +302,10 @@
 }
 
 #can-explainer-svg {
-  --can-exp-fs-token-px: 18;
-  --can-exp-fs-legend-px: 17;
-  --can-exp-fs-top-px: 16;
-  --can-exp-fs-co-px: 24;
+  --can-exp-fs-token-px: 10.5;
+  --can-exp-fs-legend-px: 11.5;
+  --can-exp-fs-top-px: 10.5;
+  --can-exp-fs-co-px: 16.5;
   display: block;
   width: 100%;
   height: auto;
@@ -330,9 +330,9 @@
 
 @media (max-width: 640px) {
   #can-explainer-svg {
-    --can-exp-fs-token-px: 9.5;
-    --can-exp-fs-legend-px: 8.75;
-    --can-exp-fs-top-px: 8.25;
+    --can-exp-fs-token-px: 8.75;
+    --can-exp-fs-legend-px: 9.75;
+    --can-exp-fs-top-px: 9.25;
     --can-exp-fs-co-px: 13.5;
     min-height: clamp(15.5rem, 56vw, 20rem);
   }

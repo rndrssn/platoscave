@@ -414,7 +414,7 @@
     runCycle();
 
     function setToggleLabel() {
-      toggleBtn.textContent = isRunning ? '⏸' : '▶';
+      toggleBtn.textContent = isRunning ? '||' : '>';
       toggleBtn.setAttribute('aria-label', isRunning ? 'Pause animation' : 'Play animation');
       toggleBtn.setAttribute('title', isRunning ? 'Pause animation' : 'Play animation');
     }

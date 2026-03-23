@@ -175,6 +175,15 @@ function normalizeTags(tagsValue) {
   return tags;
 }
 
+function resolveRelatedModules(relatedIds, modulesById) {
+  if (!Array.isArray(relatedIds) || !relatedIds.length) return [];
+  return relatedIds
+    .map((id) => String(id || '').trim())
+    .filter(Boolean)
+    .map((id) => modulesById.get(id))
+    .filter(Boolean);
+}
+
 function parseDate(value) {
   const text = String(value || '').trim();
   if (!text) return null;
@@ -389,7 +398,11 @@ function writeNotePage(note) {
     : '';
 
   const relatedLine = note.relatedModules.length
-    ? '<p class="positioning-caption">Related modules: ' + note.relatedModules.map((id) => escapeHtml(id)).join(', ') + '</p>'
+    ? '<p class="positioning-caption">Related modules: '
+      + note.relatedModules
+        .map((mod) => '<a href="' + prefix + escapeAttr(mod.url) + '">' + escapeHtml(mod.title) + '</a>')
+        .join(', ')
+      + '</p>'
     : '';
 
   const body = '    <div class="module-page">\n'
@@ -435,6 +448,11 @@ function writeNotesIndex(notes) {
         const tagsLine = note.tags.length
           ? note.tags.map((tag) => '<a href="../tags/' + tag.slug + '/" class="module-tag">#' + escapeHtml(tag.label) + '</a>').join('')
           : '<span class="module-tag">#untagged</span>';
+        const relatedModulesLine = note.relatedModules.length
+          ? note.relatedModules
+            .map((mod) => '<a href="../' + escapeAttr(mod.url) + '" class="module-tag">↗ ' + escapeHtml(mod.title) + '</a>')
+            .join('')
+          : '';
         return '          <article class="note-index-card">\n'
           + '            <a class="note-index-link" href="./' + note.slug + '/">\n'
           + '              <span class="note-index-head">\n'
@@ -444,6 +462,7 @@ function writeNotesIndex(notes) {
           + '              <span class="note-index-summary">' + escapeHtml(note.summary || 'No summary yet.') + '</span>\n'
           + '            </a>\n'
           + '            <div class="module-tags note-index-tags">' + tagsLine + '</div>\n'
+          + (relatedModulesLine ? ('            <div class="module-tags note-index-tags">' + relatedModulesLine + '</div>\n') : '')
           + '          </article>';
       }).join('\n')
       + '\n        </div>')
@@ -598,6 +617,11 @@ function build() {
 
   const notes = collectNotes();
   const modules = readModulesMeta();
+  const modulesById = new Map(modules.map((mod) => [mod.id, mod]));
+
+  for (const note of notes) {
+    note.relatedModules = resolveRelatedModules(note.relatedModules, modulesById);
+  }
 
   cleanGeneratedDirs(OUTPUT_NOTES_DIR, new Set(['index.html']));
   cleanGeneratedDirs(OUTPUT_TAGS_DIR, new Set(['index.html']));

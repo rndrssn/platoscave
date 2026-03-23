@@ -739,7 +739,13 @@
     overflow-x: visible;
     overflow-y: visible;
     scroll-snap-type: none;
-    row-gap: 0.35rem;
+    row-gap: 0.08rem;
+    column-gap: 0.45rem;
+    padding-bottom: 0.85rem;
+  }
+
+  .module-sub-nav-link {
+    min-height: 2.5rem;
   }
 }
 

@@ -7,26 +7,25 @@
  * Dependencies: d3.js, gc-simulation.js, gc-diagnosis.js, gc-viz.js
  */
 
-// ─── Scroll restoration ──────────────────────────────────────────────────────
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
-}
-window.scrollTo(0, 0);
-
-// ─── Nav toggle ──────────────────────────────────────────────────────────────
-var navToggle = document.querySelector('.nav-mobile-toggle');
-var navLinks = document.querySelector('.nav-links');
-if (navToggle && navLinks) {
-  navToggle.addEventListener('click', function() {
-    var isOpen = navLinks.classList.toggle('is-open');
-    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  });
-}
-
 // ─── Results mini-nav ────────────────────────────────────────────────────────
 var resultsNav = document.getElementById('explorer-results-nav');
 var resultsNavLinks = Array.from(document.querySelectorAll('.results-nav-link'));
 var hasAutoNavigatedToResults = false;
+function buildExplorerNarrative(intensity, inflow, decision, access) {
+  if (typeof window !== 'undefined' && typeof window.buildGcPressureNarrative === 'function') {
+    return window.buildGcPressureNarrative(intensity, inflow, decision, access);
+  }
+  return {
+    problemSummary: titleCase(intensity) + ' intensity + ' + titleCase(inflow) + ' inflow',
+    coordinationSummary: titleCase(decision) + ' decision + ' + titleCase(access) + ' access',
+    synthesis: 'Combination selected. Run the simulation to see how this pressure profile shapes resolution, oversight, and flight.'
+  };
+}
+
+function titleCase(token) {
+  if (!token) return '';
+  return token.charAt(0).toUpperCase() + token.slice(1);
+}
 
 function setActiveResultsNav(targetId) {
   resultsNavLinks.forEach(function(link) {
@@ -62,18 +61,23 @@ function allDropdownsSelected() {
 
 // ─── Diagnosis helper — updates title/body when all dropdowns have a value ────
 function updateDiagnosis() {
+  var pressureBlock = document.getElementById('explorer-pressure-block');
   if (!allDropdownsSelected()) {
     document.getElementById('explorer-diagnosis').hidden = true;
     document.getElementById('explorer-sim-trigger').hidden = true;
+    if (pressureBlock) pressureBlock.hidden = true;
     if (resultsNav) resultsNav.hidden = true;
     hasAutoNavigatedToResults = false;
     return;
   }
 
+  var intensity = document.getElementById('panel-a-load').value;
+  var inflow   = document.getElementById('panel-a-inflow').value;
   var decision = document.getElementById('panel-a-decision').value;
   var access   = document.getElementById('panel-a-access').value;
 
   var diagnosis = getDiagnosis(decision, access, 0);
+  var narrative = buildExplorerNarrative(intensity, inflow, decision, access);
 
   // Strip the trailing percentage sentence — no simulation result yet
   var bodyText = diagnosis.body;
@@ -81,6 +85,13 @@ function updateDiagnosis() {
 
   document.getElementById('explorer-diagnosis-title').textContent = diagnosis.title;
   document.getElementById('explorer-diagnosis-body').textContent  = bodyText;
+  var problemPressureEl = document.getElementById('explorer-problem-pressure');
+  var coordinationPressureEl = document.getElementById('explorer-coordination-pressure');
+  var comboNarrativeEl = document.getElementById('explorer-combo-narrative');
+  if (problemPressureEl) problemPressureEl.textContent = narrative.problemSummary;
+  if (coordinationPressureEl) coordinationPressureEl.textContent = narrative.coordinationSummary;
+  if (comboNarrativeEl) comboNarrativeEl.textContent = narrative.synthesis;
+  if (pressureBlock) pressureBlock.hidden = false;
   document.getElementById('explorer-diagnosis').hidden = false;
   document.getElementById('explorer-sim-trigger').hidden = false;
   if (resultsNav) resultsNav.hidden = false;

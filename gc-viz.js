@@ -106,26 +106,28 @@ const MOTION = {
   flight: { flashMs: 260, ejectMs: 980, overshootRadius: 1.3 },
   oversight: { flashMs: 280, ejectMs: 980, overshootRadius: 1.3 },
 };
-const TIMING = {
-  legendLeadMs: 220,
-  openingLeadMs: 220,
-  finalPauseMs: 1100,
-  minTickMs: 1600,
-  maxTickMs: 3600,
-  motionFraction: 0.72,
-  eventPauseMs: 460,
-  densitySlowMs: 340,
-  densityFastMs: -80,
-  deadTickFastMs: -120,
-  resolvePauseMs: 820,
-  enteringPauseMs: 760,
-  enteringDensityPauseMs: 120,
-  enteringDensityPauseCapMs: 420,
-  searchingPauseMs: 520,
-  baseEarlyMs: 2600, // iter 1-5
-  baseMidMs: 2250,   // iter 6-10
-  baseLateMs: 1850,  // iter 11-20
-};
+const TIMING = (typeof window !== 'undefined' && window.GcVizTiming && window.GcVizTiming.TIMING)
+  ? window.GcVizTiming.TIMING
+  : {
+      legendLeadMs: 220,
+      openingLeadMs: 220,
+      finalPauseMs: 1100,
+      minTickMs: 1600,
+      maxTickMs: 3600,
+      motionFraction: 0.72,
+      eventPauseMs: 460,
+      densitySlowMs: 340,
+      densityFastMs: -80,
+      deadTickFastMs: -120,
+      resolvePauseMs: 820,
+      enteringPauseMs: 760,
+      enteringDensityPauseMs: 120,
+      enteringDensityPauseCapMs: 420,
+      searchingPauseMs: 520,
+      baseEarlyMs: 2600, // iter 1-5
+      baseMidMs: 2250,   // iter 6-10
+      baseLateMs: 1850,  // iter 11-20
+    };
 const TOP_LEGEND_LINE_GAP_EM = readCssNumber('--viz-lh-top', 1.55);
 const BOTTOM_LEGEND_LINE_STEP = readCssNumber('--viz-fs-legend', 13) * readCssNumber('--viz-lh-legend', 1.7);
 
@@ -876,6 +878,14 @@ function drawViz(simResult, options) {
   }
 
   function computeTickTiming(iterTick, analysis) {
+    if (
+      typeof window !== 'undefined' &&
+      window.GcVizTiming &&
+      typeof window.GcVizTiming.computeTickTiming === 'function'
+    ) {
+      return window.GcVizTiming.computeTickTiming(iterTick, analysis, TIMING);
+    }
+
     var base = TIMING.baseLateMs;
     if (iterTick <= 5) base = TIMING.baseEarlyMs;
     else if (iterTick <= 10) base = TIMING.baseMidMs;

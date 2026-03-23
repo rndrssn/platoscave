@@ -36,12 +36,14 @@ function makeExplorerHarness() {
   const ids = [
     'panel-a-load', 'panel-a-inflow', 'panel-a-decision', 'panel-a-access',
     'explorer-diagnosis', 'explorer-sim-trigger', 'explorer-diagnosis-title', 'explorer-diagnosis-body',
+    'explorer-pressure-block', 'explorer-problem-pressure', 'explorer-coordination-pressure', 'explorer-combo-narrative',
     'viz-svg', 'sim-summary', 'run-sim-btn', 'replay-btn', 'stochastic-note', 'viz-area'
   ];
   ids.forEach((id) => document.register(new FakeElement(id === 'run-sim-btn' || id === 'replay-btn' ? 'button' : 'div', { id })));
 
   document.getElementById('explorer-diagnosis').hidden = true;
   document.getElementById('explorer-sim-trigger').hidden = true;
+  document.getElementById('explorer-pressure-block').hidden = true;
   document.getElementById('viz-area').hidden = true;
   document.getElementById('sim-summary').hidden = true;
   document.getElementById('replay-btn').hidden = true;
@@ -105,6 +107,10 @@ async function run() {
   assert.strictEqual(diagnosis.hidden, false, 'diagnosis should become visible when all dropdowns selected');
   assert.strictEqual(trigger.hidden, false, 'sim trigger should become visible when all dropdowns selected');
   assert.strictEqual(vizArea.hidden, false, 'viz area should become visible when all dropdowns selected');
+  assert.strictEqual(h.document.getElementById('explorer-pressure-block').hidden, false, 'pressure block should become visible');
+  assert(h.document.getElementById('explorer-problem-pressure').textContent.length > 0, 'problem pressure text should be populated');
+  assert(h.document.getElementById('explorer-coordination-pressure').textContent.length > 0, 'coordination pressure text should be populated');
+  assert(h.document.getElementById('explorer-combo-narrative').textContent.length > 0, 'combo narrative text should be populated');
   assert(h.emptyStateCalls > 0, 'drawEmptyState should be called after parameter selection');
 
   const runBtn = h.document.getElementById('run-sim-btn');

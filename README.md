@@ -23,9 +23,22 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 ## Built With
 
-- Plain HTML, CSS, and JavaScript — no frameworks, no build step
+- Plain HTML, CSS, and JavaScript — no framework runtime
 - D3.js (v7) for visualizations
 - Hosted on GitHub Pages
+- Notes content is authored in Markdown and compiled to static pages with `node scripts/build-notes.js`
+
+## Notes CMS (Markdown + Obsidian)
+
+- Markdown source lives in `content/notes/published/` (and optional drafts in `content/notes/drafts/`)
+- Each note uses YAML frontmatter (`title`, `slug`, `date`, `summary`, `tags`, `status`)
+- Build notes + tags pages:
+  - `node scripts/build-notes.js`
+- Generated output:
+  - `notes/index.html`
+  - `notes/<slug>/index.html`
+  - `tags/index.html`
+  - `tags/<tag>/index.html`
 
 ## Themes
 

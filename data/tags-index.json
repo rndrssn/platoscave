@@ -1,0 +1,40 @@
+[
+  {
+    "label": "decision-making",
+    "slug": "decision-making",
+    "notes": [],
+    "modules": [
+      "03-garbage-can"
+    ]
+  },
+  {
+    "label": "garbage can model",
+    "slug": "garbage-can-model",
+    "notes": [
+      "what-works-and-what-doesnt-work"
+    ],
+    "modules": [
+      "03-garbage-can"
+    ]
+  },
+  {
+    "label": "organised anarchy",
+    "slug": "organised-anarchy",
+    "notes": [
+      "what-works-and-what-doesnt-work"
+    ],
+    "modules": [
+      "03-garbage-can"
+    ]
+  },
+  {
+    "label": "the mix",
+    "slug": "the-mix",
+    "notes": [
+      "what-works-and-what-doesnt-work"
+    ],
+    "modules": [
+      "03-garbage-can"
+    ]
+  }
+]

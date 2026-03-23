@@ -34,6 +34,8 @@
   var STREAM_TOP_Y = 96;
   var STREAM_GATE_Y = CAN_Y - CAN_R - 18;
   var ADRIFT_Y = SVG_H - 18;
+  var MAX_CYCLES = 50;
+  var AUTO_RESET_DELAY_MS = 2200;
 
   var colors = {
     // Remapped to requested stream semantics.
@@ -397,6 +399,14 @@
           animateAdrift(drifting);
         }
       }, 2400);
+
+      if (state.cycle >= MAX_CYCLES) {
+        addTimer(function() {
+          if (!isRunning) return;
+          render();
+        }, AUTO_RESET_DELAY_MS);
+        return;
+      }
 
       addTimer(runCycle, 3900);
     }

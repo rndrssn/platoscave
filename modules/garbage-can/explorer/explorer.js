@@ -2,7 +2,7 @@
 
 /**
  * explorer.js
- * Simulation Explorer page — parameter selection and wiring
+ * Explore page — parameter selection and wiring
  *
  * Dependencies: d3.js, gc-simulation.js, gc-diagnosis.js, gc-viz.js
  */

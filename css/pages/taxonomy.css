@@ -1,0 +1,134 @@
+/* ─── Taxonomy page ──────────────────────────────────── */
+.taxonomy-dimension {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--paper-deep);
+}
+
+.taxonomy-dimension:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.taxonomy-dimension-title {
+  font-family: var(--serif-alt);
+  font-weight: 400;
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+
+.taxonomy-values {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.taxonomy-value {
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  color: var(--ink-mid);
+  line-height: 1.6;
+}
+
+.taxonomy-value strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ─── Classification grid ────────────────────────────── */
+.taxonomy-grid-wrapper {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.taxonomy-grid {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 480px;
+}
+
+.taxonomy-grid-corner {
+  background: transparent;
+}
+
+.taxonomy-grid-header {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+.taxonomy-grid-row-header {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  padding: 0.75rem 0.75rem;
+  text-align: left;
+  border-right: 1px solid var(--ink-ghost);
+  white-space: nowrap;
+}
+
+.taxonomy-grid-cell {
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  color: var(--ink-mid);
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  border: 1px solid var(--paper-deep);
+}
+
+/* ─── Organisation type blocks ───────────────────────── */
+.taxonomy-type {
+  margin-bottom: 2.5rem;
+}
+
+.taxonomy-type:last-child {
+  margin-bottom: 0;
+}
+
+.taxonomy-type-title {
+  font-family: var(--serif-alt);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+
+.taxonomy-type-grid {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-bottom: 1rem;
+}
+
+/* ─── Sub-page nav (breadcrumb + footer) ────────────────── */
+.module-footer-nav--sub {
+  max-width: 720px;
+  margin: 0 auto 2rem;
+  padding: 0 1.25rem 1rem;
+  border-top: none;
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+@media (min-width: 640px) {
+  .module-footer-nav--sub {
+    padding: 0 2.5rem 1rem;
+  }
+}
+

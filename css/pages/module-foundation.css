@@ -1,0 +1,237 @@
+/* ─── Module page — Garbage Can ──────────────────────── */
+/* ─── Module page layout ──────────────────────────────── */
+.module-page {
+  padding-top: calc(4rem + 3rem);
+  padding-bottom: 6rem;
+}
+
+@media (min-width: 640px) {
+  .module-page {
+    padding-top: calc(4rem + 5rem);
+    padding-bottom: 8rem;
+  }
+}
+
+/* ─── Module header ───────────────────────────────────── */
+.module-header {
+  margin-bottom: 3rem;
+}
+
+.module-header-number {
+  font-family: var(--mono);
+  font-size: var(--fs-module-header-number);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  margin-bottom: 0.75rem;
+}
+
+.module-context-number {
+  margin-bottom: 0.5rem;
+}
+
+.module-context-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.module-context-link:hover {
+  color: var(--ink-mid);
+}
+
+.module-header-title {
+  font-family: var(--serif-alt);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(var(--fs-heading-module-min), 6vw, var(--fs-heading-module-max));
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+
+.module-header-body {
+  font-family: var(--serif);
+  font-size: var(--fs-body-module-header);
+  color: var(--ink-mid);
+  line-height: 1.75;
+  max-width: 58ch;
+  margin-bottom: 1.25rem;
+}
+
+.module-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.module-tag {
+  font-family: var(--mono);
+  font-size: var(--fs-module-tag);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  padding: 0;
+}
+
+.module-tag + .module-tag::before {
+  content: '\00B7';
+  margin-right: 0.25rem;
+  color: var(--ink-ghost);
+}
+
+/* ─── Stage reveal ────────────────────────────────────── */
+.stage {
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+}
+
+.stage.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.stage-collapsed { padding: 0; }
+
+.stage-rule {
+  border: none;
+  border-top: 1px solid var(--ink-ghost);
+  margin: 2.5rem 0;
+}
+
+/* ─── Questionnaire ───────────────────────────────────── */
+.q-section {
+  margin-bottom: 1.5rem;
+}
+
+.q-section-label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+.question-block {
+  flex: 1;
+  margin-bottom: 0;
+  border: 0;
+  padding: 0;
+  min-inline-size: 0;
+}
+
+.question-text {
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  color: var(--ink-mid);
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+.question-block > .question-text {
+  display: block;
+  width: 100%;
+  padding: 0;
+}
+
+.question-scale {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.scale-pole {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  flex: 1;
+  line-height: 1.4;
+  padding-top: 0.05rem;
+}
+
+.scale-pole--right {
+  text-align: right;
+}
+
+.scale-options {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0 0.65rem;
+  flex-shrink: 0;
+}
+
+.scale-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.scale-option input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 1px solid var(--ink-ghost);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.scale-option input[type="radio"]:checked {
+  border-color: var(--ink-mid);
+  background-color: var(--ink-mid);
+}
+
+.scale-option input[type="radio"]:hover {
+  border-color: var(--ink-faint);
+}
+
+.scale-option label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: var(--ink-faint);
+  cursor: pointer;
+  letter-spacing: 0.05em;
+}
+
+.submit-row {
+  flex-shrink: 0;
+  margin-top: 2rem;
+}
+
+.submit-btn {
+  font-family: var(--mono);
+  font-size: var(--fs-button-action);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-mid);
+  background: none;
+  border: 1px solid var(--ink-ghost);
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .submit-btn { width: auto; }
+}
+
+.submit-btn:hover {
+  border-color: var(--ink-mid);
+  color: var(--ink);
+}
+

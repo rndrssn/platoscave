@@ -15,13 +15,20 @@
  *   drawViz          - simulation animation with summary
  */
 
-// ─── Color tokens ─────────────────────────────────────────────────────────────
-function readCssVar(name, fallback) {
-  if (typeof window === 'undefined' || typeof document === 'undefined') return fallback;
-  const root = document.documentElement;
-  const raw = window.getComputedStyle(root).getPropertyValue(name);
-  return raw && raw.trim() ? raw.trim() : fallback;
+const GcVizHelpers = (typeof window !== 'undefined' && window.GcVizHelpers)
+  ? window.GcVizHelpers
+  : (typeof require === 'function' ? require('./gc-viz-helpers.js') : null);
+
+if (!GcVizHelpers) {
+  throw new Error('GcVizHelpers not available. Load gc-viz-helpers.js before gc-viz.js.');
 }
+
+// ─── Color tokens ─────────────────────────────────────────────────────────────
+const readCssVar = GcVizHelpers.readCssVar;
+const readCssNumber = GcVizHelpers.readCssNumber;
+const formatChoiceOpportunityLabel = GcVizHelpers.formatChoiceOpportunityLabel;
+const formatChoiceOpportunityList = GcVizHelpers.formatChoiceOpportunityList;
+const setMultilineLegendText = GcVizHelpers.setMultilineLegendText;
 
 const C = {
   ink:       readCssVar('--viz-ink', '#2A2018'),
@@ -53,11 +60,6 @@ const MARKER = {
   oversightStroke: C.slateLight,
 };
 const CHOICE_LABEL_Y_OFFSET = 16;
-
-function readCssNumber(name, fallback) {
-  const parsed = parseFloat(readCssVar(name, String(fallback)));
-  return Number.isFinite(parsed) ? parsed : fallback;
-}
 
 const CHOICE_RADIUS = 34;
 const DESKTOP_CO_FIELD_HEIGHT_SCALE = 0.78;
@@ -131,59 +133,19 @@ const TIMING = (typeof window !== 'undefined' && window.GcVizTiming && window.Gc
 const TOP_LEGEND_LINE_GAP_EM = readCssNumber('--viz-lh-top', 1.55);
 const BOTTOM_LEGEND_LINE_STEP = readCssNumber('--viz-fs-legend', 13) * readCssNumber('--viz-lh-legend', 1.7);
 
-function formatChoiceOpportunityLabel(idxZeroBased) {
-  return `CO${idxZeroBased + 1}`;
-}
-
-function formatChoiceOpportunityList(ids, limit) {
-  var max = typeof limit === 'number' ? limit : 3;
-  var labels = ids.slice(0, max).map(formatChoiceOpportunityLabel);
-  var text = labels.join(', ');
-  if (ids.length > max) text += ` · +${ids.length - max} more`;
-  return text;
-}
-
-function setMultilineLegendText(textSel, lines, lineGapEm) {
-  textSel.selectAll('tspan').remove();
-  lines.forEach(function(line, idx) {
-    textSel.append('tspan')
-      .attr('x', textSel.attr('x'))
-      .attr('dy', idx === 0 ? 0 : `${lineGapEm}em`)
-      .text(line);
-  });
-}
-
 const GC_LEGEND_ITEMS = [
   { label: 'Problem entering org',  color: MARKER.enteringFill, stroke: MARKER.enteringStroke },
   { label: 'Problem searching for CO', color: MARKER.searchingFill, stroke: MARKER.searchingStroke },
   { label: 'Problem in CO', color: MARKER.inCoFill, stroke: MARKER.inCoStroke },
   { label: 'RESOLVED PROBLEMS (CUM.)', color: MARKER.resolvedFill, stroke: MARKER.resolvedStroke, resolved: true },
 ];
-function getSimulationDefaultsFromWindow() {
-  if (typeof window !== 'undefined' && typeof window.getGarbageCanDefaults === 'function') {
-    return window.getGarbageCanDefaults();
-  }
-  return null;
-}
 
 function resolveVizDimensions(simResult, options) {
-  var defaults = GC_VIZ_DEFAULTS.defaults || {};
-  var fromSimMeta = simResult && simResult.meta ? simResult.meta : {};
-  var fromSimulation = getSimulationDefaultsFromWindow() || {};
-  var opts = options || {};
-  var svgEl = typeof document !== 'undefined' ? document.getElementById('viz-svg') : null;
-  var domScale = svgEl ? svgEl.getAttribute('data-viz-scale') : null;
-  var choices = fromSimMeta.choices || fromSimulation.choices || opts.choices || defaults.choices || 10;
-  var problems = fromSimMeta.problems || fromSimulation.problems || opts.problems || defaults.problems || 20;
-  var periods = fromSimMeta.periods || fromSimulation.periods || opts.periods || defaults.periods || 20;
-  var textScale = opts.textScale || domScale || fromSimMeta.textScale || defaults.textScale || 'default';
-  return { choices: choices, problems: problems, periods: periods, textScale: textScale };
+  return GcVizHelpers.resolveVizDimensions(simResult, options, GC_VIZ_DEFAULTS);
 }
 
 function resolveTextScale(scalePresetOrNumber) {
-  if (typeof scalePresetOrNumber === 'number') return scalePresetOrNumber;
-  var scales = GC_VIZ_DEFAULTS.textScale || {};
-  return scales[scalePresetOrNumber] || scales.default || 1;
+  return GcVizHelpers.resolveTextScale(scalePresetOrNumber, GC_VIZ_DEFAULTS);
 }
 
 function drawBottomLegend(svg, legendY, sizing) {
@@ -263,68 +225,19 @@ function ensureVizEventTicker() {
 }
 
 function getVizSizing() {
-  var viewportW = 0;
-  if (typeof window !== 'undefined') {
-    viewportW = window.innerWidth || 0;
-  }
-  if (!viewportW && typeof document !== 'undefined' && document.documentElement) {
-    viewportW = document.documentElement.clientWidth || 0;
-  }
-  var isMobile = viewportW > 0 && viewportW <= 640;
-
-  return {
-    isMobile: isMobile,
-    problemRadius: isMobile ? 4.6 : 4.0,
-    legendMarkerRadius: isMobile ? 6.4 : 5.8,
-    resolveExitRadius: isMobile ? 2.0 : 1.7,
-  };
+  return GcVizHelpers.getVizSizing();
 }
 
 function resolveVizLayout(mode, sizing) {
-  var base = VIZ_LAYOUT[mode] || {};
-  return Object.assign({}, base);
+  return GcVizHelpers.resolveVizLayout(mode, sizing, VIZ_LAYOUT);
 }
 
 function resolveChoiceFieldBox(layout, sizing) {
-  var fieldW = layout.svgW - layout.padH * 2;
-  var fieldH = sizing.isMobile ? fieldW : Math.round(fieldW * DESKTOP_CO_FIELD_HEIGHT_SCALE);
-  return {
-    left: layout.padH,
-    top: layout.squareTop,
-    width: fieldW,
-    height: fieldH,
-  };
+  return GcVizHelpers.resolveChoiceFieldBox(layout, sizing, DESKTOP_CO_FIELD_HEIGHT_SCALE);
 }
 
 function buildChoiceCenters(fieldBox, choiceRadius, choiceCount) {
-  var goldenAngle = Math.PI * (3 - Math.sqrt(5));
-  var inset = choiceRadius + 4;
-  var usableW = Math.max(0, fieldBox.width - inset * 2);
-  var usableH = Math.max(0, fieldBox.height - inset * 2);
-
-  var points = d3.range(choiceCount).map(function(i) {
-    var idx = i + 1;
-    var t = (idx - 0.5) / choiceCount;
-    var r = 0.5 * Math.sqrt(t);
-    var theta = idx * goldenAngle;
-    return {
-      x: 0.5 + r * Math.cos(theta),
-      y: 0.5 + r * Math.sin(theta),
-    };
-  });
-
-  // Keep CO labels in stable reading order: left-to-right, top-to-bottom.
-  points.sort(function(a, b) {
-    if (a.y !== b.y) return a.y - b.y;
-    return a.x - b.x;
-  });
-
-  return points.map(function(p) {
-    return {
-      x: fieldBox.left + inset + p.x * usableW,
-      y: fieldBox.top + inset + p.y * usableH,
-    };
-  });
+  return GcVizHelpers.buildChoiceCenters(fieldBox, choiceRadius, choiceCount);
 }
 
 // ─── Positioning diagram ──────────────────────────────────────────────────────

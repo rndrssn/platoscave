@@ -36,6 +36,11 @@
   var ADRIFT_Y = SVG_H - 18;
   var MAX_CYCLES = 50;
   var AUTO_RESET_DELAY_MS = 2200;
+  var ANIMATION_TIME_SCALE = 2;
+
+  function scaledMs(ms) {
+    return Math.max(1, Math.round(ms * ANIMATION_TIME_SCALE));
+  }
 
   var colors = {
     // Remapped to requested stream semantics.
@@ -56,7 +61,7 @@
   var controller = null;
 
   function addTimer(fn, ms) {
-    var id = window.setTimeout(fn, ms);
+    var id = window.setTimeout(fn, scaledMs(ms));
     timers.push(id);
     return id;
   }
@@ -167,10 +172,10 @@
 
     function pulseCan() {
       canCircle.interrupt()
-        .transition().duration(220)
+        .transition().duration(scaledMs(220))
           .attr('stroke', colors.faint)
           .attr('stroke-width', CHOICE_STROKE_WIDTH + 1.1)
-        .transition().duration(360)
+        .transition().duration(scaledMs(360))
           .attr('stroke', colors.ghost)
           .attr('stroke-width', CHOICE_STROKE_WIDTH)
           .attr('opacity', 1);
@@ -206,7 +211,7 @@
         var bounded = clampToCan(nx, ny, 18);
         tokenG
           .transition('jitter')
-          .duration(420 + Math.round(Math.random() * 320))
+          .duration(scaledMs(420 + Math.round(Math.random() * 320)))
           .ease(d3.easeCubicInOut)
           .attr('transform', 'translate(' + bounded.x + ',' + bounded.y + ')')
           .on('end', tick);
@@ -228,12 +233,12 @@
       problemToken
         .interrupt('jitter')
         .transition()
-        .duration(860)
+        .duration(scaledMs(860))
         .ease(d3.easeCubicInOut)
         .attr('transform', 'translate(152,' + ADRIFT_Y + ')')
         .style('opacity', 1)
         .transition()
-        .duration(760)
+        .duration(scaledMs(760))
         .ease(d3.easeCubicOut)
         .style('opacity', 0)
         .remove();
@@ -255,12 +260,12 @@
       problemToken
         .interrupt('jitter')
         .transition()
-        .duration(860)
+        .duration(scaledMs(860))
         .ease(d3.easeCubicInOut)
         .attr('transform', 'translate(' + (SVG_W - 84 - (state.resolved % 8) * 78) + ',' + (SVG_H - 74) + ')')
         .style('opacity', 1)
         .transition()
-        .duration(760)
+        .duration(scaledMs(760))
         .ease(d3.easeCubicOut)
         .style('opacity', 0)
         .remove();
@@ -268,7 +273,7 @@
       solutionToken
         .interrupt('jitter')
         .transition()
-        .duration(1500)
+        .duration(scaledMs(1500))
         .ease(d3.easeCubicInOut)
         .style('opacity', 0)
         .remove();
@@ -276,7 +281,7 @@
       participantToken
         .interrupt('jitter')
         .transition()
-        .duration(1500)
+        .duration(scaledMs(1500))
         .ease(d3.easeCubicInOut)
         .style('opacity', 0)
         .remove();
@@ -284,11 +289,11 @@
       // Briefly echo gc-viz resolved stroke de-emphasis when closure occurs.
       canCircle
         .transition()
-        .duration(260)
+        .duration(scaledMs(260))
         .attr('stroke-width', CHOICE_STROKE_WIDTH_RESOLVED)
         .attr('opacity', 0.88)
         .transition()
-        .duration(320)
+        .duration(scaledMs(320))
         .attr('stroke-width', CHOICE_STROKE_WIDTH)
         .attr('opacity', 1);
     }
@@ -339,13 +344,13 @@
         .attr('stroke-width', 0.85);
 
       g.transition()
-        .duration(320)
+        .duration(scaledMs(320))
         .style('opacity', 1)
         .transition()
-        .duration(1450)
+        .duration(scaledMs(1450))
         .attr('transform', 'translate(' + streamX + ',' + STREAM_GATE_Y + ')')
         .transition()
-        .duration(980)
+        .duration(scaledMs(980))
         .attr('transform', function() {
           var tx = CAN_X + (Math.random() * 156 - 78);
           var ty = CAN_Y + (Math.random() * 172 - 86);

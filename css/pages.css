@@ -276,13 +276,52 @@
   color: var(--ink-faint);
   background: transparent;
   border: none;
-  padding: 0.2rem 0.25rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  padding: 0;
+  position: relative;
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .can-media-btn:hover {
   color: var(--ink-mid);
+}
+
+.can-media-btn::before,
+.can-media-btn::after {
+  content: '';
+  position: absolute;
+}
+
+.can-media-btn[data-state='pause']::before,
+.can-media-btn[data-state='pause']::after {
+  top: 0.15rem;
+  width: 0.16rem;
+  height: 0.8rem;
+  background: currentColor;
+}
+
+.can-media-btn[data-state='pause']::before {
+  left: 0.3rem;
+}
+
+.can-media-btn[data-state='pause']::after {
+  right: 0.3rem;
+}
+
+.can-media-btn[data-state='play']::before {
+  top: 0.13rem;
+  left: 0.36rem;
+  width: 0;
+  height: 0;
+  border-top: 0.4rem solid transparent;
+  border-bottom: 0.4rem solid transparent;
+  border-left: 0.58rem solid currentColor;
+}
+
+.can-media-btn[data-state='play']::after {
+  display: none;
 }
 
 .can-icon-btn {

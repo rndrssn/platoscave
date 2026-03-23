@@ -283,12 +283,20 @@
 }
 
 .note-index-tags .module-tag {
-  color: var(--ink-faint);
+  font-size: clamp(0.62rem, 0.6rem + 0.1vw, 0.66rem);
+  letter-spacing: 0.08em;
+  color: var(--ochre);
   text-decoration: none;
+}
+
+.note-index-tags .module-tag + .module-tag::before {
+  content: none;
+  margin-right: 0;
 }
 
 .note-index-tags .module-tag:hover {
   color: var(--sage);
+  text-decoration: underline;
 }
 
 @media (max-width: 640px) {

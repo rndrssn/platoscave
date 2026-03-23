@@ -12,45 +12,44 @@ archive_default: false
 
 Operational contract for Claude Code in this repository.
 
-This file is intentionally short. Canonical policy lives in `/docs`.
+This file is intentionally short. It reflects the public, tracked source of truth.
+Internal/private docs may exist locally, but must not be assumed present in this repo.
 
 ## Instruction Precedence
 
 When instructions conflict, use this order:
 1. Explicit user task in the current chat
 2. This `CLAUDE.md`
-3. Core docs in `/docs` (see default context pack)
-4. Historical/archive docs (only if explicitly loaded)
+3. Tracked repository sources (`README.md`, code, tests)
+4. Local/private docs only if explicitly provided by the user in-session
 
 If unresolved conflict remains, stop and ask.
 
 ## Default Context Pack (always load first)
 
-1. `docs/00-core/CORE.md`
-2. `docs/00-core/CORE-loading-rules.md`
-3. `docs/00-core/CORE-quality-gates.md`
-4. `docs/30-tasks/TASK-current-work.md`
-5. `HANDOFF.md` (if present)
+1. `README.md`
+2. `CLAUDE.md`
+3. `gc-simulation.js`
+4. `gc-viz.js`
+5. `modules/garbage-can/assess/assess.js`
+6. `modules/garbage-can/explorer/explorer.js`
 
-If `HANDOFF.md` is missing, ask the user for task scope and proceed with explicit assumptions.
+If task scope is unclear, ask the user and proceed with explicit assumptions.
 
 ## Conditional Loading Rules
 
-- If editing docs: load `docs/DOC-CONVENTIONS.md`.
-- If working on simulation/scoring/diagnosis/viz semantics:
-  - `docs/20-reference/REFERENCE-gc-model-semantics.md`
-  - `docs/10-guides/GUIDE-architecture.md`
-- If working on onboarding/workflow/test process docs:
-  - `docs/10-guides/GUIDE-getting-started.md`
-  - `docs/10-guides/GUIDE-contributing.md`
-- If debugging historical behavior/decisions:
-  - load from `docs/90-archive/*` only when needed.
+- If working on semantics and labels:
+  - treat implementation and tests as canonical.
+  - align terminology across UI, summaries, and legends.
+- If local/private docs are referenced by user:
+  - load only those explicitly requested paths.
+- Do not rely on `docs/` paths unless user confirms they exist locally and should be used.
 
 ## Context and Token Constraints
 
 - Default max docs per run: 6
 - Docs token budget per run: 8k
-- Never load archive/history docs by default.
+- Never assume private/local docs by default.
 - If a doc is long, read relevant sections first; summarize before expanding more.
 
 Profiles:
@@ -64,17 +63,20 @@ For code changes:
 2. If navigation links changed, also run `node tests/test-navigation-links.js` with local server.
 
 For semantics/labels/rules changes:
-1. Update affected docs in same change.
-2. Ensure terms remain consistent with `docs/20-reference/REFERENCE-gc-model-semantics.md`.
+1. Update affected UI copy and tests in same change.
+2. Ensure terms remain consistent across:
+   - legends
+   - simulation runtime labels
+   - summary table copy
 
 ## Change-Trigger Matrix
 
 - Changed GC model math or outputs:
-  - Update tests + `docs/20-reference/REFERENCE-gc-model-semantics.md` + relevant principle docs.
+  - Update tests and any user-facing summary logic/copy.
 - Changed UI labels/readouts:
-  - Update docs reflecting term and unit semantics.
+  - Update all affected UI surfaces (legend, runtime text, summary).
 - Changed contributor/release workflow:
-  - Update `docs/10-guides/GUIDE-testing-and-release.md` and/or `docs/10-guides/GUIDE-contributing.md`.
+  - Update `README.md` and any tracked workflow notes.
 
 ## Critical Paths (minimal map)
 
@@ -87,11 +89,11 @@ For semantics/labels/rules changes:
 ## Task Templates (quick start)
 
 ### Feature change
-1. Load default pack + relevant guide/reference docs.
+1. Load default pack + directly relevant source files.
 2. Implement.
 3. Add/update tests.
 4. Run required test commands.
-5. Update docs affected by behavior/semantics change.
+5. Update tracked documentation (`README.md`) if behavior/IA changed.
 
 ### Bug fix
 1. Reproduce.
@@ -101,7 +103,7 @@ For semantics/labels/rules changes:
 5. Document behavior change if user-facing semantics changed.
 
 ### Docs-only change
-1. Load `docs/DOC-CONVENTIONS.md` + target docs.
+1. Edit tracked docs only (primarily `README.md`).
 2. Keep docs aligned with code source-of-truth.
 3. Validate links/references if conventions changed.
 

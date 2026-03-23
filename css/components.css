@@ -530,6 +530,33 @@ footer {
   line-height: 1.35;
 }
 
+.pressure-block {
+  margin-top: 0.9rem;
+}
+
+.pressure-block .period-readout {
+  font-size: var(--fs-body);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+  color: var(--ink-mid);
+  margin-top: 0.45rem;
+  display: grid;
+  grid-template-columns: minmax(9.5rem, 13rem) minmax(0, 1fr);
+  column-gap: 0.6rem;
+  row-gap: 0.1rem;
+  align-items: baseline;
+}
+
+.pressure-block .summary-label::after {
+  content: ':';
+}
+
+.pressure-block .diagnosis-body {
+  margin-top: 0.7rem;
+}
+
 .outcome-resolved   { color: var(--sage); font-weight: 400; }
 .outcome-flight     { color: var(--rust);  font-weight: 400; }
 .outcome-oversight  { color: var(--slate); font-weight: 400; }
@@ -539,6 +566,10 @@ footer {
 
 @media (max-width: 640px) {
   .sim-summary-card .period-readout {
+    grid-template-columns: minmax(7.6rem, 9.6rem) minmax(0, 1fr);
+  }
+
+  .pressure-block .period-readout {
     grid-template-columns: minmax(7.6rem, 9.6rem) minmax(0, 1fr);
   }
 

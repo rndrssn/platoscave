@@ -124,6 +124,11 @@
         <div class="sim-summary-card">
           <h2 class="diagnosis-title" id="explorer-diagnosis-title"></h2>
           <p class="diagnosis-body" id="explorer-diagnosis-body"></p>
+          <div id="explorer-pressure-block" class="pressure-block" hidden>
+            <p class="period-readout"><span class="summary-label">Problem pressure</span><span class="summary-metric" id="explorer-problem-pressure"></span></p>
+            <p class="period-readout"><span class="summary-label">Coordination pressure</span><span class="summary-metric" id="explorer-coordination-pressure"></span></p>
+            <p class="diagnosis-body" id="explorer-combo-narrative"></p>
+          </div>
           <div class="diagnosis-links">
             <a class="diagnosis-link" href="../taxonomy/">Read more about the organisation types</a>
             <a class="diagnosis-link" href="../">Understand the model</a>
@@ -188,10 +193,13 @@
   </footer>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="../../../gc-simulation-core.js"></script>
   <script src="../../../gc-simulation.js"></script>
   <script src="../../../gc-diagnosis.js"></script>
   <script src="../../../gc-viz-config.js"></script>
+  <script src="../../../gc-viz-timing.js"></script>
   <script src="../../../gc-viz.js"></script>
+  <script src="../../../js/gc-pressure-narrative.js"></script>
   <script src="../../../js/nav-controller.js"></script>
   <script src="explorer.js"></script>
 

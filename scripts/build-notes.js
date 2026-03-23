@@ -397,14 +397,6 @@ function writeNotePage(note) {
     ? '<p class="module-header-body">' + escapeHtml(note.summary) + '</p>'
     : '';
 
-  const relatedLine = note.relatedModules.length
-    ? '<p class="positioning-caption">Related modules: '
-      + note.relatedModules
-        .map((mod) => '<a href="' + prefix + escapeAttr(mod.url) + '">' + escapeHtml(mod.title) + '</a>')
-        .join(', ')
-      + '</p>'
-    : '';
-
   const body = '    <div class="module-page">\n'
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">' + escapeHtml(note.title) + '</h1>\n'
@@ -417,7 +409,6 @@ function writeNotePage(note) {
     + note.htmlBody.split('\n').map((line) => '          ' + line).join('\n') + '\n'
     + '        </section>\n'
     + '      </article>\n\n'
-    + (relatedLine ? ('      ' + relatedLine + '\n\n') : '')
     + '      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">\n'
     + '        <a class="footer-nav-link" href="../" aria-label="Back to Notes">\n'
     + '          <span class="footer-nav-label-full">&larr; Back to Notes</span>\n'
@@ -448,11 +439,6 @@ function writeNotesIndex(notes) {
         const tagsLine = note.tags.length
           ? note.tags.map((tag) => '<a href="../tags/' + tag.slug + '/" class="module-tag">#' + escapeHtml(tag.label) + '</a>').join('')
           : '<span class="module-tag">#untagged</span>';
-        const relatedModulesLine = note.relatedModules.length
-          ? note.relatedModules
-            .map((mod) => '<a href="../' + escapeAttr(mod.url) + '" class="module-tag">↗ ' + escapeHtml(mod.title) + '</a>')
-            .join('')
-          : '';
         return '          <article class="note-index-card">\n'
           + '            <a class="note-index-link" href="./' + note.slug + '/">\n'
           + '              <span class="note-index-head">\n'
@@ -462,7 +448,6 @@ function writeNotesIndex(notes) {
           + '              <span class="note-index-summary">' + escapeHtml(note.summary || 'No summary yet.') + '</span>\n'
           + '            </a>\n'
           + '            <div class="module-tags note-index-tags">' + tagsLine + '</div>\n'
-          + (relatedModulesLine ? ('            <div class="module-tags note-index-tags">' + relatedModulesLine + '</div>\n') : '')
           + '          </article>';
       }).join('\n')
       + '\n        </div>')
@@ -472,7 +457,7 @@ function writeNotesIndex(notes) {
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">Notes</h1>\n'
     + '        <p class="module-header-body">\n'
-    + '          My notes are stories and reflections about the way we organise work, the way we do that work, related feedback loops, and the emergent phenomena that lead to tensions, fragility, and unexpected behaviors in organisations and technologies. Some notes point to <a href="../modules/">modules</a>; some become future modules. This is not a chronological blog feed; it is a field-notes layer connected to the interactive work.\n'
+    + '          My notes are stories and reflections about the way we organise work, the way we do that work, related feedback loops, and the emergent phenomena that lead to tensions, fragility, and unexpected behaviors in organisations and technologies. Some notes become future modules. This is not a chronological blog feed; it is a field-notes layer connected to the interactive work.\n'
     + '        </p>\n'
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'

@@ -33,35 +33,59 @@
  */
 
 // ─── Constants ────────────────────────────────────────────────────────────────
+function resolveCoreConfig() {
+  if (typeof window !== 'undefined' && window.GcSimulationConfig) {
+    return window.GcSimulationConfig;
+  }
 
-const PERIODS    = 20;   // simulation time ticks
-const V          = 10;   // number of decision makers
-const M          = 10;   // number of choice opportunities
-const W          = 20;   // number of problems
-const SOL_COEFF  = 0.6;  // energy scaling coefficient
-const ITERATIONS = 100;  // Monte Carlo iterations per run
+  if (typeof require === 'function') {
+    if (typeof __dirname !== 'undefined') {
+      try {
+        return require(__dirname + '/gc-simulation-config.js');
+      } catch (_err) {
+        // Continue to fallbacks for VM-eval test contexts.
+      }
+    }
 
-// Net energy load per problem per tick (Light / Moderate / Heavy)
-const NET_ENERGY_LOADS = {
-  light:    0.9,
-  moderate: 1.6,
-  heavy:    2.4,
-};
+    try {
+      return require('./gc-simulation-config.js');
+    } catch (_err2) {
+      // Continue.
+    }
 
-// Problem inflow schedules by tick (length = PERIODS, sum = W)
-// Light: slower stream spread across all iterations
-// Moderate: baseline stream (legacy behavior) concentrated in first 10 iterations
-// Heavy: front-loaded stream concentrated early
-const PROBLEM_INFLOW_SCHEDULES = {
-  light:    Array.from({ length: PERIODS }, () => 1),                             // 20 × 1 = 20
-  moderate: Array.from({ length: PERIODS }, (_, t) => (t < 10 ? 2 : 0)),          // 10 × 2 = 20
-  heavy:    Array.from({ length: PERIODS }, (_, t) => (t < 5 ? 4 : 0)),           // 5 × 4 = 20
-};
+    try {
+      var path = require('path');
+      var proc = (typeof process !== 'undefined' && process && typeof process.cwd === 'function')
+        ? process
+        : require('process');
+      return require(path.join(proc.cwd(), 'gc-simulation-config.js'));
+    } catch (_err3) {
+      // Continue.
+    }
+  }
+
+  return null;
+}
+
+const CORE_CONFIG = resolveCoreConfig();
+
+if (!CORE_CONFIG) {
+  throw new Error('GcSimulationConfig not available. Load gc-simulation-config.js before gc-simulation-core.js.');
+}
+
+const PERIODS = CORE_CONFIG.PERIODS;
+const V = CORE_CONFIG.V;
+const M = CORE_CONFIG.M;
+const W = CORE_CONFIG.W;
+const SOL_COEFF = CORE_CONFIG.SOL_COEFF;
+const ITERATIONS = CORE_CONFIG.ITERATIONS;
+const NET_ENERGY_LOADS = CORE_CONFIG.NET_ENERGY_LOADS;
+const PROBLEM_INFLOW_SCHEDULES = CORE_CONFIG.PROBLEM_INFLOW_SCHEDULES;
 
 // State sentinels
-const STATE_INACTIVE = -2;  // not yet entered
-const STATE_ACTIVE   = -1;  // entered, open
-const STATE_RESOLVED = -3;  // decision made / choice closed
+const STATE_INACTIVE = CORE_CONFIG.STATE_INACTIVE;  // not yet entered
+const STATE_ACTIVE   = CORE_CONFIG.STATE_ACTIVE;    // entered, open
+const STATE_RESOLVED = CORE_CONFIG.STATE_RESOLVED;  // decision made / choice closed
 // Problems: >= 90 means resolved (value = original_choice_index + 100)
 
 

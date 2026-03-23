@@ -1,0 +1,25 @@
+[
+  {
+    "title": "What works and what doesn't work",
+    "slug": "what-works-and-what-doesnt-work",
+    "summary": "A first field note on practical patterns that help, and patterns that create friction, in organised-anarchy decision settings.",
+    "date": "2026-03-23",
+    "tags": [
+      {
+        "label": "garbage can model",
+        "slug": "garbage-can-model"
+      },
+      {
+        "label": "organised anarchy",
+        "slug": "organised-anarchy"
+      },
+      {
+        "label": "the mix",
+        "slug": "the-mix"
+      }
+    ],
+    "relatedModules": [
+      "03-garbage-can"
+    ]
+  }
+]

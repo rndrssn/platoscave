@@ -1,0 +1,222 @@
+[data-theme='urban-grid'] {
+  --paper:       #e7ebf0;
+  --paper-dark:  #d7dde5;
+  --paper-deep:  #bcc6d3;
+
+  --ink:         #0f1724;
+  --ink-mid:     #1d2a3d;
+  --ink-faint:   #2f435f;
+  --ink-ghost:   #4a6386;
+
+  --rust:        #e5383b;
+  --rust-light:  #ff5b5e;
+  --sage:        #1274ff;
+  --sage-light:  #41a0ff;
+  --ochre:       #ff7b00;
+  --gold:        #f4b400;
+  --slate:       #175673;
+  --slate-light: #2e789b;
+
+  --serif:       'DM Sans', Arial, sans-serif;
+  --serif-alt:   'Rajdhani', Arial, sans-serif;
+  --mono:        'JetBrains Mono', 'Courier New', monospace;
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+[data-theme='urban-grid'] body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(rgba(15, 23, 36, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 36, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+[data-theme='urban-grid1'] {
+  --paper:       #edf1f7;
+  --paper-dark:  #dfe6f1;
+  --paper-deep:  #c8d3e3;
+
+  --ink:         #0f1b2d;
+  --ink-mid:     #1a2f4b;
+  --ink-faint:   #2a456a;
+  --ink-ghost:   #45638e;
+
+  --rust:        #ff4d4f;
+  --rust-light:  #ff7376;
+  --sage:        #0a84ff;
+  --sage-light:  #36a3ff;
+  --ochre:       #ff8c00;
+  --gold:        #f6be00;
+  --slate:       #186081;
+  --slate-light: #2d81a8;
+
+  --serif:       'DM Sans', Arial, sans-serif;
+  --serif-alt:   'Rajdhani', Arial, sans-serif;
+  --mono:        'JetBrains Mono', 'Courier New', monospace;
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+[data-theme='urban-grid2'] {
+  --paper:       #e2e8ef;
+  --paper-dark:  #d1d9e3;
+  --paper-deep:  #b3c0cf;
+
+  --ink:         #0c141f;
+  --ink-mid:     #172739;
+  --ink-faint:   #27415f;
+  --ink-ghost:   #3f5f84;
+
+  --rust:        #ff3f5f;
+  --rust-light:  #ff6d84;
+  --sage:        #00a6a6;
+  --sage-light:  #16c4c4;
+  --ochre:       #ff7f11;
+  --gold:        #f2c14e;
+  --slate:       #1f4f6b;
+  --slate-light: #3a7091;
+
+  --serif:       'DM Sans', Arial, sans-serif;
+  --serif-alt:   'Rajdhani', Arial, sans-serif;
+  --mono:        'JetBrains Mono', 'Courier New', monospace;
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+[data-theme='urban-grid3'] {
+  --paper:       #e8edf3;
+  --paper-dark:  #d9e1ea;
+  --paper-deep:  #bfccd9;
+
+  --ink:         #101826;
+  --ink-mid:     #1f3047;
+  --ink-faint:   #314b6d;
+  --ink-ghost:   #4b6a93;
+
+  --rust:        #f94144;
+  --rust-light:  #ff6b6d;
+  --sage:        #3a86ff;
+  --sage-light:  #5ca0ff;
+  --ochre:       #fb8500;
+  --gold:        #ffb703;
+  --slate:       #2f5d80;
+  --slate-light: #4c7ca3;
+
+  --serif:       'DM Sans', Arial, sans-serif;
+  --serif-alt:   'Rajdhani', Arial, sans-serif;
+  --mono:        'JetBrains Mono', 'Courier New', monospace;
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+[data-theme='urban-grid1'] body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(rgba(10, 132, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 132, 255, 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+[data-theme='urban-grid2'] body {
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(15, 23, 36, 0.03) 0 2px, transparent 2px 18px),
+    repeating-linear-gradient(90deg, rgba(15, 23, 36, 0.03) 0 2px, transparent 2px 18px);
+}
+
+[data-theme='urban-grid3'] body {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(58, 134, 255, 0.12) 0, rgba(58, 134, 255, 0) 38%),
+    radial-gradient(circle at 85% 0%, rgba(249, 65, 68, 0.10) 0, rgba(249, 65, 68, 0) 32%),
+    linear-gradient(rgba(16, 24, 38, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 24, 38, 0.04) 1px, transparent 1px);
+  background-size: auto, auto, 26px 26px, 26px 26px;
+}
+
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .main-nav {
+  background: rgba(231, 235, 240, 0.96);
+  border-bottom: 2px solid var(--ink-mid);
+}
+
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .nav-title,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .hero-title,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .module-header-title,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .module-title {
+  font-family: 'Rajdhani', Arial, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .contact-card,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .sim-summary-card,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .q-card,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .field-notes-card,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .essay-link {
+  background: var(--paper-dark);
+  border: 1px solid var(--ink-mid);
+  box-shadow: 0 0 0 2px rgba(18, 116, 255, 0.10);
+}
+
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .module-sub-nav-link,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .diagnosis-link,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .footer-nav-link,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .contact-value a,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .essay-body a {
+  color: var(--sage);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+}
+
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .module-sub-nav-link--active,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .results-nav-link--active {
+  color: var(--rust);
+}
+

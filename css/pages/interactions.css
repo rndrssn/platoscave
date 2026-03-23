@@ -1,0 +1,177 @@
+/* ─── Collapsible toggle ─────────────────────────────── */
+.collapsible-toggle {
+  font-family: var(--mono);
+  font-size: var(--fs-button-action);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+
+#stage-1 {
+  padding: 1rem 0 0;
+}
+
+.collapsible-toggle:hover {
+  color: var(--rust);
+}
+
+.replay-btn {
+  margin-top: 1rem;
+}
+
+.can-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.can-media-btn {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--ink-mid);
+  background: transparent;
+  border: none;
+  width: 1.35rem;
+  height: 1.35rem;
+  min-width: 1.35rem;
+  min-height: 1.35rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.can-media-btn:hover {
+  color: var(--ink);
+}
+
+.can-media-glyph {
+  display: block;
+  width: 0.82rem;
+  height: 0.82rem;
+  background: currentColor;
+  box-sizing: border-box;
+  border: 0;
+}
+
+.can-media-btn[data-state='play'] .can-media-glyph {
+  width: 0;
+  height: 0;
+  background: transparent;
+  border-top: 0.44rem solid transparent;
+  border-bottom: 0.44rem solid transparent;
+  border-left: 0.68rem solid currentColor;
+  margin-left: 0.08rem;
+}
+
+.can-icon-btn {
+  font-family: var(--mono);
+  font-size: 1.375rem;
+  line-height: 1;
+  color: var(--ink-faint);
+  background: transparent;
+  border: none;
+  padding: 0.15rem 0.2rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.can-icon-btn:hover {
+  color: var(--ink-mid);
+}
+
+#can-explainer-svg {
+  --can-exp-fs-token-px: 10.5;
+  --can-exp-fs-legend-px: 11.5;
+  --can-exp-fs-top-px: 10.5;
+  --can-exp-fs-co-px: 11.5;
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 15rem;
+}
+
+#can-explainer-svg .gc-viz__legend-text,
+#can-explainer-svg .gc-viz__top-legend,
+#can-explainer-svg .gc-viz__choice-label {
+  font-family: var(--viz-font-mono, var(--mono));
+}
+
+#can-explainer-svg .gc-viz__legend-text {
+  letter-spacing: 0.06em;
+  fill: var(--viz-ink-faint, var(--ink-faint));
+}
+
+#can-explainer-svg .gc-viz__top-legend {
+  letter-spacing: 0.08em;
+  fill: var(--viz-ink-faint, var(--ink-faint));
+}
+
+@media (max-width: 640px) {
+  #can-explainer-svg {
+    --can-exp-fs-token-px: 9.5;
+    --can-exp-fs-legend-px: 10.5;
+    --can-exp-fs-top-px: 10;
+    --can-exp-fs-co-px: 10.5;
+    min-height: clamp(15.5rem, 56vw, 20rem);
+  }
+}
+
+.collapsible-toggle::before {
+  content: '\203A';
+  margin-right: 0.35rem;
+}
+
+.form-error {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-top: 0.75rem;
+  display: none;
+}
+
+/* ─── Positioning diagram ─────────────────────────────── */
+.stage-label {
+  font-family: var(--mono);
+  font-size: var(--fs-stage-label);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-mid);
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
+#positioning-svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.positioning-caption {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-top: 1.25rem;
+  line-height: 2;
+}
+

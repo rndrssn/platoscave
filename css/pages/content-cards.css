@@ -1,0 +1,292 @@
+/* ─── Diagnosis ───────────────────────────────────────── */
+.diagnosis-title {
+  font-family: var(--serif-alt);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+
+.diagnosis-body {
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  color: var(--ink-mid);
+  line-height: 1.8;
+  max-width: 60ch;
+}
+
+/* ─── Footer nav ──────────────────────────────────────── */
+.module-footer-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid var(--ink-ghost);
+  padding-top: 3rem;
+  margin-top: 6rem;
+}
+
+.module-footer-nav--section {
+  margin-top: 3rem;
+}
+
+.footer-nav-link {
+  font-family: var(--mono);
+  font-size: var(--fs-link-footer-nav);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--sage);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-nav-link:hover {
+  color: var(--sage-light);
+  text-decoration: underline;
+}
+
+.footer-nav-label-short {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .module-footer-nav--section .footer-nav-label-full {
+    display: none;
+  }
+
+  .module-footer-nav--section .footer-nav-label-short {
+    display: inline;
+  }
+}
+
+/* ─── Field notes card ───────────────────────────────── */
+.field-notes-card {
+  background: var(--paper);
+  border: none;
+  border-left: 3px solid var(--slate-light);
+  padding: 1.25rem 1.5rem 1.25rem 1.75rem;
+  margin: 1.5rem 0;
+  max-width: 560px;
+}
+
+@media (min-width: 640px) {
+  .field-notes-card {
+    padding: 1.25rem 2.5rem 1.25rem 2rem;
+  }
+}
+
+.field-notes-title {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-bottom: 1rem;
+}
+
+.field-notes-body {
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  color: var(--ink-mid);
+  line-height: 1.75;
+  margin-bottom: 0.75rem;
+}
+
+.field-notes-body:last-child {
+  margin-bottom: 0;
+}
+
+.field-notes-body strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ─── Module essay ───────────────────────────────────── */
+.module-essay {
+  margin-top: 2rem;
+}
+
+.essay-section {
+  padding: 2rem 0;
+  border-top: 1px solid var(--ink-ghost);
+}
+
+.essay-heading {
+  font-family: var(--serif-alt);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+
+.essay-body {
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  color: var(--ink-mid);
+  line-height: 1.8;
+  max-width: 60ch;
+  margin-bottom: 1rem;
+}
+
+.essay-body:last-child {
+  margin-bottom: 0;
+}
+
+.essay-body strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.essay-body em {
+  font-style: italic;
+}
+
+.essay-body a {
+  color: var(--sage);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.essay-body a:hover {
+  color: var(--sage-light);
+  text-decoration: underline;
+}
+
+/* ─── Essay sub-page links ───────────────────────────── */
+.essay-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.essay-link {
+  display: block;
+  background: var(--paper-dark);
+  border: 2px solid var(--paper-deep);
+  border-left: 2px solid var(--sage);
+  padding: 1.25rem 1.5rem;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+  max-width: 480px;
+}
+
+.essay-link:hover {
+  transform: translateX(4px);
+}
+
+.essay-link-label {
+  display: block;
+  font-family: var(--serif-alt);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--sage);
+  margin-bottom: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.essay-link:hover .essay-link-label {
+  color: var(--sage-light);
+}
+
+.essay-link-desc {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.note-index-card {
+  max-width: 480px;
+}
+
+.note-index-meta {
+  margin-top: 0.55rem;
+  line-height: 1.4;
+}
+
+.note-index-tags {
+  margin-top: 0.45rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.note-index-tags .module-tag {
+  text-decoration: none;
+}
+
+.note-content h2,
+.note-content h3 {
+  font-family: var(--serif-alt);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1.2;
+  margin: 1.75rem 0 0.75rem;
+}
+
+.note-content p,
+.note-content li,
+.note-content blockquote {
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  color: var(--ink-mid);
+  line-height: 1.7;
+}
+
+.note-content ul,
+.note-content ol {
+  margin: 0.2rem 0 1rem 1.25rem;
+  padding: 0;
+}
+
+.note-content li + li {
+  margin-top: 0.35rem;
+}
+
+.note-content blockquote {
+  border-left: 2px solid var(--paper-deep);
+  padding-left: 0.9rem;
+  margin: 1rem 0;
+  color: var(--ink-faint);
+}
+
+.note-content pre {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  line-height: 1.55;
+  color: var(--ink-mid);
+  background: var(--paper-dark);
+  border: 1px solid var(--paper-deep);
+  padding: 0.85rem 1rem;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.note-content code {
+  font-family: var(--mono);
+  font-size: 0.78em;
+}
+
+.note-content a {
+  color: var(--sage);
+  text-decoration: none;
+}
+
+.note-content a:hover {
+  color: var(--sage-light);
+  text-decoration: underline;
+}
+

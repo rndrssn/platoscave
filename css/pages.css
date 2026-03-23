@@ -305,7 +305,7 @@
   --can-exp-fs-token-px: 10.5;
   --can-exp-fs-legend-px: 11.5;
   --can-exp-fs-top-px: 10.5;
-  --can-exp-fs-co-px: 16.5;
+  --can-exp-fs-co-px: 11.5;
   display: block;
   width: 100%;
   height: auto;
@@ -333,7 +333,7 @@
     --can-exp-fs-token-px: 9.5;
     --can-exp-fs-legend-px: 10.5;
     --can-exp-fs-top-px: 10;
-    --can-exp-fs-co-px: 14.5;
+    --can-exp-fs-co-px: 10.5;
     min-height: clamp(15.5rem, 56vw, 20rem);
   }
 }

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Animated explainer of the garbage can concept as a choice opportunity with three streams." />
+  <title>Garbage Can Explainer · The Garbage Can Model · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="stylesheet" href="../../../css/main.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <nav class="main-nav">
+    <a class="nav-title" href="../../../">To the Bedrock</a>
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../../">Home</a>
+      <a class="nav-link nav-link--active" href="../../../modules/" aria-current="page">Modules</a>
+      <a class="nav-link" href="../../../notes/">Notes</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+  </nav>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page">
+      <a class="module-header-number module-context-number module-context-link" href="../">03 &middot; The Garbage Can Model</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">03.01</span> Narrative</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../taxonomy/"><span class="module-sub-nav-number">03.02</span> Taxonomy</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="../can-explainer/" aria-current="page"><span class="module-sub-nav-number">03.03</span> Garbage Can</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../explorer/"><span class="module-sub-nav-number">03.04</span> Explorer</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../assess/"><span class="module-sub-nav-number">03.05</span> Self-Assessment</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Garbage Can Explainer</h1>
+      </header>
+
+      <div class="field-notes-card">
+        <p class="field-notes-title">How to read this</p>
+        <p class="field-notes-body">
+          Text boxes are the streams of <strong>problems</strong>, <strong>participants</strong>, and <strong>solutions</strong> entering the garbage can.
+          The can, or <strong>choice opportunity</strong>, becomes the intersection of streams. Here, problems need attention, solutions are introduced and available
+          irrespective of whether a matching problem exists, and participant attention and participation fluidly drift in and out of the can.
+        </p>
+      </div>
+
+      <section class="results-section" aria-label="Garbage can concept animation">
+        <p class="stage-label">Garbage Can Concept</p>
+        <svg id="can-explainer-svg"></svg>
+        <p class="positioning-caption" id="can-explainer-caption"></p>
+        <div class="submit-row can-controls">
+          <button class="can-media-btn" id="can-toggle-btn" aria-label="Pause animation" title="Pause animation">⏸</button>
+          <button class="can-icon-btn" id="can-reset-btn" aria-label="Reset animation" title="Reset animation">&#8635;</button>
+        </div>
+      </section>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../taxonomy/" aria-label="Previous: 03.02 Taxonomy">
+          <span class="footer-nav-label-full">&larr; Previous: 03.02 Taxonomy</span>
+          <span class="footer-nav-label-short">&larr; Previous</span>
+        </a>
+        <a class="footer-nav-link" href="../explorer/" aria-label="Next: 03.04 Explorer">
+          <span class="footer-nav-label-full">Next: 03.04 Explorer &rarr;</span>
+          <span class="footer-nav-label-short">Next &rarr;</span>
+        </a>
+      </nav>
+
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="../../../js/nav-controller.js"></script>
+  <script src="can-explainer.js"></script>
+</body>
+</html>

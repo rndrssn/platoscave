@@ -263,6 +263,81 @@
   margin-top: 1rem;
 }
 
+.can-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.can-media-btn {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--ink-faint);
+  background: transparent;
+  border: none;
+  padding: 0.2rem 0.25rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.can-media-btn:hover {
+  color: var(--ink-mid);
+}
+
+.can-icon-btn {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--ink-faint);
+  background: transparent;
+  border: none;
+  padding: 0.15rem 0.2rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.can-icon-btn:hover {
+  color: var(--ink-mid);
+}
+
+#can-explainer-svg {
+  --can-exp-fs-token-px: 18;
+  --can-exp-fs-legend-px: 17;
+  --can-exp-fs-top-px: 16;
+  --can-exp-fs-co-px: 24;
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 15rem;
+}
+
+#can-explainer-svg .gc-viz__legend-text,
+#can-explainer-svg .gc-viz__top-legend,
+#can-explainer-svg .gc-viz__choice-label {
+  font-family: var(--viz-font-mono, var(--mono));
+}
+
+#can-explainer-svg .gc-viz__legend-text {
+  letter-spacing: 0.06em;
+  fill: var(--viz-ink-faint, var(--ink-faint));
+}
+
+#can-explainer-svg .gc-viz__top-legend {
+  letter-spacing: 0.08em;
+  fill: var(--viz-ink-faint, var(--ink-faint));
+}
+
+@media (max-width: 640px) {
+  #can-explainer-svg {
+    --can-exp-fs-token-px: 9.5;
+    --can-exp-fs-legend-px: 8.75;
+    --can-exp-fs-top-px: 8.25;
+    --can-exp-fs-co-px: 13.5;
+    min-height: clamp(15.5rem, 56vw, 20rem);
+  }
+}
+
 .collapsible-toggle::before {
   content: '\203A';
   margin-right: 0.35rem;
@@ -734,18 +809,58 @@
 }
 
 @media (max-width: 640px) {
+  .module-page,
+  .module-essay,
+  .results-section,
+  .sim-summary-card,
+  .field-notes-card,
+  .q-card {
+    min-width: 0;
+  }
+
+  .module-header-title,
+  .module-header-body,
+  .diagnosis-title,
+  .diagnosis-body,
+  .essay-body,
+  .taxonomy-value,
+  .positioning-caption,
+  .sim-summary-card .period-readout {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
   .module-sub-nav {
     flex-wrap: wrap;
     overflow-x: visible;
     overflow-y: visible;
     scroll-snap-type: none;
-    row-gap: 0.08rem;
+    row-gap: 0.02rem;
     column-gap: 0.45rem;
     padding-bottom: 0.85rem;
+    align-items: flex-start;
   }
 
   .module-sub-nav-link {
-    min-height: 2.5rem;
+    min-height: 2.1rem;
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  .module-sub-nav-dot {
+    display: none;
+  }
+
+  .module-footer-nav {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.55rem 1rem;
+  }
+
+  .module-footer-nav .footer-nav-link {
+    min-width: 0;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
   }
 }
 

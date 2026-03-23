@@ -15,6 +15,7 @@ function setup() {
 
   ['panel-a-load', 'panel-a-inflow', 'panel-a-decision', 'panel-a-access',
    'explorer-diagnosis', 'explorer-sim-trigger', 'explorer-diagnosis-title', 'explorer-diagnosis-body',
+   'explorer-pressure-block', 'explorer-problem-pressure', 'explorer-coordination-pressure', 'explorer-combo-narrative',
    'viz-svg', 'sim-summary', 'run-sim-btn', 'replay-btn', 'stochastic-note', 'viz-area']
     .forEach((id) => document.register(new FakeElement(id === 'run-sim-btn' || id === 'replay-btn' ? 'button' : 'div', { id })));
 

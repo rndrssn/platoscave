@@ -5,9 +5,11 @@ const path = require('path');
 const vm = require('vm');
 
 function loadSimulationModule() {
-  const sourcePath = path.join(__dirname, '..', '..', 'gc-simulation.js');
-  const source = fs.readFileSync(sourcePath, 'utf8');
-  const wrapped = source + '\nmodule.exports = { runGarbageCanSimulation, runGarbageCanSimulationAsync, validateSimulation, getGarbageCanDefaults };\n';
+  const simPath = path.join(__dirname, '..', '..', 'gc-simulation.js');
+  const corePath = path.join(__dirname, '..', '..', 'gc-simulation-core.js');
+  const simSource = fs.readFileSync(simPath, 'utf8');
+  const coreSource = fs.readFileSync(corePath, 'utf8');
+  const wrapped = coreSource + '\n' + simSource + '\nmodule.exports = { runGarbageCanSimulation, runGarbageCanSimulationAsync, validateSimulation, getGarbageCanDefaults };\n';
 
   const context = {
     module: { exports: {} },
@@ -21,7 +23,7 @@ function loadSimulationModule() {
   };
 
   vm.createContext(context);
-  vm.runInContext(wrapped, context, { filename: 'gc-simulation.js' });
+  vm.runInContext(wrapped, context, { filename: 'gc-simulation.bundle.js' });
   return context.module.exports;
 }
 

@@ -37,6 +37,7 @@ function makeAssessHarness() {
   const ids = [
     'questionnaire-toggle', 'questionnaire-content', 'stage-1', 'results-area',
     'diagnosis-title', 'diagnosis-body', 'diagnosis-links', 'positioning-svg', 'viz-svg',
+    'diagnosis-pressure-block', 'diagnosis-problem-pressure', 'diagnosis-coordination-pressure', 'diagnosis-pressure-narrative',
     'viz-area', 'sim-summary', 'run-sim-btn', 'replay-btn', 'stochastic-note', 'q-step',
     'q-group-1', 'q-group-2', 'q-group-3', 'q-continue-1', 'q-continue-2', 'submit-btn',
     'form-error-1', 'form-error-2', 'form-error', 'questionnaire', 'positioning-caption', 'viz-caption'
@@ -48,6 +49,7 @@ function makeAssessHarness() {
   });
 
   document.getElementById('questionnaire-toggle').hidden = true;
+  document.getElementById('diagnosis-pressure-block').hidden = true;
   document.getElementById('q-group-2').hidden = true;
   document.getElementById('q-group-3').hidden = true;
   document.getElementById('q-continue-1').disabled = true;
@@ -119,6 +121,11 @@ async function run() {
   assert.strictEqual(h.document.getElementById('questionnaire-content').hidden, true, 'questionnaire should collapse after submit');
   assert.strictEqual(h.document.getElementById('questionnaire-toggle').hidden, false, 'retake toggle should appear after submit');
   assert.strictEqual(typeof h.document.getElementById('run-sim-btn').onclick, 'function', 'run button handler should be bound after submit');
+  assert.strictEqual(h.document.getElementById('diagnosis-pressure-block').hidden, false, 'diagnosis pressure block should be visible after submit');
+  assert(h.document.getElementById('diagnosis-problem-pressure').textContent.length > 0, 'problem pressure should be populated');
+  assert(h.document.getElementById('diagnosis-coordination-pressure').textContent.length > 0, 'coordination pressure should be populated');
+  assert(h.document.getElementById('diagnosis-pressure-narrative').textContent.length > 0, 'pressure narrative should be populated');
+  assert(!/^Parameters:/.test(h.document.getElementById('viz-caption').textContent || ''), 'viz caption should not use raw Parameters label');
   assert(h.drawEmptyCalls > 0, 'empty state should be drawn after submit');
   assert(h.drawPositioningCalls > 0, 'positioning should be drawn after submit');
 

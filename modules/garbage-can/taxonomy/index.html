@@ -242,20 +242,7 @@
     <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
   </footer>
 
-  <script>
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-    window.scrollTo(0, 0);
-    const navToggle = document.querySelector('.nav-mobile-toggle');
-    const navLinks = document.querySelector('.nav-links');
-    if (navToggle && navLinks) {
-      navToggle.addEventListener('click', function () {
-        const isOpen = navLinks.classList.toggle('is-open');
-        navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      });
-    }
-  </script>
+  <script src="../../../js/nav-controller.js"></script>
 
 </body>
 </html>

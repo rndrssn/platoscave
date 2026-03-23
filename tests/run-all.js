@@ -11,7 +11,9 @@ const tests = [
   'test-gc-scoring-boundaries.js',
   'test-gc-diagnosis.js',
   'test-gc-diagnosis-share.js',
+  'test-gc-pressure-narrative.js',
   'test-theme-bootstrap.js',
+  'test-nav-controller.js',
   'test-css-theme-contract.js',
   'test-gc-viz-contract.js',
   'test-gc-viz-typography-contract.js',
@@ -23,6 +25,7 @@ const tests = [
   'test-gc-summary-consistency.js',
   'test-explorer-integration.js',
   'test-explorer-race-guards.js',
+  'test-explorer-narrative-combinations.js',
   'test-assess-integration.js',
   'test-a11y-critical-pages.js',
 ];

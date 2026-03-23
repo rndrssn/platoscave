@@ -7,22 +7,6 @@
  * Dependencies: d3.js, gc-simulation.js, gc-scoring.js, gc-diagnosis.js, gc-viz.js
  */
 
-// ─── Scroll restoration ──────────────────────────────────────────────────────
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
-}
-window.scrollTo(0, 0);
-
-// ─── Nav toggle ──────────────────────────────────────────────────────────────
-var navToggle = document.querySelector('.nav-mobile-toggle');
-var navLinks = document.querySelector('.nav-links');
-if (navToggle && navLinks) {
-  navToggle.addEventListener('click', function () {
-    var isOpen = navLinks.classList.toggle('is-open');
-    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  });
-}
-
 // ─── Questionnaire collapse/expand ───────────────────────────────────────────
 document.getElementById('questionnaire-toggle').addEventListener('click', function () {
   var content = document.getElementById('questionnaire-content');
@@ -34,6 +18,14 @@ document.getElementById('questionnaire-toggle').addEventListener('click', functi
     document.getElementById('diagnosis-title').textContent = '';
     document.getElementById('diagnosis-body').textContent = '';
     document.getElementById('diagnosis-links').hidden = true;
+    var diagnosisPressureBlock = document.getElementById('diagnosis-pressure-block');
+    if (diagnosisPressureBlock) diagnosisPressureBlock.hidden = true;
+    var diagnosisProblemPressure = document.getElementById('diagnosis-problem-pressure');
+    if (diagnosisProblemPressure) diagnosisProblemPressure.textContent = '';
+    var diagnosisCoordinationPressure = document.getElementById('diagnosis-coordination-pressure');
+    if (diagnosisCoordinationPressure) diagnosisCoordinationPressure.textContent = '';
+    var diagnosisPressureNarrative = document.getElementById('diagnosis-pressure-narrative');
+    if (diagnosisPressureNarrative) diagnosisPressureNarrative.textContent = '';
     var positioningSvg = document.getElementById('positioning-svg');
     if (positioningSvg) { while (positioningSvg.firstChild) positioningSvg.removeChild(positioningSvg.firstChild); }
     var vizSvg = document.getElementById('viz-svg');
@@ -43,6 +35,17 @@ document.getElementById('questionnaire-toggle').addEventListener('click', functi
     document.getElementById('run-sim-btn').hidden = false;
   }
 });
+
+function buildAssessPressureNarrative(problemIntensity, problemInflow, decisionStructure, accessStructure) {
+  if (typeof window !== 'undefined' && typeof window.buildGcPressureNarrative === 'function') {
+    return window.buildGcPressureNarrative(problemIntensity, problemInflow, decisionStructure, accessStructure);
+  }
+  return {
+    problemSummary: problemIntensity + ' intensity + ' + problemInflow + ' inflow',
+    coordinationSummary: decisionStructure + ' decision + ' + accessStructure + ' access',
+    synthesis: 'Run the simulation to inspect how this pressure profile shapes decision outcomes over time.'
+  };
+}
 
 // ─── Results mini-nav ────────────────────────────────────────────────────────
 var resultsNavLinks = Array.from(document.querySelectorAll('.results-nav-link'));
@@ -204,6 +207,7 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
 
   const diagnosis = getDiagnosis(decisionStructure, accessStructure, 0);
   var diagnosisBodyPreview = diagnosis.body.replace(/In organisations like yours, roughly.*$/, '').trim();
+  var pressureNarrative = buildAssessPressureNarrative(problemIntensity, problemInflow, decisionStructure, accessStructure);
 
   // Reveal results area
   showStage('results-area', 100);
@@ -236,6 +240,14 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
   setTimeout(() => {
     document.getElementById('diagnosis-title').textContent = diagnosis.title;
     document.getElementById('diagnosis-body').textContent  = diagnosisBodyPreview;
+    var diagnosisProblemPressure = document.getElementById('diagnosis-problem-pressure');
+    if (diagnosisProblemPressure) diagnosisProblemPressure.textContent = pressureNarrative.problemSummary;
+    var diagnosisCoordinationPressure = document.getElementById('diagnosis-coordination-pressure');
+    if (diagnosisCoordinationPressure) diagnosisCoordinationPressure.textContent = pressureNarrative.coordinationSummary;
+    var diagnosisPressureNarrative = document.getElementById('diagnosis-pressure-narrative');
+    if (diagnosisPressureNarrative) diagnosisPressureNarrative.textContent = pressureNarrative.synthesis;
+    var diagnosisPressureBlock = document.getElementById('diagnosis-pressure-block');
+    if (diagnosisPressureBlock) diagnosisPressureBlock.hidden = false;
     document.getElementById('diagnosis-links').hidden = false;
   }, 300);
 
@@ -243,7 +255,7 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
   setTimeout(() => {
     drawPositioning(raw);
     document.getElementById('positioning-caption').textContent =
-      `Intensity: ${problemIntensity}; Inflow: ${problemInflow}; Decision structure: ${decisionStructure}; Access structure: ${accessStructure}`;
+      `Problem pressure: ${pressureNarrative.problemSummary}. Coordination pressure: ${pressureNarrative.coordinationSummary}.`;
   }, 500);
 
   // Show simulation area with empty state immediately
@@ -252,7 +264,7 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
 
   // Parameters caption
   document.getElementById('viz-caption').textContent =
-    `Parameters: ${problemIntensity} intensity; ${problemInflow} inflow; ${decisionStructure} decision; ${accessStructure} access.`;
+    pressureNarrative.synthesis;
 
   // Simulation trigger — runs on button click
   document.getElementById('run-sim-btn').onclick = async function () {

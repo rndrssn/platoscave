@@ -146,17 +146,16 @@
 
       segments.forEach(function(seg, idx) {
         var t = hud.append('tspan')
-          .attr('x', 0)
-          .attr('dy', idx === 0 ? 0 : 0)
           .attr('fill', seg.fill)
           .text(seg.text);
+        if (idx === 0) t.attr('x', 0).attr('dy', 0);
 
         var segPx = t.node().getComputedTextLength() * svgScale;
         if (idx > 0 && currentLinePx + segPx > maxHudWidthPx) {
           t.attr('x', 0).attr('dy', lineGapEm + 'em');
           currentLinePx = segPx;
         } else if (idx > 0) {
-          t.attr('dy', 0);
+          t.attr('dy', 0).attr('x', null);
           currentLinePx += segPx;
         } else {
           currentLinePx = segPx;

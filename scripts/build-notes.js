@@ -430,17 +430,19 @@ function writeNotePage(note) {
 function writeNotesIndex(notes) {
   const prefix = '../';
   const listHtml = notes.length
-    ? ('<div class="essay-links">\n'
+    ? ('<div class="essay-links essay-links--notes">\n'
       + notes.map((note) => {
         const tagsLine = note.tags.length
           ? note.tags.map((tag) => '<a href="../tags/' + tag.slug + '/" class="module-tag">#' + escapeHtml(tag.label) + '</a>').join('')
           : '<span class="module-tag">#untagged</span>';
         return '          <article class="note-index-card">\n'
-          + '            <a class="essay-link" href="./' + note.slug + '/">\n'
-          + '              <span class="essay-link-label">' + escapeHtml(note.title) + '</span>\n'
-          + '              <span class="essay-link-desc">' + escapeHtml(note.summary || 'No summary yet.') + '</span>\n'
+          + '            <a class="note-index-link" href="./' + note.slug + '/">\n'
+          + '              <span class="note-index-head">\n'
+          + '                <span class="note-index-title">' + escapeHtml(note.title) + '</span>\n'
+          + '                <span class="note-index-date">Published ' + escapeHtml(note.dateIso) + '</span>\n'
+          + '              </span>\n'
+          + '              <span class="note-index-summary">' + escapeHtml(note.summary || 'No summary yet.') + '</span>\n'
           + '            </a>\n'
-          + '            <p class="positioning-caption note-index-meta">Published ' + escapeHtml(note.dateIso) + '</p>\n'
           + '            <div class="module-tags note-index-tags">' + tagsLine + '</div>\n'
           + '          </article>';
       }).join('\n')

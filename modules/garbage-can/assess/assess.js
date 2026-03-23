@@ -2,7 +2,7 @@
 
 /**
  * assess.js
- * Self-Assessment page — questionnaire flow and wiring
+ * Assess page — questionnaire flow and wiring
  *
  * Dependencies: d3.js, gc-simulation.js, gc-scoring.js, gc-diagnosis.js, gc-viz.js
  */

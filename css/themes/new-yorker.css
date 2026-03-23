@@ -1,0 +1,92 @@
+[data-theme='new-yorker'] {
+  --paper:       #f7f5f1;
+  --paper-dark:  #efebe3;
+  --paper-deep:  #ddd6ca;
+
+  --ink:         #111111;
+  --ink-mid:     #2a2a2a;
+  --ink-faint:   #4a4a4a;
+  --ink-ghost:   #6a6a6a;
+
+  --rust:        #8f1d1d;
+  --rust-light:  #ab2d2d;
+  --sage:        #0b4f8a;
+  --sage-light:  #2d6ea6;
+  --ochre:       #7b5d21;
+  --gold:        #9a7a35;
+  --slate:       #2f425a;
+  --slate-light: #4d6481;
+
+  --serif:       'Newsreader', Georgia, serif;
+  --serif-alt:   'Newsreader', Georgia, serif;
+  --mono:        'DM Sans', Arial, sans-serif;
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+[data-theme='new-yorker'] body {
+  background-color: var(--paper);
+  background-image: none;
+}
+
+[data-theme='new-yorker'] .hero-title,
+[data-theme='new-yorker'] .module-header-title,
+[data-theme='new-yorker'] .module-title,
+[data-theme='new-yorker'] .contact-name,
+[data-theme='new-yorker'] .diagnosis-title,
+[data-theme='new-yorker'] .essay-heading {
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+[data-theme='new-yorker'] .nav-link,
+[data-theme='new-yorker'] .section-label,
+[data-theme='new-yorker'] .module-number,
+[data-theme='new-yorker'] .module-status,
+[data-theme='new-yorker'] .footer-text {
+  font-family: 'DM Sans', Arial, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+[data-theme='new-yorker'] .main-nav,
+[data-theme='new-yorker'] .module-sub-nav,
+[data-theme='new-yorker'] .results-nav,
+[data-theme='new-yorker'] .module-footer-nav {
+  border-color: var(--ink-mid);
+}
+
+[data-theme='new-yorker'] .contact-card,
+[data-theme='new-yorker'] .sim-summary-card,
+[data-theme='new-yorker'] .q-card,
+[data-theme='new-yorker'] .field-notes-card,
+[data-theme='new-yorker'] .essay-link {
+  border: 1px solid var(--ink-ghost);
+  border-top: 3px solid var(--ink-mid);
+  box-shadow: none;
+}
+
+[data-theme='new-yorker'] .module-sub-nav-link,
+[data-theme='new-yorker'] .diagnosis-link,
+[data-theme='new-yorker'] .footer-nav-link,
+[data-theme='new-yorker'] .contact-value a,
+[data-theme='new-yorker'] .essay-body a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--sage);
+  text-underline-offset: 3px;
+}
+

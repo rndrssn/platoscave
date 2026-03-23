@@ -1,0 +1,288 @@
+/* ─── Module sub-nav ─────────────────────────────────── */
+.module-sub-nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  padding-top: 0.35rem;
+  padding-bottom: 1.25rem;
+  margin-top: 0.55rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--ink-ghost);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+  position: relative;
+}
+
+.module-sub-nav-link {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  text-decoration: none !important;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  min-height: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.module-sub-nav-number {
+  margin-right: 0.28rem;
+}
+
+.module-sub-nav-link:hover {
+  color: var(--ink-mid);
+  text-decoration: none !important;
+}
+
+.module-sub-nav-link:visited,
+.module-sub-nav-link:focus-visible {
+  text-decoration: none !important;
+}
+
+.module-sub-nav-link.module-sub-nav-link--active {
+  color: var(--ink);
+  font-weight: 400;
+  text-decoration: none !important;
+  position: relative;
+}
+
+.module-sub-nav-link.module-sub-nav-link--active::before {
+  content: "";
+  width: 0.28rem;
+  height: 0.28rem;
+  border-radius: 999px;
+  background: var(--sage);
+  display: inline-block;
+  margin-right: 0.35rem;
+  flex: 0 0 auto;
+}
+
+.module-sub-nav-dot {
+  color: var(--ink-ghost);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+@media (min-width: 960px) {
+  .module-sub-nav {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    overflow-y: visible;
+    scrollbar-width: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .module-page,
+  .module-essay,
+  .results-section,
+  .sim-summary-card,
+  .field-notes-card,
+  .q-card {
+    min-width: 0;
+  }
+
+  .module-header-title,
+  .module-header-body,
+  .diagnosis-title,
+  .diagnosis-body,
+  .essay-body,
+  .taxonomy-value,
+  .positioning-caption,
+  .sim-summary-card .period-readout {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .module-sub-nav {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    overflow-y: visible;
+    scroll-snap-type: none;
+    row-gap: 0.02rem;
+    column-gap: 0.45rem;
+    padding-bottom: 0.85rem;
+    align-items: flex-start;
+  }
+
+  .module-sub-nav-link {
+    min-height: 2.1rem;
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  .module-sub-nav-dot {
+    display: none;
+  }
+
+  .module-footer-nav {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.55rem 1rem;
+  }
+
+  .module-footer-nav .footer-nav-link {
+    min-width: 0;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* ─── Diagnosis contextual links ─────────────────────── */
+.diagnosis-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.diagnosis-link {
+  font-family: var(--mono);
+  font-size: var(--fs-link-diagnosis);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--sage);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.diagnosis-link:hover {
+  color: var(--sage-light);
+  text-decoration: underline;
+}
+
+/* ─── Explorer page ──────────────────────────────────── */
+.explorer-panel {
+  margin-top: 2rem;
+}
+
+@media (min-width: 640px) {
+  .explorer-panel {
+    margin-top: 2rem;
+  }
+}
+
+.explorer-selectors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.9rem 1rem;
+  margin-bottom: 1.5rem;
+  align-items: start;
+  width: 100%;
+}
+
+.explorer-select-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.explorer-select-label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  min-height: 1.2rem;
+}
+
+.explorer-select {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  line-height: 1.2;
+  font-weight: 300;
+  color: var(--ink-mid);
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-repeat: no-repeat;
+  background-position:
+    calc(100% - 13px) calc(50% - 2px),
+    calc(100% - 8px) calc(50% - 2px);
+  background-size: 5px 5px, 5px 5px;
+  border: 1px solid var(--ink-ghost);
+  border-radius: 0;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  min-height: 2.2rem;
+  min-width: 0;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.explorer-select:hover {
+  border-color: var(--ink-faint);
+}
+
+.explorer-select:focus {
+  border-color: var(--ink-mid);
+}
+
+.explorer-select:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+}
+
+.explorer-diagnosis {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ink-ghost);
+}
+
+.explorer-viz {
+  margin-top: 1.5rem;
+}
+
+.explorer-viz svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+@media (max-width: 640px) {
+  .explorer-selectors {
+    grid-template-columns: 1fr;
+  }
+}
+
+.simulation-divider {
+  margin-top: 2rem;
+}
+
+.results-section#explorer-diagnosis {
+  border-bottom: none;
+  padding-bottom: 1rem;
+}
+
+#viz-area.explorer-results-section {
+  padding-top: 1rem;
+}
+
+.explorer-results-section .simulation-divider {
+  margin-bottom: 4.5rem;
+}
+
+@media (max-width: 640px) {
+  .explorer-results-section .simulation-divider {
+    margin-bottom: 3.5rem;
+  }
+}

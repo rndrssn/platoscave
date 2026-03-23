@@ -251,7 +251,7 @@
   font-family: var(--serif-alt);
   font-weight: 300;
   font-style: italic;
-  font-size: 1.14rem;
+  font-size: clamp(0.9rem, 0.86rem + 0.2vw, 0.96rem);
   line-height: 1.2;
   color: var(--ink);
 }
@@ -270,8 +270,8 @@
   display: block;
   margin-top: 0.45rem;
   font-family: var(--serif);
-  font-size: 0.98rem;
-  line-height: 1.55;
+  font-size: clamp(0.76rem, 0.74rem + 0.14vw, 0.8rem);
+  line-height: 1.6;
   color: var(--ink-mid);
 }
 
@@ -308,6 +308,7 @@
   font-family: var(--serif-alt);
   font-style: italic;
   font-weight: 300;
+  font-size: clamp(0.96rem, 0.92rem + 0.35vw, 1.08rem);
   color: var(--ink);
   line-height: 1.2;
   margin: 1.75rem 0 0.75rem;
@@ -317,9 +318,9 @@
 .note-content li,
 .note-content blockquote {
   font-family: var(--serif);
-  font-size: var(--fs-body);
+  font-size: clamp(0.76rem, 0.74rem + 0.14vw, 0.8rem);
   color: var(--ink-mid);
-  line-height: 1.7;
+  line-height: 1.62;
 }
 
 .note-content ul,
@@ -341,7 +342,7 @@
 
 .note-content pre {
   font-family: var(--mono);
-  font-size: 0.78rem;
+  font-size: clamp(0.68rem, 0.66rem + 0.14vw, 0.72rem);
   font-weight: 300;
   letter-spacing: 0.02em;
   line-height: 1.55;
@@ -366,4 +367,19 @@
 .note-content a:hover {
   color: var(--sage-light);
   text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .note-content p,
+  .note-content li,
+  .note-content blockquote {
+    font-size: 0.8rem;
+    line-height: 1.58;
+  }
+
+  .note-content h2,
+  .note-content h3 {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
 }

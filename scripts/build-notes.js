@@ -458,7 +458,6 @@ function writeNotesIndex(notes) {
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'
     + '        <section class="essay-section">\n'
-    + '          <h2 class="essay-heading">Published Notes</h2>\n'
     + '          ' + listHtml + '\n'
     + '        </section>\n'
     + '      </article>\n'

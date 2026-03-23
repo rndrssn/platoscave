@@ -273,55 +273,45 @@
   font-family: var(--mono);
   font-size: 1.05rem;
   line-height: 1;
-  color: var(--ink-faint);
+  color: var(--ink-mid);
   background: transparent;
   border: none;
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  min-width: 1.35rem;
+  min-height: 1.35rem;
   padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-appearance: none;
+  appearance: none;
   position: relative;
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .can-media-btn:hover {
-  color: var(--ink-mid);
+  color: var(--ink);
 }
 
-.can-media-btn::before,
-.can-media-btn::after {
-  content: '';
-  position: absolute;
-}
-
-.can-media-btn[data-state='pause']::before,
-.can-media-btn[data-state='pause']::after {
-  top: 0.15rem;
-  width: 0.16rem;
-  height: 0.8rem;
+.can-media-glyph {
+  display: block;
+  width: 0.82rem;
+  height: 0.82rem;
   background: currentColor;
+  box-sizing: border-box;
+  border: 0;
 }
 
-.can-media-btn[data-state='pause']::before {
-  left: 0.3rem;
-}
-
-.can-media-btn[data-state='pause']::after {
-  right: 0.3rem;
-}
-
-.can-media-btn[data-state='play']::before {
-  top: 0.13rem;
-  left: 0.36rem;
+.can-media-btn[data-state='play'] .can-media-glyph {
   width: 0;
   height: 0;
-  border-top: 0.4rem solid transparent;
-  border-bottom: 0.4rem solid transparent;
-  border-left: 0.58rem solid currentColor;
-}
-
-.can-media-btn[data-state='play']::after {
-  display: none;
+  background: transparent;
+  border-top: 0.44rem solid transparent;
+  border-bottom: 0.44rem solid transparent;
+  border-left: 0.68rem solid currentColor;
+  margin-left: 0.08rem;
 }
 
 .can-icon-btn {

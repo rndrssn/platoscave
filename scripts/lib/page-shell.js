@@ -47,6 +47,8 @@ function htmlShell(params) {
     + '  <title>' + escapeHtml(title) + '</title>\n'
     + '  <script src="' + prefix + 'theme.config.js"></script>\n'
     + '  <script src="' + prefix + 'js/theme-bootstrap.js"></script>\n'
+    + '  <link rel="preload" href="' + prefix + 'assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />\n'
+    + '  <link rel="preload" href="' + prefix + 'assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />\n'
     + '  <link rel="stylesheet" href="' + prefix + 'css/main.css" />\n'
     + '</head>\n'
     + '<body>\n'

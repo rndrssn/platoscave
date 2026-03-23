@@ -19,7 +19,30 @@
       }
     ],
     "relatedModules": [
-      "03-garbage-can"
+      {
+        "id": "03-garbage-can",
+        "title": "03 · The Garbage Can Model",
+        "url": "modules/garbage-can/",
+        "summary": "Interactive narrative, taxonomy, explainer, and simulation of organisational choice under ambiguity.",
+        "tags": [
+          {
+            "label": "garbage can model",
+            "slug": "garbage-can-model"
+          },
+          {
+            "label": "organised anarchy",
+            "slug": "organised-anarchy"
+          },
+          {
+            "label": "the mix",
+            "slug": "the-mix"
+          },
+          {
+            "label": "decision-making",
+            "slug": "decision-making"
+          }
+        ]
+      }
     ]
   }
 ]

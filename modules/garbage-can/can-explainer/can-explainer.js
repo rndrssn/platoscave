@@ -38,6 +38,7 @@
   var colors = {
     // Remapped to requested stream semantics.
     problem: readCssVar('--viz-slate', '#3D4F5C'),           // blue
+    entering: readCssVar('--viz-rust-light', '#B85C40'),     // entering signal
     solution: readCssVar('--viz-sage-light', '#6B8F62'),     // green
     participant: readCssVar('--viz-gold', '#B8943A'),        // yellow
     resolved: readCssVar('--viz-sage', '#4A6741'),           // resolved marker
@@ -132,14 +133,35 @@
 
     function updateHud() {
       hud.selectAll('tspan').remove();
-      hud.append('tspan')
-        .attr('x', 0)
-        .attr('dy', 0)
-        .attr('fill', colors.faint)
-        .text('Cycle ' + state.cycle + '  |  Resolved ' + state.resolved + '  |  ');
-      hud.append('tspan')
-        .attr('fill', colors.adrift)
-        .text('Adrift ' + state.adrift);
+      var segments = [
+        { text: 'Org. iteration ' + state.cycle + '  |  ', fill: colors.faint },
+        { text: 'Problems Resolved ' + state.resolved, fill: colors.resolved },
+        { text: '  |  ', fill: colors.faint },
+        { text: 'Problems Adrift ' + state.adrift, fill: colors.adrift }
+      ];
+      var maxHudWidth = Math.max(160, (rect.width / svgScale) - 8);
+      var lineGapEm = 1.45;
+      var maxHudWidthPx = maxHudWidth * svgScale;
+      var currentLinePx = 0;
+
+      segments.forEach(function(seg, idx) {
+        var t = hud.append('tspan')
+          .attr('x', 0)
+          .attr('dy', idx === 0 ? 0 : 0)
+          .attr('fill', seg.fill)
+          .text(seg.text);
+
+        var segPx = t.node().getComputedTextLength() * svgScale;
+        if (idx > 0 && currentLinePx + segPx > maxHudWidthPx) {
+          t.attr('x', 0).attr('dy', lineGapEm + 'em');
+          currentLinePx = segPx;
+        } else if (idx > 0) {
+          t.attr('dy', 0);
+          currentLinePx += segPx;
+        } else {
+          currentLinePx = segPx;
+        }
+      });
     }
 
     function pulseCan() {
@@ -330,6 +352,12 @@
           return 'translate(' + bounded.x + ',' + bounded.y + ')';
         })
         .on('end', function() {
+          if (type === 'problem') {
+            g.select('text').attr('fill', colors.solution);
+            g.select('rect')
+              .attr('fill', colors.solution)
+              .attr('stroke', colors.solution);
+          }
           startInteractionJitter(g);
           if (type === 'problem') state.queueProblems.push(g);
           if (type === 'solution') state.queueSolutions.push(g);
@@ -349,7 +377,7 @@
         animateAdrift(state.queueProblems.shift());
       }
 
-      spawnToken('problem', STREAM_X.problem, 'problem', colors.problem);
+      spawnToken('problem', STREAM_X.problem, 'problem', colors.entering);
       if (state.cycle % 2 !== 0) {
         addTimer(function() {
           if (!isRunning) return;

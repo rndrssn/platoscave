@@ -124,23 +124,6 @@
       .attr('font-size', FONT_U.co)
       .text('CO');
 
-    streamLayer.append('text')
-      .attr('class', 'gc-viz__legend-text')
-      .attr('x', 28)
-      .attr('y', ADRIFT_Y - 22)
-      .attr('fill', colors.adrift)
-      .attr('font-size', FONT_U.legend)
-      .attr('font-weight', 600)
-      .text('Adrift problems');
-
-    var adriftCounter = streamLayer.append('text')
-      .attr('class', 'gc-viz__legend-text')
-      .attr('x', 28)
-      .attr('y', ADRIFT_Y + 2)
-      .attr('fill', colors.adrift)
-      .attr('font-size', FONT_U.legend)
-      .text('0');
-
     var hud = hudLayer.append('text')
       .attr('class', 'gc-viz__top-legend')
       .attr('x', 0)
@@ -149,8 +132,14 @@
 
     function updateHud() {
       hud.selectAll('tspan').remove();
-      var l1 = 'Cycle ' + state.cycle + '  |  Resolved ' + state.resolved + '  |  Adrift ' + state.adrift;
-      hud.append('tspan').attr('x', 0).attr('dy', 0).text(l1);
+      hud.append('tspan')
+        .attr('x', 0)
+        .attr('dy', 0)
+        .attr('fill', colors.faint)
+        .text('Cycle ' + state.cycle + '  |  Resolved ' + state.resolved + '  |  ');
+      hud.append('tspan')
+        .attr('fill', colors.adrift)
+        .text('Adrift ' + state.adrift);
     }
 
     function pulseCan() {
@@ -206,8 +195,9 @@
       if (!isRunning) return;
       state.adrift += 1;
       updateHud();
-      adriftCounter.text(String(state.adrift));
-      problemToken.select('text').text('adrift');
+      problemToken.select('text')
+        .text('adrift')
+        .attr('fill', colors.adrift);
       problemToken.select('rect')
         .attr('fill', colors.adrift)
         .attr('stroke', colors.adrift)
@@ -215,9 +205,13 @@
       problemToken
         .interrupt('jitter')
         .transition()
-        .duration(1320)
+        .duration(860)
         .ease(d3.easeCubicInOut)
         .attr('transform', 'translate(152,' + ADRIFT_Y + ')')
+        .style('opacity', 1)
+        .transition()
+        .duration(760)
+        .ease(d3.easeCubicOut)
         .style('opacity', 0)
         .remove();
     }
@@ -227,7 +221,9 @@
       state.resolved += 1;
       updateHud();
       pulseCan();
-      problemToken.select('text').text('resolved');
+      problemToken.select('text')
+        .text('resolved')
+        .attr('fill', colors.problem);
       problemToken.select('rect')
         .attr('fill', colors.resolved)
         .attr('stroke', colors.resolved)
@@ -236,16 +232,20 @@
       problemToken
         .interrupt('jitter')
         .transition()
-        .duration(1280)
+        .duration(860)
         .ease(d3.easeCubicInOut)
         .attr('transform', 'translate(' + (SVG_W - 84 - (state.resolved % 8) * 78) + ',' + (SVG_H - 74) + ')')
+        .style('opacity', 1)
+        .transition()
+        .duration(760)
+        .ease(d3.easeCubicOut)
         .style('opacity', 0)
         .remove();
 
       solutionToken
         .interrupt('jitter')
         .transition()
-        .duration(1180)
+        .duration(1500)
         .ease(d3.easeCubicInOut)
         .style('opacity', 0)
         .remove();
@@ -253,7 +253,7 @@
       participantToken
         .interrupt('jitter')
         .transition()
-        .duration(1180)
+        .duration(1500)
         .ease(d3.easeCubicInOut)
         .style('opacity', 0)
         .remove();
@@ -316,13 +316,13 @@
         .attr('stroke-width', 0.85);
 
       g.transition()
-        .duration(420)
+        .duration(320)
         .style('opacity', 1)
         .transition()
-        .duration(1800)
+        .duration(1450)
         .attr('transform', 'translate(' + streamX + ',' + STREAM_GATE_Y + ')')
         .transition()
-        .duration(1300)
+        .duration(980)
         .attr('transform', function() {
           var tx = CAN_X + (Math.random() * 156 - 78);
           var ty = CAN_Y + (Math.random() * 172 - 86);
@@ -354,13 +354,13 @@
         addTimer(function() {
           if (!isRunning) return;
           spawnToken('solution', STREAM_X.solution, 'solution', colors.solution);
-        }, 620);
+        }, 500);
       }
       if (state.cycle % 3 !== 0) {
         addTimer(function() {
           if (!isRunning) return;
           spawnToken('participant', STREAM_X.participant, 'participant', colors.participant);
-        }, 1180);
+        }, 900);
       }
 
       addTimer(function() {
@@ -369,9 +369,9 @@
           var drifting = state.queueProblems.shift();
           animateAdrift(drifting);
         }
-      }, 3000);
+      }, 2400);
 
-      addTimer(runCycle, 4800);
+      addTimer(runCycle, 3900);
     }
 
     runCycle();

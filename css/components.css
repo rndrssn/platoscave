@@ -240,6 +240,20 @@ footer {
   color: var(--ink-faint);
 }
 
+@media (max-width: 639px) {
+  .footer-text {
+    font-size: clamp(0.62rem, 2.6vw, 0.72rem);
+    letter-spacing: 0.06em !important;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  .footer-text .footer-link {
+    display: block;
+    margin-top: 0.25rem;
+  }
+}
+
 /* ─── Modules Index — mobile base ────────────────────────── */
 .modules-index {
   padding-top: calc(4rem + 3rem);

@@ -149,7 +149,6 @@ function run() {
 
     if (status === 'published') {
       assert(fm.date && /^\d{4}-\d{2}-\d{2}$/.test(String(fm.date).replace(/['"]/g, '')), 'Invalid frontmatter date in: ' + filePath);
-      assert(fm.summary && String(fm.summary).trim(), 'Missing frontmatter summary in: ' + filePath);
       const hasTags = Array.isArray(fm.tags) ? fm.tags.length > 0 : !!(fm.tags && String(fm.tags).trim());
       assert(hasTags, 'Missing frontmatter tags in: ' + filePath);
     }
@@ -181,7 +180,7 @@ function run() {
   for (const note of notesIndex) {
     assert(note.title, 'notes-index entry missing title');
     assert(note.slug, 'notes-index entry missing slug');
-    assert(note.summary, 'notes-index entry missing summary');
+    assert(typeof note.summary === 'string', 'notes-index entry summary must be a string');
     assert(note.date, 'notes-index entry missing date');
     assert(Array.isArray(note.tags), 'notes-index entry missing tags array');
     assert(Array.isArray(note.relatedModules), 'notes-index entry missing relatedModules array');

@@ -31,6 +31,7 @@ Rules:
 - `slug` must be unique.
 - `date` format is `YYYY-MM-DD`.
 - `tags` must be a non-empty list of strings.
+- `summary` is optional.
 - `status` must be one of: `published`, `draft`, `unpublished`.
 
 Status behavior:

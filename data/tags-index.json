@@ -51,8 +51,8 @@
     "label": "the-mix",
     "slug": "the-mix",
     "notes": [
-      "cost-overruns",
-      "what-works-and-what-doesnt-work"
+      "what-works-and-what-doesnt-work",
+      "cost-overruns"
     ],
     "modules": [
       "03-garbage-can"

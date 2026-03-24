@@ -22,14 +22,14 @@
   --mono:        'Space Mono', 'Courier New', monospace;
 
   --fs-link-nav:                 0.74rem;
-  --fs-heading-hero-min:         2.8rem;
-  --fs-heading-hero-max:         6rem;
-  --fs-heading-module-min:       2.3rem;
-  --fs-heading-module-max:       3.9rem;
+  --fs-heading-hero-min:         2.45rem;
+  --fs-heading-hero-max:         5.25rem;
+  --fs-heading-module-min:       2.05rem;
+  --fs-heading-module-max:       3.45rem;
   --fs-link-module-sub-nav:      0.78rem;
   --fs-link-diagnosis:           0.78rem;
   --fs-link-footer-nav:          0.78rem;
-  --fs-footer-text:              0.52rem;
+  --fs-footer-text:              0.64rem;
   --viz-fs-label:                0.78rem;
 
   --viz-ink:        var(--ink);
@@ -69,8 +69,8 @@
 [data-theme='decision-collision-cold'] .module-title,
 [data-theme='decision-collision-cold'] .diagnosis-title {
   font-family: 'Bebas Neue', Impact, sans-serif;
-  letter-spacing: 0.05em;
-  line-height: 0.96;
+  letter-spacing: 0.04em;
+  line-height: 1.04;
 }
 
 [data-theme='decision-collision-cold'] .hero-body,
@@ -105,8 +105,8 @@
 [data-theme='decision-collision-cold'] .module-number,
 [data-theme='decision-collision-cold'] .module-status,
 [data-theme='decision-collision-cold'] .footer-text {
-  font-weight: 700;
-  letter-spacing: 0.11em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
 }
 
 [data-theme='decision-collision-cold'] .module-sub-nav-link,

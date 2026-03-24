@@ -48,6 +48,13 @@ Keep this order stable unless there is a clear cascade reason.
 - Change only `window.PLATOSCAVE_THEME` in `theme.config.js` to switch the whole site
 - Theme names are defined in `css/themes.css` (for example: `high-contrast`, `urban-grid*`, `decision-collision*`, `new-yorker`)
 
+## Typography layering
+- Global type scale and semantic size tokens are defined in `tokens.css`.
+- Theme typography density (for example headline scale, microtext floors, display line-height) should be overridden in theme files, not by changing global root sizing.
+- Shared readability rules (tracking for nav/meta/footer, shared paragraph rhythm) belong in `components.css`.
+- Module/page-specific typography belongs in `pages.css` imports.
+- For condensed display themes, reduce hierarchy via heading tokens before reducing body size.
+
 ## JS/SVG styling contract
 - `gc-viz.js` reads visual token values from CSS custom properties with fallback values
 - SVG text styling for GC viz is class-based in CSS (`gc-viz.css`), not inline font attributes in D3
@@ -63,7 +70,8 @@ Keep this order stable unless there is a clear cascade reason.
 1. Update tokens first if change is visual-system-wide
 2. Avoid inline style mutations in app JS; prefer class/`hidden` toggles
 3. Keep page-specific rules out of shared component files
-4. Run tests after each refactor phase:
+4. Validate typography guardrails for changed views (hierarchy, line-height rhythm, tracking, and minimum readable utility text).
+5. Run tests after each refactor phase:
    - `node tests/test-gc-scoring.js`
    - `node tests/test-gc-scoring-12.js`
    - `node tests/test-gc-diagnosis.js`

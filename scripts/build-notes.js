@@ -61,6 +61,11 @@ function escapeAttr(value) {
   return escapeHtml(value).replace(/`/g, '&#96;');
 }
 
+function isExternalHref(href) {
+  const value = String(href || '').trim();
+  return /^https?:\/\//i.test(value);
+}
+
 function splitFrontmatter(raw) {
   if (!raw.startsWith('---')) return { frontmatter: {}, body: raw };
   const match = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/);
@@ -212,7 +217,10 @@ function renderInline(rawText) {
 
   text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
     const safeHref = escapeAttr(href.trim());
-    return '<a href="' + safeHref + '">' + label + '</a>';
+    const externalAttrs = isExternalHref(href)
+      ? ' target="_blank" rel="noopener noreferrer"'
+      : '';
+    return '<a href="' + safeHref + '"' + externalAttrs + '>' + label + '</a>';
   });
   text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
@@ -506,7 +514,7 @@ function writeNotesIndex(notes) {
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">Notes</h1>\n'
     + '        <p class="module-header-body">\n'
-    + '          My notes are stories and reflections about the way we organise work, the way we do that work, related feedback loops, and the emergent phenomena that lead to tensions, fragility, and unexpected behaviors in organisations and technologies. Some notes become future modules. This is not a chronological blog feed; it is a field-notes layer connected to the interactive work.\n'
+    + '          My notes are stories and reflections about the way we organise work, the way we do that work, related feedback loops, and the emergent phenomena that lead to tensions, fragility, and unexpected behaviors in organisations and technologies. Some notes become <a href="../modules/">future modules</a>. This is not a chronological blog feed; it is a field-notes layer connected to the interactive work.\n'
     + '        </p>\n'
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'

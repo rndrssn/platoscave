@@ -35,6 +35,8 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - Each note uses YAML frontmatter (`title`, `slug`, `date`, `summary`, `tags`, `status`)
 - Build notes + tags pages:
   - `node scripts/build-notes.js`
+- One-command publish flow from `sandbox`:
+  - `scripts/publish-note.sh -m "Publish note: <slug>"`
 - Generated output:
   - `notes/index.html`
   - `notes/<slug>/index.html`

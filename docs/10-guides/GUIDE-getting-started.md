@@ -23,6 +23,7 @@ token_cost_estimate: low
 
 1. `node tests/run-all.js`
 2. Optional browser smoke when Playwright is installed: `node tests/test-browser-smoke-optional.js`
+3. Notes publish shortcut (from `sandbox`): `scripts/publish-note.sh -m "Publish note: <slug>"`
 
 ## Read order
 

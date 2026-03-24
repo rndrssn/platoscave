@@ -12,6 +12,7 @@ const OUTPUT_NOTES_DIR = path.join(ROOT, 'notes');
 const OUTPUT_TAGS_DIR = path.join(ROOT, 'tags');
 const DATA_DIR = path.join(ROOT, 'data');
 const MODULES_META_PATH = path.join(ROOT, 'content', 'meta', 'modules.json');
+const NOTE_STATUSES = new Set(['published', 'draft', 'unpublished']);
 
 function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
@@ -339,6 +340,17 @@ function collectNotes() {
     const raw = readFile(filePath);
     const parsed = splitFrontmatter(raw);
     const fm = parsed.frontmatter;
+
+    const status = String(fm.status || '').trim().toLowerCase();
+    if (!status) {
+      console.error('FAIL: missing status in', filePath);
+      process.exit(1);
+    }
+    if (!NOTE_STATUSES.has(status)) {
+      console.error('FAIL: invalid status in', filePath, '- expected one of published|draft|unpublished');
+      process.exit(1);
+    }
+
     const title = String(fm.title || '').trim();
     if (!title) {
       console.error('FAIL: missing title in', filePath);
@@ -346,9 +358,17 @@ function collectNotes() {
     }
 
     const explicitSlug = String(fm.slug || '').trim();
-    const slug = slugify(explicitSlug || title);
+    if (!explicitSlug) {
+      console.error('FAIL: missing slug in', filePath);
+      process.exit(1);
+    }
+    const slug = slugify(explicitSlug);
     if (!slug) {
       console.error('FAIL: could not derive slug for', filePath);
+      process.exit(1);
+    }
+    if (slug !== explicitSlug) {
+      console.error('FAIL: slug must be lowercase kebab-case in', filePath);
       process.exit(1);
     }
     if (slugSet.has(slug)) {
@@ -357,11 +377,34 @@ function collectNotes() {
     }
     slugSet.add(slug);
 
-    const status = String(fm.status || 'published').trim().toLowerCase();
-    if (status === 'draft') continue;
+    if (status !== 'published') continue;
 
-    const dateObj = parseDate(fm.date);
+    const dateRaw = String(fm.date || '').trim();
+    if (!dateRaw || !/^\d{4}-\d{2}-\d{2}$/.test(dateRaw)) {
+      console.error('FAIL: invalid date (expected YYYY-MM-DD) in', filePath);
+      process.exit(1);
+    }
+
+    if (!String(fm.summary || '').trim()) {
+      console.error('FAIL: missing summary in', filePath);
+      process.exit(1);
+    }
+
+    if (!Array.isArray(fm.tags) || fm.tags.length === 0) {
+      console.error('FAIL: missing tags array in', filePath);
+      process.exit(1);
+    }
+
+    const dateObj = parseDate(dateRaw);
+    if (!dateObj) {
+      console.error('FAIL: invalid date in', filePath);
+      process.exit(1);
+    }
     const tags = normalizeTags(fm.tags || []);
+    if (!tags.length) {
+      console.error('FAIL: tags must contain at least one valid tag in', filePath);
+      process.exit(1);
+    }
     const summary = String(fm.summary || '').trim();
     const relatedModules = Array.isArray(fm.related_modules) ? fm.related_modules.map((v) => String(v).trim()).filter(Boolean) : [];
 
@@ -434,12 +477,18 @@ function writeNotePage(note) {
 function writeNotesIndex(notes) {
   const prefix = '../';
   const listHtml = notes.length
-    ? ('<div class="essay-links essay-links--notes">\n'
+    ? ('<div id="notes-list" class="essay-links essay-links--notes">\n'
       + notes.map((note) => {
+        const searchText = [
+          note.title,
+          note.summary || '',
+          note.dateIso,
+          note.tags.map((tag) => tag.label).join(' ')
+        ].join(' ').toLowerCase();
         const tagsLine = note.tags.length
           ? note.tags.map((tag) => '<a href="../tags/' + tag.slug + '/" class="module-tag">#' + escapeHtml(tag.label) + '</a>').join('')
           : '<span class="module-tag">#untagged</span>';
-        return '          <article class="note-index-card">\n'
+        return '          <article class="note-index-card" data-note-search="' + escapeAttr(searchText) + '">\n'
           + '            <a class="note-index-link" href="./' + note.slug + '/">\n'
           + '              <span class="note-index-head">\n'
           + '                <span class="note-index-title">' + escapeHtml(note.title) + '</span>\n'
@@ -462,6 +511,10 @@ function writeNotesIndex(notes) {
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'
     + '        <section class="essay-section">\n'
+    + '          <div class="note-search" role="search" aria-label="Search notes">\n'
+    + '            <span class="note-search-icon" aria-hidden="true">&#9906;</span>\n'
+    + '            <input id="notes-search-input" class="note-search-input" type="search" placeholder="Search notes" autocomplete="off" />\n'
+    + '          </div>\n'
     + '          ' + listHtml + '\n'
     + '        </section>\n'
     + '      </article>\n'
@@ -472,7 +525,8 @@ function writeNotesIndex(notes) {
     description: 'Notes and stories behind the modules and models in To the Bedrock.',
     prefix,
     nav: navHtml(prefix, 'notes'),
-    main: body
+    main: body,
+    extraScripts: [prefix + 'js/notes-search.js']
   });
 
   writeFile(path.join(OUTPUT_NOTES_DIR, 'index.html'), html);

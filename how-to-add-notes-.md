@@ -30,7 +30,13 @@ Your note content here.
 Rules:
 - `slug` must be unique.
 - `date` format is `YYYY-MM-DD`.
-- `tags` can be any list of strings.
+- `tags` must be a non-empty list of strings.
+- `status` must be one of: `published`, `draft`, `unpublished`.
+
+Status behavior:
+- `published`: rendered to `/notes/<slug>/` and included in indexes/tags.
+- `draft`: kept in repo, excluded from generated notes/tags output.
+- `unpublished`: previously public note intentionally removed from generated output.
 
 ## 2) Build notes pages
 
@@ -81,7 +87,7 @@ After merge to the deployed branch, the note is live at:
 From `sandbox`, use:
 
 ```bash
-scripts/publish-note.sh -m "Publish note: <slug>"
+scripts/publish-note.sh -m "Publish note: <slug>" --only <slug>
 ```
 
 Example:
@@ -93,13 +99,13 @@ scripts/publish-note.sh -m "Publish note: what-works-and-what-doesnt-work"
 Optional quicker mode (notes-focused checks):
 
 ```bash
-scripts/publish-note.sh -m "Publish note: <slug>" --quick
+scripts/publish-note.sh -m "Publish note: <slug>" --quick --only <slug>
 ```
 
 Optional spelling/punctuation polish (LLM) before build/publish:
 
 ```bash
-OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --quick --polish <slug>
+OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --quick --polish <slug> --only <slug>
 ```
 
 You can also run polish directly:
@@ -136,6 +142,8 @@ scripts/publish-note.sh -m "Publish notes" --quick --only slug-a,slug-b
 Editing an already published note is supported:
 - just pass that note slug with `--only`.
 
+The script also enforces a clean staged index before it runs, to avoid committing unrelated pre-staged files.
+
 What it does:
 - builds notes (`node scripts/build-notes.js`)
 - runs tests (full suite by default, quick subset with `--quick`)
@@ -143,7 +151,27 @@ What it does:
 - pushes `sandbox`
 - merges and pushes into `develop` and `main`
 
-## 5) How to update tags
+## 5) CRUD (CMS-driven)
+
+Create:
+- add a new markdown file in `content/notes/published/`
+- set `status: "published"`
+- run publish with `--only <slug>`
+
+Read:
+- generated output is `/notes/<slug>/`
+- tag views are generated under `/tags/<tag>/`
+
+Update:
+- edit the existing markdown file for that slug
+- keep same `slug`
+- republish with `--only <slug>`
+
+Unpublish:
+- set `status: "unpublished"` (or `draft`)
+- republish with `--only <slug>`
+- note is removed from generated notes/tag pages but source remains in repo
+## 6) How to update tags
 
 Tags are generated, not edited directly in `tags/`.
 

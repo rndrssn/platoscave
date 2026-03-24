@@ -11,6 +11,7 @@ const NOTES_INDEX_JSON = path.join(ROOT, 'data', 'notes-index.json');
 const TAGS_INDEX_JSON = path.join(ROOT, 'data', 'tags-index.json');
 const NOTES_INDEX_HTML = path.join(ROOT, 'notes', 'index.html');
 const TAGS_INDEX_HTML = path.join(ROOT, 'tags', 'index.html');
+const NOTE_STATUSES = new Set(['published', 'draft', 'unpublished']);
 
 function listMarkdownFiles(dirPath) {
   if (!fs.existsSync(dirPath)) return [];
@@ -142,11 +143,16 @@ function run() {
     const fm = parseFrontmatter(raw, filePath);
     assert(fm.title && fm.title.trim(), 'Missing frontmatter title in: ' + filePath);
     assert(fm.slug && fm.slug.trim(), 'Missing frontmatter slug in: ' + filePath);
-    assert(fm.date && /^\d{4}-\d{2}-\d{2}$/.test(fm.date.replace(/['"]/g, '')), 'Invalid frontmatter date in: ' + filePath);
-    assert(fm.summary && fm.summary.trim(), 'Missing frontmatter summary in: ' + filePath);
     assert(fm.status && fm.status.trim(), 'Missing frontmatter status in: ' + filePath);
-    const hasTags = Array.isArray(fm.tags) ? fm.tags.length > 0 : !!(fm.tags && String(fm.tags).trim());
-    assert(hasTags, 'Missing frontmatter tags in: ' + filePath);
+    const status = String(fm.status).replace(/^['"]|['"]$/g, '').toLowerCase();
+    assert(NOTE_STATUSES.has(status), 'Invalid frontmatter status in: ' + filePath);
+
+    if (status === 'published') {
+      assert(fm.date && /^\d{4}-\d{2}-\d{2}$/.test(String(fm.date).replace(/['"]/g, '')), 'Invalid frontmatter date in: ' + filePath);
+      assert(fm.summary && String(fm.summary).trim(), 'Missing frontmatter summary in: ' + filePath);
+      const hasTags = Array.isArray(fm.tags) ? fm.tags.length > 0 : !!(fm.tags && String(fm.tags).trim());
+      assert(hasTags, 'Missing frontmatter tags in: ' + filePath);
+    }
 
     const slug = fm.slug.replace(/^['"]|['"]$/g, '');
     assert(slug === slugify(slug), 'Slug must be lowercase/kebab-case in: ' + filePath);
@@ -154,13 +160,13 @@ function run() {
     return {
       filePath,
       slug,
-      status: fm.status.replace(/^['"]|['"]$/g, '').toLowerCase(),
+      status: status,
     };
   });
 
-  const nonDraft = frontmatterRows.filter((row) => row.status !== 'draft');
+  const publishedRows = frontmatterRows.filter((row) => row.status === 'published');
   const slugSet = new Set();
-  for (const row of nonDraft) {
+  for (const row of publishedRows) {
     assert(!slugSet.has(row.slug), 'Duplicate published slug: ' + row.slug);
     slugSet.add(row.slug);
   }
@@ -170,7 +176,7 @@ function run() {
 
   assert(Array.isArray(notesIndex), 'notes-index.json must contain an array');
   assert(Array.isArray(tagsIndex), 'tags-index.json must contain an array');
-  assert.strictEqual(notesIndex.length, nonDraft.length, 'notes-index count must match published markdown count');
+  assert.strictEqual(notesIndex.length, publishedRows.length, 'notes-index count must match published markdown count');
 
   for (const note of notesIndex) {
     assert(note.title, 'notes-index entry missing title');

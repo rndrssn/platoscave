@@ -497,7 +497,9 @@ function writeNotesIndex(notes) {
           + '                <span class="note-index-title">' + escapeHtml(note.title) + '</span>\n'
           + '                <span class="note-index-date">Published ' + escapeHtml(note.dateIso) + '</span>\n'
           + '              </span>\n'
-          + '              <span class="note-index-summary">' + escapeHtml(note.summary || 'No summary yet.') + '</span>\n'
+          + (note.summary
+            ? ('              <span class="note-index-summary">' + escapeHtml(note.summary) + '</span>\n')
+            : '')
           + '            </a>\n'
           + '            <div class="module-tags note-index-tags">' + tagsLine + '</div>\n'
           + '          </article>';
@@ -542,7 +544,9 @@ function writeTagPage(tag, notes, modules) {
     ? '<div class="essay-links">\n'
       + notes.map((note) => '          <a class="essay-link" href="../../notes/' + note.slug + '/">\n'
           + '            <span class="essay-link-label">' + escapeHtml(note.title) + '</span>\n'
-          + '            <span class="essay-link-desc">' + escapeHtml(note.summary || 'No summary yet.') + '</span>\n'
+          + (note.summary
+            ? ('            <span class="essay-link-desc">' + escapeHtml(note.summary) + '</span>\n')
+            : '')
           + '          </a>').join('\n')
       + '\n        </div>'
     : '<p class="essay-body">No notes yet for this tag.</p>';

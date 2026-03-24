@@ -96,6 +96,23 @@ Optional quicker mode (notes-focused checks):
 scripts/publish-note.sh -m "Publish note: <slug>" --quick
 ```
 
+Optional spelling/punctuation polish (LLM) before build/publish:
+
+```bash
+OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --quick --polish <slug>
+```
+
+You can also run polish directly:
+
+```bash
+OPENAI_API_KEY=... node scripts/polish-note.js --slug <slug>
+```
+
+Notes:
+- This is optional and separate from `build-notes.js`.
+- The polish step is constrained to spelling/punctuation/obvious grammar fixes.
+- Default model is `gpt-5-mini` (override with `NOTES_POLISH_MODEL`).
+
 What it does:
 - builds notes (`node scripts/build-notes.js`)
 - runs tests (full suite by default, quick subset with `--quick`)

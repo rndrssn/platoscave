@@ -10,12 +10,14 @@ set -euo pipefail
 # Usage:
 #   scripts/publish-note.sh -m "Publish note: <slug>"
 #   scripts/publish-note.sh -m "Publish note: <slug>" --quick
+#   scripts/publish-note.sh -m "Publish note: <slug>" --polish <slug-or-path>
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 COMMIT_MSG=""
 QUICK_MODE="false"
+POLISH_TARGET=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -26,6 +28,14 @@ while [[ $# -gt 0 ]]; do
     --quick)
       QUICK_MODE="true"
       shift
+      ;;
+    --polish)
+      POLISH_TARGET="${2:-}"
+      if [[ -z "$POLISH_TARGET" ]]; then
+        echo "--polish requires a target: slug or file path." >&2
+        exit 1
+      fi
+      shift 2
       ;;
     -h|--help)
       sed -n '1,40p' "$0"
@@ -47,6 +57,17 @@ CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 if [[ "$CURRENT_BRANCH" != "sandbox" ]]; then
   echo "This script must be run from branch 'sandbox'. Current branch: $CURRENT_BRANCH" >&2
   exit 1
+fi
+
+if [[ -n "$POLISH_TARGET" ]]; then
+  echo "==> Polishing note spelling/punctuation"
+  if [[ -f "$POLISH_TARGET" ]]; then
+    node scripts/polish-note.js --file "$POLISH_TARGET"
+  elif [[ -f "content/notes/published/$POLISH_TARGET.md" ]]; then
+    node scripts/polish-note.js --file "content/notes/published/$POLISH_TARGET.md"
+  else
+    node scripts/polish-note.js --slug "$POLISH_TARGET"
+  fi
 fi
 
 echo "==> Building notes"
@@ -94,4 +115,3 @@ echo "sandbox: $(git rev-parse sandbox)"
 echo "develop: $(git rev-parse develop)"
 echo "main:    $(git rev-parse main)"
 echo "tree:    $(git rev-parse sandbox^{tree})"
-

@@ -15,11 +15,12 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 ## Modules
 
-- **03 · The Garbage Can Model** — An interactive implementation of Cohen, March & Olsen's 1972 model of organizational decision-making. Includes a narrative essay, taxonomy of organization types, simulation explorer, and self-assessment questionnaire.
-  - **03.1 Narrative** (`/modules/garbage-can/`)
-  - **03.2 Taxonomy** (`/modules/garbage-can/taxonomy/`)
-  - **03.3 Explorer** (`/modules/garbage-can/explorer/`)
-  - **03.4 Self-Assessment** (`/modules/garbage-can/assess/`)
+- **03 · The Garbage Can Model** — An interactive implementation of Cohen, March & Olsen's 1972 model of organizational decision-making. Includes a narrative essay, taxonomy of organisation types, a concept animation, an exploration surface, and an assessment flow.
+  - **03.01 Narrative** (`/modules/garbage-can/`)
+  - **03.02 Taxonomy** (`/modules/garbage-can/taxonomy/`)
+  - **03.03 What's a Garbage Can?** (`/modules/garbage-can/can-explainer/`)
+  - **03.04 Explore** (`/modules/garbage-can/explorer/`)
+  - **03.05 Assess** (`/modules/garbage-can/assess/`)
 
 ## Built With
 
@@ -40,6 +41,14 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - `tags/index.html`
   - `tags/<tag>/index.html`
 
+## Testing
+
+- Canonical full suite:
+  - `node tests/run-all.js`
+- `run-all` includes navigation link checks and notes build checks.
+- Optional real-browser smoke test:
+  - `tests/test-browser-smoke-optional.js` (auto-skips unless Playwright is installed)
+
 ## Themes
 
 - Styling tokens are defined in [`css/tokens.css`](css/tokens.css)
@@ -48,12 +57,11 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - Edit only `window.PLATOSCAVE_THEME = '...'` in `theme.config.js` to switch all pages
   - Examples: `'default'`, `'urban-grid1'`, `'decision-collision-cold'`, `'new-yorker'`
 
-## Local Private Docs
+## Documentation
 
-- `docs/` is intentionally ignored in git and not published.
-- To sync private docs into local `docs/` for coding agents, run:
+- Tracked project docs live under `docs/`.
+- Optional local/private doc overlay workflow:
   - `scripts/sync-local-docs.sh`
-- Optional source override:
   - `scripts/sync-local-docs.sh --source ~/private/platoscave-docs`
 
 ## Credits

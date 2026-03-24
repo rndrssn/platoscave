@@ -96,6 +96,46 @@ Optional quicker mode (notes-focused checks):
 scripts/publish-note.sh -m "Publish note: <slug>" --quick
 ```
 
+Optional spelling/punctuation polish (LLM) before build/publish:
+
+```bash
+OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --quick --polish <slug>
+```
+
+You can also run polish directly:
+
+```bash
+OPENAI_API_KEY=... node scripts/polish-note.js --slug <slug>
+```
+
+Notes:
+- This is optional and separate from `build-notes.js`.
+- The polish step is constrained to spelling/punctuation/obvious grammar fixes.
+- Default model is `gpt-5-mini` (override with `NOTES_POLISH_MODEL`).
+
+Safety guard for accidental published-note commits:
+
+```bash
+scripts/publish-note.sh -m "Publish note: <slug>" --quick --only <slug>
+```
+
+- `--only` blocks the publish if any changed file under `content/notes/published/`
+  is outside the allowed slug list.
+- You can pass multiple slugs:
+
+```bash
+scripts/publish-note.sh -m "Publish notes" --quick --only slug-a --only slug-b
+```
+
+or:
+
+```bash
+scripts/publish-note.sh -m "Publish notes" --quick --only slug-a,slug-b
+```
+
+Editing an already published note is supported:
+- just pass that note slug with `--only`.
+
 What it does:
 - builds notes (`node scripts/build-notes.js`)
 - runs tests (full suite by default, quick subset with `--quick`)

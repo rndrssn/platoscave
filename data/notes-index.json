@@ -1,5 +1,18 @@
 [
   {
+    "title": "Long Tails",
+    "slug": "long-tails",
+    "summary": "A long tail in digital/high siftware content development. Infinite cost overruns beating bridges, tunnels, Olympic games and nuclear power plant (re)constructions. .",
+    "date": "2026-03-24",
+    "tags": [
+      {
+        "label": "the mix",
+        "slug": "the-mix"
+      }
+    ],
+    "relatedModules": []
+  },
+  {
     "title": "What works and what doesn't work",
     "slug": "what-works-and-what-doesnt-work",
     "summary": "A first field note on practical patterns that help, and patterns that create friction, in organised-anarchy decision settings.",

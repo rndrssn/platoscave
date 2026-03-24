@@ -22,9 +22,11 @@
     deadTickFastMs: -120,
     resolvePauseMs: 820,
     enteringPauseMs: 760,
+    enteringVisibilityPauseMs: 320,
     enteringDensityPauseMs: 120,
     enteringDensityPauseCapMs: 420,
     searchingPauseMs: 520,
+    postEntryIdleFastMs: -420,
     baseEarlyMs: 2600,
     baseMidMs: 2250,
     baseLateMs: 1850,
@@ -42,6 +44,7 @@
     if (analysis.eventful) adjusted += t.eventPauseMs;
     if (analysis.hasResolution) adjusted += t.resolvePauseMs;
     if (analysis.hasEntering) adjusted += t.enteringPauseMs;
+    if (analysis.hasEntering) adjusted += (t.enteringVisibilityPauseMs || 0);
     if (analysis.enteringCount > 1) {
       adjusted += Math.min(
         t.enteringDensityPauseCapMs,
@@ -50,6 +53,7 @@
     }
     if (analysis.hasSearching) adjusted += t.searchingPauseMs;
     if (analysis.isDead) adjusted += t.deadTickFastMs;
+    if (analysis.allEntered && analysis.isDead) adjusted += (t.postEntryIdleFastMs || 0);
 
     var tickMs = Math.max(t.minTickMs, Math.min(t.maxTickMs, adjusted));
     var motionMs = Math.max(360, Math.round(tickMs * t.motionFraction));

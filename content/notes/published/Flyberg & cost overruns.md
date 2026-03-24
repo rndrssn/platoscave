@@ -1,9 +1,9 @@
 ---
-title: Cost Overruns
+title: Flyberg & cost overruns
 slug: cost-overruns
-date: 2026-03-24
+date: 2026-03-04
 status: published
-summary: IT projects, or rather, high-software-content development and projects are plagued by missed (effort) estimates. And thats OK as the potential uptake due to scalability and transformative efficiency gains can be enormous. Now, just how much are typical overruns?
+summary: 
 tags:
   - cost-overrun
   - long-tails
@@ -12,9 +12,8 @@ tags:
 related_modules: []
 ---
 
-This is the first note in the new notes workflow.
-
 ## Long tail statistics
+IT projects, or rather, high-software-content development and projects are plagued by missed (effort) estimates. And thats OK as the potential uptake due to scalability and transformative efficiency gains can be enormous. Now, just how much are typical overruns?
 
 There is highly credible peer reviewed academic research on the "overrun" of software (development) projects (see [Flybjerg et.al](https://www.tandfonline.com/doi/full/10.1080/07421222.2022.2096544).). Unsurprisingly, this research shows the overrun of software projects is significant; it is the most significant of all project types, it beats the summer olympics, nuclear power plant construction, tunnels etc by margin.
 

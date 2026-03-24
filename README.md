@@ -32,7 +32,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ## Notes CMS (Markdown + Obsidian)
 
 - Markdown source lives in `content/notes/published/` (and optional drafts in `content/notes/drafts/`)
-- Each note uses YAML frontmatter (`title`, `slug`, `date`, `summary`, `tags`, `status`)
+- Each note uses YAML frontmatter (`title`, `slug`, `date`, `tags`, `status`; `summary` optional)
   - `status` must be one of: `published`, `draft`, `unpublished`
   - only `published` notes are rendered to `/notes` and `/tags`
 - Build notes + tags pages:

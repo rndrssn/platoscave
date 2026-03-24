@@ -28,6 +28,28 @@ slugify() {
     | sed -E "s/&/ and /g; s/[^a-z0-9[:space:]-]//g; s/^[[:space:]]+//; s/[[:space:]]+$//; s/[[:space:]]+/-/g; s/-+/-/g"
 }
 
+extract_slug_from_note_file() {
+  local note_path="$1"
+  local note_content=""
+
+  if [[ -f "$note_path" ]]; then
+    note_content="$(cat "$note_path")"
+  else
+    # Handle renamed/deleted paths still present in git diff output.
+    note_content="$(git show "HEAD:$note_path" 2>/dev/null || true)"
+  fi
+
+  if [[ -z "$note_content" ]]; then
+    printf ''
+    return 0
+  fi
+
+  printf '%s' "$note_content" \
+    | awk -F': ' '/^slug:[[:space:]]*/{print $2; exit}' \
+    | tr -d '"' \
+    | xargs
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -m|--message)
@@ -97,7 +119,7 @@ node scripts/build-notes.js
 
 if [[ ${#ONLY_SPECS[@]} -gt 0 ]]; then
   echo "==> Enforcing --only note source guard"
-  ALLOWED_NOTE_FILES=""
+  ALLOWED_NOTE_SLUGS=""
 
   for spec in "${ONLY_SPECS[@]}"; do
     IFS=',' read -r -a parts <<< "$spec"
@@ -107,8 +129,8 @@ if [[ ${#ONLY_SPECS[@]} -gt 0 ]]; then
         echo "Invalid --only value: '$raw'" >&2
         exit 1
       fi
-      ALLOWED_NOTE_FILES="${ALLOWED_NOTE_FILES}
-content/notes/published/${slug}.md"
+      ALLOWED_NOTE_SLUGS="${ALLOWED_NOTE_SLUGS}
+${slug}"
     done
   done
 
@@ -124,17 +146,24 @@ content/notes/published/${slug}.md"
     VIOLATIONS=""
     while IFS= read -r notePath; do
       [[ -z "$notePath" ]] && continue
-      if ! printf '%s\n' "$ALLOWED_NOTE_FILES" | sed '/^$/d' | grep -Fxq "$notePath"; then
+      noteSlug="$(extract_slug_from_note_file "$notePath")"
+      if [[ -z "$noteSlug" ]]; then
         VIOLATIONS="${VIOLATIONS}
-${notePath}"
+${notePath} (missing slug)"
+        continue
+      fi
+      noteSlug="$(slugify "$noteSlug")"
+      if ! printf '%s\n' "$ALLOWED_NOTE_SLUGS" | sed '/^$/d' | grep -Fxq "$noteSlug"; then
+        VIOLATIONS="${VIOLATIONS}
+${notePath} (slug: ${noteSlug})"
       fi
     done <<< "$CHANGED_NOTE_PATHS"
 
     if [[ -n "$VIOLATIONS" ]]; then
       echo "Blocked by --only guard. Unexpected changed published note files:" >&2
       printf '%s\n' "$VIOLATIONS" | sed '/^$/d' >&2
-      echo "Allowed by --only:" >&2
-      printf '%s\n' "$ALLOWED_NOTE_FILES" | sed '/^$/d' >&2
+      echo "Allowed slugs by --only:" >&2
+      printf '%s\n' "$ALLOWED_NOTE_SLUGS" | sed '/^$/d' >&2
       echo "If intentional, pass additional --only values (repeatable or comma-separated)." >&2
       exit 1
     fi
@@ -154,9 +183,15 @@ fi
 echo "==> Staging note publish artifacts"
 if [[ ${#ONLY_SPECS[@]} -gt 0 ]]; then
   git add notes tags data
-  printf '%s\n' "$ALLOWED_NOTE_FILES" | sed '/^$/d' | while IFS= read -r notePath; do
-    git add -- "$notePath" 2>/dev/null || true
-  done
+  while IFS= read -r notePath; do
+    [[ -z "$notePath" ]] && continue
+    noteSlug="$(extract_slug_from_note_file "$notePath")"
+    [[ -z "$noteSlug" ]] && continue
+    noteSlug="$(slugify "$noteSlug")"
+    if printf '%s\n' "$ALLOWED_NOTE_SLUGS" | sed '/^$/d' | grep -Fxq "$noteSlug"; then
+      git add -- "$notePath" 2>/dev/null || true
+    fi
+  done <<< "$CHANGED_NOTE_PATHS"
 else
   git add content/notes/published notes tags data
 fi

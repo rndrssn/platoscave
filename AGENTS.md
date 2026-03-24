@@ -43,7 +43,8 @@ If task scope is unclear, ask the user and proceed with explicit assumptions.
   - align terminology across UI, summaries, and legends.
 - If local/private docs are referenced by user:
   - load only those explicitly requested paths.
-- Do not rely on `docs/` paths unless user confirms they exist locally and should be used.
+- Prefer tracked `docs/` content when present in the workspace.
+- If `docs/` is missing locally, ask user before assuming private/local copies.
 
 ## Context and Token Constraints
 
@@ -60,7 +61,8 @@ Profiles:
 
 For code changes:
 1. Run `node tests/run-all.js`.
-2. If navigation links changed, also run `node tests/test-navigation-links.js` with local server.
+2. `run-all` includes navigation link checks and notes build checks.
+3. Optional browser smoke: `node tests/test-browser-smoke-optional.js` (auto-skips unless Playwright is installed).
 
 For semantics/labels/rules changes:
 1. Update affected UI copy and tests in same change.

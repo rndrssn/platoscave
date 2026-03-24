@@ -315,7 +315,7 @@ function renderMarkdown(markdown) {
 
 function renderTagLinks(tags, hrefPrefix) {
   if (!tags.length) return '';
-  return '<div class="module-tags">'
+  return '<div class="module-tags note-page-tags">'
     + tags.map((tag) => '<a class="module-tag" href="' + hrefPrefix + 'tags/' + tag.slug + '/">#' + escapeHtml(tag.label) + '</a>').join('')
     + '</div>';
 }

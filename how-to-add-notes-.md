@@ -84,6 +84,12 @@ From `sandbox`, use:
 scripts/publish-note.sh -m "Publish note: <slug>"
 ```
 
+Example:
+
+```bash
+scripts/publish-note.sh -m "Publish note: what-works-and-what-doesnt-work"
+```
+
 Optional quicker mode (notes-focused checks):
 
 ```bash

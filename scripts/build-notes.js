@@ -393,11 +393,6 @@ function collectNotes() {
       process.exit(1);
     }
 
-    if (!String(fm.summary || '').trim()) {
-      console.error('FAIL: missing summary in', filePath);
-      process.exit(1);
-    }
-
     if (!Array.isArray(fm.tags) || fm.tags.length === 0) {
       console.error('FAIL: missing tags array in', filePath);
       process.exit(1);

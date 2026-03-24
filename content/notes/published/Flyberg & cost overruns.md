@@ -1,7 +1,7 @@
 ---
-title: Cost Overruns
+title: Flyberg & cost overruns
 slug: cost-overruns
-date: 2026-03-24
+date: 2026-03-4
 status: published
 summary: IT projects, or rather, high-software-content development and projects are plagued by missed (effort) estimates. And thats OK as the potential uptake due to scalability and transformative efficiency gains can be enormous. Now, just how much are typical overruns?
 tags:

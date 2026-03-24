@@ -1,184 +1,134 @@
-/**
- * test-navigation-links.js
- * 
- * Automated link checker for To the Bedrock.
- * Verifies all internal navigation links resolve without 404.
- * 
- * Tech stack: plain Node.js — no dependencies required.
- * 
- * Usage:
- *   node tests/test-navigation-links.js
- * 
- * Run this before every merge from development to main.
- * All tests must pass before merging.
- */
+'use strict';
 
-const http = require('http');
-const https = require('https');
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 
-// ─── Configuration ────────────────────────────────────────────────────────────
-
-const BASE_URL = 'http://localhost:8080'; // adjust port to match your local server
-
-/**
- * All internal links that must resolve without error.
- * Update this list as new pages are added.
- * Mirrors the URL structure defined in EPIC-navigation.md.
- */
-const INTERNAL_LINKS = [
-  '/',
-  '/modules/',
-  '/modules/emergence-primer/',
-  '/modules/maturity/',
-  '/modules/garbage-can/',
-  '/modules/mix-mapper/',
+const ROOT = path.join(__dirname, '..');
+const IGNORE_DIRS = new Set(['.git', 'node_modules', 'docs']);
+const FORBIDDEN_HREF_PATTERNS = [
+  /href="index\.html"/i,
+  /href="\.\/index\.html"/i,
+  /href="[^"]*\/index\.html"/i,
 ];
 
-/**
- * Links that must NOT appear anywhere in the HTML source.
- * These are explicitly forbidden by EPIC-navigation.md.
- */
-const FORBIDDEN_LINK_PATTERNS = [
-  /href="index\.html"/,
-  /href="\.\/index\.html"/,
-  /href="[^"]*\/index\.html"/,
-];
-
-/**
- * HTML files to scan for forbidden link patterns.
- */
-const HTML_FILES = [
-  'index.html',
-  'modules/index.html',
-  'modules/emergence-primer/index.html',
-  'modules/maturity/index.html',
-  'modules/garbage-can/index.html',
-  'modules/mix-mapper/index.html',
-];
-
-// ─── Test runner ──────────────────────────────────────────────────────────────
-
-let passed = 0;
-let failed = 0;
-const failures = [];
-
-function pass(message) {
-  console.log(`  ✓ ${message}`);
-  passed++;
-}
-
-function fail(message) {
-  console.log(`  ✗ ${message}`);
-  failed++;
-  failures.push(message);
-}
-
-// ─── Test 1: HTTP link resolution ─────────────────────────────────────────────
-
-async function checkUrl(url) {
-  return new Promise((resolve) => {
-    const fullUrl = `${BASE_URL}${url}`;
-    const client = fullUrl.startsWith('https') ? https : http;
-    const req = client.get(fullUrl, (res) => {
-      resolve({ url, status: res.statusCode });
-    });
-    req.on('error', () => {
-      resolve({ url, status: 'ERROR - could not connect' });
-    });
-    req.setTimeout(5000, () => {
-      req.destroy();
-      resolve({ url, status: 'TIMEOUT' });
-    });
-  });
-}
-
-async function testLinkResolution() {
-  console.log('\n── Test 1: Internal links resolve without 404 ──────────────────');
-  console.log(`   Base URL: ${BASE_URL}`);
-  console.log(`   Make sure your local server is running before running this test.\n`);
-
-  for (const link of INTERNAL_LINKS) {
-    const result = await checkUrl(link);
-    if (result.status === 200) {
-      pass(`${link} → 200 OK`);
-    } else {
-      fail(`${link} → ${result.status}`);
-    }
-  }
-}
-
-// ─── Test 2: Forbidden link patterns ──────────────────────────────────────────
-
-function testForbiddenPatterns() {
-  console.log('\n── Test 2: No forbidden index.html references in HTML files ────\n');
-
-  for (const file of HTML_FILES) {
-    const filePath = path.join(process.cwd(), file);
-
-    if (!fs.existsSync(filePath)) {
-      console.log(`  — ${file} (skipped — file does not exist yet)`);
-      continue;
-    }
-
-    const content = fs.readFileSync(filePath, 'utf8');
-    let filePassed = true;
-
-    for (const pattern of FORBIDDEN_LINK_PATTERNS) {
-      if (pattern.test(content)) {
-        fail(`${file} contains forbidden link pattern: ${pattern}`);
-        filePassed = false;
+function walkHtmlFiles(baseDir) {
+  const out = [];
+  const stack = [baseDir];
+  while (stack.length) {
+    const current = stack.pop();
+    const entries = fs.readdirSync(current, { withFileTypes: true });
+    for (const entry of entries) {
+      const abs = path.join(current, entry.name);
+      const rel = path.relative(baseDir, abs);
+      if (entry.isDirectory()) {
+        if (!IGNORE_DIRS.has(entry.name)) stack.push(abs);
+        continue;
+      }
+      if (entry.isFile() && entry.name.toLowerCase().endsWith('.html')) {
+        out.push(rel);
       }
     }
-
-    if (filePassed) {
-      pass(`${file} — no forbidden link patterns found`);
-    }
   }
+  return out.sort();
 }
 
-// ─── Test 3: Directory structure ──────────────────────────────────────────────
-
-function testDirectoryStructure() {
-  console.log('\n── Test 3: Required index.html files exist ─────────────────────\n');
-
-  for (const file of HTML_FILES) {
-    const filePath = path.join(process.cwd(), file);
-    if (fs.existsSync(filePath)) {
-      pass(`${file} exists`);
-    } else {
-      fail(`${file} is missing — directory URL will 404`);
-    }
-  }
+function pageRouteFromRelHtml(relHtmlPath) {
+  const normalized = relHtmlPath.split(path.sep).join('/');
+  if (normalized === 'index.html') return '/';
+  if (normalized.endsWith('/index.html')) return '/' + normalized.slice(0, -'index.html'.length);
+  return '/' + normalized;
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
+function extractHrefs(htmlSource) {
+  const hrefs = [];
+  const re = /href\s*=\s*["']([^"']+)["']/gi;
+  let match = re.exec(htmlSource);
+  while (match) {
+    hrefs.push(match[1].trim());
+    match = re.exec(htmlSource);
+  }
+  return hrefs;
+}
+
+function shouldSkipHref(href) {
+  if (!href) return true;
+  if (href.startsWith('#')) return true;
+  if (/^(mailto:|tel:|javascript:)/i.test(href)) return true;
+  if (/^https?:\/\//i.test(href)) return true;
+  if (/^\/\//.test(href)) return true;
+  return false;
+}
+
+function toInternalPath(href, pageRoute) {
+  const resolved = new URL(href, 'http://local.test' + pageRoute);
+  return resolved.pathname;
+}
+
+function resolveFsPathFromRequestPath(requestPath) {
+  const clean = decodeURIComponent(requestPath || '/');
+  if (clean.includes('\0')) return null;
+  const stripped = clean.replace(/^\/+/, '');
+
+  const candidateFiles = [];
+  if (!stripped) {
+    candidateFiles.push('index.html');
+  } else if (stripped.endsWith('/')) {
+    candidateFiles.push(stripped + 'index.html');
+  } else if (path.extname(stripped)) {
+    candidateFiles.push(stripped);
+  } else {
+    candidateFiles.push(stripped);
+    candidateFiles.push(stripped + '/index.html');
+  }
+
+  for (const relFile of candidateFiles) {
+    const abs = path.resolve(ROOT, relFile);
+    if (!abs.startsWith(ROOT)) continue;
+    if (fs.existsSync(abs) && fs.statSync(abs).isFile()) return abs;
+  }
+  return null;
+}
 
 async function run() {
-  console.log('');
-  console.log('════════════════════════════════════════════════════════════════');
-  console.log('  To the Bedrock — Navigation Link Tests');
-  console.log('════════════════════════════════════════════════════════════════');
+  const htmlFiles = walkHtmlFiles(ROOT);
+  assert(htmlFiles.length > 0, 'No HTML files found');
 
-  testForbiddenPatterns();
-  testDirectoryStructure();
-  await testLinkResolution();
-
-  console.log('\n════════════════════════════════════════════════════════════════');
-  console.log(`  Results: ${passed} passed, ${failed} failed`);
-
-  if (failures.length > 0) {
-    console.log('\n  Failures:');
-    failures.forEach(f => console.log(`    • ${f}`));
-    console.log('\n  ✗ Tests failed — do not merge to main until all pass.');
-    console.log('════════════════════════════════════════════════════════════════\n');
-    process.exit(1);
-  } else {
-    console.log('\n  ✓ All tests passed — safe to merge to main.');
-    console.log('════════════════════════════════════════════════════════════════\n');
-    process.exit(0);
+  for (const relHtml of htmlFiles) {
+    const source = fs.readFileSync(path.join(ROOT, relHtml), 'utf8');
+    for (const pattern of FORBIDDEN_HREF_PATTERNS) {
+      assert(!pattern.test(source), relHtml + ' contains forbidden href pattern ' + pattern);
+    }
   }
+
+  const internalPaths = new Set(['/']);
+
+  for (const relHtml of htmlFiles) {
+    const source = fs.readFileSync(path.join(ROOT, relHtml), 'utf8');
+    const pageRoute = pageRouteFromRelHtml(relHtml);
+    internalPaths.add(pageRoute);
+    for (const href of extractHrefs(source)) {
+      if (shouldSkipHref(href)) continue;
+      internalPaths.add(toInternalPath(href, pageRoute));
+    }
+  }
+
+  const failures = [];
+  for (const pathname of Array.from(internalPaths).sort()) {
+    const absFile = resolveFsPathFromRequestPath(pathname);
+    if (!absFile) failures.push(pathname + ' -> unresolved route');
+  }
+
+  if (failures.length) {
+    throw new Error('Broken internal links:\n' + failures.join('\n'));
+  }
+
+  console.log('PASS: tests/test-navigation-links.js');
+  console.log('Checked internal paths:', internalPaths.size);
 }
 
-run();
+run().catch((err) => {
+  console.error('FAIL: tests/test-navigation-links.js');
+  console.error(err.message || err);
+  process.exit(1);
+});

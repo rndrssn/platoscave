@@ -240,6 +240,46 @@ function buildChoiceCenters(fieldBox, choiceRadius, choiceCount) {
   return GcVizHelpers.buildChoiceCenters(fieldBox, choiceRadius, choiceCount);
 }
 
+function collectChoiceDeltaForTick(prevTick, currTick, choiceCount) {
+  const openedIds = [];
+  const openedAndClosedIds = [];
+  const resolvedIds = new Set();
+  let changedChoices = 0;
+
+  for (let c = 0; c < choiceCount; c++) {
+    const prevState = prevTick.choices[c].state;
+    const currState = currTick.choices[c].state;
+    if (prevState !== currState) changedChoices++;
+    if (prevState === 'inactive' && currState === 'active') openedIds.push(c);
+    if (prevState === 'inactive' && currState === 'closed') {
+      openedAndClosedIds.push(c);
+      resolvedIds.add(c);
+    }
+    if (prevState === 'active' && currState === 'closed') resolvedIds.add(c);
+  }
+
+  return { openedIds, openedAndClosedIds, resolvedIds, changedChoices };
+}
+
+function choiceEventTextFromDelta(choiceDelta) {
+  if (choiceDelta.openedAndClosedIds.length > 0) {
+    const direct = choiceDelta.openedAndClosedIds.slice().sort((a, b) => a - b);
+    if (direct.length === 1) return `${formatChoiceOpportunityLabel(direct[0])} opened and closed`;
+    return `${direct.map(formatChoiceOpportunityLabel).join(', ')} opened and closed`;
+  }
+  if (choiceDelta.resolvedIds.size > 0) {
+    const choiceIds = Array.from(choiceDelta.resolvedIds).sort((a, b) => a - b);
+    if (choiceIds.length === 1) return `${formatChoiceOpportunityLabel(choiceIds[0])} closed`;
+    return `${choiceIds.map(formatChoiceOpportunityLabel).join(', ')} closed`;
+  }
+  if (choiceDelta.openedIds.length > 0) {
+    const opened = choiceDelta.openedIds.slice().sort((a, b) => a - b);
+    if (opened.length === 1) return `${formatChoiceOpportunityLabel(opened[0])} opened`;
+    return `${formatChoiceOpportunityList(opened, 3)} opened this iteration`;
+  }
+  return 'No CO open/close event';
+}
+
 // ─── Positioning diagram ──────────────────────────────────────────────────────
 function drawPositioning(raw) {
   const svgEl  = document.getElementById('positioning-svg');
@@ -704,27 +744,6 @@ function drawViz(simResult, options) {
   // Problem IDs that have ever been active (for entrance animation)
   const everActive = new Set();
 
-  function collectChoiceDelta(prevTick, currTick) {
-    const openedIds = [];
-    const openedAndClosedIds = [];
-    const resolvedIds = new Set();
-    let changedChoices = 0;
-
-    for (let c = 0; c < dims.choices; c++) {
-      const prevState = prevTick.choices[c].state;
-      const currState = currTick.choices[c].state;
-      if (prevState !== currState) changedChoices++;
-      if (prevState === 'inactive' && currState === 'active') openedIds.push(c);
-      if (prevState === 'inactive' && currState === 'closed') {
-        openedAndClosedIds.push(c);
-        resolvedIds.add(c);
-      }
-      if (prevState === 'active' && currState === 'closed') resolvedIds.add(c);
-    }
-
-    return { openedIds, openedAndClosedIds, resolvedIds, changedChoices };
-  }
-
   function analyzeTickChange(currTick, prevTick) {
     if (!prevTick) {
       return {
@@ -738,7 +757,7 @@ function drawViz(simResult, options) {
         hasSearching: false,
       };
     }
-    const choiceDelta = collectChoiceDelta(prevTick, currTick);
+    const choiceDelta = collectChoiceDeltaForTick(prevTick, currTick, dims.choices);
     let changedProblems = 0;
     let flights = 0;
     let oversights = 0;
@@ -757,20 +776,7 @@ function drawViz(simResult, options) {
       }
     }
 
-    let eventText = 'No CO open/close event';
-    if (choiceDelta.openedAndClosedIds.length > 0) {
-      const direct = choiceDelta.openedAndClosedIds.sort((a, b) => a - b);
-      if (direct.length === 1) eventText = `${formatChoiceOpportunityLabel(direct[0])} opened and closed`;
-      else eventText = `${direct.map(formatChoiceOpportunityLabel).join(', ')} opened and closed`;
-    } else if (choiceDelta.resolvedIds.size > 0) {
-      const choiceIds = Array.from(choiceDelta.resolvedIds).sort((a, b) => a - b);
-      if (choiceIds.length === 1) eventText = `${formatChoiceOpportunityLabel(choiceIds[0])} closed`;
-      else eventText = `${choiceIds.map(formatChoiceOpportunityLabel).join(', ')} closed`;
-    } else if (choiceDelta.openedIds.length > 0) {
-      const opened = choiceDelta.openedIds.sort((a, b) => a - b);
-      if (opened.length === 1) eventText = `${formatChoiceOpportunityLabel(opened[0])} opened`;
-      else eventText = `${formatChoiceOpportunityList(opened, 3)} opened this iteration`;
-    }
+    var eventText = choiceEventTextFromDelta(choiceDelta);
 
     const problemDenominator = Math.max(1, dims.problems * 2);
     const density = (choiceDelta.changedChoices / Math.max(1, dims.choices)) * 0.5 + (changedProblems / problemDenominator) * 0.5;
@@ -887,7 +893,7 @@ function drawViz(simResult, options) {
     const oversightSet     = new Set();
 
     if (prevTick) {
-      const choiceDelta = collectChoiceDelta(prevTick, tick);
+      const choiceDelta = collectChoiceDeltaForTick(prevTick, tick, dims.choices);
       choiceDelta.openedIds.forEach(function(c) { choicesOpenedThisTick.push(c); });
       choiceDelta.openedAndClosedIds.forEach(function(c) { choicesResolvedThisTick.add(c); });
       choiceDelta.resolvedIds.forEach(function(c) { choicesResolvedThisTick.add(c); });

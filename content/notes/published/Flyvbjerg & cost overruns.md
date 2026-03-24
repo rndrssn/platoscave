@@ -15,7 +15,7 @@ related_modules: []
 ## Long tail statistics
 IT projects, or rather, high-software-content development and projects are plagued by missed (effort) estimates. And thats OK as the potential uptake due to scalability and transformative efficiency gains can be enormous. Now, just how much are typical overruns?
 
-There is highly credible peer reviewed academic research on the "overrun" of software (development) projects (see [Flybjerg et.al](https://www.tandfonline.com/doi/full/10.1080/07421222.2022.2096544).). Unsurprisingly, this research shows the overrun of software projects is significant; it is the most significant of all project types, it beats the summer olympics, nuclear power plant construction, tunnels etc by margin.
+There is highly credible peer reviewed academic research on the "overrun" of software (development) projects (see [Flyvbjerg et.al](https://www.tandfonline.com/doi/full/10.1080/07421222.2022.2096544).). Unsurprisingly, this research shows the overrun of software projects is significant; it is the most significant of all project types, it beats the summer olympics, nuclear power plant construction, tunnels etc by margin.
 
 In fact the distribution telling you (roughly) the probability of finding a software project with overrun *x* follows a power law distribution (a long tail distribution). Now, this power law (its scaling exponent) is such that if you would calculate the average overrun of projects you would find that the average is infinite.
 

@@ -147,14 +147,35 @@
 }
 
 .essay-body a {
-  color: var(--sage);
+  color: var(--link-inline);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.module-header-body a,
+.field-notes-body a,
+.diagnosis-body a {
+  color: var(--link-inline);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .essay-body a:hover {
-  color: var(--sage-light);
-  text-decoration: underline;
+  color: var(--link-inline-hover);
+}
+
+.module-header-body a:hover,
+.field-notes-body a:hover,
+.diagnosis-body a:hover {
+  color: var(--link-inline-hover);
+}
+
+.essay-body a:visited,
+.module-header-body a:visited,
+.note-content a:visited,
+.field-notes-body a:visited,
+.diagnosis-body a:visited {
+  color: var(--link-inline-visited);
 }
 
 /* ─── Essay sub-page links ───────────────────────────── */
@@ -411,13 +432,13 @@
 }
 
 .note-content a {
-  color: var(--sage);
+  color: var(--link-inline);
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 .note-content a:hover {
-  color: var(--sage-light);
-  text-decoration: underline;
+  color: var(--link-inline-hover);
 }
 
 @media (max-width: 640px) {

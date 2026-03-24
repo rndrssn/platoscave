@@ -17,6 +17,9 @@
   --gold:        #B8943A;
   --slate:       #3D4F5C;
   --slate-light: #5A7080;
+  --link-inline: #FF5F6D;
+  --link-inline-hover: #FF7D89;
+  --link-inline-visited: #CC4C57;
 
   --serif:       'EB Garamond', Georgia, serif;
   --serif-alt:   'Cormorant Garamond', Georgia, serif;

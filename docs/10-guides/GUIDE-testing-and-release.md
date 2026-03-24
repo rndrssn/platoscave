@@ -20,6 +20,20 @@ token_cost_estimate: low
 1. `node tests/run-all.js`
 2. Optional browser smoke when Playwright is installed: `node tests/test-browser-smoke-optional.js`
 
+## Notes-only release path
+
+When the change is only note content/tag generation, run from `sandbox`:
+
+```bash
+scripts/publish-note.sh -m "Publish note: <slug>"
+```
+
+Optional quick mode (notes-focused checks):
+
+```bash
+scripts/publish-note.sh -m "Publish note: <slug>" --quick
+```
+
 ## Release gate
 
 - Required checks pass.

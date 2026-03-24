@@ -76,6 +76,27 @@ After merge to the deployed branch, the note is live at:
 
 `/notes/<slug>/`
 
+### Fast path (one command)
+
+From `sandbox`, use:
+
+```bash
+scripts/publish-note.sh -m "Publish note: <slug>"
+```
+
+Optional quicker mode (notes-focused checks):
+
+```bash
+scripts/publish-note.sh -m "Publish note: <slug>" --quick
+```
+
+What it does:
+- builds notes (`node scripts/build-notes.js`)
+- runs tests (full suite by default, quick subset with `--quick`)
+- commits note artifacts
+- pushes `sandbox`
+- merges and pushes into `develop` and `main`
+
 ## 5) How to update tags
 
 Tags are generated, not edited directly in `tags/`.

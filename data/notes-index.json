@@ -1,12 +1,24 @@
 [
   {
-    "title": "Long Tails",
-    "slug": "long-tails",
-    "summary": "A long tail in digital/high siftware content development. Infinite cost overruns beating bridges, tunnels, Olympic games and nuclear power plant (re)constructions. .",
+    "title": "Cost Overruns",
+    "slug": "cost-overruns",
+    "summary": "IT projects, or rather, high-software-content development and projects are plagued by missed (effort) estimates. And thats OK as the potential uptake due to scalability and transformative efficiency gains can be enormous. Now, just how much are typical overruns?",
     "date": "2026-03-24",
     "tags": [
       {
-        "label": "the mix",
+        "label": "cost-overrun",
+        "slug": "cost-overrun"
+      },
+      {
+        "label": "long-tails",
+        "slug": "long-tails"
+      },
+      {
+        "label": "statistics",
+        "slug": "statistics"
+      },
+      {
+        "label": "the-mix",
         "slug": "the-mix"
       }
     ],
@@ -19,15 +31,7 @@
     "date": "2026-03-23",
     "tags": [
       {
-        "label": "garbage can model",
-        "slug": "garbage-can-model"
-      },
-      {
-        "label": "organised anarchy",
-        "slug": "organised-anarchy"
-      },
-      {
-        "label": "the mix",
+        "label": "the-mix",
         "slug": "the-mix"
       }
     ],

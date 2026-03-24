@@ -29,7 +29,7 @@
   white-space: nowrap;
   flex: 0 0 auto;
   scroll-snap-align: start;
-  min-height: 2.4rem;
+  min-height: 1.3rem;
   display: inline-flex;
   align-items: center;
 }
@@ -116,8 +116,8 @@
   }
 
   .module-sub-nav-link {
-    min-height: 2.1rem;
-    line-height: 1.25;
+    min-height: 1.15rem;
+    line-height: 1.1;
     white-space: normal;
   }
 

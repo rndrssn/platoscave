@@ -100,13 +100,14 @@ const CHOICE_STROKE_WIDTH_RESOLVED = 1.2;
 const LEGEND_RESOLVED_STROKE_WIDTH = 1.2;
 const MOTION = {
   open: { pulseMs: 400, startScale: 0.9, endScale: 1.35 },
-  enter: { popInMs: 320, holdMs: 980, searchShiftMs: 420, settleMs: 620, overshootRadius: 1.55, staggerMs: 150 },
+  enter: { popInMs: 320, holdMs: 980, searchShiftMs: 620, settleMs: 860, overshootRadius: 1.55, staggerMs: 150 },
   attach: { pullMs: 780, holdMs: 180, settleMs: 420, overshootRadius: 1.22 },
   search: { driftMs: 1380, pulseMs: 760, jitterAmp: 3.4 },
   adrift: { swayMs: 520, pulseMs: 420, swayAmp: 3.8 },
   resolve: { convergeMs: 520, holdMs: 170, fadeMs: 260, overshootRadius: 1.45 },
   flight: { flashMs: 260, ejectMs: 980, overshootRadius: 1.3 },
   oversight: { flashMs: 280, ejectMs: 980, overshootRadius: 1.3 },
+  ring: { enterMs: 680, searchMs: 760, resolveMs: 640 },
 };
 const TIMING = (typeof window !== 'undefined' && window.GcVizTiming && window.GcVizTiming.TIMING)
   ? window.GcVizTiming.TIMING
@@ -123,9 +124,11 @@ const TIMING = (typeof window !== 'undefined' && window.GcVizTiming && window.Gc
       deadTickFastMs: -120,
       resolvePauseMs: 820,
       enteringPauseMs: 760,
+      enteringVisibilityPauseMs: 320,
       enteringDensityPauseMs: 120,
       enteringDensityPauseCapMs: 420,
       searchingPauseMs: 520,
+      postEntryIdleFastMs: -420,
       baseEarlyMs: 2600, // iter 1-5
       baseMidMs: 2250,   // iter 6-10
       baseLateMs: 1850,  // iter 11-20
@@ -755,6 +758,7 @@ function drawViz(simResult, options) {
         hasOpening: false,
         hasEntering: false,
         hasSearching: false,
+        allEntered: false,
       };
     }
     const choiceDelta = collectChoiceDeltaForTick(prevTick, currTick, dims.choices);
@@ -763,10 +767,12 @@ function drawViz(simResult, options) {
     let oversights = 0;
     let enteringCount = 0;
     let searchingCount = 0;
+    let inactiveCount = 0;
 
     for (let id = 0; id < dims.problems; id++) {
       const pp = prevTick.problems[id];
       const cp = currTick.problems[id];
+      if (cp.state === 'inactive') inactiveCount++;
       if (pp.state !== cp.state || pp.attachedTo !== cp.attachedTo) changedProblems++;
       if (pp.state === 'inactive' && cp.state !== 'inactive') enteringCount++;
       if (pp.state !== 'floating' && cp.state === 'floating' && pp.state !== 'inactive') searchingCount++;
@@ -793,6 +799,7 @@ function drawViz(simResult, options) {
       hasEntering: enteringCount > 0,
       enteringCount: enteringCount,
       hasSearching: searchingCount > 0,
+      allEntered: inactiveCount === 0,
     };
   }
 
@@ -815,6 +822,7 @@ function drawViz(simResult, options) {
     if (analysis.eventful) adjusted += TIMING.eventPauseMs;
     if (analysis.hasResolution) adjusted += TIMING.resolvePauseMs;
     if (analysis.hasEntering) adjusted += TIMING.enteringPauseMs;
+    if (analysis.hasEntering) adjusted += (TIMING.enteringVisibilityPauseMs || 0);
     if (analysis.enteringCount > 1) {
       adjusted += Math.min(
         TIMING.enteringDensityPauseCapMs,
@@ -823,6 +831,7 @@ function drawViz(simResult, options) {
     }
     if (analysis.hasSearching) adjusted += TIMING.searchingPauseMs;
     if (analysis.isDead) adjusted += TIMING.deadTickFastMs;
+    if (analysis.allEntered && analysis.isDead) adjusted += (TIMING.postEntryIdleFastMs || 0);
 
     var tickMs = Math.max(TIMING.minTickMs, Math.min(TIMING.maxTickMs, adjusted));
     var motionMs = Math.max(360, Math.round(tickMs * TIMING.motionFraction));
@@ -1013,6 +1022,15 @@ function drawViz(simResult, options) {
       .each(function(id) {
         const attrs = probAttrs(tick, id);
         const lane = enteringLanePos(id);
+        const p = tick.problems[id];
+        const targetChoiceId = (typeof p.attachedTo === 'number' && p.attachedTo >= 0 && p.attachedTo < dims.choices)
+          ? p.attachedTo
+          : (id % Math.max(1, dims.choices));
+        const targetChoice = choiceCenters[targetChoiceId] || choiceCenters[0];
+        const preCoPoint = {
+          x: targetChoice.x,
+          y: targetChoice.y - (CHOICE_R * 0.88),
+        };
         const enterR = Math.max(PROB_R * MOTION.enter.overshootRadius, PROB_R + 1.2);
         const enterDelay = sd((enteringOrder.get(id) || 0) * MOTION.enter.staggerMs);
         svg.append('circle')
@@ -1026,7 +1044,7 @@ function drawViz(simResult, options) {
           .attr('opacity', 0.82)
           .transition()
             .delay(enterDelay)
-            .duration(sd(420))
+            .duration(sd(MOTION.ring.enterMs))
             .ease(d3.easeCubicOut)
             .attr('r', PROB_R * 2.2)
             .attr('opacity', 0)
@@ -1038,8 +1056,9 @@ function drawViz(simResult, options) {
           .transition().duration(sd(MOTION.enter.holdMs)).ease(d3.easeLinear)
             .attr('r', enterR).attr('opacity', 0.98).attr('fill', MARKER.enteringFill)
           .transition().duration(sd(MOTION.enter.searchShiftMs)).ease(d3.easeCubicInOut)
+            .attr('cx', preCoPoint.x).attr('cy', preCoPoint.y)
             .attr('r', PROB_R).attr('opacity', 0.92)
-            .attr('fill', MARKER.searchingFill).attr('stroke', MARKER.searchingStroke).attr('stroke-width', 0.85)
+            .attr('fill', MARKER.enteringFill).attr('stroke', MARKER.enteringStroke).attr('stroke-width', 0.85)
           .transition().duration(sd(MOTION.enter.settleMs)).ease(d3.easeCubicInOut)
             .attr('cx', attrs.x).attr('cy', attrs.y).attr('r', attrs.r)
             .attr('opacity', attrs.opacity).attr('fill', attrs.fill).attr('stroke', attrs.stroke || 'none').attr('stroke-width', attrs.strokeWidth || 0);
@@ -1079,7 +1098,7 @@ function drawViz(simResult, options) {
           .attr('stroke-width', 1.1)
           .attr('opacity', 0.78)
           .transition()
-            .duration(sd(520))
+            .duration(sd(MOTION.ring.searchMs))
             .ease(d3.easeCubicOut)
             .attr('r', PROB_R * 2.4)
             .attr('opacity', 0)
@@ -1131,7 +1150,7 @@ function drawViz(simResult, options) {
           .attr('stroke-width', 1.4)
           .attr('opacity', 0.85)
           .transition()
-            .duration(sd(430))
+            .duration(sd(MOTION.ring.resolveMs))
             .ease(d3.easeCubicOut)
             .attr('r', PROB_R * 2.1)
             .attr('stroke-width', 0.8)

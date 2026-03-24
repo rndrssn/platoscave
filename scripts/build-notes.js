@@ -511,7 +511,7 @@ function writeNotesIndex(notes) {
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">Notes</h1>\n'
     + '        <p class="module-header-body">\n'
-    + '          My notes are stories and reflections about the way we organise work, the way we do that work, related feedback loops, and the emergent phenomena that lead to tensions, fragility, and unexpected behaviors in organisations and technologies. Some notes become <a href="../modules/">future modules</a>. This is not a chronological blog feed; it is a field-notes layer connected to the interactive work.\n'
+    + '          My notes are stories and reflections about the way we organise work, the way we do that work, related feedback loops, and the emergent phenomena that lead to tensions, fragility, and unexpected behaviors in organisations and technologies. Some notes become future <a href="../modules/">modules</a>. This is not a chronological blog feed; it is a field-notes layer connected to the interactive work.\n'
     + '        </p>\n'
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'

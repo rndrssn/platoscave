@@ -74,7 +74,7 @@
   font-size: var(--fs-link-nav);
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.07em;
   color: var(--ink-faint);
   text-decoration: none;
   transition: color 0.2s ease;
@@ -89,7 +89,7 @@
   min-height: 2.5rem;
   width: 100%;
   justify-content: flex-start;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   border-bottom: 1px solid var(--ink-ghost);
   padding: 0.1rem 0.1rem;
   animation: nav-link-in 180ms ease-out both;
@@ -194,7 +194,7 @@
   font-family: var(--serif);
   font-size: var(--fs-body-hero);
   color: var(--ink-mid);
-  line-height: 1.75;
+  line-height: 1.72;
   max-width: 55ch;
 }
 
@@ -287,7 +287,7 @@ footer {
   font-size: var(--fs-footer-text);
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.07em;
   color: var(--ink-ghost);
 }
 
@@ -335,7 +335,7 @@ footer {
   font-size: var(--fs-label-modules-header);
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   color: var(--ink-faint);
 }
 
@@ -344,7 +344,7 @@ footer {
   font-size: var(--fs-count-modules-header);
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.07em;
   color: var(--ink-ghost);
 }
 
@@ -527,7 +527,7 @@ footer {
 .summary-label {
   font-family: var(--mono);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   font-size: 0.82em;
 }
 
@@ -615,7 +615,7 @@ footer {
   font-size: var(--fs-link-results-nav);
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.07em;
   color: var(--ink-ghost);
   text-decoration: none;
   transition: color 0.2s ease;

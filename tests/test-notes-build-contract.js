@@ -30,18 +30,78 @@ function listMarkdownFiles(dirPath) {
 function parseFrontmatter(raw, filePath) {
   const match = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
   assert(match, 'Missing YAML frontmatter in: ' + filePath);
-  const lines = match[1].split('\n');
+  const lines = match[1].replace(/\r\n/g, '\n').split('\n');
   const out = {};
 
-  for (const line of lines) {
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (!line || !line.trim() || line.trim().startsWith('#')) continue;
     const keyMatch = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
     if (!keyMatch) continue;
+
     const key = keyMatch[1];
-    const value = keyMatch[2].trim();
-    out[key] = value;
+    const rest = keyMatch[2].trim();
+
+    if (!rest) {
+      const arr = [];
+      let j = i + 1;
+      while (j < lines.length) {
+        const itemMatch = lines[j].match(/^\s*-\s*(.*)$/);
+        if (!itemMatch) break;
+        arr.push(parseScalar(itemMatch[1].trim()));
+        j += 1;
+      }
+      out[key] = arr;
+      i = j - 1;
+      continue;
+    }
+
+    if (rest.startsWith('[') && rest.endsWith(']')) {
+      const inner = rest.slice(1, -1).trim();
+      out[key] = inner ? splitCsv(inner).map((item) => parseScalar(item.trim())) : [];
+      continue;
+    }
+
+    out[key] = parseScalar(rest);
   }
 
   return out;
+}
+
+function splitCsv(text) {
+  const out = [];
+  let current = '';
+  let quote = null;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+    if ((ch === '"' || ch === '\'') && (i === 0 || text[i - 1] !== '\\')) {
+      if (!quote) quote = ch;
+      else if (quote === ch) quote = null;
+      current += ch;
+      continue;
+    }
+    if (ch === ',' && !quote) {
+      out.push(current);
+      current = '';
+      continue;
+    }
+    current += ch;
+  }
+
+  if (current) out.push(current);
+  return out;
+}
+
+function parseScalar(value) {
+  if (!value) return '';
+  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith('\'') && value.endsWith('\''))) {
+    return value.slice(1, -1);
+  }
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  if (/^-?\d+(\.\d+)?$/.test(value)) return Number(value);
+  return value;
 }
 
 function slugify(input) {
@@ -85,7 +145,8 @@ function run() {
     assert(fm.date && /^\d{4}-\d{2}-\d{2}$/.test(fm.date.replace(/['"]/g, '')), 'Invalid frontmatter date in: ' + filePath);
     assert(fm.summary && fm.summary.trim(), 'Missing frontmatter summary in: ' + filePath);
     assert(fm.status && fm.status.trim(), 'Missing frontmatter status in: ' + filePath);
-    assert(fm.tags && fm.tags.trim(), 'Missing frontmatter tags in: ' + filePath);
+    const hasTags = Array.isArray(fm.tags) ? fm.tags.length > 0 : !!(fm.tags && String(fm.tags).trim());
+    assert(hasTags, 'Missing frontmatter tags in: ' + filePath);
 
     const slug = fm.slug.replace(/^['"]|['"]$/g, '');
     assert(slug === slugify(slug), 'Slug must be lowercase/kebab-case in: ' + filePath);

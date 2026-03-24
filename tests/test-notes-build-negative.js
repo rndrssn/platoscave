@@ -72,6 +72,41 @@ function run() {
     /duplicate slug/i
   );
 
+  expectBuildFail(
+    `__tmp_invalid_status_${stamp}.md`,
+    [
+      '---',
+      'title: "Invalid status fixture"',
+      'slug: "invalid-status-' + stamp + '"',
+      'date: "2026-03-24"',
+      'status: "archived"',
+      'summary: "temp note"',
+      'tags: ["temp"]',
+      '---',
+      '',
+      'Body',
+      '',
+    ].join('\n'),
+    /invalid status/i
+  );
+
+  expectBuildFail(
+    `__tmp_missing_tags_${stamp}.md`,
+    [
+      '---',
+      'title: "Missing tags fixture"',
+      'slug: "missing-tags-' + stamp + '"',
+      'date: "2026-03-24"',
+      'status: "published"',
+      'summary: "temp note"',
+      '---',
+      '',
+      'Body',
+      '',
+    ].join('\n'),
+    /missing tags array/i
+  );
+
   const recovery = runBuild();
   if (recovery.status !== 0) {
     const output = ((recovery.stdout || '') + '\n' + (recovery.stderr || '')).trim();
@@ -82,4 +117,3 @@ function run() {
 }
 
 run();
-

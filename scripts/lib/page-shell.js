@@ -37,6 +37,7 @@ function htmlShell(params) {
   const prefix = params.prefix;
   const nav = params.nav;
   const main = params.main;
+  const extraScripts = Array.isArray(params.extraScripts) ? params.extraScripts : [];
 
   return '<!DOCTYPE html>\n'
     + '<html lang="en">\n'
@@ -60,6 +61,7 @@ function htmlShell(params) {
     + '  <footer>\n'
     + '    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="' + prefix + 'colophon/" class="footer-link">Site Notes</a></p>\n'
     + '  </footer>\n\n'
+    + extraScripts.map((src) => '  <script src="' + escapeAttr(src) + '"></script>\n').join('')
     + '  <script src="' + prefix + 'js/nav-controller.js"></script>\n'
     + '</body>\n'
     + '</html>\n';

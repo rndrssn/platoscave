@@ -33,10 +33,14 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 - Markdown source lives in `content/notes/published/` (and optional drafts in `content/notes/drafts/`)
 - Each note uses YAML frontmatter (`title`, `slug`, `date`, `summary`, `tags`, `status`)
+  - `status` must be one of: `published`, `draft`, `unpublished`
+  - only `published` notes are rendered to `/notes` and `/tags`
 - Build notes + tags pages:
   - `node scripts/build-notes.js`
 - One-command publish flow from `sandbox`:
-  - `scripts/publish-note.sh -m "Publish note: <slug>"`
+  - `scripts/publish-note.sh -m "Publish note: <slug>" --only <slug>`
+  - optional quick mode: `scripts/publish-note.sh -m "Publish note: <slug>" --quick --only <slug>`
+  - optional LLM polish: `OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --quick --polish <slug> --only <slug>`
 - Generated output:
   - `notes/index.html`
   - `notes/<slug>/index.html`

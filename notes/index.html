@@ -35,8 +35,12 @@
 
       <article class="module-essay">
         <section class="essay-section">
-          <div class="essay-links essay-links--notes">
-          <article class="note-index-card">
+          <div class="note-search" role="search" aria-label="Search notes">
+            <span class="note-search-icon" aria-hidden="true">&#9906;</span>
+            <input id="notes-search-input" class="note-search-input" type="search" placeholder="Search notes" autocomplete="off" />
+          </div>
+          <div id="notes-list" class="essay-links essay-links--notes">
+          <article class="note-index-card" data-note-search="cost overruns it projects, or rather, high-software-content development and projects are plagued by missed (effort) estimates. and thats ok as the potential uptake due to scalability and transformative efficiency gains can be enormous. now, just how much are typical overruns? 2026-03-24 cost-overrun long-tails statistics the-mix">
             <a class="note-index-link" href="./cost-overruns/">
               <span class="note-index-head">
                 <span class="note-index-title">Cost Overruns</span>
@@ -46,7 +50,7 @@
             </a>
             <div class="module-tags note-index-tags"><a href="../tags/cost-overrun/" class="module-tag">#cost-overrun</a><a href="../tags/long-tails/" class="module-tag">#long-tails</a><a href="../tags/statistics/" class="module-tag">#statistics</a><a href="../tags/the-mix/" class="module-tag">#the-mix</a></div>
           </article>
-          <article class="note-index-card">
+          <article class="note-index-card" data-note-search="what works and what doesn&#39;t work a first field note on practical patterns that help, and patterns that create friction, in organised-anarchy decision settings. 2026-03-23 the-mix">
             <a class="note-index-link" href="./what-works-and-what-doesnt-work/">
               <span class="note-index-head">
                 <span class="note-index-title">What works and what doesn&#39;t work</span>
@@ -66,6 +70,7 @@
     <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../colophon/" class="footer-link">Site Notes</a></p>
   </footer>
 
+  <script src="../js/notes-search.js"></script>
   <script src="../js/nav-controller.js"></script>
 </body>
 </html>

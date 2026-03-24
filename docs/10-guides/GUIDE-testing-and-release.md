@@ -25,14 +25,29 @@ token_cost_estimate: low
 When the change is only note content/tag generation, run from `sandbox`:
 
 ```bash
-scripts/publish-note.sh -m "Publish note: <slug>"
+scripts/publish-note.sh -m "Publish note: <slug>" --only <slug>
 ```
 
 Optional quick mode (notes-focused checks):
 
 ```bash
-scripts/publish-note.sh -m "Publish note: <slug>" --quick
+scripts/publish-note.sh -m "Publish note: <slug>" --quick --only <slug>
 ```
+
+Optional spelling/punctuation polish before publish:
+
+```bash
+OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --quick --polish <slug> --only <slug>
+```
+
+Status-driven lifecycle in frontmatter:
+- `published`: rendered to notes/tags output.
+- `draft`: excluded from generated output.
+- `unpublished`: excluded from generated output (intentional takedown).
+
+Safety:
+- Script requires a clean staged index before running.
+- `--only` blocks unexpected changed source notes under `content/notes/published/`.
 
 ## Release gate
 

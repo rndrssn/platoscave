@@ -76,6 +76,11 @@ if [[ "$CURRENT_BRANCH" != "sandbox" ]]; then
   exit 1
 fi
 
+if ! git diff --cached --quiet; then
+  echo "Index is not clean. Please commit or unstage existing staged changes before running publish-note." >&2
+  exit 1
+fi
+
 if [[ -n "$POLISH_TARGET" ]]; then
   echo "==> Polishing note spelling/punctuation"
   if [[ -f "$POLISH_TARGET" ]]; then
@@ -147,7 +152,14 @@ else
 fi
 
 echo "==> Staging note publish artifacts"
-git add content/notes/published notes tags data
+if [[ ${#ONLY_SPECS[@]} -gt 0 ]]; then
+  git add notes tags data
+  printf '%s\n' "$ALLOWED_NOTE_FILES" | sed '/^$/d' | while IFS= read -r notePath; do
+    git add -- "$notePath" 2>/dev/null || true
+  done
+else
+  git add content/notes/published notes tags data
+fi
 
 if git diff --cached --quiet; then
   echo "No staged changes to commit for note publish." >&2

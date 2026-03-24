@@ -1,9 +1,9 @@
 ---
-title: Flyberg & cost overruns
+title: Flyvbjerg & cost overruns
 slug: cost-overruns
 date: 2026-03-04
 status: published
-summary: 
+summary:
 tags:
   - cost-overrun
   - long-tails

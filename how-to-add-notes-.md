@@ -113,6 +113,29 @@ Notes:
 - The polish step is constrained to spelling/punctuation/obvious grammar fixes.
 - Default model is `gpt-5-mini` (override with `NOTES_POLISH_MODEL`).
 
+Safety guard for accidental published-note commits:
+
+```bash
+scripts/publish-note.sh -m "Publish note: <slug>" --quick --only <slug>
+```
+
+- `--only` blocks the publish if any changed file under `content/notes/published/`
+  is outside the allowed slug list.
+- You can pass multiple slugs:
+
+```bash
+scripts/publish-note.sh -m "Publish notes" --quick --only slug-a --only slug-b
+```
+
+or:
+
+```bash
+scripts/publish-note.sh -m "Publish notes" --quick --only slug-a,slug-b
+```
+
+Editing an already published note is supported:
+- just pass that note slug with `--only`.
+
 What it does:
 - builds notes (`node scripts/build-notes.js`)
 - runs tests (full suite by default, quick subset with `--quick`)

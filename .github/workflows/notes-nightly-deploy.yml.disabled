@@ -1,0 +1,173 @@
+name: Notes Nightly Deploy (Prepared)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ad_hoc_run:
+        description: "Run this as an ad-hoc notes deployment now"
+        required: true
+        type: boolean
+        default: true
+      record_run_without_changes:
+        description: "Append a run log entry even when notes/tags did not change"
+        required: true
+        type: boolean
+        default: true
+      reason:
+        description: "Optional reason for this ad-hoc run"
+        required: false
+        type: string
+
+  # Activate when ready by uncommenting schedule block below.
+  # Two UTC entries are used to cover CET/CEST, with an Amsterdam-time guard step.
+  # schedule:
+  #   - cron: '0 21 * * *' # 23:00 CEST (summer)
+  #   - cron: '0 22 * * *' # 23:00 CET (winter)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: notes-nightly-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy_notes:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.ad_hoc_run == true)
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Guard schedule to 23:00 Europe/Amsterdam
+        if: github.event_name == 'schedule'
+        run: |
+          HOUR=$(TZ=Europe/Amsterdam date +%H)
+          if [ "$HOUR" != "23" ]; then
+            echo "Skip: local Amsterdam time is not 23:00."
+            exit 0
+          fi
+
+      - name: Build notes
+        run: node scripts/build-notes.js
+
+      - name: Run notes release checks
+        run: |
+          node tests/test-notes-build-contract.js
+          node tests/test-notes-build-negative.js
+
+      - name: Detect generated changes
+        id: diff
+        run: |
+          DIFF=$(git diff --name-status -- notes tags || true)
+          {
+            echo 'diff<<EOF'
+            echo "$DIFF"
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+          if [ -n "$DIFF" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          CREATED=$(printf '%s\n' "$DIFF" | awk '$1=="A" {print $2}')
+          UPDATED=$(printf '%s\n' "$DIFF" | awk '$1=="M" {print $2}')
+          DELETED=$(printf '%s\n' "$DIFF" | awk '$1=="D" {print $2}')
+
+          {
+            echo 'created<<EOF'
+            echo "$CREATED"
+            echo EOF
+            echo 'updated<<EOF'
+            echo "$UPDATED"
+            echo EOF
+            echo 'deleted<<EOF'
+            echo "$DELETED"
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Compose run log entry
+        id: runlog
+        run: |
+          NOW_UTC=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          NOW_AMS=$(TZ=Europe/Amsterdam date +"%Y-%m-%d %H:%M:%S %Z")
+          TRIGGER=${{ github.event_name }}
+          REASON='${{ github.event.inputs.reason || '' }}'
+          CHANGED='${{ steps.diff.outputs.changed }}'
+
+          {
+            echo "## Run ${GITHUB_RUN_ID}"
+            echo "- UTC: ${NOW_UTC}"
+            echo "- Europe/Amsterdam: ${NOW_AMS}"
+            echo "- Trigger: ${TRIGGER}"
+            echo "- Actor: ${GITHUB_ACTOR}"
+            echo "- Branch: ${GITHUB_REF_NAME}"
+            echo "- Commit: ${GITHUB_SHA}"
+            if [ -n "$REASON" ]; then
+              echo "- Reason: ${REASON}"
+            fi
+            echo "- Notes/tags changed: ${CHANGED}"
+            echo "- Created:"
+            if [ -n "${{ steps.diff.outputs.created }}" ]; then
+              printf '%s\n' "${{ steps.diff.outputs.created }}" | sed 's/^/  - /'
+            else
+              echo "  - (none)"
+            fi
+            echo "- Updated:"
+            if [ -n "${{ steps.diff.outputs.updated }}" ]; then
+              printf '%s\n' "${{ steps.diff.outputs.updated }}" | sed 's/^/  - /'
+            else
+              echo "  - (none)"
+            fi
+            echo "- Deleted:"
+            if [ -n "${{ steps.diff.outputs.deleted }}" ]; then
+              printf '%s\n' "${{ steps.diff.outputs.deleted }}" | sed 's/^/  - /'
+            else
+              echo "  - (none)"
+            fi
+            echo
+          } > notes-nightly-run-entry.md
+
+      - name: Upload run log artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: notes-nightly-run-${{ github.run_id }}
+          path: notes-nightly-run-entry.md
+          if-no-files-found: error
+
+      - name: Append to repository run log
+        if: steps.diff.outputs.changed == 'true' || (github.event_name == 'workflow_dispatch' && inputs.record_run_without_changes == true)
+        run: |
+          mkdir -p logs
+          touch logs/notes-deploy-runs.log
+          cat notes-nightly-run-entry.md >> logs/notes-deploy-runs.log
+
+      - name: Commit generated output and log
+        id: commit
+        if: steps.diff.outputs.changed == 'true' || (github.event_name == 'workflow_dispatch' && inputs.record_run_without_changes == true)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes tags logs/notes-deploy-runs.log
+          if git diff --cached --quiet; then
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "Nightly notes deploy: regenerate notes/tags and append run log"
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Push to main
+        if: steps.commit.outputs.committed == 'true'
+        run: git push origin HEAD:main
+
+      - name: No-op notice
+        if: steps.diff.outputs.changed == 'false' && !(github.event_name == 'workflow_dispatch' && inputs.record_run_without_changes == true)
+        run: echo "No notes/tags changes and run logging disabled for unchanged ad-hoc run."

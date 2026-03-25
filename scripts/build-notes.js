@@ -532,7 +532,7 @@ function writeNotesIndex(notes) {
     prefix,
     nav: navHtml(prefix, 'notes'),
     main: body,
-    bodyAttrs: 'class="doodle-bg-page" data-doodle-layout="notes" data-doodle-count="10" data-doodle-svgs="../assets/images/doodles/background/notes.svg"',
+    bodyAttrs: 'class="doodle-bg-page" data-doodle-layout="notes" data-doodle-count="7" data-doodle-svgs="../assets/images/doodles/background/avalanche.svg,../assets/images/doodles/background/gantt.svg,../assets/images/doodles/background/garbage.svg,../assets/images/doodles/background/gaussian.svg,../assets/images/doodles/background/notes.svg,../assets/images/doodles/background/penrose.svg,../assets/images/doodles/background/skate.svg"',
     extraScripts: [prefix + 'js/notes-search.js', prefix + 'js/doodle-background.js']
   });
 

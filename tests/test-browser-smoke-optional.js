@@ -37,7 +37,8 @@ async function run() {
 
   await page.goto(toFile(path.join('modules', 'garbage-can', 'can-explainer', 'index.html')));
   await page.waitForSelector('#can-explainer-svg');
-  await page.waitForSelector('#can-toggle-btn');
+  await page.waitForSelector('#can-stop-btn');
+  await page.waitForSelector('#can-play-btn');
   await page.waitForSelector('#can-reset-btn');
 
   await browser.close();
@@ -49,4 +50,3 @@ run().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

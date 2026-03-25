@@ -71,7 +71,6 @@
   font-size: 1.04rem;
 }
 
-[data-theme='emergent-systems'] .contact-card,
 [data-theme='emergent-systems'] .sim-summary-card,
 [data-theme='emergent-systems'] .q-card,
 [data-theme='emergent-systems'] .field-notes-card,
@@ -101,7 +100,7 @@
 [data-theme='emergent-systems'] .module-sub-nav-link,
 [data-theme='emergent-systems'] .diagnosis-link,
 [data-theme='emergent-systems'] .footer-nav-link,
-[data-theme='emergent-systems'] .contact-value a,
+[data-theme='emergent-systems'] .contact-social-link,
 [data-theme='emergent-systems'] .essay-body a {
   color: var(--sage);
   text-decoration: underline;
@@ -114,4 +113,3 @@
 [data-theme='emergent-systems'] .results-nav-link--active {
   color: var(--rust);
 }
-

@@ -58,6 +58,13 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ## Themes
 
 - Styling tokens are defined in [`css/tokens.css`](css/tokens.css)
+- Core UI color/link primitives:
+  - `--link-inline`, `--link-inline-hover`, `--link-inline-visited` for inline prose links
+  - `--link-ui`, `--link-ui-hover` for icon/action links (for example social icons)
+- Shared primitives:
+  - Icon sizing via `--icon-size-sm|md|lg`
+  - Card styling via `--card-*` tokens (`surface`, `border`, `accent`, `radius`, `shadow`, `pad`)
+- Shared monochrome SVG icons are stored in `assets/images/icons/` and rendered with CSS mask for theme-driven color
 - Theme overrides live in [`css/themes.css`](css/themes.css)
 - Active site-wide theme is set in [`theme.config.js`](theme.config.js)
 - Edit only `window.PLATOSCAVE_THEME = '...'` in `theme.config.js` to switch all pages

@@ -32,11 +32,15 @@
   gap: 0.55rem;
 }
 
+.submit-row.can-controls {
+  margin-top: 0.55rem;
+}
+
 .can-media-btn {
   font-family: var(--mono);
   font-size: 1.05rem;
   line-height: 1;
-  color: var(--ink-mid);
+  color: var(--ink-faint);
   background: transparent;
   border: none;
   width: 1.35rem;
@@ -55,19 +59,23 @@
 }
 
 .can-media-btn:hover {
-  color: var(--ink);
+  color: var(--ink-mid);
+}
+
+.can-media-btn.is-active {
+  color: var(--ink-ghost);
 }
 
 .can-media-glyph {
   display: block;
-  width: 0.82rem;
-  height: 0.82rem;
+  width: 0.78rem;
+  height: 0.78rem;
   background: currentColor;
   box-sizing: border-box;
   border: 0;
 }
 
-.can-media-btn[data-state='play'] .can-media-glyph {
+.can-media-glyph--play {
   width: 0;
   height: 0;
   background: transparent;
@@ -77,20 +85,47 @@
   margin-left: 0.08rem;
 }
 
+.can-media-glyph--stop {
+  width: 0.74rem;
+  height: 0.74rem;
+}
+
 .can-icon-btn {
   font-family: var(--mono);
-  font-size: 1.375rem;
+  font-size: 0;
   line-height: 1;
   color: var(--ink-faint);
   background: transparent;
   border: none;
-  padding: 0.15rem 0.2rem;
+  width: 1.45rem;
+  height: 1.45rem;
+  min-width: 1.45rem;
+  min-height: 1.45rem;
+  padding: 0;
   cursor: pointer;
   transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .can-icon-btn:hover {
   color: var(--ink-mid);
+}
+
+.can-icon-btn::before {
+  content: '';
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
+  background: currentColor;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  mask-image: url('../assets/images/icons/reset.svg');
+  -webkit-mask-image: url('../assets/images/icons/reset.svg');
 }
 
 #can-explainer-svg {
@@ -143,7 +178,6 @@
   letter-spacing: 0.1em;
   color: var(--ink-faint);
   margin-top: 0.75rem;
-  display: none;
 }
 
 /* ─── Positioning diagram ─────────────────────────────── */
@@ -174,4 +208,3 @@
   margin-top: 1.25rem;
   line-height: 2;
 }
-

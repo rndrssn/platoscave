@@ -517,7 +517,8 @@ function writeNotesIndex(notes) {
     + '      <article class="module-essay">\n'
     + '        <section class="essay-section">\n'
     + '          <div class="note-search" role="search" aria-label="Search notes">\n'
-    + '            <span class="note-search-icon" aria-hidden="true">&#9906;</span>\n'
+    + '            <label class="visually-hidden" for="notes-search-input">Search notes</label>\n'
+    + '            <span class="note-search-icon" aria-hidden="true"></span>\n'
     + '            <input id="notes-search-input" class="note-search-input" type="search" placeholder="Search notes" autocomplete="off" />\n'
     + '          </div>\n'
     + '          ' + listHtml + '\n'
@@ -531,7 +532,7 @@ function writeNotesIndex(notes) {
     prefix,
     nav: navHtml(prefix, 'notes'),
     main: body,
-    bodyAttrs: 'class="doodle-bg-page" data-doodle-layout="notes-header" data-doodle-count="1" data-doodle-svgs="../assets/images/doodles/background/notes.svg"',
+    bodyAttrs: 'class="doodle-bg-page" data-doodle-layout="notes" data-doodle-count="10" data-doodle-svgs="../assets/images/doodles/background/notes.svg"',
     extraScripts: [prefix + 'js/notes-search.js', prefix + 'js/doodle-background.js']
   });
 

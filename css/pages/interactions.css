@@ -32,11 +32,15 @@
   gap: 0.55rem;
 }
 
+.submit-row.can-controls {
+  margin-top: 0.55rem;
+}
+
 .can-media-btn {
   font-family: var(--mono);
   font-size: 1.05rem;
   line-height: 1;
-  color: var(--ink-mid);
+  color: var(--ink-faint);
   background: transparent;
   border: none;
   width: 1.35rem;
@@ -55,19 +59,23 @@
 }
 
 .can-media-btn:hover {
-  color: var(--ink);
+  color: var(--ink-mid);
+}
+
+.can-media-btn.is-active {
+  color: var(--ink-ghost);
 }
 
 .can-media-glyph {
   display: block;
-  width: 0.82rem;
-  height: 0.82rem;
+  width: 0.78rem;
+  height: 0.78rem;
   background: currentColor;
   box-sizing: border-box;
   border: 0;
 }
 
-.can-media-btn[data-state='play'] .can-media-glyph {
+.can-media-glyph--play {
   width: 0;
   height: 0;
   background: transparent;
@@ -75,6 +83,11 @@
   border-bottom: 0.44rem solid transparent;
   border-left: 0.68rem solid currentColor;
   margin-left: 0.08rem;
+}
+
+.can-media-glyph--stop {
+  width: 0.74rem;
+  height: 0.74rem;
 }
 
 .can-icon-btn {

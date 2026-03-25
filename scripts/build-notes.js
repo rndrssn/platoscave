@@ -532,7 +532,7 @@ function writeNotesIndex(notes) {
     prefix,
     nav: navHtml(prefix, 'notes'),
     main: body,
-    bodyAttrs: 'class="doodle-bg-page" data-doodle-layout="notes-header" data-doodle-count="1" data-doodle-svgs="../assets/images/doodles/background/notes.svg"',
+    bodyAttrs: 'class="doodle-bg-page" data-doodle-layout="notes" data-doodle-count="10" data-doodle-svgs="../assets/images/doodles/background/notes.svg"',
     extraScripts: [prefix + 'js/notes-search.js', prefix + 'js/doodle-background.js']
   });
 

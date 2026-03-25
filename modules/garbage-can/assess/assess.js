@@ -8,8 +8,10 @@
  */
 
 // ─── Questionnaire collapse/expand ───────────────────────────────────────────
-document.getElementById('questionnaire-toggle').addEventListener('click', function () {
+var questionnaireToggle = document.getElementById('questionnaire-toggle');
+if (questionnaireToggle) questionnaireToggle.addEventListener('click', function () {
   var content = document.getElementById('questionnaire-content');
+  if (!content) return;
   content.hidden = !content.hidden;
   this.textContent = content.hidden ? 'Retake assessment' : 'Hide questionnaire';
   if (!content.hidden) {
@@ -33,8 +35,22 @@ document.getElementById('questionnaire-toggle').addEventListener('click', functi
     document.getElementById('viz-area').hidden = true;
     document.getElementById('sim-summary').hidden = true;
     document.getElementById('run-sim-btn').hidden = false;
+    var simError = document.getElementById('sim-error');
+    if (simError) simError.hidden = true;
   }
 });
+
+function setSimError(message) {
+  var simError = document.getElementById('sim-error');
+  if (!simError) return;
+  if (!message) {
+    simError.hidden = true;
+    simError.textContent = '';
+    return;
+  }
+  simError.textContent = message;
+  simError.hidden = false;
+}
 
 function buildAssessPressureNarrative(problemIntensity, problemInflow, decisionStructure, accessStructure) {
   if (typeof window !== 'undefined' && typeof window.buildGcPressureNarrative === 'function') {
@@ -55,7 +71,7 @@ function setActiveResultsNav(targetId) {
     var isActive = l.getAttribute('data-section') === targetId;
     l.classList.toggle('results-nav-link--active', isActive);
     if (isActive) {
-      l.setAttribute('aria-current', 'page');
+      l.setAttribute('aria-current', 'location');
     } else {
       l.removeAttribute('aria-current');
     }
@@ -134,11 +150,13 @@ function advanceGroup(fromIdx) {
   }, 50);
 }
 
-document.getElementById('q-continue-1').addEventListener('click', function () {
+var continueBtn1 = document.getElementById('q-continue-1');
+if (continueBtn1) continueBtn1.addEventListener('click', function () {
   advanceGroup(0);
 });
 
-document.getElementById('q-continue-2').addEventListener('click', function () {
+var continueBtn2 = document.getElementById('q-continue-2');
+if (continueBtn2) continueBtn2.addEventListener('click', function () {
   advanceGroup(1);
 });
 
@@ -186,8 +204,10 @@ function focusSimulationCanvas() {
 }
 
 // ─── Form submission ──────────────────────────────────────────────────────────
-document.getElementById('questionnaire').addEventListener('submit', function (e) {
+var questionnaireForm = document.getElementById('questionnaire');
+if (questionnaireForm) questionnaireForm.addEventListener('submit', function (e) {
   e.preventDefault();
+  setSimError('');
 
   const responses = [];
   for (let i = 0; i < 12; i++) {
@@ -235,6 +255,7 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
   document.getElementById('sim-summary').hidden = true;
   document.getElementById('replay-btn').hidden = true;
   document.getElementById('stochastic-note').hidden = true;
+  setSimError('');
 
   // Diagnosis
   setTimeout(() => {
@@ -289,6 +310,10 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
       runBtn.hidden = true;
       drawViz(simResult);
       setTimeout(focusSimulationCanvas, 100);
+      setSimError('');
+    } catch (error) {
+      setSimError('Simulation failed. Please try again.');
+      throw error;
     } finally {
       runBtn.disabled = false;
       runBtn.textContent = originalText;
@@ -310,6 +335,10 @@ document.getElementById('questionnaire').addEventListener('submit', function (e)
       });
       drawViz(newSim);
       setTimeout(focusSimulationCanvas, 100);
+      setSimError('');
+    } catch (error) {
+      setSimError('Simulation failed. Please try again.');
+      throw error;
     } finally {
       replayBtn.disabled = false;
       replayBtn.textContent = originalText;

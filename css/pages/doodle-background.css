@@ -19,7 +19,6 @@
 .doodle-bg-item {
   position: absolute;
   height: auto;
-  color: var(--ink-faint);
   opacity: 0.14;
   user-select: none;
   -webkit-user-drag: none;

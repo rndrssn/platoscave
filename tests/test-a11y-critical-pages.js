@@ -32,6 +32,6 @@ assert(has(/<fieldset[^>]*class="question-block"/i, assess), 'Assess: missing fi
 assert(has(/<legend[^>]*class="question-text"/i, assess), 'Assess: missing legend in question groups');
 
 // Results mini-nav ARIA state seed
-assert(has(/results-nav-link--active[^"]*"[^>]*aria-current="page"/i, assess), 'Assess: results mini-nav missing initial aria-current state');
+assert(has(/results-nav-link--active[^"]*"[^>]*aria-current="(page|location)"/i, assess), 'Assess: results mini-nav missing initial aria-current state');
 
 console.log('PASS: tests/test-a11y-critical-pages.js');

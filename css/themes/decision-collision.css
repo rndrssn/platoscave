@@ -29,7 +29,7 @@
   --fs-link-module-sub-nav:      0.78rem;
   --fs-link-diagnosis:           0.78rem;
   --fs-link-footer-nav:          0.78rem;
-  --fs-footer-text:              0.52rem;
+  --fs-footer-text:              0.68rem;
   --viz-fs-label:                0.78rem;
 
   --viz-ink:        var(--ink);
@@ -77,12 +77,10 @@
 [data-theme='decision-collision'] .module-header-body,
 [data-theme='decision-collision'] .diagnosis-body,
 [data-theme='decision-collision'] .essay-body,
-[data-theme='decision-collision'] .field-notes-body,
-[data-theme='decision-collision'] .contact-value {
+[data-theme='decision-collision'] .field-notes-body {
   font-family: 'Space Mono', 'Courier New', monospace;
 }
 
-[data-theme='decision-collision'] .contact-card,
 [data-theme='decision-collision'] .sim-summary-card,
 [data-theme='decision-collision'] .q-card,
 [data-theme='decision-collision'] .field-notes-card,
@@ -112,7 +110,7 @@
 [data-theme='decision-collision'] .module-sub-nav-link,
 [data-theme='decision-collision'] .diagnosis-link,
 [data-theme='decision-collision'] .footer-nav-link,
-[data-theme='decision-collision'] .contact-value a,
+[data-theme='decision-collision'] .contact-social-link,
 [data-theme='decision-collision'] .essay-body a {
   color: var(--sage);
   text-decoration: underline;
@@ -124,4 +122,3 @@
 [data-theme='decision-collision'] .results-nav-link--active {
   color: var(--rust);
 }
-

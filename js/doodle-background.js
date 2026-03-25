@@ -81,7 +81,6 @@
   };
 
   var slotsByViewport = SLOTS[layoutId] || SLOTS.home;
-  var colorChoices = ['var(--ink-ghost)', 'var(--ink-faint)', 'var(--ink-mid)'];
   var doodles = [];
   var count = Math.min(svgUrls.length, slotsByViewport.desktop.length, slotsByViewport.mobile.length, maxCount);
 
@@ -129,7 +128,6 @@
     doodle.alt = '';
     doodle.loading = 'lazy';
     doodle.decoding = 'async';
-    doodle.style.color = colorChoices[i % colorChoices.length];
     doodle.dataset.angle = String((Math.random() * 25).toFixed(2));
     doodle.dataset.opacity = String((0.13 + Math.random() * 0.05).toFixed(3));
     layer.appendChild(doodle);

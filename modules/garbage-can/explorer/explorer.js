@@ -11,6 +11,18 @@
 var resultsNav = document.getElementById('explorer-results-nav');
 var resultsNavLinks = Array.from(document.querySelectorAll('.results-nav-link'));
 var hasAutoNavigatedToResults = false;
+
+function setSimError(message) {
+  var simError = document.getElementById('explorer-sim-error');
+  if (!simError) return;
+  if (!message) {
+    simError.hidden = true;
+    simError.textContent = '';
+    return;
+  }
+  simError.textContent = message;
+  simError.hidden = false;
+}
 function buildExplorerNarrative(intensity, inflow, decision, access) {
   if (typeof window !== 'undefined' && typeof window.buildGcPressureNarrative === 'function') {
     return window.buildGcPressureNarrative(intensity, inflow, decision, access);
@@ -32,7 +44,7 @@ function setActiveResultsNav(targetId) {
     var isActive = link.getAttribute('data-section') === targetId;
     link.classList.toggle('results-nav-link--active', isActive);
     if (isActive) {
-      link.setAttribute('aria-current', 'page');
+      link.setAttribute('aria-current', 'location');
     } else {
       link.removeAttribute('aria-current');
     }
@@ -106,7 +118,10 @@ function updateDiagnosis() {
 // ─── Simulation reset ─────────────────────────────────────────────────────────
 function resetSimulation() {
   var svg = document.getElementById('viz-svg');
-  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  if (svg) {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+  }
+  setSimError('');
 
   document.getElementById('sim-summary').hidden = true;
   document.getElementById('run-sim-btn').hidden = false;
@@ -124,14 +139,18 @@ function resetSimulation() {
 
 // ─── Dropdown change — update diagnosis and reset simulation ──────────────────
 ['panel-a-load', 'panel-a-inflow', 'panel-a-decision', 'panel-a-access'].forEach(function(id) {
-  document.getElementById(id).addEventListener('change', function() {
+  var select = document.getElementById(id);
+  if (!select) return;
+  select.addEventListener('change', function() {
     updateDiagnosis();
     resetSimulation();
+    setSimError('');
   });
 });
 
 // ─── Run simulation button ────────────────────────────────────────────────────
-document.getElementById('run-sim-btn').addEventListener('click', async function() {
+var runSimBtn = document.getElementById('run-sim-btn');
+if (runSimBtn) runSimBtn.addEventListener('click', async function() {
   var intensity = document.getElementById('panel-a-load').value;
   var inflow    = document.getElementById('panel-a-inflow').value;
   var decision  = document.getElementById('panel-a-decision').value;
@@ -152,6 +171,10 @@ document.getElementById('run-sim-btn').addEventListener('click', async function(
     drawViz(simResult);
     setActiveResultsNav('viz-area');
     document.getElementById('viz-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setSimError('');
+  } catch (error) {
+    setSimError('Simulation failed. Please try again.');
+    throw error;
   } finally {
     runBtn.disabled = false;
     runBtn.textContent = originalText;
@@ -159,7 +182,8 @@ document.getElementById('run-sim-btn').addEventListener('click', async function(
 });
 
 // ─── Replay button ────────────────────────────────────────────────────────────
-document.getElementById('replay-btn').addEventListener('click', async function() {
+var replayBtnEl = document.getElementById('replay-btn');
+if (replayBtnEl) replayBtnEl.addEventListener('click', async function() {
   var intensity = document.getElementById('panel-a-load').value;
   var inflow    = document.getElementById('panel-a-inflow').value;
   var decision  = document.getElementById('panel-a-decision').value;
@@ -177,6 +201,10 @@ document.getElementById('replay-btn').addEventListener('click', async function()
       accessStructure: access
     });
     drawViz(newSim);
+    setSimError('');
+  } catch (error) {
+    setSimError('Simulation failed. Please try again.');
+    throw error;
   } finally {
     replayBtn.disabled = false;
     replayBtn.textContent = originalText;

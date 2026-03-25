@@ -20,6 +20,8 @@
   --link-inline: #00B7FF;
   --link-inline-hover: #33C6FF;
   --link-inline-visited: #008FCC;
+  --link-ui: var(--link-inline);
+  --link-ui-hover: var(--link-inline-hover);
   --tag-chip: #FF5F6D;
   --tag-chip-hover: #FF7D89;
 
@@ -36,9 +38,6 @@
   --fs-heading-hero-min:         2.5rem;
   --fs-heading-hero-max:         5.5rem;
   --fs-body-hero:                0.875rem;
-  --fs-heading-contact-name:     1.85rem;
-  --fs-meta-contact:             0.75rem;
-  --fs-body-contact:             0.875rem;
   --fs-footer-text:              0.75rem;
   --fs-link-footer-nav:          0.75rem;
   --fs-label-modules-header:     0.75rem;
@@ -63,6 +62,26 @@
   --fs-stage-label:              0.85rem;
   --fs-link-module-sub-nav:      0.75rem;
   --fs-link-diagnosis:           0.75rem;
+  --fs-note-search:              0.68rem;
+  --fs-note-title:               0.9rem;
+  --fs-note-meta:                0.7rem;
+  --fs-note-summary:             0.74rem;
+
+  /* Icon scale */
+  --icon-size-sm:                0.82rem;
+  --icon-size-md:                1.05rem;
+  --icon-size-lg:                1.2rem;
+
+  /* Shared card primitives */
+  --card-surface:                var(--paper-dark);
+  --card-border-color:           var(--paper-deep);
+  --card-border-width:           1px;
+  --card-accent-color:           var(--sage);
+  --card-accent-width:           3px;
+  --card-radius:                 0;
+  --card-shadow-hover:           0 3px 0 rgba(17, 34, 54, 0.08);
+  --card-pad-x:                  1.1rem;
+  --card-pad-y:                  1rem;
 
   /* Visualization tokens consumed by gc-viz.js */
   --viz-ink:        var(--ink);

@@ -149,14 +149,36 @@
 .nav-mobile-toggle {
   display: none;
   font-family: var(--mono);
-  font-size: var(--fs-nav-toggle);
+  font-size: 0;
   font-weight: 300;
   line-height: 1;
-  color: var(--ink-faint);
+  color: transparent;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
+  padding: 0.1rem;
+  min-width: 1.45rem;
+  min-height: 1.45rem;
+}
+
+.nav-mobile-toggle::before {
+  content: '';
+  display: block;
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
+  background: var(--ink-faint);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  mask-image: url('../assets/images/icons/menu.svg');
+  -webkit-mask-image: url('../assets/images/icons/menu.svg');
+}
+
+.nav-mobile-toggle:hover::before {
+  background: var(--ink-mid);
 }
 
 .js-enabled .nav-mobile-toggle {
@@ -250,18 +272,18 @@
   justify-content: center;
   width: 1.6rem;
   height: 1.6rem;
-  color: var(--link-inline);
+  color: var(--link-ui);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .contact-social-link:hover {
-  color: var(--link-inline-hover);
+  color: var(--link-ui-hover);
 }
 
 .contact-social-icon {
-  width: 1.05rem;
-  height: 1.05rem;
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
   display: block;
   background-color: currentColor;
   mask-repeat: no-repeat;
@@ -312,7 +334,7 @@ footer {
 @media (max-width: 639px) {
   .footer-text {
     font-size: clamp(0.62rem, 2.6vw, 0.72rem);
-    letter-spacing: 0.06em !important;
+    letter-spacing: 0.06em;
     line-height: 1.6;
     overflow-wrap: anywhere;
   }
@@ -684,9 +706,10 @@ footer {
 
 /* ─── Simulation summary card ────────────────────────── */
 .sim-summary-card {
-  background: var(--paper-dark);
-  border: 2px solid var(--paper-deep);
-  border-top: 2px solid var(--sage);
+  background: var(--card-surface);
+  border: var(--card-border-width) solid var(--card-border-color);
+  border-top: var(--card-accent-width) solid var(--card-accent-color);
+  border-radius: var(--card-radius);
   padding: 2.25rem 1.5rem;
   margin-top: 2.5rem;
   max-width: 560px;
@@ -700,9 +723,10 @@ footer {
 
 /* ─── Questionnaire card ─────────────────────────────── */
 .q-card {
-  background: var(--paper-dark);
-  border: 2px solid var(--paper-deep);
-  border-top: 2px solid var(--ink-ghost);
+  background: var(--card-surface);
+  border: var(--card-border-width) solid var(--card-border-color);
+  border-top: var(--card-accent-width) solid var(--ink-ghost);
+  border-radius: var(--card-radius);
   padding: 2rem 1.5rem;
   display: flex;
   flex-direction: column;

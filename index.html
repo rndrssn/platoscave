@@ -13,7 +13,11 @@
   <link rel="icon" type="image/png" href="assets/images/doodles/skate_c.png" />
   <link rel="apple-touch-icon" href="assets/images/doodles/skate_c.png" />
 </head>
-<body>
+<body
+  class="doodle-bg-page"
+  data-doodle-layout="home"
+  data-doodle-count="7"
+  data-doodle-svgs="assets/images/doodles/background/avalanche.svg,assets/images/doodles/background/gantt.svg,assets/images/doodles/background/garbage.svg,assets/images/doodles/background/gaussian.svg,assets/images/doodles/background/notes.svg,assets/images/doodles/background/penrose.svg,assets/images/doodles/background/skate.svg">
   <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- Navigation -->
@@ -28,7 +32,7 @@
     <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
-  <main id="main-content">
+  <main id="main-content" class="main--narrow">
 
     <!-- Hero -->
     <section class="hero">
@@ -76,6 +80,19 @@
   </footer>
 
   <script src="js/nav-controller.js"></script>
+  <script src="js/doodle-background.js"></script>
+  <script>
+    (function enforceHomeTopOnLoad() {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+      function scrollTopNow() {
+        window.scrollTo(0, 0);
+      }
+      window.addEventListener('load', scrollTopNow);
+      window.addEventListener('pageshow', scrollTopNow);
+    })();
+  </script>
 
 </body>
 </html>

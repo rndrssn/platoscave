@@ -43,7 +43,6 @@
 [data-theme='new-yorker'] .hero-title,
 [data-theme='new-yorker'] .module-header-title,
 [data-theme='new-yorker'] .module-title,
-[data-theme='new-yorker'] .contact-name,
 [data-theme='new-yorker'] .diagnosis-title,
 [data-theme='new-yorker'] .essay-heading {
   font-family: 'Newsreader', Georgia, serif;
@@ -69,7 +68,6 @@
   border-color: var(--ink-mid);
 }
 
-[data-theme='new-yorker'] .contact-card,
 [data-theme='new-yorker'] .sim-summary-card,
 [data-theme='new-yorker'] .q-card,
 [data-theme='new-yorker'] .field-notes-card,
@@ -82,11 +80,10 @@
 [data-theme='new-yorker'] .module-sub-nav-link,
 [data-theme='new-yorker'] .diagnosis-link,
 [data-theme='new-yorker'] .footer-nav-link,
-[data-theme='new-yorker'] .contact-value a,
+[data-theme='new-yorker'] .contact-social-link,
 [data-theme='new-yorker'] .essay-body a {
   color: var(--ink);
   text-decoration: underline;
   text-decoration-color: var(--sage);
   text-underline-offset: 3px;
 }
-

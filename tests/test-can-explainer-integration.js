@@ -185,7 +185,8 @@ function makeHarness() {
   const windowObj = buildWindow(document);
 
   const svgEl = document.register(new FakeElement('svg', { id: 'can-explainer-svg' }));
-  const toggleBtn = document.register(new FakeElement('button', { id: 'can-toggle-btn' }));
+  const stopBtn = document.register(new FakeElement('button', { id: 'can-stop-btn' }));
+  const playBtn = document.register(new FakeElement('button', { id: 'can-play-btn' }));
   const resetBtn = document.register(new FakeElement('button', { id: 'can-reset-btn' }));
   const captionEl = document.register(new FakeElement('p', { id: 'can-explainer-caption' }));
 
@@ -214,7 +215,8 @@ function makeHarness() {
     window: windowObj,
     d3: createD3Stub(),
     svgEl,
-    toggleBtn,
+    stopBtn,
+    playBtn,
     resetBtn,
     captionEl,
     timers,
@@ -241,35 +243,39 @@ function run() {
   );
 
   assert(/id="can-explainer-svg"/.test(html), 'can-explainer DOM contract: missing #can-explainer-svg');
-  assert(/id="can-toggle-btn"/.test(html), 'can-explainer DOM contract: missing #can-toggle-btn');
+  assert(/id="can-stop-btn"/.test(html), 'can-explainer DOM contract: missing #can-stop-btn');
+  assert(/id="can-play-btn"/.test(html), 'can-explainer DOM contract: missing #can-play-btn');
+  assert(/id="can-stop-btn"[^>]*aria-label="Stop animation"/.test(html), 'can-explainer DOM contract: missing stop aria-label');
+  assert(/id="can-play-btn"[^>]*aria-label="Play animation"/.test(html), 'can-explainer DOM contract: missing play aria-label');
   assert(/id="can-reset-btn"/.test(html), 'can-explainer DOM contract: missing #can-reset-btn');
   assert(/id="can-explainer-caption"/.test(html), 'can-explainer DOM contract: missing #can-explainer-caption');
 
   const h = makeHarness();
   loadScript(h);
 
-  assert(h.toggleBtn.listeners.click && h.toggleBtn.listeners.click.length === 1, 'toggle button should bind one click handler');
+  assert(h.stopBtn.listeners.click && h.stopBtn.listeners.click.length === 1, 'stop button should bind one click handler');
+  assert(h.playBtn.listeners.click && h.playBtn.listeners.click.length === 1, 'play button should bind one click handler');
   assert(h.resetBtn.listeners.click && h.resetBtn.listeners.click.length === 1, 'reset button should bind one click handler');
 
-  assert.strictEqual(h.toggleBtn.getAttribute('data-state'), 'stop', 'initial state should be running (stop control shown)');
-  assert.strictEqual(h.toggleBtn.getAttribute('aria-label'), 'Stop animation', 'initial toggle aria-label mismatch');
-  assert.strictEqual(h.toggleBtn.getAttribute('title'), 'Stop animation', 'initial toggle title mismatch');
+  assert.strictEqual(h.stopBtn.getAttribute('aria-pressed'), 'true', 'initial state should have stop active');
+  assert.strictEqual(h.playBtn.getAttribute('aria-pressed'), 'false', 'initial state should have play inactive');
   assert.strictEqual(h.captionEl.textContent, '', 'caption should initialize empty');
 
-  h.toggleBtn.dispatchEvent({ type: 'click', preventDefault: function() {} });
-  assert.strictEqual(h.toggleBtn.getAttribute('data-state'), 'play', 'toggle click should stop animation and show play state');
-  assert.strictEqual(h.toggleBtn.getAttribute('aria-label'), 'Play animation', 'toggle aria-label should switch to Play animation');
+  h.stopBtn.dispatchEvent({ type: 'click', preventDefault: function() {} });
+  assert.strictEqual(h.stopBtn.getAttribute('aria-pressed'), 'false', 'stop click should pause animation');
+  assert.strictEqual(h.playBtn.getAttribute('aria-pressed'), 'true', 'stop click should make play active');
 
-  h.toggleBtn.dispatchEvent({ type: 'click', preventDefault: function() {} });
-  assert.strictEqual(h.toggleBtn.getAttribute('data-state'), 'stop', 'second toggle click should resume animation and show stop state');
+  h.playBtn.dispatchEvent({ type: 'click', preventDefault: function() {} });
+  assert.strictEqual(h.stopBtn.getAttribute('aria-pressed'), 'true', 'play click should resume animation');
+  assert.strictEqual(h.playBtn.getAttribute('aria-pressed'), 'false', 'play click should make stop active');
 
   h.captionEl.textContent = 'temp';
   h.resetBtn.dispatchEvent({ type: 'click', preventDefault: function() {} });
-  assert.strictEqual(h.toggleBtn.getAttribute('data-state'), 'stop', 'reset should render running state (stop control shown)');
+  assert.strictEqual(h.stopBtn.getAttribute('aria-pressed'), 'true', 'reset should render running state (stop active)');
+  assert.strictEqual(h.playBtn.getAttribute('aria-pressed'), 'false', 'reset should render running state (play inactive)');
   assert.strictEqual(h.captionEl.textContent, '', 'reset should clear caption text');
 
   console.log('PASS: tests/test-can-explainer-integration.js');
 }
 
 run();
-

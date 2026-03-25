@@ -68,7 +68,6 @@
   font-weight: 700;
 }
 
-[data-theme='editorial-skateboard'] .contact-card,
 [data-theme='editorial-skateboard'] .sim-summary-card,
 [data-theme='editorial-skateboard'] .q-card,
 [data-theme='editorial-skateboard'] .field-notes-card,
@@ -92,7 +91,7 @@
 [data-theme='editorial-skateboard'] .module-sub-nav-link,
 [data-theme='editorial-skateboard'] .diagnosis-link,
 [data-theme='editorial-skateboard'] .footer-nav-link,
-[data-theme='editorial-skateboard'] .contact-value a,
+[data-theme='editorial-skateboard'] .contact-social-link,
 [data-theme='editorial-skateboard'] .essay-body a {
   color: var(--sage);
   text-decoration: underline;
@@ -112,4 +111,3 @@
   background: var(--paper-dark);
   padding: 0.7rem 1rem;
 }
-

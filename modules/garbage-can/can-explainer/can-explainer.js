@@ -2,10 +2,11 @@
 
 (function initGarbageCanExplainer() {
   var svgEl = document.getElementById('can-explainer-svg');
-  var toggleBtn = document.getElementById('can-toggle-btn');
+  var stopBtn = document.getElementById('can-stop-btn');
+  var playBtn = document.getElementById('can-play-btn');
   var resetBtn = document.getElementById('can-reset-btn');
   var captionEl = document.getElementById('can-explainer-caption');
-  if (!svgEl || !toggleBtn || !resetBtn || !captionEl || typeof d3 === 'undefined') return;
+  if (!svgEl || !stopBtn || !playBtn || !resetBtn || !captionEl || typeof d3 === 'undefined') return;
 
   function readCssVar(name, fallback) {
     if (typeof window === 'undefined' || typeof document === 'undefined') return fallback;
@@ -24,15 +25,17 @@
   var SVG_W = 920;
   var SVG_H = 560;
   var CAN_X = SVG_W / 2;
-  var CAN_Y = 330;
-  var CAN_R = 160;
+  var isMobile = (typeof window !== 'undefined' ? window.innerWidth : 0) <= 640;
+  var CAN_R = isMobile ? 208 : 160; // +30% on mobile
+  var CAN_Y = isMobile ? 312 : 330;
+  var CO_LABEL_OFFSET_Y = isMobile ? 30 : 40;
   var STREAM_X = {
     problem: 220,
     solution: 460,
     participant: 700
   };
-  var STREAM_TOP_Y = 96;
-  var STREAM_GATE_Y = CAN_Y - CAN_R - 18;
+  var STREAM_TOP_Y = isMobile ? 72 : 96;
+  var STREAM_GATE_Y = CAN_Y - CAN_R - (isMobile ? 30 : 18);
   var ADRIFT_Y = SVG_H - 18;
   var MAX_CYCLES = 50;
   var AUTO_RESET_DELAY_MS = 2200;
@@ -127,7 +130,7 @@
     canLayer.append('text')
       .attr('class', 'gc-viz__choice-label can-explainer__co-label')
       .attr('x', CAN_X)
-      .attr('y', CAN_Y + CAN_R + 40)
+      .attr('y', CAN_Y + CAN_R + CO_LABEL_OFFSET_Y)
       .attr('text-anchor', 'middle')
       .attr('font-size', FONT_U.co)
       .text('CO');
@@ -418,16 +421,17 @@
 
     runCycle();
 
-    function setToggleLabel() {
-      toggleBtn.setAttribute('data-state', isRunning ? 'stop' : 'play');
-      toggleBtn.setAttribute('aria-label', isRunning ? 'Stop animation' : 'Play animation');
-      toggleBtn.setAttribute('title', isRunning ? 'Stop animation' : 'Play animation');
+    function setMediaButtonState() {
+      stopBtn.classList.toggle('is-active', isRunning);
+      stopBtn.setAttribute('aria-pressed', isRunning ? 'true' : 'false');
+      playBtn.classList.toggle('is-active', !isRunning);
+      playBtn.setAttribute('aria-pressed', isRunning ? 'false' : 'true');
     }
 
     function start() {
       if (isRunning) return;
       isRunning = true;
-      setToggleLabel();
+      setMediaButtonState();
       runCycle();
     }
 
@@ -437,22 +441,22 @@
       clearTimers();
       tokenLayer.selectAll('*').interrupt();
       canLayer.selectAll('*').interrupt();
-      setToggleLabel();
+      setMediaButtonState();
     }
 
-    setToggleLabel();
+    setMediaButtonState();
     controller = {
-      toggle: function() {
-        if (isRunning) stop();
-        else start();
-      },
+      start: start,
       stop: stop,
       reset: render
     };
   }
 
-  toggleBtn.addEventListener('click', function() {
-    if (controller && typeof controller.toggle === 'function') controller.toggle();
+  stopBtn.addEventListener('click', function() {
+    if (controller && typeof controller.stop === 'function') controller.stop();
+  });
+  playBtn.addEventListener('click', function() {
+    if (controller && typeof controller.start === 'function') controller.start();
   });
   resetBtn.addEventListener('click', function() {
     if (controller && typeof controller.reset === 'function') controller.reset();

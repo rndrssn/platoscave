@@ -194,7 +194,6 @@
   letter-spacing: 0.04em;
 }
 
-:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .contact-card,
 :is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .sim-summary-card,
 :is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .q-card,
 :is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .field-notes-card,
@@ -207,7 +206,7 @@
 :is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .module-sub-nav-link,
 :is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .diagnosis-link,
 :is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .footer-nav-link,
-:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .contact-value a,
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .contact-social-link,
 :is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .essay-body a {
   color: var(--sage);
   text-decoration: underline;
@@ -219,4 +218,3 @@
 :is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .results-nav-link--active {
   color: var(--rust);
 }
-

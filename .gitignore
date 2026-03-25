@@ -33,6 +33,13 @@ HANDOFF*.md
 
 #Docs
 docs/
+!docs/
+docs/*
+!docs/README.md
+!docs/10-guides/
+docs/10-guides/*
+!docs/10-guides/review-playbooks/
+!docs/10-guides/review-playbooks/*.md
 
 #LLM
 CLAUDE.md

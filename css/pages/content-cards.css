@@ -153,6 +153,7 @@
 }
 
 .module-header-body a,
+.hero-body a,
 .field-notes-body a,
 .diagnosis-body a {
   color: var(--link-inline);
@@ -165,6 +166,7 @@
 }
 
 .module-header-body a:hover,
+.hero-body a:hover,
 .field-notes-body a:hover,
 .diagnosis-body a:hover {
   color: var(--link-inline-hover);
@@ -172,6 +174,7 @@
 
 .essay-body a:visited,
 .module-header-body a:visited,
+.hero-body a:visited,
 .note-content a:visited,
 .field-notes-body a:visited,
 .diagnosis-body a:visited {

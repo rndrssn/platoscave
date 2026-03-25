@@ -1,0 +1,32 @@
+.doodle-bg-page #main-content {
+  position: relative;
+  isolation: isolate;
+}
+
+.doodle-bg-page #main-content > :not(.doodle-bg-layer) {
+  position: relative;
+  z-index: 1;
+}
+
+.doodle-bg-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.doodle-bg-item {
+  position: absolute;
+  height: auto;
+  color: var(--ink-faint);
+  opacity: 0.14;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (max-width: 640px) {
+  .doodle-bg-item {
+    opacity: 0.12;
+  }
+}

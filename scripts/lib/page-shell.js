@@ -38,6 +38,7 @@ function htmlShell(params) {
   const nav = params.nav;
   const main = params.main;
   const extraScripts = Array.isArray(params.extraScripts) ? params.extraScripts : [];
+  const bodyAttrs = String(params.bodyAttrs || '').trim();
 
   return '<!DOCTYPE html>\n'
     + '<html lang="en">\n'
@@ -54,7 +55,7 @@ function htmlShell(params) {
     + '  <link rel="icon" type="image/png" href="' + prefix + 'assets/images/doodles/skate_c.png" />\n'
     + '  <link rel="apple-touch-icon" href="' + prefix + 'assets/images/doodles/skate_c.png" />\n'
     + '</head>\n'
-    + '<body>\n'
+    + '<body' + (bodyAttrs ? ' ' + bodyAttrs : '') + '>\n'
     + '  <a class="skip-link" href="#main-content">Skip to main content</a>\n\n'
     + nav + '\n\n'
     + '  <main id="main-content" class="main--narrow">\n'

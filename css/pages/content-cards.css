@@ -418,6 +418,10 @@
   line-height: 1.62;
 }
 
+.note-content p + p {
+  margin-top: 0.85rem;
+}
+
 .note-content ul,
 .note-content ol {
   margin: 0.2rem 0 1rem 1.25rem;
@@ -470,6 +474,10 @@
   .note-content blockquote {
     font-size: 0.8rem;
     line-height: 1.58;
+  }
+
+  .note-content p + p {
+    margin-top: 0.9rem;
   }
 
   .note-content h2,

@@ -24,8 +24,8 @@ function navHtml(prefix, active) {
     + '    <a class="nav-title" href="' + prefix + '">To the Bedrock</a>\n'
     + '    <div class="nav-links" id="primary-nav">\n'
     + '      <a class="' + homeClass + '" href="' + prefix + '">Home</a>\n'
-    + '      <a class="' + modulesClass + '" href="' + prefix + 'modules/"' + modulesCurrent + '>Modules</a>\n'
     + '      <a class="' + notesClass + '" href="' + prefix + 'notes/"' + notesCurrent + '>Notes</a>\n'
+    + '      <a class="' + modulesClass + '" href="' + prefix + 'modules/"' + modulesCurrent + '>Modules</a>\n'
     + '    </div>\n'
     + '    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>\n'
     + '  </nav>';

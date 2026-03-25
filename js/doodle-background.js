@@ -157,7 +157,7 @@
       var slot = slots[slotOrder[i]];
       if (!slot) continue;
       var opacity = parseFloat(doodle.dataset.opacity || '0.1');
-      var renderedSize = slot.size * 0.84;
+      var renderedSize = slot.size * 0.588;
       var dx = jitter[i] ? jitter[i].x : 0;
       var dy = jitter[i] ? jitter[i].y : 0;
       var halfXPercent = ((renderedSize * 0.5) + 8) / containerWidth * 100;

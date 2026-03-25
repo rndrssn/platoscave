@@ -531,7 +531,8 @@ function writeNotesIndex(notes) {
     prefix,
     nav: navHtml(prefix, 'notes'),
     main: body,
-    extraScripts: [prefix + 'js/notes-search.js']
+    bodyAttrs: 'class="doodle-bg-page" data-doodle-layout="notes-header" data-doodle-count="1" data-doodle-svgs="../assets/images/doodles/background/notes.svg"',
+    extraScripts: [prefix + 'js/notes-search.js', prefix + 'js/doodle-background.js']
   });
 
   writeFile(path.join(OUTPUT_NOTES_DIR, 'index.html'), html);

@@ -25,6 +25,34 @@ When instructions conflict, use this order:
 
 If unresolved conflict remains, stop and ask.
 
+## Execution Gate (Global)
+
+Discussion intent overrides implementation autonomy.
+
+For every new user request, first return:
+1. Understanding of the request
+2. Proposed plan (short)
+3. Explicit checkpoint question: `Proceed?`
+
+Until explicit approval is given, do not:
+- edit files
+- run build/test commands
+- execute write operations
+
+Valid approval signals include:
+- `implement`
+- `proceed`
+- `go ahead`
+- `apply option X`
+
+Fast-lane override (skip planning and implement directly) is allowed only when the user explicitly says:
+- `implement directly`
+- `quick fix`
+- `no plan needed`
+- `skip discussion`
+
+If the user says phrases like `confirm understanding`, `wdyt`, `let's discuss`, or `plan first`, remain in discussion mode and do not implement until explicit approval.
+
 ## Default Context Pack (always load first)
 
 1. `README.md`

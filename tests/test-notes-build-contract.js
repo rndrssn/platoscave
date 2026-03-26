@@ -172,6 +172,7 @@ function run() {
 
   const notesIndex = JSON.parse(fs.readFileSync(NOTES_INDEX_JSON, 'utf8'));
   const tagsIndex = JSON.parse(fs.readFileSync(TAGS_INDEX_JSON, 'utf8'));
+  const notesIndexHtml = fs.readFileSync(NOTES_INDEX_HTML, 'utf8');
 
   assert(Array.isArray(notesIndex), 'notes-index.json must contain an array');
   assert(Array.isArray(tagsIndex), 'tags-index.json must contain an array');
@@ -185,6 +186,28 @@ function run() {
     assert(Array.isArray(note.tags), 'notes-index entry missing tags array');
     assert(Array.isArray(note.relatedModules), 'notes-index entry missing relatedModules array');
     assert(fs.existsSync(path.join(ROOT, 'notes', note.slug, 'index.html')), 'Missing generated note page for slug: ' + note.slug);
+  }
+
+  const publishedNotesWithoutSummary = listMarkdownFiles(PUBLISHED_DIR)
+    .map((filePath) => {
+      const raw = fs.readFileSync(filePath, 'utf8');
+      const fm = parseFrontmatter(raw, filePath);
+      return {
+        slug: String(fm.slug || '').replace(/^['"]|['"]$/g, ''),
+        status: String(fm.status || '').replace(/^['"]|['"]$/g, '').toLowerCase(),
+        hasSummary: !!String(fm.summary || '').trim(),
+      };
+    })
+    .filter((note) => note.status === 'published' && !note.hasSummary);
+
+  for (const note of publishedNotesWithoutSummary) {
+    const entry = notesIndex.find((item) => item.slug === note.slug);
+    assert(entry, 'notes-index must contain published note slug: ' + note.slug);
+    assert(entry.summary && entry.summary.trim(), 'notes-index fallback summary must be non-empty for slug: ' + note.slug);
+
+    const escapedSlug = note.slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const cardPattern = new RegExp('<a class="note-index-link" href="./' + escapedSlug + '/">[\\s\\S]*?<span class="note-index-more">\\.\\.\\.more</span>');
+    assert(cardPattern.test(notesIndexHtml), 'notes index html must render ...more fallback affordance for slug: ' + note.slug);
   }
 
   for (const tag of tagsIndex) {

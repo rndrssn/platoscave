@@ -209,11 +209,32 @@
         return 6.2;
       }
 
+      function mobileLabel(text, mobile) {
+        if (!mobile) return text;
+        var compact = {
+          'Precision Agriculture': 'Precision Ag',
+          'Industrial Manufacturing': 'Industrial Mfg',
+          'AR/Spatial Computing': 'AR/Spatial',
+          'Embedded/Edge Systems': 'Embedded/Edge',
+          'Data Analytics': 'Analytics',
+          'Product Strategy / Vision': 'Strategy/Vision',
+          'Product Management': 'Product Mgmt',
+          'Cross-functional Leadership': 'Cross-functional',
+          'Strategic Roadmapping': 'Roadmapping',
+          'Stakeholder Management': 'Stakeholder Mgmt',
+          'Innovation Development': 'Innovation'
+        };
+        return compact[text] || text;
+      }
+
       function render() {
         var width = Math.max(320, surface.clientWidth || 320);
-        var height = Math.max(460, Math.min(760, Math.floor(width * 0.68)));
         var mobile = width < 760;
-        var labelFont = mobile ? 8.5 : 10;
+        var smallMobile = width < 430;
+        var height = mobile
+          ? Math.max(360, Math.min(520, Math.floor(width * 0.92)))
+          : Math.max(460, Math.min(760, Math.floor(width * 0.68)));
+        var labelFont = smallMobile ? 6.7 : (mobile ? 7.4 : 10);
 
         var experienceOrder = {
           'exp-tu': 0,
@@ -256,34 +277,34 @@
           .force('link', d3.forceLink(links).id(function(d) { return d.id; }).distance(function(l) {
             var sType = (typeof l.source === 'object' ? l.source.type : '');
             var tType = (typeof l.target === 'object' ? l.target.type : '');
-            if (sType === 'category' || tType === 'category') return mobile ? 98 : 128;
-            return mobile ? 82 : 106;
+            if (sType === 'category' || tType === 'category') return mobile ? 78 : 128;
+            return mobile ? 66 : 106;
           }).strength(0.38))
           .force('charge', d3.forceManyBody().strength(mobile ? -220 : -330))
           .force('center', d3.forceCenter(width / 2, height / 2))
-          .force('collide', d3.forceCollide().radius(function(d) { return radiusByType(d.type) + (mobile ? 15 : 20); }))
+          .force('collide', d3.forceCollide().radius(function(d) { return radiusByType(d.type) + (mobile ? 11 : 20); }))
           .force('x', d3.forceX(function(d) {
             if (d.type === 'category') {
-              if (d.id === 'cat-domain') return width * 0.2;
+              if (d.id === 'cat-domain') return width * 0.22;
               if (d.id === 'cat-technical') return width * 0.5;
-              return width * 0.8;
+              return width * 0.78;
             }
             if (d.type === 'skill') {
               var group = skillCategory[d.id] || 'technical';
-              if (group === 'domain') return width * 0.24;
+              if (group === 'domain') return width * 0.26;
               if (group === 'technical') return width * 0.5;
-              return width * 0.76;
+              return width * 0.74;
             }
             if (d.type === 'experience') {
               var idx = experienceOrder[d.id] || 0;
-              return width * (0.1 + (idx / 7) * 0.8);
+              return width * (0.14 + (idx / 7) * 0.72);
             }
             return width * 0.5;
           }).strength(mobile ? 0.032 : 0.045))
           .force('y', d3.forceY(function(d) {
-            if (d.type === 'category') return height * 0.16;
-            if (d.type === 'skill') return height * 0.34;
-            return height * 0.52;
+            if (d.type === 'category') return height * 0.17;
+            if (d.type === 'skill') return height * 0.39;
+            return height * 0.63;
           }).strength(mobile ? 0.016 : 0.024));
 
         var link = plot.append('g')
@@ -325,7 +346,7 @@
           .attr('dy', 0)
           .attr('text-anchor', 'middle')
           .style('font-size', labelFont + 'px')
-          .text(function(d) { return d.label; });
+          .text(function(d) { return mobileLabel(d.label, mobile); });
 
         node.on('mouseenter', function(_event, d) {
           node.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
@@ -353,6 +374,14 @@
         });
 
         simulation.on('tick', function() {
+          var minX = 12;
+          var maxX = width - 12;
+          var minY = 12;
+          var maxY = height - 18;
+          simulation.nodes().forEach(function(d) {
+            d.x = Math.max(minX, Math.min(maxX, d.x));
+            d.y = Math.max(minY, Math.min(maxY, d.y));
+          });
           link
             .attr('x1', function(d) { return d.source.x; })
             .attr('y1', function(d) { return d.source.y; })

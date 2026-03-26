@@ -313,6 +313,44 @@ function renderMarkdown(markdown) {
   return html.join('\n');
 }
 
+function extractBodyPreview(markdown, maxLines) {
+  const lines = String(markdown || '').replace(/\r\n/g, '\n').split('\n');
+  const previewLines = [];
+  let inCodeFence = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+
+    if (/^```/.test(trimmed)) {
+      inCodeFence = !inCodeFence;
+      continue;
+    }
+    if (inCodeFence) continue;
+
+    const plain = trimmed
+      .replace(/^#{1,6}\s+/, '')
+      .replace(/^\s*>\s?/, '')
+      .replace(/^\s*[-*+]\s+/, '')
+      .replace(/^\s*\d+\.\s+/, '')
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '$1')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/__([^_]+)__/g, '$1')
+      .replace(/_([^_]+)_/g, '$1')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!plain) continue;
+    previewLines.push(plain);
+    if (previewLines.length >= maxLines) break;
+  }
+
+  return previewLines.join(' ');
+}
+
 function renderTagLinks(tags, hrefPrefix) {
   if (!tags.length) return '';
   return '<div class="module-tags note-page-tags">'
@@ -409,6 +447,7 @@ function collectNotes() {
       process.exit(1);
     }
     const summary = String(fm.summary || '').trim();
+    const fallbackSummary = extractBodyPreview(parsed.body, 4);
     const relatedModules = Array.isArray(fm.related_modules) ? fm.related_modules.map((v) => String(v).trim()).filter(Boolean) : [];
 
     notes.push({
@@ -416,6 +455,8 @@ function collectNotes() {
       title,
       slug,
       summary,
+      cardSummary: summary || fallbackSummary,
+      usesFallbackSummary: !summary && !!fallbackSummary,
       status,
       dateObj,
       dateIso: formatDate(dateObj),
@@ -484,7 +525,7 @@ function writeNotesIndex(notes) {
       + notes.map((note) => {
         const searchText = [
           note.title,
-          note.summary || '',
+          note.cardSummary || '',
           note.dateIso,
           note.tags.map((tag) => tag.label).join(' ')
         ].join(' ').toLowerCase();
@@ -497,8 +538,11 @@ function writeNotesIndex(notes) {
           + '                <span class="note-index-title">' + escapeHtml(note.title) + '</span>\n'
           + '                <span class="note-index-date">Published ' + escapeHtml(note.dateIso) + '</span>\n'
           + '              </span>\n'
-          + (note.summary
-            ? ('              <span class="note-index-summary">' + escapeHtml(note.summary) + '</span>\n')
+          + (note.cardSummary
+            ? (note.usesFallbackSummary
+              ? ('              <span class="note-index-summary note-index-summary--fallback">' + escapeHtml(note.cardSummary) + '</span>\n')
+              : ('              <span class="note-index-summary">' + escapeHtml(note.cardSummary) + '</span>\n'))
+              + '              <span class="note-index-more">...more</span>\n'
             : '')
           + '            </a>\n'
           + '            <div class="module-tags note-index-tags">' + tagsLine + '</div>\n'
@@ -712,7 +756,7 @@ function build() {
   writeFile(path.join(DATA_DIR, 'notes-index.json'), JSON.stringify(notes.map((note) => ({
     title: note.title,
     slug: note.slug,
-    summary: note.summary,
+    summary: note.cardSummary,
     date: note.dateIso,
     tags: note.tags,
     relatedModules: note.relatedModules

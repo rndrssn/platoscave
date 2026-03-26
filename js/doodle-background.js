@@ -6,6 +6,8 @@
 
   var main = document.getElementById('main-content');
   if (!main) return;
+  var nav = document.querySelector('.main-nav');
+  if (!nav) return;
 
   var urlsAttr = body.getAttribute('data-doodle-svgs') || '';
   var svgUrls = urlsAttr
@@ -29,42 +31,22 @@
   layer.className = 'doodle-bg-layer';
   layer.setAttribute('aria-hidden', 'true');
 
-  var STATIC_SLOTS = {
-    'notes-header': {
-      desktop: [
-        { x: 26, y: 22, size: 180 },
-        { x: 50, y: 22, size: 176 },
-        { x: 74, y: 23, size: 172 },
-        { x: 62, y: 30, size: 166 }
-      ],
-      mobile: [
-        { x: 28, y: 20, size: 124 },
-        { x: 52, y: 21, size: 120 },
-        { x: 74, y: 22, size: 118 },
-        { x: 60, y: 29, size: 114 }
-      ]
-    }
-  };
-
   var FIBONACCI_LAYOUTS = {
     home: {
-      desktop: { xMin: 52, xMax: 96, yMin: 8, yMax: 28, sizeMin: 96, sizeMax: 114, jitterX: 0.55, jitterY: 0.55 },
-      mobile: { xMin: 47, xMax: 94, yMin: 10, yMax: 28, sizeMin: 72, sizeMax: 88, jitterX: 0.45, jitterY: 0.45 }
+      desktop: { xMin: 30, xMax: 96, yMin: 8, yMax: 28, sizeMin: 96, sizeMax: 114, jitterX: 0.55, jitterY: 0.55 },
+      mobile: { xMin: 24, xMax: 94, yMin: 10, yMax: 28, sizeMin: 72, sizeMax: 88, jitterX: 0.45, jitterY: 0.45 }
     },
     notes: {
-      desktop: { xMin: 51, xMax: 96, yMin: 9, yMax: 30, sizeMin: 94, sizeMax: 112, jitterX: 0.55, jitterY: 0.55 },
-      mobile: { xMin: 46, xMax: 94, yMin: 11, yMax: 30, sizeMin: 70, sizeMax: 86, jitterX: 0.45, jitterY: 0.45 }
+      desktop: { xMin: 28, xMax: 96, yMin: 9, yMax: 30, sizeMin: 94, sizeMax: 112, jitterX: 0.55, jitterY: 0.55 },
+      mobile: { xMin: 22, xMax: 94, yMin: 11, yMax: 30, sizeMin: 70, sizeMax: 86, jitterX: 0.45, jitterY: 0.45 }
     }
   };
 
   var hasFibonacciConfig = Object.prototype.hasOwnProperty.call(FIBONACCI_LAYOUTS, layoutId);
-  var staticSlotsByViewport = STATIC_SLOTS[layoutId] || STATIC_SLOTS['notes-header'];
   var doodles = [];
 
   var count = Math.min(svgUrls.length, maxCount);
-  if (!hasFibonacciConfig) {
-    count = Math.min(count, staticSlotsByViewport.desktop.length, staticSlotsByViewport.mobile.length);
-  }
+  if (!hasFibonacciConfig) return;
 
   function shuffleIndices(length) {
     var indices = [];
@@ -111,22 +93,18 @@
     return out;
   }
 
-  var isNotesHeaderLayout = layoutId === 'notes-header';
-  var desktopJitterX = isNotesHeaderLayout ? 0.5 : (hasFibonacciConfig ? FIBONACCI_LAYOUTS[layoutId].desktop.jitterX : 1.0);
-  var desktopJitterY = isNotesHeaderLayout ? 0.4 : (hasFibonacciConfig ? FIBONACCI_LAYOUTS[layoutId].desktop.jitterY : 0.8);
-  var mobileJitterX = isNotesHeaderLayout ? 0.4 : (hasFibonacciConfig ? FIBONACCI_LAYOUTS[layoutId].mobile.jitterX : 0.7);
-  var mobileJitterY = isNotesHeaderLayout ? 0.3 : (hasFibonacciConfig ? FIBONACCI_LAYOUTS[layoutId].mobile.jitterY : 0.6);
+  var desktopJitterX = FIBONACCI_LAYOUTS[layoutId].desktop.jitterX;
+  var desktopJitterY = FIBONACCI_LAYOUTS[layoutId].desktop.jitterY;
+  var mobileJitterX = FIBONACCI_LAYOUTS[layoutId].mobile.jitterX;
+  var mobileJitterY = FIBONACCI_LAYOUTS[layoutId].mobile.jitterY;
 
-  var desktopSlotOrder = hasFibonacciConfig
-    ? shuffleIndices(count)
-    : shuffleIndices(staticSlotsByViewport.desktop.length).slice(0, count);
-  var mobileSlotOrder = hasFibonacciConfig
-    ? shuffleIndices(count)
-    : shuffleIndices(staticSlotsByViewport.mobile.length).slice(0, count);
-  var desktopXOrder = hasFibonacciConfig ? shuffleIndices(count) : null;
-  var desktopYOrder = hasFibonacciConfig ? shuffleIndices(count) : null;
-  var mobileXOrder = hasFibonacciConfig ? shuffleIndices(count) : null;
-  var mobileYOrder = hasFibonacciConfig ? shuffleIndices(count) : null;
+  var desktopSlotOrder = shuffleIndices(count);
+  var mobileSlotOrder = shuffleIndices(count);
+  var desktopXOrder = shuffleIndices(count);
+  var desktopYOrder = shuffleIndices(count);
+  var mobileXOrder = shuffleIndices(count);
+  var mobileYOrder = shuffleIndices(count);
+  var urlOrder = shuffleIndices(svgUrls.length);
 
   var jitterDesktop = [];
   var jitterMobile = [];
@@ -134,11 +112,11 @@
   for (var i = 0; i < count; i++) {
     var doodle = document.createElement('img');
     doodle.className = 'doodle-bg-item';
-    doodle.src = svgUrls[i % svgUrls.length];
+    doodle.src = svgUrls[urlOrder[i % urlOrder.length]];
     doodle.alt = '';
     doodle.loading = 'lazy';
     doodle.decoding = 'async';
-    doodle.dataset.angle = String((Math.random() * 25).toFixed(2));
+    doodle.dataset.angle = String((-20 + Math.random() * 40).toFixed(2));
     doodle.dataset.opacity = String((0.13 + Math.random() * 0.05).toFixed(3));
     layer.appendChild(doodle);
     doodles.push(doodle);
@@ -155,21 +133,21 @@
 
   function layout() {
     var mobile = window.innerWidth <= 640;
-    var slots = hasFibonacciConfig
-      ? buildFibonacciSlots(count, mobile ? FIBONACCI_LAYOUTS[layoutId].mobile : FIBONACCI_LAYOUTS[layoutId].desktop)
-      : (mobile ? staticSlotsByViewport.mobile : staticSlotsByViewport.desktop);
+    var slots = buildFibonacciSlots(count, mobile ? FIBONACCI_LAYOUTS[layoutId].mobile : FIBONACCI_LAYOUTS[layoutId].desktop);
     var slotOrder = mobile ? mobileSlotOrder : desktopSlotOrder;
     var xOrder = mobile ? mobileXOrder : desktopXOrder;
     var yOrder = mobile ? mobileYOrder : desktopYOrder;
     var jitter = mobile ? jitterMobile : jitterDesktop;
     var containerWidth = main.clientWidth || window.innerWidth || 1;
     var containerHeight = main.clientHeight || window.innerHeight || 1;
+    var topPanelPx = Math.max(0, Math.round(nav.getBoundingClientRect().height || 0));
+    var topSafePaddingPx = topPanelPx + 10;
     for (var i = 0; i < doodles.length; i++) {
       var doodle = doodles[i];
       var slot = slots[slotOrder[i]];
       if (!slot) continue;
-      var slotX = hasFibonacciConfig && xOrder ? slots[xOrder[i]] : slot;
-      var slotY = hasFibonacciConfig && yOrder ? slots[yOrder[i]] : slot;
+      var slotX = slots[xOrder[i]] || slot;
+      var slotY = slots[yOrder[i]] || slot;
       var baseX = slotX ? slotX.x : slot.x;
       var baseY = slotY ? slotY.y : slot.y;
       var opacity = parseFloat(doodle.dataset.opacity || '0.1');
@@ -180,11 +158,14 @@
       var halfXPercent = (clippedHalf / containerWidth) * 100;
       var halfYPercent = (clippedHalf / containerHeight) * 100;
       var x = clampCenterPercent(baseX + dx, halfXPercent);
-      var y = clampCenterPercent(baseY + dy, halfYPercent);
+      var minYPercent = ((clippedHalf + topSafePaddingPx) / containerHeight) * 100;
+      var maxYPercent = 100 - halfYPercent;
+      if (minYPercent > maxYPercent) minYPercent = maxYPercent;
+      var y = clamp(baseY + dy, minYPercent, maxYPercent);
       doodle.style.left = String(x) + '%';
       doodle.style.top = String(y) + '%';
       doodle.style.width = String(renderedSize) + 'px';
-      doodle.style.opacity = String(mobile ? Math.max(0.11, opacity - 0.02) : opacity);
+      doodle.style.opacity = String(mobile ? Math.max(0.09, opacity - 0.02) : opacity);
       doodle.style.transform = 'translate(-50%, -50%) rotate(' + doodle.dataset.angle + 'deg)';
     }
   }

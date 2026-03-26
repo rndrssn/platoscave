@@ -213,6 +213,33 @@
   display: block;
 }
 
+/* ─── Nav Style (Selected Variant 5, Desktop) ─────────── */
+@media (min-width: 768px) {
+  .nav-links {
+    gap: 0.5rem;
+  }
+
+  .nav-link::before {
+    content: '[';
+    margin-right: 0.22rem;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: transparent;
+    color: currentColor;
+  }
+
+  .nav-link::after {
+    content: ']';
+    margin-left: 0.22rem;
+    color: currentColor;
+  }
+
+  .nav-link.nav-link--active {
+    color: var(--sage);
+  }
+}
+
 /* ─── Hero — mobile base ─────────────────────────────────── */
 .hero {
   padding-top: calc(4rem + 3rem);

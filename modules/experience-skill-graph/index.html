@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Module 05: force-directed map of my chronology, domain expertise, and technical and leadership skills." />
+  <title>05 · My Experience-Skill Graph · To the Bedrock</title>
+  <script src="../../theme.config.js"></script>
+  <script src="../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../css/main.css" />
+  <link rel="icon" type="image/png" href="../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <nav class="main-nav">
+    <a class="nav-title" href="../../">To the Bedrock</a>
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../">About</a>
+      <a class="nav-link" href="../../notes/">Notes</a>
+      <a class="nav-link nav-link--active" href="../../modules/" aria-current="page">Modules</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+  </nav>
+
+  <main id="main-content">
+    <div class="module-page cv-graph-page">
+      <a class="module-header-number module-context-number module-context-link" href="./">05 &middot; My Experience-Skill Graph</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">05.01</span> Graph</a>
+      </nav>
+
+      <header class="module-header">
+        <div class="cv-header-row">
+          <h1 class="module-header-title">My Experience-Skill Graph</h1>
+        </div>
+        <div class="cv-header-actions cv-header-actions--meta">
+          <a class="contact-social-link contact-social-link--cv" href="../../cv/" aria-label="Back to CV">CV</a>
+          <a class="contact-social-link contact-social-link--linkedin cv-header-link" href="https://www.linkedin.com/in/robertandersson/" target="_blank" rel="noopener" aria-label="LinkedIn profile">
+            <span class="contact-social-icon" aria-hidden="true"></span>
+          </a>
+        </div>
+        <p class="module-header-body">A force-directed map of my chronology roles linked to domain, technical, and leadership skills.</p>
+      </header>
+
+      <article class="module-essay">
+        <section class="essay-section">
+          <ul class="cv-graph-legend">
+            <li data-legend-type="experience"><span class="cv-graph-swatch cv-graph-swatch--experience"></span>Experience</li>
+            <li data-legend-type="skill"><span class="cv-graph-swatch cv-graph-swatch--skill"></span>Skill</li>
+            <li data-legend-type="category"><span class="cv-graph-swatch cv-graph-swatch--category"></span>Category</li>
+          </ul>
+          <p class="cv-graph-helper">Hover nodes to focus connections, drag nodes to explore.</p>
+          <div class="cv-graph-surface" id="cv-graph-surface">
+            <svg id="cv-force-graph" class="cv-graph-svg" role="img" aria-label="Force-directed graph of my experience and skills"></svg>
+            <p id="cv-graph-fallback" class="essay-body" hidden>Graph unavailable. D3 failed to load.</p>
+          </div>
+        </section>
+      </article>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../" aria-label="Back to Modules">
+          <span class="footer-nav-label-full">&larr; Back to Modules</span>
+          <span class="footer-nav-label-short">&larr; Modules</span>
+        </a>
+        <span></span>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    (function initExperienceSkillGraph() {
+      var surface = document.getElementById('cv-graph-surface');
+      var svgEl = document.getElementById('cv-force-graph');
+      var fallback = document.getElementById('cv-graph-fallback');
+      if (!surface || !svgEl) return;
+      if (!window.d3) {
+        if (fallback) fallback.hidden = false;
+        return;
+      }
+
+      var categories = [
+        { id: 'cat-domain', label: 'Domain', type: 'category' },
+        { id: 'cat-technical', label: 'Technical', type: 'category' },
+        { id: 'cat-leadership', label: 'Leadership', type: 'category' }
+      ];
+
+      var skills = [
+        { id: 'skill-agtech', label: 'Precision Agriculture', type: 'skill' },
+        { id: 'skill-retail', label: 'Retail Platform', type: 'skill' },
+        { id: 'skill-subsea', label: 'Offshore/Subsea', type: 'skill' },
+        { id: 'skill-industrial', label: 'Industrial Manufacturing', type: 'skill' },
+        { id: 'skill-cv', label: 'Computer Vision', type: 'skill' },
+        { id: 'skill-ml', label: 'AI / ML', type: 'skill' },
+        { id: 'skill-ar', label: 'AR/Spatial Computing', type: 'skill' },
+        { id: 'skill-embedded', label: 'Embedded/Edge Systems', type: 'skill' },
+        { id: 'skill-analytics', label: 'Data Analytics', type: 'skill' },
+        { id: 'skill-strategy', label: 'Product Strategy / Vision', type: 'skill' },
+        { id: 'skill-pm', label: 'Product Management', type: 'skill' },
+        { id: 'skill-agile', label: 'Agile Delivery', type: 'skill' },
+        { id: 'skill-crossfn', label: 'Cross-functional Leadership', type: 'skill' },
+        { id: 'skill-roadmap', label: 'Strategic Roadmapping', type: 'skill' },
+        { id: 'skill-stakeholder', label: 'Stakeholder Management', type: 'skill' },
+        { id: 'skill-innovation', label: 'Innovation Development', type: 'skill' }
+      ];
+
+      var experiences = [
+        { id: 'exp-yara', label: 'Yara (2023-Present)', type: 'experience' },
+        { id: 'exp-ikea', label: 'IKEA (2021-2023)', type: 'experience' },
+        { id: 'exp-aiim', label: 'AIIM (2021)', type: 'experience' },
+        { id: 'exp-fugro', label: 'Fugro (2015-2021)', type: 'experience' },
+        { id: 'exp-microscan', label: 'Microscan (2013-2015)', type: 'experience' },
+        { id: 'exp-capgemini', label: 'Capgemini (2012-2013)', type: 'experience' },
+        { id: 'exp-tatasteel', label: 'Tata Steel (2008-2011)', type: 'experience' },
+        { id: 'exp-tu', label: 'TU Delft PhD (2004-2008)', type: 'experience' }
+      ];
+
+      var nodes = categories.concat(skills, experiences);
+      var links = [
+        { source: 'skill-agtech', target: 'cat-domain' },
+        { source: 'skill-retail', target: 'cat-domain' },
+        { source: 'skill-subsea', target: 'cat-domain' },
+        { source: 'skill-industrial', target: 'cat-domain' },
+        { source: 'skill-cv', target: 'cat-technical' },
+        { source: 'skill-ml', target: 'cat-technical' },
+        { source: 'skill-ar', target: 'cat-technical' },
+        { source: 'skill-embedded', target: 'cat-technical' },
+        { source: 'skill-analytics', target: 'cat-technical' },
+        { source: 'skill-strategy', target: 'cat-leadership' },
+        { source: 'skill-pm', target: 'cat-leadership' },
+        { source: 'skill-agile', target: 'cat-leadership' },
+        { source: 'skill-crossfn', target: 'cat-leadership' },
+        { source: 'skill-roadmap', target: 'cat-leadership' },
+        { source: 'skill-stakeholder', target: 'cat-leadership' },
+        { source: 'skill-innovation', target: 'cat-leadership' },
+
+        { source: 'exp-yara', target: 'skill-agtech' },
+        { source: 'exp-yara', target: 'skill-pm' },
+        { source: 'exp-yara', target: 'skill-agile' },
+        { source: 'exp-yara', target: 'skill-strategy' },
+        { source: 'exp-yara', target: 'skill-roadmap' },
+        { source: 'exp-yara', target: 'skill-stakeholder' },
+        { source: 'exp-yara', target: 'skill-innovation' },
+
+        { source: 'exp-ikea', target: 'skill-retail' },
+        { source: 'exp-ikea', target: 'skill-pm' },
+        { source: 'exp-ikea', target: 'skill-agile' },
+        { source: 'exp-ikea', target: 'skill-ar' },
+        { source: 'exp-ikea', target: 'skill-embedded' },
+        { source: 'exp-ikea', target: 'skill-crossfn' },
+        { source: 'exp-ikea', target: 'skill-roadmap' },
+
+        { source: 'exp-aiim', target: 'skill-pm' },
+        { source: 'exp-aiim', target: 'skill-agile' },
+        { source: 'exp-aiim', target: 'skill-cv' },
+        { source: 'exp-aiim', target: 'skill-ml' },
+        { source: 'exp-aiim', target: 'skill-embedded' },
+        { source: 'exp-aiim', target: 'skill-crossfn' },
+        { source: 'exp-aiim', target: 'skill-innovation' },
+
+        { source: 'exp-fugro', target: 'skill-subsea' },
+        { source: 'exp-fugro', target: 'skill-pm' },
+        { source: 'exp-fugro', target: 'skill-agile' },
+        { source: 'exp-fugro', target: 'skill-cv' },
+        { source: 'exp-fugro', target: 'skill-embedded' },
+        { source: 'exp-fugro', target: 'skill-strategy' },
+        { source: 'exp-fugro', target: 'skill-innovation' },
+
+        { source: 'exp-microscan', target: 'skill-industrial' },
+        { source: 'exp-microscan', target: 'skill-cv' },
+        { source: 'exp-microscan', target: 'skill-analytics' },
+
+        { source: 'exp-capgemini', target: 'skill-analytics' },
+        { source: 'exp-capgemini', target: 'skill-stakeholder' },
+
+        { source: 'exp-tatasteel', target: 'skill-industrial' },
+        { source: 'exp-tatasteel', target: 'skill-cv' },
+        { source: 'exp-tatasteel', target: 'skill-ml' },
+        { source: 'exp-tatasteel', target: 'skill-analytics' },
+
+        { source: 'exp-tu', target: 'skill-analytics' },
+        { source: 'exp-tu', target: 'skill-ml' }
+      ];
+
+      var linkIndex = new Set();
+      links.forEach(function(l) {
+        var s = typeof l.source === 'object' ? l.source.id : l.source;
+        var t = typeof l.target === 'object' ? l.target.id : l.target;
+        linkIndex.add(s + '|' + t);
+        linkIndex.add(t + '|' + s);
+      });
+
+      var resizeTimer = null;
+      var simulation = null;
+      var nudgeTimer = null;
+
+      function radiusByType(type) {
+        if (type === 'category') return 10.5;
+        if (type === 'experience') return 7.4;
+        return 6.2;
+      }
+
+      function render() {
+        var width = Math.max(320, surface.clientWidth || 320);
+        var height = Math.max(460, Math.min(760, Math.floor(width * 0.68)));
+        var mobile = width < 760;
+        var labelFont = mobile ? 8.5 : 10;
+
+        var experienceOrder = {
+          'exp-tu': 0,
+          'exp-tatasteel': 1,
+          'exp-capgemini': 2,
+          'exp-microscan': 3,
+          'exp-fugro': 4,
+          'exp-aiim': 5,
+          'exp-ikea': 6,
+          'exp-yara': 7
+        };
+
+        var skillCategory = {
+          'skill-agtech': 'domain',
+          'skill-retail': 'domain',
+          'skill-subsea': 'domain',
+          'skill-industrial': 'domain',
+          'skill-cv': 'technical',
+          'skill-ml': 'technical',
+          'skill-ar': 'technical',
+          'skill-embedded': 'technical',
+          'skill-analytics': 'technical',
+          'skill-strategy': 'leadership',
+          'skill-pm': 'leadership',
+          'skill-agile': 'leadership',
+          'skill-crossfn': 'leadership',
+          'skill-roadmap': 'leadership',
+          'skill-stakeholder': 'leadership',
+          'skill-innovation': 'leadership'
+        };
+
+        var svg = d3.select(svgEl);
+        svg.selectAll('*').remove();
+        svg.attr('viewBox', '0 0 ' + width + ' ' + height).attr('preserveAspectRatio', 'xMidYMid meet');
+
+        if (simulation) simulation.stop();
+        if (nudgeTimer) clearInterval(nudgeTimer);
+        var plot = svg.append('g').attr('class', 'cv-graph-plot');
+        simulation = d3.forceSimulation(nodes.map(function(n) { return Object.assign({}, n); }))
+          .force('link', d3.forceLink(links).id(function(d) { return d.id; }).distance(function(l) {
+            var sType = (typeof l.source === 'object' ? l.source.type : '');
+            var tType = (typeof l.target === 'object' ? l.target.type : '');
+            if (sType === 'category' || tType === 'category') return mobile ? 98 : 128;
+            return mobile ? 82 : 106;
+          }).strength(0.38))
+          .force('charge', d3.forceManyBody().strength(mobile ? -220 : -330))
+          .force('center', d3.forceCenter(width / 2, height / 2))
+          .force('collide', d3.forceCollide().radius(function(d) { return radiusByType(d.type) + (mobile ? 15 : 20); }))
+          .force('x', d3.forceX(function(d) {
+            if (d.type === 'category') {
+              if (d.id === 'cat-domain') return width * 0.2;
+              if (d.id === 'cat-technical') return width * 0.5;
+              return width * 0.8;
+            }
+            if (d.type === 'skill') {
+              var group = skillCategory[d.id] || 'technical';
+              if (group === 'domain') return width * 0.24;
+              if (group === 'technical') return width * 0.5;
+              return width * 0.76;
+            }
+            if (d.type === 'experience') {
+              var idx = experienceOrder[d.id] || 0;
+              return width * (0.1 + (idx / 7) * 0.8);
+            }
+            return width * 0.5;
+          }).strength(mobile ? 0.032 : 0.045))
+          .force('y', d3.forceY(function(d) {
+            if (d.type === 'category') return height * 0.16;
+            if (d.type === 'skill') return height * 0.34;
+            return height * 0.52;
+          }).strength(mobile ? 0.016 : 0.024));
+
+        var link = plot.append('g')
+          .attr('class', 'cv-graph-links')
+          .selectAll('line')
+          .data(simulation.force('link').links())
+          .join('line')
+          .attr('class', 'cv-graph-link');
+
+        var node = plot.append('g')
+          .attr('class', 'cv-graph-nodes')
+          .selectAll('circle')
+          .data(simulation.nodes())
+          .join('circle')
+          .attr('class', function(d) { return 'cv-graph-node cv-graph-node--' + d.type; })
+          .attr('r', function(d) { return radiusByType(d.type); })
+          .call(d3.drag()
+            .on('start', function(event, d) {
+              if (!event.active) simulation.alphaTarget(0.2).restart();
+              d.fx = d.x;
+              d.fy = d.y;
+            })
+            .on('drag', function(event, d) {
+              d.fx = event.x;
+              d.fy = event.y;
+            })
+            .on('end', function(event, d) {
+              if (!event.active) simulation.alphaTarget(0);
+              d.fx = null;
+              d.fy = null;
+            }));
+
+        var label = plot.append('g')
+          .attr('class', 'cv-graph-labels')
+          .selectAll('text')
+          .data(simulation.nodes())
+          .join('text')
+          .attr('class', 'cv-graph-label')
+          .attr('dy', 0)
+          .attr('text-anchor', 'middle')
+          .style('font-size', labelFont + 'px')
+          .text(function(d) { return d.label; });
+
+        node.on('mouseenter', function(_event, d) {
+          node.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
+          label.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
+          link.classed('is-dim', function(l) { return l.source.id !== d.id && l.target.id !== d.id; });
+        }).on('mouseleave', function() {
+          node.classed('is-dim', false);
+          label.classed('is-dim', false);
+          link.classed('is-dim', false);
+        });
+
+        var legendItems = Array.from(document.querySelectorAll('.cv-graph-legend [data-legend-type]'));
+        legendItems.forEach(function(item) {
+          var type = item.getAttribute('data-legend-type');
+          item.addEventListener('mouseenter', function() {
+            node.classed('is-dim', function(n) { return n.type !== type; });
+            label.classed('is-dim', function(n) { return n.type !== type; });
+            link.classed('is-dim', function(l) { return l.source.type !== type && l.target.type !== type; });
+          });
+          item.addEventListener('mouseleave', function() {
+            node.classed('is-dim', false);
+            label.classed('is-dim', false);
+            link.classed('is-dim', false);
+          });
+        });
+
+        simulation.on('tick', function() {
+          link
+            .attr('x1', function(d) { return d.source.x; })
+            .attr('y1', function(d) { return d.source.y; })
+            .attr('x2', function(d) { return d.target.x; })
+            .attr('y2', function(d) { return d.target.y; });
+
+          node
+            .attr('cx', function(d) { return d.x; })
+            .attr('cy', function(d) { return d.y; });
+
+          label
+            .attr('x', function(d) { return d.x; })
+            .attr('y', function(d) { return d.y - radiusByType(d.type) - 6; });
+        });
+
+        startAmbientNudge();
+      }
+
+      function startAmbientNudge() {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        nudgeTimer = setInterval(function() {
+          if (!simulation) return;
+          simulation.nodes().forEach(function(d) {
+            d.vx += (Math.random() * 2 - 1) * 0.018;
+            d.vy += (Math.random() * 2 - 1) * 0.018;
+          });
+          simulation.alphaTarget(0.03).restart();
+          setTimeout(function() {
+            if (simulation) simulation.alphaTarget(0);
+          }, 420);
+        }, 2200);
+      }
+
+      render();
+      window.addEventListener('resize', function() {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(render, 150);
+      });
+    })();
+  </script>
+  <script src="../../js/nav-controller.js"></script>
+</body>
+</html>

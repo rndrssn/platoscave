@@ -48,12 +48,12 @@
 
   var FIBONACCI_LAYOUTS = {
     home: {
-      desktop: { xMin: 10, xMax: 90, yMin: 8, yMax: 38, sizeMin: 144, sizeMax: 164, jitterX: 1.1, jitterY: 0.9 },
-      mobile: { xMin: 10, xMax: 90, yMin: 8, yMax: 34, sizeMin: 100, sizeMax: 114, jitterX: 0.8, jitterY: 0.7 }
+      desktop: { xMin: 52, xMax: 96, yMin: 8, yMax: 28, sizeMin: 96, sizeMax: 114, jitterX: 0.55, jitterY: 0.55 },
+      mobile: { xMin: 47, xMax: 94, yMin: 10, yMax: 28, sizeMin: 72, sizeMax: 88, jitterX: 0.45, jitterY: 0.45 }
     },
     notes: {
-      desktop: { xMin: 10, xMax: 90, yMin: 10, yMax: 40, sizeMin: 142, sizeMax: 160, jitterX: 1.1, jitterY: 0.9 },
-      mobile: { xMin: 10, xMax: 90, yMin: 10, yMax: 36, sizeMin: 98, sizeMax: 112, jitterX: 0.8, jitterY: 0.7 }
+      desktop: { xMin: 51, xMax: 96, yMin: 9, yMax: 30, sizeMin: 94, sizeMax: 112, jitterX: 0.55, jitterY: 0.55 },
+      mobile: { xMin: 46, xMax: 94, yMin: 11, yMax: 30, sizeMin: 70, sizeMax: 86, jitterX: 0.45, jitterY: 0.45 }
     }
   };
 
@@ -176,8 +176,9 @@
       var renderedSize = slot.size * 0.78;
       var dx = jitter[i] ? jitter[i].x : 0;
       var dy = jitter[i] ? jitter[i].y : 0;
-      var halfXPercent = ((renderedSize * 0.5) + 8) / containerWidth * 100;
-      var halfYPercent = ((renderedSize * 0.5) + 8) / containerHeight * 100;
+      var clippedHalf = (renderedSize * 0.64) + 12;
+      var halfXPercent = (clippedHalf / containerWidth) * 100;
+      var halfYPercent = (clippedHalf / containerHeight) * 100;
       var x = clampCenterPercent(baseX + dx, halfXPercent);
       var y = clampCenterPercent(baseY + dy, halfYPercent);
       doodle.style.left = String(x) + '%';

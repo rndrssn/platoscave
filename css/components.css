@@ -562,7 +562,36 @@
 .cv-graph-legend li {
   display: inline-flex;
   align-items: center;
+}
+
+.cv-graph-legend-btn {
+  display: inline-flex;
+  align-items: center;
   gap: 0.28rem;
+  border: 1px solid transparent;
+  border-radius: 0.18rem;
+  padding: 0.08rem 0.2rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.cv-graph-legend-btn:hover {
+  border-color: color-mix(in srgb, var(--ink-ghost) 72%, transparent 28%);
+}
+
+.cv-graph-legend-btn[aria-pressed='true'] {
+  border-color: color-mix(in srgb, var(--ink-faint) 74%, var(--ink-ghost) 26%);
+  background: color-mix(in srgb, var(--paper-dark) 30%, transparent 70%);
+}
+
+.cv-graph-legend-btn:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
 }
 
 .cv-graph-helper {
@@ -579,6 +608,11 @@
   .cv-graph-helper {
     font-size: 0.5rem;
   }
+}
+
+.cv-graph-page .module-essay .essay-section:first-child {
+  border-top: none;
+  padding-top: 1.25rem;
 }
 
 .cv-graph-swatch {
@@ -634,6 +668,11 @@
 
 .cv-graph-node:active {
   cursor: grabbing;
+}
+
+.cv-graph-node:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
 }
 
 .cv-graph-node--experience {

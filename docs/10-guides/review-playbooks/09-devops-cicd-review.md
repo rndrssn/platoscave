@@ -25,6 +25,7 @@ Build/test/release pipeline quality, reproducibility, and deployment safety.
 - Branch/release strategy consistency.
 - Artifact reproducibility and cache correctness.
 - Rollback strategy and release observability.
+- Global dependency-source migrations are enforced repo-wide (no partial rollouts).
 
 ## Report
 

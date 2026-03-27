@@ -345,13 +345,13 @@
         var legendItems = Array.from(document.querySelectorAll('.cv-graph-legend [data-legend-type]'));
 
         function clearHighlights() {
-          node.classed('is-dim', false).classed('is-related', false);
+          node.classed('is-dim', false).classed('is-related', false).classed('is-skill-legend-focus', false);
           label.classed('is-dim', false).classed('is-related', false).classed('is-active', false);
           link.classed('is-dim', false).classed('is-related', false);
         }
 
         function applyNodeFocus(d) {
-          node.classed('is-related', false);
+          node.classed('is-related', false).classed('is-skill-legend-focus', false);
           label.classed('is-related', false);
           link.classed('is-related', false);
           node.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
@@ -376,8 +376,15 @@
           });
 
           node
-            .classed('is-related', function(n) { return !primary.has(n.id) && related.has(n.id); })
-            .classed('is-dim', function(n) { return !primary.has(n.id) && !related.has(n.id); });
+            .classed('is-skill-legend-focus', function(n) { return type === 'skill' && primary.has(n.id); })
+            .classed('is-related', function(n) {
+              if (type === 'skill') return false;
+              return !primary.has(n.id) && related.has(n.id);
+            })
+            .classed('is-dim', function(n) {
+              if (type === 'skill') return !primary.has(n.id);
+              return !primary.has(n.id) && !related.has(n.id);
+            });
 
           label
             .classed('is-active', function(n) { return primary.has(n.id); })

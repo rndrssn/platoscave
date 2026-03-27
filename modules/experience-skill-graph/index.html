@@ -32,20 +32,20 @@
 
       <nav class="module-sub-nav" aria-label="Module sections">
         <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">05.01</span> Graph</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="cv/"><span class="module-sub-nav-number">05.02</span> CV</a>
       </nav>
 
       <header class="module-header">
         <div class="cv-header-row">
           <h1 class="module-header-title">My Experience-Skill Graph</h1>
         </div>
-        <div class="cv-header-actions cv-header-actions--meta">
-          <a class="contact-social-link contact-social-link--cv" href="../../cv/" aria-label="Back to CV">CV</a>
-        </div>
         <p class="module-header-body">A force-directed map of my chronology roles linked to domain, technical, and leadership skills.</p>
       </header>
 
       <article class="module-essay">
         <section class="essay-section">
+          <p class="cv-graph-helper">Tap, hover, or focus nodes to inspect connections. Drag nodes to explore layout.</p>
           <ul class="cv-graph-legend">
             <li>
               <button class="cv-graph-legend-btn" type="button" data-legend-type="experience" aria-pressed="false">
@@ -63,7 +63,6 @@
               </button>
             </li>
           </ul>
-          <p class="cv-graph-helper">Tap, hover, or focus nodes to inspect connections. Drag nodes to explore layout.</p>
           <div class="cv-graph-surface" id="cv-graph-surface">
             <svg id="cv-force-graph" class="cv-graph-svg" role="img" aria-label="Force-directed graph of my experience and skills"></svg>
             <p id="cv-graph-fallback" class="essay-body" hidden>Graph unavailable. D3 failed to load.</p>
@@ -76,7 +75,10 @@
           <span class="footer-nav-label-full">&larr; Back to Modules</span>
           <span class="footer-nav-label-short">&larr; Modules</span>
         </a>
-        <span></span>
+        <a class="footer-nav-link" href="cv/" aria-label="Next: 05.02 CV">
+          <span class="footer-nav-label-full">Next: 05.02 CV &rarr;</span>
+          <span class="footer-nav-label-short">Next &rarr;</span>
+        </a>
       </nav>
     </div>
   </main>
@@ -211,6 +213,7 @@
       var resizeTimer = null;
       var simulation = null;
       var nudgeTimer = null;
+      var activeDragNodeId = null;
 
       function radiusByType(type) {
         if (type === 'category') return 10.5;
@@ -330,16 +333,12 @@
           .join('circle')
           .attr('class', function(d) { return 'cv-graph-node cv-graph-node--' + d.type; })
           .attr('r', function(d) { return radiusByType(d.type); })
-          .attr('tabindex', 0)
-          .attr('role', 'button')
-          .attr('aria-label', function(d) {
-            return d.type + ': ' + d.label + '. Press Enter to highlight connected items.';
-          })
           .call(d3.drag()
             .on('start', function(event, d) {
               if (!event.active) simulation.alphaTarget(0.2).restart();
               d.fx = d.x;
               d.fy = d.y;
+              activeDragNodeId = d.id;
             })
             .on('drag', function(event, d) {
               d.fx = event.x;
@@ -349,7 +348,17 @@
               if (!event.active) simulation.alphaTarget(0);
               d.fx = null;
               d.fy = null;
+              activeDragNodeId = null;
+              if (this && typeof this.blur === 'function') this.blur();
             }));
+
+        var dragGlow = plot.append('g')
+          .attr('class', 'cv-graph-drag-glows')
+          .selectAll('circle')
+          .data(simulation.nodes())
+          .join('circle')
+          .attr('class', 'cv-graph-drag-glow')
+          .attr('r', function(d) { return radiusByType(d.type) + 5.2; });
 
         var label = plot.append('g')
           .attr('class', 'cv-graph-labels')
@@ -397,19 +406,8 @@
         }).on('mouseleave', function() {
           if (activeLegendType) return;
           clearHighlights();
-        }).on('focus', function(_event, d) {
+        }).on('click', function(_event, d) {
           applyNodeFocus(d);
-        }).on('blur', function() {
-          if (activeLegendType) return;
-          clearHighlights();
-        }).on('keydown', function(event, d) {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            applyNodeFocus(d);
-          } else if (event.key === 'Escape') {
-            setLegendActive(null);
-            clearHighlights();
-          }
         });
 
         legendItems.forEach(function(item) {
@@ -465,6 +463,11 @@
           node
             .attr('cx', function(d) { return d.x; })
             .attr('cy', function(d) { return d.y; });
+
+          dragGlow
+            .attr('cx', function(d) { return d.x; })
+            .attr('cy', function(d) { return d.y; })
+            .classed('is-active', function(d) { return activeDragNodeId === d.id; });
 
           label
             .attr('x', function(d) { return d.x; })

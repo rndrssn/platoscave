@@ -14,7 +14,7 @@ function has(pattern, source) {
 
 const assess = read('modules/garbage-can/assess/index.html');
 const explorer = read('modules/garbage-can/explorer/index.html');
-const cv = read('cv/index.html');
+const cv = read('modules/experience-skill-graph/cv/index.html');
 const experienceSkill = read('modules/experience-skill-graph/index.html');
 
 // Skip link and main landmark
@@ -44,8 +44,9 @@ assert(has(/<legend[^>]*class="question-text"/i, assess), 'Assess: missing legen
 // Results mini-nav ARIA state seed
 assert(has(/results-nav-link--active[^"]*"[^>]*aria-current="(page|location)"/i, assess), 'Assess: results mini-nav missing initial aria-current state');
 
-// Experience-skill graph interaction controls should be keyboard accessible
+// Experience-skill graph interaction controls:
+// legend remains keyboard-accessible, node interaction is intentionally pointer-first.
 assert(has(/<button[^>]*class="cv-graph-legend-btn"[^>]*data-legend-type="experience"[^>]*aria-pressed="false"/i, experienceSkill), 'Experience-Skill: legend control button contract missing');
-assert(has(/\.attr\('tabindex',\s*0\)/i, experienceSkill), 'Experience-Skill: graph nodes missing keyboard focus contract');
+assert(!has(/\.attr\('tabindex',\s*0\)/i, experienceSkill), 'Experience-Skill: graph nodes should not be keyboard-focusable');
 
 console.log('PASS: tests/test-a11y-critical-pages.js');

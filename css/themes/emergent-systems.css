@@ -100,8 +100,7 @@
 [data-theme='emergent-systems'] .module-sub-nav-link,
 [data-theme='emergent-systems'] .diagnosis-link,
 [data-theme='emergent-systems'] .footer-nav-link,
-[data-theme='emergent-systems'] .contact-social-link,
-[data-theme='emergent-systems'] .essay-body a {
+[data-theme='emergent-systems'] .contact-social-link {
   color: var(--sage);
   text-decoration: underline;
   text-decoration-color: var(--rust);

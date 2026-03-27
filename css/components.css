@@ -847,11 +847,11 @@ main.main--narrow + footer {
 
 .footer-text {
   font-family: var(--mono);
-  font-size: var(--fs-footer-text);
+  font-size: 0.7rem;
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--ink-ghost);
+  letter-spacing: 0.05em;
+  color: color-mix(in srgb, var(--ink-ghost) 84%, var(--paper) 16%);
 }
 
 .footer-link {
@@ -893,17 +893,17 @@ main.main--narrow + footer {
   height: auto;
   font-family: var(--mono);
   font-style: normal;
-  font-weight: 400;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  font-weight: 300;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1;
 }
 
 @media (max-width: 639px) {
   .footer-text {
-    font-size: clamp(0.62rem, 2.6vw, 0.72rem);
-    letter-spacing: 0.06em;
+    font-size: clamp(0.58rem, 2.35vw, 0.66rem);
+    letter-spacing: 0.05em;
     line-height: 1.6;
     overflow-wrap: anywhere;
   }

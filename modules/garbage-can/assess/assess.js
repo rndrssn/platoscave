@@ -56,9 +56,11 @@ function buildAssessPressureNarrative(problemIntensity, problemInflow, decisionS
   if (typeof window !== 'undefined' && typeof window.buildGcPressureNarrative === 'function') {
     return window.buildGcPressureNarrative(problemIntensity, problemInflow, decisionStructure, accessStructure);
   }
+  var decisionLabel = decisionStructure === 'unsegmented' ? 'open participation' : decisionStructure;
+  var accessLabel = accessStructure === 'unsegmented' ? 'open' : accessStructure;
   return {
-    problemSummary: problemIntensity + ' intensity + ' + problemInflow + ' inflow',
-    coordinationSummary: decisionStructure + ' decision + ' + accessStructure + ' access',
+    problemSummary: problemIntensity + ' difficulty + ' + problemInflow + ' arrival rate',
+    coordinationSummary: decisionLabel + ' decision + ' + accessLabel + ' access',
     synthesis: 'Run the simulation to inspect how this pressure profile shapes decision outcomes over time.'
   };
 }

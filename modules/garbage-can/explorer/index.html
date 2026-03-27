@@ -49,7 +49,7 @@
         <h1 class="module-header-title">Explore</h1>
         <p class="module-header-body">
           Run the Garbage Can Model with any parameter combination.
-          Adjust problem intensity, problem inflow, decision structure,
+          Adjust problem difficulty, problem arrival rate, decision structure,
           and access structure to see how different configurations shape decision-making.
         </p>
       </header>
@@ -69,8 +69,8 @@
           <strong>oversight</strong> (the choice opportunity closes while problems are elsewhere) or
           <strong>flight</strong> (problems leave before the choice opportunity closes).
           <strong>Resolution</strong> &#8212; genuinely closing the problem &#8212; becomes less common.
-          In this explorer, pressure has two levers: <strong>problem intensity</strong> (effort per problem)
-          and <strong>problem inflow</strong> (how many new problems arrive each iteration).
+          In this explorer, pressure has two levers: <strong>problem difficulty</strong> (effort per problem)
+          and <strong>problem arrival rate</strong> (how many new problems arrive each iteration).
         </p>
       </div>
 
@@ -78,7 +78,7 @@
       <div class="explorer-panel" id="panel-a">
         <div class="explorer-selectors">
           <div class="explorer-select-group">
-            <label class="explorer-select-label" for="panel-a-load">Problem intensity</label>
+            <label class="explorer-select-label" for="panel-a-load">Problem difficulty</label>
             <select class="explorer-select" id="panel-a-load">
               <option value="" disabled selected>Select&hellip;</option>
               <option value="light">Light</option>
@@ -87,7 +87,7 @@
             </select>
           </div>
           <div class="explorer-select-group">
-            <label class="explorer-select-label" for="panel-a-inflow">Problem inflow</label>
+            <label class="explorer-select-label" for="panel-a-inflow">Problem arrival rate</label>
             <select class="explorer-select" id="panel-a-inflow">
               <option value="" disabled selected>Select&hellip;</option>
               <option value="light">Light</option>
@@ -99,7 +99,7 @@
             <label class="explorer-select-label" for="panel-a-decision">Decision</label>
             <select class="explorer-select" id="panel-a-decision">
               <option value="" disabled selected>Select&hellip;</option>
-              <option value="unsegmented">Unsegmented</option>
+              <option value="unsegmented">Open participation</option>
               <option value="hierarchical">Hierarchical</option>
               <option value="specialized">Specialized</option>
             </select>
@@ -108,7 +108,7 @@
             <label class="explorer-select-label" for="panel-a-access">Access</label>
             <select class="explorer-select" id="panel-a-access">
               <option value="" disabled selected>Select&hellip;</option>
-              <option value="unsegmented">Unsegmented</option>
+              <option value="unsegmented">Open</option>
               <option value="hierarchical">Hierarchical</option>
               <option value="specialized">Specialized</option>
             </select>

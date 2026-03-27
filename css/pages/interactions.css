@@ -32,6 +32,12 @@
   gap: 0.55rem;
 }
 
+.can-media-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+}
+
 .submit-row.can-controls {
   margin-top: 0.55rem;
 }

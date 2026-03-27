@@ -541,7 +541,7 @@
 }
 
 .cv-graph-legend {
-  margin: 0 0 0.3rem 0;
+  margin: 0 0 0.15rem 0;
   padding: 0;
   list-style: none;
   display: flex;
@@ -595,7 +595,7 @@
 }
 
 .cv-graph-helper {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.18rem;
   font-family: var(--mono);
   font-size: 0.6rem;
   letter-spacing: 0.04em;
@@ -612,7 +612,7 @@
 
 .cv-graph-page .module-essay .essay-section:first-child {
   border-top: none;
-  padding-top: 1.25rem;
+  padding-top: 0.75rem;
 }
 
 .cv-graph-swatch {
@@ -642,7 +642,15 @@
   border: none;
   border-radius: 0;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 640px) {
+  .cv-graph-page .module-essay .essay-section:first-child {
+    padding-top: 0.3rem;
+  }
 }
 
 .cv-graph-svg {
@@ -728,7 +736,26 @@
 .cv-graph-node.is-dim,
 .cv-graph-link.is-dim,
 .cv-graph-label.is-dim {
-  opacity: 0.14;
+  opacity: 0.2;
+}
+
+.cv-graph-node.is-dim {
+  fill: color-mix(in srgb, var(--paper) 84%, var(--ink-ghost) 16%);
+  stroke: color-mix(in srgb, var(--paper) 78%, var(--ink-ghost) 22%);
+}
+
+.cv-graph-link.is-dim {
+  stroke: color-mix(in srgb, var(--paper) 72%, var(--ink-ghost) 28%);
+  stroke-opacity: 0.24;
+}
+
+.cv-graph-label.is-dim {
+  fill: color-mix(in srgb, var(--paper) 58%, var(--ink-ghost) 42%);
+}
+
+.cv-graph-label.is-active {
+  font-weight: 700;
+  fill: var(--ink-mid);
 }
 
 @keyframes cv-graph-node-pulse {

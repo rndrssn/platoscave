@@ -80,7 +80,7 @@
 
 .nav-link {
   font-family: var(--mono);
-  font-size: calc(var(--fs-link-nav) * 1.3);
+  font-size: var(--fs-link-nav);
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -847,7 +847,7 @@ main.main--narrow + footer {
 
 .footer-text {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.58rem;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -856,6 +856,7 @@ main.main--narrow + footer {
 
 .footer-link {
   color: var(--ink-ghost);
+  font-weight: inherit;
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -902,7 +903,7 @@ main.main--narrow + footer {
 
 @media (max-width: 639px) {
   .footer-text {
-    font-size: clamp(0.58rem, 2.35vw, 0.66rem);
+    font-size: clamp(0.5rem, 2.1vw, 0.58rem);
     letter-spacing: 0.05em;
     line-height: 1.6;
     overflow-wrap: anywhere;

@@ -39,15 +39,21 @@ const tests = [
 ];
 
 let failed = 0;
+const failedTests = [];
 for (const test of tests) {
   process.stdout.write('\n==> ' + test + '\n');
   const result = spawnSync(process.execPath, [path.join(__dirname, test)], { stdio: 'inherit' });
   if (result.status !== 0) {
     failed++;
+    failedTests.push(test);
   }
 }
 
 if (failed > 0) {
+  console.error('\nFailed test files:');
+  for (const failedTest of failedTests) {
+    console.error('- ' + failedTest);
+  }
   console.error('\nFAIL: ' + failed + ' test file(s) failed');
   process.exit(1);
 }

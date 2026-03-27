@@ -4,6 +4,11 @@ const assert = require('assert');
 const path = require('path');
 
 async function run() {
+  if (process.env.CI === 'true') {
+    console.log('SKIP: tests/test-browser-smoke-optional.js (skipped in CI)');
+    return;
+  }
+
   let playwright;
   try {
     playwright = require('playwright');

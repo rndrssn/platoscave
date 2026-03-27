@@ -661,9 +661,7 @@
 .cv-graph-node {
   stroke-width: 1.2;
   cursor: grab;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: cv-graph-node-bob 3.2s ease-in-out infinite;
+  animation: cv-graph-node-pulse 2.8s ease-in-out infinite;
 }
 
 .cv-graph-node:active {
@@ -696,6 +694,16 @@
   animation-delay: -1.2s;
 }
 
+.cv-graph-hitarea {
+  fill: transparent;
+  pointer-events: all;
+  cursor: grab;
+}
+
+.cv-graph-hitarea:active {
+  cursor: grabbing;
+}
+
 .cv-graph-drag-glow {
   fill: none;
   stroke: color-mix(in srgb, var(--ink-faint) 32%, transparent 68%);
@@ -723,9 +731,9 @@
   opacity: 0.14;
 }
 
-@keyframes cv-graph-node-bob {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(0, -2.2px); }
+@keyframes cv-graph-node-pulse {
+  0%, 100% { stroke-width: 1.2; opacity: 1; }
+  50% { stroke-width: 1.45; opacity: 0.94; }
 }
 
 @keyframes cv-legend-swatch-pulse {
@@ -734,6 +742,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .cv-graph-node {
+    animation: none;
+  }
+}
+
+@media (pointer: coarse) {
   .cv-graph-node {
     animation: none;
   }

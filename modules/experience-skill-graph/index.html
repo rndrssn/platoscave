@@ -218,6 +218,9 @@
       var simulation = null;
       var nudgeTimer = null;
       var activeDragNodeId = null;
+      var lastRenderWidth = 0;
+      var lastLayoutWidth = 0;
+      var lastLayoutHeight = 0;
 
       function radiusByType(type) {
         if (type === 'category') return 10.5;
@@ -244,14 +247,20 @@
         return compact[text] || text;
       }
 
-      function render() {
-        var width = Math.max(320, surface.clientWidth || 320);
+      function render(renderWidth) {
+        var width = Math.max(320, renderWidth || surface.clientWidth || 320);
         var mobile = width < 760;
         var smallMobile = width < 430;
         var height = mobile
           ? Math.max(360, Math.min(520, Math.floor(width * 0.92)))
           : Math.max(460, Math.min(760, Math.floor(width * 0.68)));
         var labelFont = smallMobile ? 6.7 : (mobile ? 7.4 : 10);
+        var prevLayoutWidth = lastLayoutWidth || width;
+        var prevLayoutHeight = lastLayoutHeight || height;
+        var minX = 12;
+        var maxX = width - 12;
+        var minY = 12;
+        var maxY = height - 18;
 
         var experienceOrder = {
           'exp-tu': 0,
@@ -287,11 +296,41 @@
         var svg = d3.select(svgEl);
         svg.selectAll('*').remove();
         svg.attr('viewBox', '0 0 ' + width + ' ' + height).attr('preserveAspectRatio', 'xMidYMid meet');
+        var isCoarsePointer = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 
-        if (simulation) simulation.stop();
+        var stateById = Object.create(null);
+        if (simulation) {
+          simulation.nodes().forEach(function(d) {
+            stateById[d.id] = {
+              x: d.x,
+              y: d.y,
+              vx: d.vx,
+              vy: d.vy,
+              fx: d.fx,
+              fy: d.fy
+            };
+          });
+          simulation.stop();
+        }
         if (nudgeTimer) clearInterval(nudgeTimer);
+        var nodeData = nodes.map(function(n) {
+          var d = Object.assign({}, n);
+          var prev = stateById[n.id];
+          if (!prev) return d;
+          if (typeof prev.x === 'number' && typeof prev.y === 'number') {
+            d.x = Math.max(minX, Math.min(maxX, (prev.x / Math.max(1, prevLayoutWidth)) * width));
+            d.y = Math.max(minY, Math.min(maxY, (prev.y / Math.max(1, prevLayoutHeight)) * height));
+          }
+          if (typeof prev.vx === 'number') d.vx = prev.vx;
+          if (typeof prev.vy === 'number') d.vy = prev.vy;
+          if (typeof prev.fx === 'number' && typeof prev.fy === 'number') {
+            d.fx = Math.max(minX, Math.min(maxX, (prev.fx / Math.max(1, prevLayoutWidth)) * width));
+            d.fy = Math.max(minY, Math.min(maxY, (prev.fy / Math.max(1, prevLayoutHeight)) * height));
+          }
+          return d;
+        });
         var plot = svg.append('g').attr('class', 'cv-graph-plot');
-        simulation = d3.forceSimulation(nodes.map(function(n) { return Object.assign({}, n); }))
+        simulation = d3.forceSimulation(nodeData)
           .force('link', d3.forceLink(links).id(function(d) { return d.id; }).distance(function(l) {
             var sType = (typeof l.source === 'object' ? l.source.type : '');
             var tType = (typeof l.target === 'object' ? l.target.type : '');
@@ -338,25 +377,43 @@
           .data(simulation.nodes())
           .join('circle')
           .attr('class', function(d) { return 'cv-graph-node cv-graph-node--' + d.type; })
-          .attr('r', function(d) { return radiusByType(d.type); })
-          .call(d3.drag()
-            .on('start', function(event, d) {
-              if (!event.active) simulation.alphaTarget(0.2).restart();
-              d.fx = d.x;
-              d.fy = d.y;
-              activeDragNodeId = d.id;
-            })
-            .on('drag', function(event, d) {
-              d.fx = event.x;
-              d.fy = event.y;
-            })
-            .on('end', function(event, d) {
-              if (!event.active) simulation.alphaTarget(0);
-              d.fx = null;
-              d.fy = null;
-              activeDragNodeId = null;
-              if (this && typeof this.blur === 'function') this.blur();
-            }));
+          .attr('r', function(d) { return radiusByType(d.type); });
+
+        var hitArea = null;
+        if (isCoarsePointer) {
+          hitArea = plot.append('g')
+            .attr('class', 'cv-graph-hitareas')
+            .selectAll('circle')
+            .data(simulation.nodes())
+            .join('circle')
+            .attr('class', 'cv-graph-hitarea')
+            .attr('r', function(d) { return radiusByType(d.type) + 13; });
+        }
+
+        var dragBehavior = d3.drag()
+          .on('start', function(event, d) {
+            if (!event.active) simulation.alphaTarget(0.2).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+            activeDragNodeId = d.id;
+          })
+          .on('drag', function(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+          })
+          .on('end', function(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+            activeDragNodeId = null;
+            if (this && typeof this.blur === 'function') this.blur();
+          });
+
+        if (isCoarsePointer && hitArea) {
+          hitArea.call(dragBehavior);
+        } else {
+          node.call(dragBehavior);
+        }
 
         var dragGlow = plot.append('g')
           .attr('class', 'cv-graph-drag-glows')
@@ -412,7 +469,10 @@
         }).on('mouseleave', function() {
           if (activeLegendType) return;
           clearHighlights();
-        }).on('click', function(_event, d) {
+        });
+
+        var interactionTarget = (isCoarsePointer && hitArea) ? hitArea : node;
+        interactionTarget.on('click', function(_event, d) {
           applyNodeFocus(d);
         });
 
@@ -452,10 +512,6 @@
         });
 
         simulation.on('tick', function() {
-          var minX = 12;
-          var maxX = width - 12;
-          var minY = 12;
-          var maxY = height - 18;
           simulation.nodes().forEach(function(d) {
             d.x = Math.max(minX, Math.min(maxX, d.x));
             d.y = Math.max(minY, Math.min(maxY, d.y));
@@ -470,6 +526,12 @@
             .attr('cx', function(d) { return d.x; })
             .attr('cy', function(d) { return d.y; });
 
+          if (hitArea) {
+            hitArea
+              .attr('cx', function(d) { return d.x; })
+              .attr('cy', function(d) { return d.y; });
+          }
+
           dragGlow
             .attr('cx', function(d) { return d.x; })
             .attr('cy', function(d) { return d.y; })
@@ -480,6 +542,8 @@
             .attr('y', function(d) { return d.y - radiusByType(d.type) - 6; });
         });
 
+        lastLayoutWidth = width;
+        lastLayoutHeight = height;
         startAmbientNudge();
       }
 
@@ -498,11 +562,16 @@
         }, 2200);
       }
 
-      render();
-      window.addEventListener('resize', function() {
-        if (resizeTimer) clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(render, 150);
-      });
+      function scheduleRender(force) {
+        var rawWidth = Math.round(surface.clientWidth || 0);
+        if (!force && rawWidth > 0 && rawWidth < 280) return;
+        var measuredWidth = Math.max(320, rawWidth || lastRenderWidth || 320);
+        if (!force && Math.abs(measuredWidth - lastRenderWidth) < 2) return;
+        lastRenderWidth = measuredWidth;
+        render(measuredWidth);
+      }
+
+      scheduleRender(true);
     })();
   </script>
   <script src="../../js/nav-controller.js"></script>

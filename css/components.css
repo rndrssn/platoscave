@@ -642,7 +642,7 @@
   border: none;
   border-radius: 0;
   padding: 0;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .cv-graph-svg {

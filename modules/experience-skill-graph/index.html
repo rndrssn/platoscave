@@ -248,13 +248,14 @@
       }
 
       function render(renderWidth) {
-        var width = Math.max(320, renderWidth || surface.clientWidth || 320);
+        var width = Math.max(280, renderWidth || surface.clientWidth || 280);
         var mobile = width < 760;
         var smallMobile = width < 430;
         var height = mobile
-          ? Math.max(360, Math.min(520, Math.floor(width * 0.92)))
+          ? Math.max(300, Math.min(440, Math.floor(width * 0.78)))
           : Math.max(460, Math.min(760, Math.floor(width * 0.68)));
-        var labelFont = smallMobile ? 6.7 : (mobile ? 7.4 : 10);
+        var labelFont = smallMobile ? 7.6 : (mobile ? 8.4 : 10);
+        var labelOffset = mobile ? 8 : 6;
         var prevLayoutWidth = lastLayoutWidth || width;
         var prevLayoutHeight = lastLayoutHeight || height;
         var minX = 12;
@@ -539,7 +540,7 @@
 
           label
             .attr('x', function(d) { return d.x; })
-            .attr('y', function(d) { return d.y - radiusByType(d.type) - 6; });
+            .attr('y', function(d) { return d.y - radiusByType(d.type) - labelOffset; });
         });
 
         lastLayoutWidth = width;

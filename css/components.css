@@ -841,6 +841,10 @@ footer {
   margin: 0 auto;
 }
 
+main.main--narrow + footer {
+  max-width: 720px;
+}
+
 .footer-text {
   font-family: var(--mono);
   font-size: var(--fs-footer-text);

@@ -275,6 +275,10 @@
   max-width: 55ch;
 }
 
+.hero-body + .hero-body {
+  margin-top: 0.9rem;
+}
+
 /* ─── Hero Meta ──────────────────────────────────────────── */
 .hero-meta {
   margin-top: 1.8rem;
@@ -466,23 +470,41 @@
   margin: 0;
   padding-left: 0;
   list-style: none;
+  position: relative;
+  --cv-timeline-dot-top: 0.9rem;
+  --cv-timeline-dot-size: 0.58rem;
+  --cv-timeline-blue-height: 0px;
   border-left: 1px solid var(--rust);
+}
+
+.cv-timeline-list::after {
+  content: '';
+  position: absolute;
+  left: -1px;
+  bottom: 0;
+  width: 1px;
+  height: var(--cv-timeline-blue-height);
+  background: var(--link-inline);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .cv-timeline-list li {
   padding: 0.5rem 0 0.5rem 0.8rem;
   position: relative;
+  z-index: 1;
 }
 
 .cv-timeline-list li::before {
   content: '';
   position: absolute;
   left: -0.31rem;
-  top: 0.9rem;
-  width: 0.58rem;
-  height: 0.58rem;
+  top: var(--cv-timeline-dot-top);
+  width: var(--cv-timeline-dot-size);
+  height: var(--cv-timeline-dot-size);
   border-radius: 999px;
   background: color-mix(in srgb, var(--rust) 74%, var(--ink-ghost) 26%);
+  z-index: 2;
 }
 
 .cv-timeline-list li:last-child::before {
@@ -744,6 +766,11 @@
   opacity: 0.55;
 }
 
+.cv-graph-node.is-skill-legend-focus {
+  opacity: 1;
+  animation: cv-graph-skill-legend-pulse 0.82s ease-in-out infinite;
+}
+
 .cv-graph-node.is-dim {
   fill: color-mix(in srgb, var(--paper) 84%, var(--ink-ghost) 16%);
   stroke: color-mix(in srgb, var(--paper) 78%, var(--ink-ghost) 22%);
@@ -778,6 +805,17 @@
   50% { stroke-width: 1.45; opacity: 0.94; }
 }
 
+@keyframes cv-graph-skill-legend-pulse {
+  0%, 100% {
+    stroke-width: 1.2;
+    filter: drop-shadow(0 0 0 color-mix(in srgb, var(--gold) 0%, transparent 100%));
+  }
+  50% {
+    stroke-width: 3.6;
+    filter: drop-shadow(0 0 16px color-mix(in srgb, var(--gold) 68%, transparent 32%));
+  }
+}
+
 @keyframes cv-legend-swatch-pulse {
   0%, 100% { transform: scale(1); opacity: 0.76; }
   50% { transform: scale(1.16); opacity: 1; }
@@ -801,6 +839,10 @@ footer {
   padding: 2rem 1.25rem;
   max-width: 1140px;
   margin: 0 auto;
+}
+
+main.main--narrow + footer {
+  max-width: 720px;
 }
 
 .footer-text {

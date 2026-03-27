@@ -112,6 +112,48 @@
     <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
   </footer>
 
+  <script>
+    (function initCvTimelineAccentSegment() {
+      var list = document.querySelector('.cv-timeline-list');
+      if (!list) return;
+      var items = list.querySelectorAll('li');
+      if (!items || items.length < 2) return;
+
+      var secondLast = items[items.length - 2];
+      var resizeTimer = null;
+
+      function parseCssLengthToPx(rawValue, contextEl) {
+        var value = String(rawValue || '').trim();
+        if (!value) return 0;
+        var numeric = parseFloat(value);
+        if (!isFinite(numeric)) return 0;
+        if (value.endsWith('px')) return numeric;
+        if (value.endsWith('rem')) {
+          return numeric * parseFloat(getComputedStyle(document.documentElement).fontSize || '16');
+        }
+        if (value.endsWith('em')) {
+          return numeric * parseFloat(getComputedStyle(contextEl || list).fontSize || '16');
+        }
+        return numeric;
+      }
+
+      function updateAccentLine() {
+        var styles = getComputedStyle(list);
+        var dotTop = parseCssLengthToPx(styles.getPropertyValue('--cv-timeline-dot-top'), list);
+        var dotSize = parseCssLengthToPx(styles.getPropertyValue('--cv-timeline-dot-size'), list);
+        var blueStart = secondLast.offsetTop + dotTop + (dotSize / 2);
+        var blueHeight = Math.max(0, list.scrollHeight - blueStart);
+        list.style.setProperty('--cv-timeline-blue-height', blueHeight + 'px');
+      }
+
+      updateAccentLine();
+      window.addEventListener('load', updateAccentLine);
+      window.addEventListener('resize', function() {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(updateAccentLine, 120);
+      });
+    })();
+  </script>
   <script src="../../../js/nav-controller.js"></script>
 </body>
 </html>

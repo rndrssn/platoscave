@@ -88,6 +88,7 @@
   </footer>
 
   <script src="../../assets/vendor/d3.v7.min.js"></script>
+  <script src="./graph-data-loader.js"></script>
   <script>
     (function initExperienceSkillGraph() {
       var surface = document.getElementById('cv-graph-surface');
@@ -99,120 +100,40 @@
         return;
       }
 
-      var categories = [
-        { id: 'cat-domain', label: 'Domain', type: 'category' },
-        { id: 'cat-technical', label: 'Technical', type: 'category' },
-        { id: 'cat-leadership', label: 'Leadership', type: 'category' }
-      ];
-
-      var skills = [
-        { id: 'skill-agtech', label: 'Precision Agriculture', type: 'skill' },
-        { id: 'skill-retail', label: 'Retail Platform', type: 'skill' },
-        { id: 'skill-subsea', label: 'Offshore/Subsea', type: 'skill' },
-        { id: 'skill-industrial', label: 'Industrial Manufacturing', type: 'skill' },
-        { id: 'skill-cv', label: 'Computer Vision', type: 'skill' },
-        { id: 'skill-ml', label: 'AI / ML', type: 'skill' },
-        { id: 'skill-ar', label: 'AR/Spatial Computing', type: 'skill' },
-        { id: 'skill-embedded', label: 'Embedded/Edge Systems', type: 'skill' },
-        { id: 'skill-analytics', label: 'Data Analytics', type: 'skill' },
-        { id: 'skill-strategy', label: 'Product Strategy / Vision', type: 'skill' },
-        { id: 'skill-pm', label: 'Product Management', type: 'skill' },
-        { id: 'skill-agile', label: 'Agile Delivery', type: 'skill' },
-        { id: 'skill-crossfn', label: 'Cross-functional Leadership', type: 'skill' },
-        { id: 'skill-roadmap', label: 'Strategic Roadmapping', type: 'skill' },
-        { id: 'skill-stakeholder', label: 'Stakeholder Management', type: 'skill' },
-        { id: 'skill-innovation', label: 'Innovation Management', type: 'skill' },
-        { id: 'skill-lean', label: 'Lean Development', type: 'skill' }
-      ];
-
-      var experiences = [
-        { id: 'exp-yara', label: 'Yara (2023-Present)', type: 'experience' },
-        { id: 'exp-ikea', label: 'IKEA (2021-2023)', type: 'experience' },
-        { id: 'exp-aiim', label: 'AIIM (2021)', type: 'experience' },
-        { id: 'exp-fugro', label: 'Fugro (2015-2021)', type: 'experience' },
-        { id: 'exp-microscan', label: 'Omron Microscan (2013-2015)', type: 'experience' },
-        { id: 'exp-capgemini', label: 'Capgemini (2012-2013)', type: 'experience' },
-        { id: 'exp-tatasteel', label: 'Tata Steel (2008-2011)', type: 'experience' },
-        { id: 'exp-tu', label: 'TU Delft PhD (2004-2008)', type: 'experience' }
-      ];
-
-      var nodes = categories.concat(skills, experiences);
-      var links = [
-        { source: 'skill-agtech', target: 'cat-domain' },
-        { source: 'skill-retail', target: 'cat-domain' },
-        { source: 'skill-subsea', target: 'cat-domain' },
-        { source: 'skill-industrial', target: 'cat-domain' },
-        { source: 'skill-cv', target: 'cat-technical' },
-        { source: 'skill-ml', target: 'cat-technical' },
-        { source: 'skill-ar', target: 'cat-technical' },
-        { source: 'skill-embedded', target: 'cat-technical' },
-        { source: 'skill-analytics', target: 'cat-technical' },
-        { source: 'skill-strategy', target: 'cat-leadership' },
-        { source: 'skill-pm', target: 'cat-leadership' },
-        { source: 'skill-agile', target: 'cat-leadership' },
-        { source: 'skill-crossfn', target: 'cat-leadership' },
-        { source: 'skill-roadmap', target: 'cat-leadership' },
-        { source: 'skill-stakeholder', target: 'cat-leadership' },
-        { source: 'skill-innovation', target: 'cat-leadership' },
-        { source: 'skill-lean', target: 'cat-leadership' },
-
-        { source: 'exp-yara', target: 'skill-agtech' },
-        { source: 'exp-yara', target: 'skill-pm' },
-        { source: 'exp-yara', target: 'skill-agile' },
-        { source: 'exp-yara', target: 'skill-strategy' },
-        { source: 'exp-yara', target: 'skill-roadmap' },
-        { source: 'exp-yara', target: 'skill-stakeholder' },
-        { source: 'exp-yara', target: 'skill-innovation' },
-
-        { source: 'exp-ikea', target: 'skill-retail' },
-        { source: 'exp-ikea', target: 'skill-pm' },
-        { source: 'exp-ikea', target: 'skill-agile' },
-        { source: 'exp-ikea', target: 'skill-ar' },
-        { source: 'exp-ikea', target: 'skill-embedded' },
-        { source: 'exp-ikea', target: 'skill-crossfn' },
-        { source: 'exp-ikea', target: 'skill-roadmap' },
-
-        { source: 'exp-aiim', target: 'skill-pm' },
-        { source: 'exp-aiim', target: 'skill-agile' },
-        { source: 'exp-aiim', target: 'skill-cv' },
-        { source: 'exp-aiim', target: 'skill-ml' },
-        { source: 'exp-aiim', target: 'skill-embedded' },
-        { source: 'exp-aiim', target: 'skill-crossfn' },
-        { source: 'exp-aiim', target: 'skill-innovation' },
-
-        { source: 'exp-fugro', target: 'skill-subsea' },
-        { source: 'exp-fugro', target: 'skill-pm' },
-        { source: 'exp-fugro', target: 'skill-agile' },
-        { source: 'exp-fugro', target: 'skill-cv' },
-        { source: 'exp-fugro', target: 'skill-embedded' },
-        { source: 'exp-fugro', target: 'skill-strategy' },
-        { source: 'exp-fugro', target: 'skill-innovation' },
-
-        { source: 'exp-microscan', target: 'skill-industrial' },
-        { source: 'exp-microscan', target: 'skill-cv' },
-        { source: 'exp-microscan', target: 'skill-analytics' },
-        { source: 'exp-microscan', target: 'skill-lean' },
-
-        { source: 'exp-capgemini', target: 'skill-analytics' },
-        { source: 'exp-capgemini', target: 'skill-stakeholder' },
-
-        { source: 'exp-tatasteel', target: 'skill-industrial' },
-        { source: 'exp-tatasteel', target: 'skill-cv' },
-        { source: 'exp-tatasteel', target: 'skill-ml' },
-        { source: 'exp-tatasteel', target: 'skill-analytics' },
-        { source: 'exp-tatasteel', target: 'skill-lean' },
-
-        { source: 'exp-tu', target: 'skill-analytics' },
-        { source: 'exp-tu', target: 'skill-ml' }
-      ];
-
+      var categories = [];
+      var skills = [];
+      var experiences = [];
+      var nodes = [];
+      var links = [];
       var linkIndex = new Set();
-      links.forEach(function(l) {
-        var s = typeof l.source === 'object' ? l.source.id : l.source;
-        var t = typeof l.target === 'object' ? l.target.id : l.target;
-        linkIndex.add(s + '|' + t);
-        linkIndex.add(t + '|' + s);
-      });
+      var experienceOrder = Object.create(null);
+      var skillCategory = Object.create(null);
+      var maxExperienceOrder = 1;
+
+      function setGraphData(graphData) {
+        categories = Array.isArray(graphData.categories) ? graphData.categories.slice() : [];
+        skills = Array.isArray(graphData.skills) ? graphData.skills.slice() : [];
+        experiences = Array.isArray(graphData.experiences) ? graphData.experiences.slice() : [];
+        nodes = categories.concat(skills, experiences);
+        links = Array.isArray(graphData.links) ? graphData.links.slice() : [];
+        experienceOrder = graphData.experienceOrder || Object.create(null);
+        skillCategory = graphData.skillCategory || Object.create(null);
+        maxExperienceOrder = 1;
+        Object.keys(experienceOrder).forEach(function(id) {
+          var order = experienceOrder[id];
+          if (typeof order === 'number' && isFinite(order)) {
+            maxExperienceOrder = Math.max(maxExperienceOrder, order);
+          }
+        });
+
+        linkIndex = new Set();
+        links.forEach(function(l) {
+          var s = typeof l.source === 'object' ? l.source.id : l.source;
+          var t = typeof l.target === 'object' ? l.target.id : l.target;
+          linkIndex.add(s + '|' + t);
+          linkIndex.add(t + '|' + s);
+        });
+      }
 
       var resizeTimer = null;
       var simulation = null;
@@ -235,6 +156,7 @@
           'Industrial Manufacturing': 'Industrial Mfg',
           'AR/Spatial Computing': 'AR/Spatial',
           'Embedded/Edge Systems': 'Embedded/Edge',
+          'Robotics': 'Robotics',
           'Data Analytics': 'Analytics',
           'Product Strategy / Vision': 'Strategy/Vision',
           'Product Management': 'Product Mgmt',
@@ -262,37 +184,6 @@
         var maxX = width - 12;
         var minY = 12;
         var maxY = height - 18;
-
-        var experienceOrder = {
-          'exp-tu': 0,
-          'exp-tatasteel': 1,
-          'exp-capgemini': 2,
-          'exp-microscan': 3,
-          'exp-fugro': 4,
-          'exp-aiim': 5,
-          'exp-ikea': 6,
-          'exp-yara': 7
-        };
-
-        var skillCategory = {
-          'skill-agtech': 'domain',
-          'skill-retail': 'domain',
-          'skill-subsea': 'domain',
-          'skill-industrial': 'domain',
-          'skill-cv': 'technical',
-          'skill-ml': 'technical',
-          'skill-ar': 'technical',
-          'skill-embedded': 'technical',
-          'skill-analytics': 'technical',
-          'skill-strategy': 'leadership',
-          'skill-pm': 'leadership',
-          'skill-agile': 'leadership',
-          'skill-crossfn': 'leadership',
-          'skill-roadmap': 'leadership',
-          'skill-stakeholder': 'leadership',
-          'skill-innovation': 'leadership',
-          'skill-lean': 'leadership'
-        };
 
         var svg = d3.select(svgEl);
         svg.selectAll('*').remove();
@@ -355,7 +246,7 @@
             }
             if (d.type === 'experience') {
               var idx = experienceOrder[d.id] || 0;
-              return width * (0.14 + (idx / 7) * 0.72);
+              return width * (0.14 + (idx / maxExperienceOrder) * 0.72);
             }
             return width * 0.5;
           }).strength(mobile ? 0.032 : 0.045))
@@ -637,7 +528,21 @@
         render(measuredWidth);
       }
 
-      scheduleRender(true);
+      if (typeof window.loadExperienceSkillGraphData !== 'function') {
+        if (fallback) fallback.hidden = false;
+        return;
+      }
+
+      window.loadExperienceSkillGraphData('../../content/graph-data/experience-skill-graph.md').then(function(graphData) {
+        setGraphData(graphData);
+        scheduleRender(true);
+      }).catch(function(err) {
+        console.error('Failed to load graph data from Markdown', err);
+        if (fallback) {
+          fallback.textContent = 'Graph unavailable. Failed to load graph data.';
+          fallback.hidden = false;
+        }
+      });
     })();
   </script>
   <script src="../../js/nav-controller.js"></script>

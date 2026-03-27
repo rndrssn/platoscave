@@ -4,7 +4,7 @@ type: GUIDE
 title: Documentation Index
 status: ACTIVE
 created: 2026-03-19
-updated: 2026-03-19
+updated: 2026-03-27
 owner: Robert Andersson
 relates_to: [CORE, CORE-loading-rules, DOC-CONVENTIONS]
 tags: [docs, index, retrieval]
@@ -48,3 +48,8 @@ token_cost_estimate: low
   - DevOps/CI/CD, security, performance, accessibility
   - observability/reliability, API/schema contracts
   - release readiness and post-merge validation
+
+## Experience-Skill Graph CMS
+
+- Canonical how-to and data contract live in root `README.md` under:
+  - `Experience-Skill Graph CMS (Markdown + Obsidian)`

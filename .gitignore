@@ -6,6 +6,9 @@
 # Dependencies
 node_modules/
 vendor/
+!assets/vendor/
+assets/vendor/*
+!assets/vendor/d3.v7.min.js
 
 # Build output
 dist/

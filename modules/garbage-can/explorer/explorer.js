@@ -27,10 +27,11 @@ function buildExplorerNarrative(intensity, inflow, decision, access) {
   if (typeof window !== 'undefined' && typeof window.buildGcPressureNarrative === 'function') {
     return window.buildGcPressureNarrative(intensity, inflow, decision, access);
   }
+  var decisionLabel = decision === 'unsegmented' ? 'Open participation' : titleCase(decision);
   var accessLabel = access === 'unsegmented' ? 'Open' : titleCase(access);
   return {
     problemSummary: titleCase(intensity) + ' difficulty + ' + titleCase(inflow) + ' arrival rate',
-    coordinationSummary: titleCase(decision) + ' decision + ' + accessLabel + ' access',
+    coordinationSummary: decisionLabel + ' decision + ' + accessLabel + ' access',
     synthesis: 'Combination selected. Run the simulation to see how this pressure profile shapes resolution, oversight, and flight.'
   };
 }

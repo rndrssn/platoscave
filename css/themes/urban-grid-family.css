@@ -206,8 +206,7 @@
 :is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .module-sub-nav-link,
 :is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .diagnosis-link,
 :is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .footer-nav-link,
-:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .contact-social-link,
-:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .essay-body a {
+:is([data-theme='urban-grid'], [data-theme='urban-grid1'], [data-theme='urban-grid2'], [data-theme='urban-grid3']) .contact-social-link {
   color: var(--sage);
   text-decoration: underline;
   text-decoration-thickness: 1.5px;

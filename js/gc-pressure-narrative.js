@@ -22,6 +22,11 @@
     return titleCase(token);
   }
 
+  function decisionLabel(token) {
+    if (token === 'unsegmented') return 'Open participation';
+    return titleCase(token);
+  }
+
   function pressureBand(score) {
     if (score <= 3) return 'Low';
     if (score <= 5) return 'Moderate';
@@ -35,7 +40,7 @@
     var coordinationBand = pressureBand(coordinationScore);
 
     var problemSummary = problemBand + ' (' + titleCase(intensity) + ' difficulty + ' + titleCase(inflow) + ' arrival rate)';
-    var coordinationSummary = coordinationBand + ' (' + titleCase(decision) + ' decision + ' + accessLabel(access) + ' access)';
+    var coordinationSummary = coordinationBand + ' (' + decisionLabel(decision) + ' decision + ' + accessLabel(access) + ' access)';
 
     var synthesis = '';
     if (problemBand === 'High' && coordinationBand === 'High') {

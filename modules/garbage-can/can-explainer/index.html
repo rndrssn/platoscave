@@ -52,7 +52,8 @@
         <p class="field-notes-body">
           In this module, a garbage can is a <strong>choice opportunity (CO)</strong>, often simply a meeting.
           In the full model there are four streams; here the CO is fixed so you can watch the other three streams move.
-          This animation is a simple concept demo. It illustrates the idea, not the full simulation logic used in Explorer and Assess.
+          This animation is a simple concept demo. It illustrates the idea, not the full simulation logic used in
+          <a href="../explorer/">Explore</a> and <a href="../assess/">Assess</a>.
         </p>
       </div>
 
@@ -60,8 +61,10 @@
         <svg id="can-explainer-svg"></svg>
         <p class="positioning-caption" id="can-explainer-caption"></p>
         <div class="submit-row can-controls">
-          <button class="can-media-btn can-media-btn--stop is-active" id="can-stop-btn" aria-label="Stop animation" title="Stop animation" aria-pressed="true"><span class="can-media-glyph can-media-glyph--stop" aria-hidden="true"></span></button>
-          <button class="can-media-btn can-media-btn--play" id="can-play-btn" aria-label="Play animation" title="Play animation" aria-pressed="false"><span class="can-media-glyph can-media-glyph--play" aria-hidden="true"></span></button>
+          <span class="can-media-pair" role="group" aria-label="Playback controls">
+            <button class="can-media-btn can-media-btn--stop is-active" id="can-stop-btn" aria-label="Stop animation" title="Stop animation" aria-pressed="true"><span class="can-media-glyph can-media-glyph--stop" aria-hidden="true"></span></button>
+            <button class="can-media-btn can-media-btn--play" id="can-play-btn" aria-label="Play animation" title="Play animation" aria-pressed="false"><span class="can-media-glyph can-media-glyph--play" aria-hidden="true"></span></button>
+          </span>
           <button class="can-icon-btn" id="can-reset-btn" aria-label="Reset animation" title="Reset animation"></button>
         </div>
       </section>

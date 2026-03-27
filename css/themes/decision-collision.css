@@ -110,8 +110,7 @@
 [data-theme='decision-collision'] .module-sub-nav-link,
 [data-theme='decision-collision'] .diagnosis-link,
 [data-theme='decision-collision'] .footer-nav-link,
-[data-theme='decision-collision'] .contact-social-link,
-[data-theme='decision-collision'] .essay-body a {
+[data-theme='decision-collision'] .contact-social-link {
   color: var(--sage);
   text-decoration: underline;
   text-decoration-thickness: 2px;

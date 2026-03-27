@@ -301,7 +301,7 @@ function drawPositioning(raw) {
 
   const tracks = [
     { label: 'Pressure', score: raw.energyScore,   lo: 'Light',       hi: 'Heavy',        min: 1, max: 5 },
-    { label: 'Decision', score: raw.decisionScore, lo: 'Unsegmented', hi: 'Specialized',  min: 1, max: 5 },
+    { label: 'Decision', score: raw.decisionScore, lo: 'Open participation', hi: 'Specialized',  min: 1, max: 5 },
     { label: 'Access',   score: raw.accessScore,   lo: 'Open',        hi: 'Specialized',  min: 1, max: 5 },
   ];
 

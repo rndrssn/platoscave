@@ -21,6 +21,8 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - **03.03 What's a Garbage Can?** (`/modules/garbage-can/can-explainer/`)
   - **03.04 Explore** (`/modules/garbage-can/explorer/`)
   - **03.05 Assess** (`/modules/garbage-can/assess/`)
+- **05 · My Experience-Skill Graph** — Interactive force-directed map linking chronology roles with domain, technical, and leadership skills.
+  - **05.01 Graph** (`/modules/experience-skill-graph/`)
 
 ## Built With
 

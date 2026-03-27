@@ -47,11 +47,23 @@
       <article class="module-essay">
         <section class="essay-section">
           <ul class="cv-graph-legend">
-            <li data-legend-type="experience"><span class="cv-graph-swatch cv-graph-swatch--experience"></span>Experience</li>
-            <li data-legend-type="skill"><span class="cv-graph-swatch cv-graph-swatch--skill"></span>Skill</li>
-            <li data-legend-type="category"><span class="cv-graph-swatch cv-graph-swatch--category"></span>Category</li>
+            <li>
+              <button class="cv-graph-legend-btn" type="button" data-legend-type="experience" aria-pressed="false">
+                <span class="cv-graph-swatch cv-graph-swatch--experience"></span>Experience
+              </button>
+            </li>
+            <li>
+              <button class="cv-graph-legend-btn" type="button" data-legend-type="skill" aria-pressed="false">
+                <span class="cv-graph-swatch cv-graph-swatch--skill"></span>Skill
+              </button>
+            </li>
+            <li>
+              <button class="cv-graph-legend-btn" type="button" data-legend-type="category" aria-pressed="false">
+                <span class="cv-graph-swatch cv-graph-swatch--category"></span>Category
+              </button>
+            </li>
           </ul>
-          <p class="cv-graph-helper">Hover nodes to focus connections, drag nodes to explore.</p>
+          <p class="cv-graph-helper">Tap, hover, or focus nodes to inspect connections. Drag nodes to explore layout.</p>
           <div class="cv-graph-surface" id="cv-graph-surface">
             <svg id="cv-force-graph" class="cv-graph-svg" role="img" aria-label="Force-directed graph of my experience and skills"></svg>
             <p id="cv-graph-fallback" class="essay-body" hidden>Graph unavailable. D3 failed to load.</p>
@@ -73,7 +85,7 @@
     <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../colophon/" class="footer-link">Site Notes</a></p>
   </footer>
 
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="../../assets/vendor/d3.v7.min.js"></script>
   <script>
     (function initExperienceSkillGraph() {
       var surface = document.getElementById('cv-graph-surface');
@@ -318,6 +330,11 @@
           .join('circle')
           .attr('class', function(d) { return 'cv-graph-node cv-graph-node--' + d.type; })
           .attr('r', function(d) { return radiusByType(d.type); })
+          .attr('tabindex', 0)
+          .attr('role', 'button')
+          .attr('aria-label', function(d) {
+            return d.type + ': ' + d.label + '. Press Enter to highlight connected items.';
+          })
           .call(d3.drag()
             .on('start', function(event, d) {
               if (!event.active) simulation.alphaTarget(0.2).restart();
@@ -345,28 +362,88 @@
           .style('font-size', labelFont + 'px')
           .text(function(d) { return mobileLabel(d.label, mobile); });
 
-        node.on('mouseenter', function(_event, d) {
-          node.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
-          label.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
-          link.classed('is-dim', function(l) { return l.source.id !== d.id && l.target.id !== d.id; });
-        }).on('mouseleave', function() {
+        var activeLegendType = null;
+        var legendItems = Array.from(document.querySelectorAll('.cv-graph-legend [data-legend-type]'));
+
+        function clearHighlights() {
           node.classed('is-dim', false);
           label.classed('is-dim', false);
           link.classed('is-dim', false);
+        }
+
+        function applyNodeFocus(d) {
+          node.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
+          label.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
+          link.classed('is-dim', function(l) { return l.source.id !== d.id && l.target.id !== d.id; });
+        }
+
+        function applyLegendFilter(type) {
+          node.classed('is-dim', function(n) { return n.type !== type; });
+          label.classed('is-dim', function(n) { return n.type !== type; });
+          link.classed('is-dim', function(l) { return l.source.type !== type && l.target.type !== type; });
+        }
+
+        function setLegendActive(type) {
+          activeLegendType = type;
+          legendItems.forEach(function(item) {
+            var isActive = !!type && item.getAttribute('data-legend-type') === type;
+            item.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          });
+        }
+
+        node.on('mouseenter', function(_event, d) {
+          if (activeLegendType) return;
+          applyNodeFocus(d);
+        }).on('mouseleave', function() {
+          if (activeLegendType) return;
+          clearHighlights();
+        }).on('focus', function(_event, d) {
+          applyNodeFocus(d);
+        }).on('blur', function() {
+          if (activeLegendType) return;
+          clearHighlights();
+        }).on('keydown', function(event, d) {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            applyNodeFocus(d);
+          } else if (event.key === 'Escape') {
+            setLegendActive(null);
+            clearHighlights();
+          }
         });
 
-        var legendItems = Array.from(document.querySelectorAll('.cv-graph-legend [data-legend-type]'));
         legendItems.forEach(function(item) {
           var type = item.getAttribute('data-legend-type');
           item.addEventListener('mouseenter', function() {
-            node.classed('is-dim', function(n) { return n.type !== type; });
-            label.classed('is-dim', function(n) { return n.type !== type; });
-            link.classed('is-dim', function(l) { return l.source.type !== type && l.target.type !== type; });
+            if (activeLegendType) return;
+            applyLegendFilter(type);
           });
           item.addEventListener('mouseleave', function() {
-            node.classed('is-dim', false);
-            label.classed('is-dim', false);
-            link.classed('is-dim', false);
+            if (activeLegendType) return;
+            clearHighlights();
+          });
+          item.addEventListener('focus', function() {
+            applyLegendFilter(type);
+          });
+          item.addEventListener('blur', function() {
+            if (activeLegendType) return;
+            clearHighlights();
+          });
+          item.addEventListener('click', function() {
+            if (activeLegendType === type) {
+              setLegendActive(null);
+              clearHighlights();
+              return;
+            }
+            setLegendActive(type);
+            applyLegendFilter(type);
+          });
+          item.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+              event.preventDefault();
+              setLegendActive(null);
+              clearHighlights();
+            }
           });
         });
 

@@ -54,6 +54,7 @@ Safety:
 - Required checks pass.
 - Behavior and documentation semantics are aligned.
 - Accessibility baseline remains intact.
+- Runtime dependency sourcing is consistent (no mixed local/CDN imports for the same library).
 
 ## Scope checks
 

@@ -147,37 +147,73 @@
   font-style: italic;
 }
 
-.essay-body a {
-  color: var(--link-inline);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.1em;
-  text-decoration-color: color-mix(in srgb, var(--link-inline) 72%, var(--paper) 28%);
-  transition: color 0.2s ease;
-}
-
+.essay-body a,
 .module-header-body a,
 .hero-body a,
 .field-notes-body a,
-.diagnosis-body a {
+.diagnosis-body a,
+.note-content a {
   color: var(--link-inline);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='http://'],
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='https://'],
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='//'] {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.1em;
   text-decoration-color: color-mix(in srgb, var(--link-inline) 72%, var(--paper) 28%);
-  transition: color 0.2s ease;
 }
 
-.essay-body a:hover {
-  color: var(--link-inline-hover);
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/'],
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/'] {
+  color: var(--tag-chip);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.1em;
+  text-decoration-color: color-mix(in srgb, var(--tag-chip) 72%, var(--paper) 28%);
 }
 
+[data-theme] .essay-body a,
+[data-theme] .module-header-body a,
+[data-theme] .hero-body a,
+[data-theme] .field-notes-body a,
+[data-theme] .diagnosis-body a,
+[data-theme] .note-content a {
+  color: var(--link-inline);
+  text-decoration: none;
+}
+
+.essay-body a:hover,
 .module-header-body a:hover,
 .hero-body a:hover,
 .field-notes-body a:hover,
-.diagnosis-body a:hover {
+.diagnosis-body a:hover,
+.note-content a:hover {
   color: var(--link-inline-hover);
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='http://']:hover,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='https://']:hover,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='//']:hover {
   text-decoration-color: var(--link-inline-hover);
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/']:hover,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/']:hover {
+  color: var(--tag-chip-hover);
+  text-decoration-color: var(--tag-chip-hover);
+}
+
+[data-theme] .essay-body a:hover,
+[data-theme] .module-header-body a:hover,
+[data-theme] .hero-body a:hover,
+[data-theme] .field-notes-body a:hover,
+[data-theme] .diagnosis-body a:hover,
+[data-theme] .note-content a:hover {
+  color: var(--link-inline-hover);
 }
 
 .essay-body a:visited,
@@ -187,6 +223,70 @@
 .field-notes-body a:visited,
 .diagnosis-body a:visited {
   color: var(--link-inline-visited);
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/']:visited,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/']:visited {
+  color: var(--tag-chip);
+}
+
+[data-theme] .essay-body a:visited,
+[data-theme] .module-header-body a:visited,
+[data-theme] .hero-body a:visited,
+[data-theme] .note-content a:visited,
+[data-theme] .field-notes-body a:visited,
+[data-theme] .diagnosis-body a:visited {
+  color: var(--link-inline-visited);
+}
+
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='http://'],
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='https://'],
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='//'] {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.1em;
+  text-decoration-color: color-mix(in srgb, var(--link-inline) 72%, var(--paper) 28%);
+}
+
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='http://']:hover,
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='https://']:hover,
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='//']:hover {
+  text-decoration-color: var(--link-inline-hover);
+}
+
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/'],
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/'] {
+  color: var(--tag-chip);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.1em;
+  text-decoration-color: color-mix(in srgb, var(--tag-chip) 72%, var(--paper) 28%);
+}
+
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/']:hover,
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/']:hover {
+  color: var(--tag-chip-hover);
+  text-decoration-color: var(--tag-chip-hover);
+}
+
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/']:visited,
+[data-theme] :is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/']:visited {
+  color: var(--tag-chip);
+}
+
+.essay-body a strong,
+.module-header-body a strong,
+.hero-body a strong,
+.field-notes-body a strong,
+.diagnosis-body a strong,
+.note-content a strong,
+.essay-body a em,
+.module-header-body a em,
+.hero-body a em,
+.field-notes-body a em,
+.diagnosis-body a em,
+.note-content a em {
+  color: inherit;
 }
 
 /* ─── Essay sub-page links ───────────────────────────── */
@@ -501,16 +601,6 @@
 .note-content code {
   font-family: var(--mono);
   font-size: 0.78em;
-}
-
-.note-content a {
-  color: var(--link-inline);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.note-content a:hover {
-  color: var(--link-inline-hover);
 }
 
 @media (max-width: 640px) {

@@ -80,8 +80,7 @@
 [data-theme='new-yorker'] .module-sub-nav-link,
 [data-theme='new-yorker'] .diagnosis-link,
 [data-theme='new-yorker'] .footer-nav-link,
-[data-theme='new-yorker'] .contact-social-link,
-[data-theme='new-yorker'] .essay-body a {
+[data-theme='new-yorker'] .contact-social-link {
   color: var(--ink);
   text-decoration: underline;
   text-decoration-color: var(--sage);

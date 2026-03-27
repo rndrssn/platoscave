@@ -366,17 +366,12 @@
   padding: 0;
   border: none;
   border-radius: 0;
-  color: color-mix(in srgb, var(--gold) 84%, var(--paper) 16%);
   font-family: var(--serif-alt);
   font-style: italic;
   font-weight: 700;
   font-size: 0.95rem;
   letter-spacing: 0.01em;
   text-transform: none;
-}
-
-.contact-social-link--cv:hover {
-  color: color-mix(in srgb, var(--gold) 94%, var(--paper) 6%);
 }
 
 .cv-page #cv-summary {
@@ -568,9 +563,9 @@
   display: inline-flex;
   align-items: center;
   gap: 0.28rem;
-  border: 1px solid transparent;
-  border-radius: 0.18rem;
-  padding: 0.08rem 0.2rem;
+  border: 0;
+  border-radius: 0;
+  padding: 0.06rem 0;
   background: transparent;
   color: inherit;
   font: inherit;
@@ -581,17 +576,22 @@
 }
 
 .cv-graph-legend-btn:hover {
-  border-color: color-mix(in srgb, var(--ink-ghost) 72%, transparent 28%);
+  color: color-mix(in srgb, var(--ink-mid) 74%, var(--ink-faint) 26%);
 }
 
 .cv-graph-legend-btn[aria-pressed='true'] {
-  border-color: color-mix(in srgb, var(--ink-faint) 74%, var(--ink-ghost) 26%);
-  background: color-mix(in srgb, var(--paper-dark) 30%, transparent 70%);
+  color: color-mix(in srgb, var(--ink-mid) 78%, var(--ink-faint) 22%);
 }
 
 .cv-graph-legend-btn:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
+  outline: none;
+  color: color-mix(in srgb, var(--ink-mid) 78%, var(--ink-faint) 22%);
+}
+
+.cv-graph-legend-btn:hover .cv-graph-swatch,
+.cv-graph-legend-btn:focus-visible .cv-graph-swatch,
+.cv-graph-legend-btn[aria-pressed='true'] .cv-graph-swatch {
+  animation: cv-legend-swatch-pulse 0.95s ease-in-out infinite;
 }
 
 .cv-graph-helper {
@@ -671,8 +671,9 @@
 }
 
 .cv-graph-node:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
+  outline: none !important;
+  box-shadow: none !important;
+  filter: none;
 }
 
 .cv-graph-node--experience {
@@ -695,6 +696,19 @@
   animation-delay: -1.2s;
 }
 
+.cv-graph-drag-glow {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink-faint) 32%, transparent 68%);
+  stroke-width: 2.8;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.cv-graph-drag-glow.is-active {
+  opacity: 0.52;
+}
+
 .cv-graph-label {
   fill: var(--ink-mid);
   font-family: var(--mono);
@@ -712,6 +726,11 @@
 @keyframes cv-graph-node-bob {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(0, -2.2px); }
+}
+
+@keyframes cv-legend-swatch-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.76; }
+  50% { transform: scale(1.16); opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {

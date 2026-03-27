@@ -121,7 +121,8 @@
         { id: 'skill-crossfn', label: 'Cross-functional Leadership', type: 'skill' },
         { id: 'skill-roadmap', label: 'Strategic Roadmapping', type: 'skill' },
         { id: 'skill-stakeholder', label: 'Stakeholder Management', type: 'skill' },
-        { id: 'skill-innovation', label: 'Innovation Management', type: 'skill' }
+        { id: 'skill-innovation', label: 'Innovation Management', type: 'skill' },
+        { id: 'skill-lean', label: 'Lean Development', type: 'skill' }
       ];
 
       var experiences = [
@@ -129,7 +130,7 @@
         { id: 'exp-ikea', label: 'IKEA (2021-2023)', type: 'experience' },
         { id: 'exp-aiim', label: 'AIIM (2021)', type: 'experience' },
         { id: 'exp-fugro', label: 'Fugro (2015-2021)', type: 'experience' },
-        { id: 'exp-microscan', label: 'Microscan (2013-2015)', type: 'experience' },
+        { id: 'exp-microscan', label: 'Omron Microscan (2013-2015)', type: 'experience' },
         { id: 'exp-capgemini', label: 'Capgemini (2012-2013)', type: 'experience' },
         { id: 'exp-tatasteel', label: 'Tata Steel (2008-2011)', type: 'experience' },
         { id: 'exp-tu', label: 'TU Delft PhD (2004-2008)', type: 'experience' }
@@ -153,6 +154,7 @@
         { source: 'skill-roadmap', target: 'cat-leadership' },
         { source: 'skill-stakeholder', target: 'cat-leadership' },
         { source: 'skill-innovation', target: 'cat-leadership' },
+        { source: 'skill-lean', target: 'cat-leadership' },
 
         { source: 'exp-yara', target: 'skill-agtech' },
         { source: 'exp-yara', target: 'skill-pm' },
@@ -189,6 +191,7 @@
         { source: 'exp-microscan', target: 'skill-industrial' },
         { source: 'exp-microscan', target: 'skill-cv' },
         { source: 'exp-microscan', target: 'skill-analytics' },
+        { source: 'exp-microscan', target: 'skill-lean' },
 
         { source: 'exp-capgemini', target: 'skill-analytics' },
         { source: 'exp-capgemini', target: 'skill-stakeholder' },
@@ -197,6 +200,7 @@
         { source: 'exp-tatasteel', target: 'skill-cv' },
         { source: 'exp-tatasteel', target: 'skill-ml' },
         { source: 'exp-tatasteel', target: 'skill-analytics' },
+        { source: 'exp-tatasteel', target: 'skill-lean' },
 
         { source: 'exp-tu', target: 'skill-analytics' },
         { source: 'exp-tu', target: 'skill-ml' }
@@ -234,7 +238,8 @@
           'Cross-functional Leadership': 'Cross-functional',
           'Strategic Roadmapping': 'Roadmapping',
           'Stakeholder Management': 'Stakeholder Mgmt',
-          'Innovation Management': 'Innovation'
+          'Innovation Management': 'Innovation',
+          'Lean Development': 'Lean Dev'
         };
         return compact[text] || text;
       }
@@ -275,7 +280,8 @@
           'skill-crossfn': 'leadership',
           'skill-roadmap': 'leadership',
           'skill-stakeholder': 'leadership',
-          'skill-innovation': 'leadership'
+          'skill-innovation': 'leadership',
+          'skill-lean': 'leadership'
         };
 
         var svg = d3.select(svgEl);

@@ -739,6 +739,11 @@
   opacity: 0.2;
 }
 
+.cv-graph-node.is-related,
+.cv-graph-link.is-related {
+  opacity: 0.55;
+}
+
 .cv-graph-node.is-dim {
   fill: color-mix(in srgb, var(--paper) 84%, var(--ink-ghost) 16%);
   stroke: color-mix(in srgb, var(--paper) 78%, var(--ink-ghost) 22%);
@@ -749,8 +754,18 @@
   stroke-opacity: 0.24;
 }
 
+.cv-graph-link.is-related {
+  stroke: color-mix(in srgb, var(--paper) 44%, var(--ink-ghost) 56%);
+  stroke-opacity: 0.46;
+}
+
 .cv-graph-label.is-dim {
   fill: color-mix(in srgb, var(--paper) 58%, var(--ink-ghost) 42%);
+}
+
+.cv-graph-label.is-related {
+  fill: var(--ink-mid);
+  opacity: 0.84;
 }
 
 .cv-graph-label.is-active {

@@ -393,14 +393,24 @@
 
         var dragBehavior = d3.drag()
           .on('start', function(event, d) {
+            focusNodeAndClearLegend(d);
             if (!event.active) simulation.alphaTarget(0.2).restart();
             d.fx = d.x;
             d.fy = d.y;
             activeDragNodeId = d.id;
+            d.__dragMoved = false;
+            d.__dragStartX = event.x;
+            d.__dragStartY = event.y;
           })
           .on('drag', function(event, d) {
             d.fx = event.x;
             d.fy = event.y;
+            var dx = Math.abs((event.x || 0) - (d.__dragStartX || 0));
+            var dy = Math.abs((event.y || 0) - (d.__dragStartY || 0));
+            var tapMoveThreshold = isCoarsePointer ? 12 : 5;
+            if (dx > tapMoveThreshold || dy > tapMoveThreshold) {
+              d.__dragMoved = true;
+            }
           })
           .on('end', function(event, d) {
             if (!event.active) simulation.alphaTarget(0);
@@ -408,6 +418,11 @@
             d.fy = null;
             activeDragNodeId = null;
             if (this && typeof this.blur === 'function') this.blur();
+            if (d.__dragMoved) {
+              clearHighlights();
+            } else {
+              focusNodeAndClearLegend(d);
+            }
           });
 
         if (isCoarsePointer && hitArea) {
@@ -439,12 +454,15 @@
         var legendItems = Array.from(document.querySelectorAll('.cv-graph-legend [data-legend-type]'));
 
         function clearHighlights() {
-          node.classed('is-dim', false);
-          label.classed('is-dim', false).classed('is-active', false);
-          link.classed('is-dim', false);
+          node.classed('is-dim', false).classed('is-related', false);
+          label.classed('is-dim', false).classed('is-related', false).classed('is-active', false);
+          link.classed('is-dim', false).classed('is-related', false);
         }
 
         function applyNodeFocus(d) {
+          node.classed('is-related', false);
+          label.classed('is-related', false);
+          link.classed('is-related', false);
           node.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
           label.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
           label.classed('is-active', function(n) { return n.id === d.id || linkIndex.has(d.id + '|' + n.id); });
@@ -452,10 +470,42 @@
         }
 
         function applyLegendFilter(type) {
-          node.classed('is-dim', function(n) { return n.type !== type; });
-          label.classed('is-dim', function(n) { return n.type !== type; });
-          label.classed('is-active', function(n) { return n.type === type; });
-          link.classed('is-dim', function(l) { return l.source.type !== type && l.target.type !== type; });
+          var primary = new Set();
+          var related = new Set();
+
+          simulation.nodes().forEach(function(n) {
+            if (n.type === type) primary.add(n.id);
+          });
+
+          simulation.force('link').links().forEach(function(l) {
+            var s = l.source.id;
+            var t = l.target.id;
+            if (primary.has(s) && !primary.has(t)) related.add(t);
+            if (primary.has(t) && !primary.has(s)) related.add(s);
+          });
+
+          node
+            .classed('is-related', function(n) { return !primary.has(n.id) && related.has(n.id); })
+            .classed('is-dim', function(n) { return !primary.has(n.id) && !related.has(n.id); });
+
+          label
+            .classed('is-active', function(n) { return primary.has(n.id); })
+            .classed('is-related', function(n) { return !primary.has(n.id) && related.has(n.id); })
+            .classed('is-dim', function(n) { return !primary.has(n.id) && !related.has(n.id); });
+
+          link
+            .classed('is-related', function(l) {
+              var s = l.source.id;
+              var t = l.target.id;
+              return (primary.has(s) && related.has(t)) || (primary.has(t) && related.has(s));
+            })
+            .classed('is-dim', function(l) {
+              var s = l.source.id;
+              var t = l.target.id;
+              var touchesPrimary = primary.has(s) || primary.has(t);
+              var connectsPrimaryToRelated = (primary.has(s) && related.has(t)) || (primary.has(t) && related.has(s));
+              return !touchesPrimary && !connectsPrimaryToRelated;
+            });
         }
 
         function setLegendActive(type) {
@@ -466,17 +516,30 @@
           });
         }
 
-        node.on('mouseenter', function(_event, d) {
-          if (activeLegendType) return;
+        function focusNodeAndClearLegend(d) {
+          if (activeLegendType) {
+            setLegendActive(null);
+          }
           applyNodeFocus(d);
-        }).on('mouseleave', function() {
-          if (activeLegendType) return;
-          clearHighlights();
-        });
+        }
+
+        if (!isCoarsePointer) {
+          node.on('mouseenter', function(_event, d) {
+            if (activeLegendType) return;
+            applyNodeFocus(d);
+          }).on('mouseleave', function() {
+            if (activeLegendType) return;
+            clearHighlights();
+          });
+        }
 
         var interactionTarget = (isCoarsePointer && hitArea) ? hitArea : node;
         interactionTarget.on('click', function(_event, d) {
-          applyNodeFocus(d);
+          focusNodeAndClearLegend(d);
+        }).on('pointerup', function(_event, d) {
+          if (!d.__dragMoved) {
+            focusNodeAndClearLegend(d);
+          }
         });
 
         legendItems.forEach(function(item) {

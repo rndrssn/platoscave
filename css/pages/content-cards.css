@@ -381,7 +381,7 @@
   font-family: var(--mono);
   font-size: 0.86em;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--sage);
   text-decoration: underline;
   text-underline-offset: 0.12em;
@@ -530,4 +530,13 @@
     font-size: 1rem;
     line-height: 1.2;
   }
+}
+
+/* Ensure CV link stays gold even when theme-level contact link colors apply. */
+[data-theme] .contact-social-link--cv {
+  color: color-mix(in srgb, var(--gold) 84%, var(--paper) 16%);
+}
+
+[data-theme] .contact-social-link--cv:hover {
+  color: color-mix(in srgb, var(--gold) 94%, var(--paper) 6%);
 }

@@ -275,6 +275,10 @@
   max-width: 55ch;
 }
 
+.hero-body + .hero-body {
+  margin-top: 0.9rem;
+}
+
 /* ─── Hero Meta ──────────────────────────────────────────── */
 .hero-meta {
   margin-top: 1.8rem;

@@ -49,6 +49,74 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - `tags/index.html`
   - `tags/<tag>/index.html`
 
+## Experience-Skill Graph CMS (Markdown + Obsidian)
+
+This graph uses a single Markdown file as a lightweight CMS.
+
+### Source files
+
+- Data file: `content/graph-data/experience-skill-graph.md`
+- Loader: `modules/experience-skill-graph/graph-data-loader.js`
+- Graph page: `modules/experience-skill-graph/index.html`
+
+### Note schema
+
+The data file includes frontmatter plus section rows:
+
+```md
+---
+id: experience-skill-graph
+type: graph-data
+title: Experience-Skill Graph Data
+---
+
+## Skills
+- skill-robotics | Robotics | 90 | [[cat-technical]]
+```
+
+Field rules:
+- Row format:
+  - categories: `- <id> | <label> | <order>`
+  - skills/experiences: `- <id> | <label> | <order> | [[linked-id]], [[linked-id]]`
+- `id`: stable slug used for linking and node identity
+- `label`: rendered text in the graph
+- `order`: numeric sort key (used for chronology and grouping)
+
+### Linking model (Obsidian-style)
+
+- Experience rows -> link to skills
+- Skill rows -> link to category
+- Links use `[[wikilink]]` format
+
+Example experience row:
+
+```md
+- exp-aiim | AIIM (2021) | 5 | [[skill-pm]], [[skill-agile]], [[skill-robotics]]
+```
+
+### Common edits
+
+1. Remove a skill from an experience:
+   - remove the `[[skill-...]]` link in the relevant experience row
+2. Add a skill to an experience:
+   - add a skill row under `## Skills` if it does not exist
+   - link it from the relevant experience row under `## Experiences`
+3. Rename a node label:
+   - update the row label segment (`| <label> |`)
+4. Reorder chronology:
+   - update `order` values in `## Experiences`
+
+### Validate and release
+
+1. Run tests:
+
+```bash
+node tests/run-all.js
+```
+
+2. Commit and release through normal flow:
+   - `sandbox` -> `develop` -> `main`
+
 ## Testing
 
 - Canonical full suite:

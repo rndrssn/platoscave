@@ -3,32 +3,24 @@
 const fs = require('fs');
 const path = require('path');
 
-const themesPath = path.join(__dirname, '..', 'css', 'themes.css');
+const themesDir = path.join(__dirname, '..', 'css', 'themes');
 
-function loadCssWithImports(entryPath, seen) {
-  const visited = seen || new Set();
-  const absEntry = path.resolve(entryPath);
-  if (visited.has(absEntry)) return '';
-  visited.add(absEntry);
+function loadAllThemeCss() {
+  const files = fs.readdirSync(themesDir)
+    .filter((name) => name.endsWith('.css'))
+    .filter((name) => !name.startsWith('_'))
+    .sort();
 
-  const css = fs.readFileSync(absEntry, 'utf8');
-  const importRe = /@import\s+url\(\s*['"]([^'"]+)['"]\s*\)\s*;/g;
-  let out = css;
-  let match;
-
-  while ((match = importRe.exec(css)) !== null) {
-    const rel = match[1];
-    const childPath = path.resolve(path.dirname(absEntry), rel);
-    if (!fs.existsSync(childPath)) {
-      throw new Error('Missing imported CSS file: ' + childPath);
-    }
-    out += '\n' + loadCssWithImports(childPath, visited);
+  if (!files.length) {
+    throw new Error('No concrete theme CSS files found under css/themes');
   }
 
-  return out;
+  return files
+    .map((name) => fs.readFileSync(path.join(themesDir, name), 'utf8'))
+    .join('\n');
 }
 
-const source = loadCssWithImports(themesPath);
+const source = loadAllThemeCss();
 
 const REQUIRED_THEME_TOKENS = [
   '--paper',

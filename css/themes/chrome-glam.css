@@ -1,0 +1,86 @@
+html[data-theme='chrome-glam'] {
+  --paper:       #0a0d19;
+  --paper-dark:  #161a2c;
+  --paper-deep:  #262b45;
+
+  --ink:         #f3f7ff;
+  --ink-mid:     #d6deff;
+  --ink-faint:   #b4c0ec;
+  --ink-ghost:   #808dbd;
+
+  --rust:        #ff3ca0;
+  --rust-light:  #ff75bd;
+  --sage:        #4bd6ff;
+  --sage-light:  #90e8ff;
+  --ochre:       #f0ae2a;
+  --gold:        #ffd36d;
+  --slate:       #3b4575;
+  --slate-light: #6572ba;
+
+  --link-inline: #4bd6ff;
+  --link-inline-hover: #98ebff;
+  --link-inline-visited: #35badf;
+  --link-ui: #ff3ca0;
+  --link-ui-hover: #ff75bd;
+  --tag-chip: #ff3ca0;
+  --tag-chip-hover: #ff75bd;
+
+  --serif:       'Space Mono', 'Courier New', monospace;
+  --serif-alt:   'Cormorant Garamond', Georgia, serif;
+  --mono:        'Space Mono', 'Courier New', monospace;
+
+  --card-surface: color-mix(in srgb, var(--paper-dark) 84%, #1f2440 16%);
+  --card-border-color: color-mix(in srgb, var(--sage) 32%, var(--paper-deep) 68%);
+  --card-border-width: 1px;
+  --card-accent-color: var(--rust);
+  --card-accent-width: 3px;
+  --card-shadow-hover:
+    0 0 0 1px rgba(144, 232, 255, 0.24),
+    0 0 16px rgba(255, 60, 160, 0.2);
+  --shadow-nav-popover:
+    0 0 0 1px rgba(144, 232, 255, 0.3),
+    0 0 20px rgba(255, 60, 160, 0.22);
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+[data-theme='chrome-glam'] body {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 60, 160, 0.2), transparent 40%),
+    radial-gradient(circle at 84% 14%, rgba(75, 214, 255, 0.16), transparent 38%),
+    linear-gradient(165deg, #0a0d19 0%, #161a2c 48%, #222843 100%);
+}
+
+[data-theme='chrome-glam'] .main-nav {
+  background: rgba(10, 13, 25, 0.88);
+  border-bottom: 1px solid color-mix(in srgb, var(--sage) 38%, transparent 62%);
+  backdrop-filter: blur(4px);
+}
+
+[data-theme='chrome-glam'] .nav-title,
+[data-theme='chrome-glam'] .hero-title,
+[data-theme='chrome-glam'] .module-header-title {
+  text-shadow:
+    0 0 10px rgba(255, 60, 160, 0.3),
+    0 0 14px rgba(75, 214, 255, 0.16);
+}
+
+[data-theme='chrome-glam'] .sim-summary-card,
+[data-theme='chrome-glam'] .q-card,
+[data-theme='chrome-glam'] .field-notes-card,
+[data-theme='chrome-glam'] .essay-link {
+  box-shadow:
+    0 0 0 1px rgba(144, 232, 255, 0.14),
+    0 0 14px rgba(255, 60, 160, 0.16);
+}

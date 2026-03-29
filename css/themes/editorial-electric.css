@@ -1,4 +1,4 @@
-[data-theme='editorial-electric'] {
+html[data-theme='editorial-electric'] {
   --paper:       #f2f1eb;
   --paper-dark:  #e8e5db;
   --paper-deep:  #d4cfc0;

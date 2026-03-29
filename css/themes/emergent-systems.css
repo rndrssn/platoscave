@@ -1,4 +1,4 @@
-[data-theme='emergent-systems'] {
+html[data-theme='emergent-systems'] {
   --paper:       #edf1f6;
   --paper-dark:  #dfe6ef;
   --paper-deep:  #c5cfde;

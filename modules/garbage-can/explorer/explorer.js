@@ -41,6 +41,16 @@ function titleCase(token) {
   return token.charAt(0).toUpperCase() + token.slice(1);
 }
 
+function centerSimulationCanvasInViewport() {
+  var canvas = document.getElementById('viz-svg');
+  if (!canvas || typeof canvas.getBoundingClientRect !== 'function') return;
+  var rect = canvas.getBoundingClientRect();
+  var canvasCenterY = rect.top + window.pageYOffset + (rect.height / 2);
+  var viewportCenterY = (window.innerHeight || document.documentElement.clientHeight || 0) / 2;
+  var targetY = Math.max(0, canvasCenterY - viewportCenterY);
+  window.scrollTo({ top: targetY, behavior: 'smooth' });
+}
+
 function setActiveResultsNav(targetId) {
   resultsNavLinks.forEach(function(link) {
     var isActive = link.getAttribute('data-section') === targetId;
@@ -171,8 +181,8 @@ if (runSimBtn) runSimBtn.addEventListener('click', async function() {
     });
     runBtn.hidden = true;
     drawViz(simResult);
+    setTimeout(centerSimulationCanvasInViewport, 80);
     setActiveResultsNav('viz-area');
-    document.getElementById('viz-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
     setSimError('');
   } catch (error) {
     setSimError('Simulation failed. Please try again.');
@@ -203,6 +213,7 @@ if (replayBtnEl) replayBtnEl.addEventListener('click', async function() {
       accessStructure: access
     });
     drawViz(newSim);
+    setTimeout(centerSimulationCanvasInViewport, 80);
     setSimError('');
   } catch (error) {
     setSimError('Simulation failed. Please try again.');

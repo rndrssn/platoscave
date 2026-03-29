@@ -1,45 +1,53 @@
 html[data-theme='chrome-glam'] {
-  --paper:       #0a0d19;
-  --paper-dark:  #161a2c;
-  --paper-deep:  #262b45;
+  --paper:       #090d1a;
+  --paper-dark:  #141a30;
+  --paper-deep:  #253357;
 
   --ink:         #f3f7ff;
-  --ink-mid:     #d6deff;
-  --ink-faint:   #b4c0ec;
-  --ink-ghost:   #808dbd;
+  --ink-mid:     #dde6ff;
+  --ink-faint:   #b9c8ef;
+  --ink-ghost:   #8b9ac7;
 
-  --rust:        #ff3ca0;
-  --rust-light:  #ff75bd;
-  --sage:        #4bd6ff;
-  --sage-light:  #90e8ff;
-  --ochre:       #f0ae2a;
-  --gold:        #ffd36d;
-  --slate:       #3b4575;
-  --slate-light: #6572ba;
+  --rust:        #ff2f95;
+  --rust-light:  #ff79be;
+  --sage:        #57d7ff;
+  --sage-light:  #a1ebff;
+  --ochre:       #c6cedf;
+  --gold:        #edf2ff;
+  --slate:       #475c9d;
+  --slate-light: #8196d0;
 
   --link-inline: #4bd6ff;
-  --link-inline-hover: #98ebff;
-  --link-inline-visited: #35badf;
-  --link-ui: #ff3ca0;
-  --link-ui-hover: #ff75bd;
-  --tag-chip: #ff3ca0;
-  --tag-chip-hover: #ff75bd;
+  --link-inline-hover: #b2f1ff;
+  --link-inline-visited: #48c8ea;
+  --link-ui: #ff2f95;
+  --link-ui-hover: #ff79be;
+  --tag-chip: #ff2f95;
+  --tag-chip-hover: #ff79be;
 
   --serif:       'Space Mono', 'Courier New', monospace;
   --serif-alt:   'Cormorant Garamond', Georgia, serif;
   --mono:        'Space Mono', 'Courier New', monospace;
 
-  --card-surface: color-mix(in srgb, var(--paper-dark) 84%, #1f2440 16%);
-  --card-border-color: color-mix(in srgb, var(--sage) 32%, var(--paper-deep) 68%);
+  --card-surface:
+    linear-gradient(
+      162deg,
+      rgba(237, 242, 255, 0.06) 0%,
+      rgba(255, 255, 255, 0.01) 24%,
+      rgba(87, 215, 255, 0.04) 46%,
+      rgba(255, 47, 149, 0.06) 74%,
+      rgba(20, 26, 48, 0.95) 100%
+    );
+  --card-border-color: color-mix(in srgb, var(--sage) 40%, var(--paper-deep) 60%);
   --card-border-width: 1px;
-  --card-accent-color: var(--rust);
-  --card-accent-width: 3px;
+  --card-accent-color: var(--gold);
+  --card-accent-width: 2px;
   --card-shadow-hover:
-    0 0 0 1px rgba(144, 232, 255, 0.24),
-    0 0 16px rgba(255, 60, 160, 0.2);
+    0 0 0 1px rgba(161, 235, 255, 0.35),
+    0 0 20px rgba(255, 47, 149, 0.22);
   --shadow-nav-popover:
-    0 0 0 1px rgba(144, 232, 255, 0.3),
-    0 0 20px rgba(255, 60, 160, 0.22);
+    0 0 0 1px rgba(161, 235, 255, 0.35),
+    0 0 24px rgba(255, 47, 149, 0.26);
 
   --viz-ink:        var(--ink);
   --viz-ink-mid:    var(--ink-mid);
@@ -57,30 +65,56 @@ html[data-theme='chrome-glam'] {
 
 [data-theme='chrome-glam'] body {
   background:
-    radial-gradient(circle at 18% 12%, rgba(255, 60, 160, 0.2), transparent 40%),
-    radial-gradient(circle at 84% 14%, rgba(75, 214, 255, 0.16), transparent 38%),
-    linear-gradient(165deg, #0a0d19 0%, #161a2c 48%, #222843 100%);
+    radial-gradient(circle at 18% 12%, rgba(255, 47, 149, 0.22), transparent 42%),
+    radial-gradient(circle at 84% 14%, rgba(87, 215, 255, 0.2), transparent 40%),
+    linear-gradient(145deg, rgba(237, 242, 255, 0.08) 0 12%, transparent 12% 100%),
+    linear-gradient(165deg, #090d1a 0%, #141a30 48%, #243258 100%);
 }
 
 [data-theme='chrome-glam'] .main-nav {
-  background: rgba(10, 13, 25, 0.88);
-  border-bottom: 1px solid color-mix(in srgb, var(--sage) 38%, transparent 62%);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(237, 242, 255, 0.12) 0 8%,
+      rgba(255, 47, 149, 0.09) 8% 26%,
+      rgba(87, 215, 255, 0.08) 26% 52%,
+      rgba(237, 242, 255, 0.1) 52% 100%
+    ),
+    rgba(9, 13, 26, 0.88);
+  border-bottom: 1px solid color-mix(in srgb, var(--gold) 62%, transparent 38%);
   backdrop-filter: blur(4px);
 }
 
 [data-theme='chrome-glam'] .nav-title,
 [data-theme='chrome-glam'] .hero-title,
 [data-theme='chrome-glam'] .module-header-title {
+  color: var(--gold);
+  font-family: var(--serif-alt);
+  letter-spacing: 0.05em;
   text-shadow:
-    0 0 10px rgba(255, 60, 160, 0.3),
-    0 0 14px rgba(75, 214, 255, 0.16);
+    0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 12px rgba(255, 47, 149, 0.28),
+    0 0 16px rgba(87, 215, 255, 0.2);
 }
 
 [data-theme='chrome-glam'] .sim-summary-card,
 [data-theme='chrome-glam'] .q-card,
 [data-theme='chrome-glam'] .field-notes-card,
 [data-theme='chrome-glam'] .essay-link {
+  background: var(--card-surface);
+  border-color: var(--card-border-color);
   box-shadow:
-    0 0 0 1px rgba(144, 232, 255, 0.14),
-    0 0 14px rgba(255, 60, 160, 0.16);
+    0 0 0 1px rgba(161, 235, 255, 0.18),
+    0 0 18px rgba(255, 47, 149, 0.18);
+}
+
+[data-theme='chrome-glam'] :is(.module-sub-nav-link, .diagnosis-link, .footer-nav-link, .contact-social-link) {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--gold) 68%, var(--rust) 32%);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+[data-theme='chrome-glam'] :is(.module-sub-nav-link--active, .results-nav-link--active, .nav-link--active) {
+  color: var(--gold);
 }

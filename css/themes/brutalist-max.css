@@ -1,38 +1,40 @@
 html[data-theme='brutalist-max'] {
-  --paper:       #f1f1ed;
-  --paper-dark:  #e4e4de;
-  --paper-deep:  #d2d2c7;
+  --paper:       #ffffff;
+  --paper-dark:  #f5f5f5;
+  --paper-deep:  #e4e4e4;
 
-  --ink:         #0a0a0a;
-  --ink-mid:     #1a1a1a;
-  --ink-faint:   #2f2f2f;
-  --ink-ghost:   #4f4f4f;
+  --ink:         #000000;
+  --ink-mid:     #111111;
+  --ink-faint:   #2a2a2a;
+  --ink-ghost:   #4a4a4a;
 
-  --rust:        #ff3b00;
-  --rust-light:  #ff6b3d;
-  --sage:        #111111;
-  --sage-light:  #2e2e2e;
-  --ochre:       #f0cb00;
-  --gold:        #ffd900;
+  --rust:        #ff0050;
+  --rust-light:  #ff4f85;
+  --sage:        #0038ff;
+  --sage-light:  #2f5dff;
+  --ochre:       #00e8ff;
+  --gold:        #ffe600;
   --slate:       #141414;
-  --slate-light: #323232;
+  --slate-light: #2d2d2d;
 
-  --link-inline: #002bff;
-  --link-inline-hover: #1f48ff;
-  --link-inline-visited: #001eae;
+  --link-inline: #0038ff;
+  --link-inline-hover: #2f5dff;
+  --link-inline-visited: #0022b8;
   --link-ui: var(--ink);
-  --link-ui-hover: var(--rust);
-  --tag-chip: #ff3b00;
-  --tag-chip-hover: #ff6b3d;
+  --link-ui-hover: #ff0050;
+  --tag-chip: #ff0050;
+  --tag-chip-hover: #ff4f85;
 
   --serif:       'DM Mono', 'Courier New', monospace;
   --serif-alt:   'Bebas Neue', Impact, sans-serif;
   --mono:        'Space Mono', 'Courier New', monospace;
 
   --card-radius: 0;
-  --card-border-width: 2px;
-  --card-accent-width: 6px;
-  --card-shadow-hover: 8px 8px 0 rgba(10, 10, 10, 0.3);
+  --card-border-width: 3px;
+  --card-accent-width: 9px;
+  --card-shadow-hover:
+    10px 10px 0 rgba(0, 0, 0, 0.26),
+    -3px -3px 0 rgba(0, 56, 255, 0.2);
   --shadow-nav-popover: 0 0 0 rgba(0, 0, 0, 0);
 
   --viz-ink:        var(--ink);
@@ -51,24 +53,36 @@ html[data-theme='brutalist-max'] {
 
 [data-theme='brutalist-max'] body {
   background:
+    linear-gradient(154deg, rgba(0, 56, 255, 0.1) 0 9%, transparent 9% 100%),
+    linear-gradient(24deg, rgba(255, 0, 80, 0.1) 0 7%, transparent 7% 100%),
     repeating-linear-gradient(
-      -45deg,
-      rgba(0, 0, 0, 0.045) 0 7px,
-      rgba(0, 0, 0, 0) 7px 16px
+      90deg,
+      rgba(0, 0, 0, 0.09) 0 2px,
+      rgba(0, 0, 0, 0) 2px 18px
     ),
     var(--paper);
 }
 
 [data-theme='brutalist-max'] .main-nav {
-  border-bottom: 4px solid var(--ink);
-  background: var(--paper);
+  border-bottom: 5px solid var(--ink);
+  background:
+    linear-gradient(
+      100deg,
+      rgba(255, 0, 80, 0.2) 0 14%,
+      rgba(0, 56, 255, 0.17) 14% 32%,
+      rgba(0, 232, 255, 0.16) 32% 44%,
+      transparent 44% 100%
+    ),
+    var(--paper);
 }
 
 [data-theme='brutalist-max'] .nav-links.is-open {
-  border: 3px solid var(--ink);
-  border-top-width: 6px;
+  border: 4px solid var(--ink);
+  border-top-width: 8px;
   background: var(--paper-dark);
-  box-shadow: 10px 10px 0 rgba(10, 10, 10, 0.25);
+  box-shadow:
+    12px 12px 0 rgba(0, 0, 0, 0.24),
+    -3px -3px 0 rgba(255, 0, 80, 0.22);
 }
 
 [data-theme='brutalist-max'] .nav-title,
@@ -77,8 +91,12 @@ html[data-theme='brutalist-max'] {
 [data-theme='brutalist-max'] .module-title,
 [data-theme='brutalist-max'] .diagnosis-title {
   font-family: 'Bebas Neue', Impact, sans-serif;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   font-style: normal;
+  text-transform: uppercase;
+  text-shadow:
+    2px 2px 0 rgba(0, 56, 255, 0.2),
+    -2px -2px 0 rgba(255, 0, 80, 0.2);
 }
 
 [data-theme='brutalist-max'] .module-entry,
@@ -86,35 +104,53 @@ html[data-theme='brutalist-max'] {
 [data-theme='brutalist-max'] .q-card,
 [data-theme='brutalist-max'] .field-notes-card,
 [data-theme='brutalist-max'] .essay-link {
-  border: 2px solid var(--ink);
-  border-left: 10px solid var(--rust);
+  border: 3px solid var(--ink);
+  border-left: 12px solid var(--sage);
+  border-top: 8px solid var(--rust);
   background: var(--paper-dark);
   border-radius: 0;
-  box-shadow: 6px 6px 0 rgba(10, 10, 10, 0.16);
+  box-shadow:
+    8px 8px 0 rgba(0, 0, 0, 0.2),
+    -2px -2px 0 rgba(0, 56, 255, 0.2);
 }
 
 [data-theme='brutalist-max'] .module-sub-nav,
 [data-theme='brutalist-max'] .results-nav,
 [data-theme='brutalist-max'] .module-footer-nav {
-  border-top: 3px solid var(--ink);
-  border-bottom: 3px solid var(--ink);
+  border-top: 4px solid var(--ink);
+  border-bottom: 4px solid var(--ink);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 56, 255, 0.14) 0 7%,
+      transparent 7% 93%,
+      rgba(255, 0, 80, 0.14) 93% 100%
+    );
 }
 
 [data-theme='brutalist-max'] .module-sub-nav-link,
 [data-theme='brutalist-max'] .diagnosis-link,
 [data-theme='brutalist-max'] .footer-nav-link,
 [data-theme='brutalist-max'] .contact-social-link {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 2px;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.045em;
+}
+
+[data-theme='brutalist-max'] .module-sub-nav-link--active,
+[data-theme='brutalist-max'] .results-nav-link--active,
+[data-theme='brutalist-max'] .nav-link--active {
+  color: var(--rust);
 }
 
 [data-theme='brutalist-max'] .status-live {
-  color: var(--rust);
-  font-weight: 600;
+  color: var(--sage);
+  font-weight: 700;
 }
 
 [data-theme='brutalist-max'] .status-coming {
-  color: var(--ink-faint);
-  font-weight: 600;
+  color: var(--rust);
+  font-weight: 700;
 }

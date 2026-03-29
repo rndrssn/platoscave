@@ -18,11 +18,13 @@
 // window.PLATOSCAVE_THEME = 'new-yorker';
 // window.PLATOSCAVE_THEME = 'emergent-systems';
 // window.PLATOSCAVE_THEME = 'decision-collision';
- window.PLATOSCAVE_THEME = 'brutalist-max';
+// window.PLATOSCAVE_THEME = 'decision-collision-cold-contrast';
+// window.PLATOSCAVE_THEME = 'brutalist-max';
 // window.PLATOSCAVE_THEME = 'neon-bowie';
 // window.PLATOSCAVE_THEME = 'arcade-afterglow';
 // window.PLATOSCAVE_THEME = 'laser-bauhaus';
 // window.PLATOSCAVE_THEME = 'chrome-glam';
+// window.PLATOSCAVE_THEME = 'minimalist-brutalist';
 
 /* Active */
-//window.PLATOSCAVE_THEME = 'decision-collision-cold';
+window.PLATOSCAVE_THEME = 'decision-collision-cold';

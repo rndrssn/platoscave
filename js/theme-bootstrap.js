@@ -16,11 +16,13 @@
     'emergent-systems',
     'decision-collision',
     'decision-collision-cold',
+    'decision-collision-cold-contrast',
     'brutalist-max',
     'neon-bowie',
     'arcade-afterglow',
     'laser-bauhaus',
     'chrome-glam',
+    'minimalist-brutalist',
   ];
 
   function removeThemeStylesheet() {

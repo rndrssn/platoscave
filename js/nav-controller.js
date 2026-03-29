@@ -53,7 +53,7 @@
       navCandidates.forEach(function (link) {
         if (aboutNavLink) return;
         var text = (link.textContent || '').trim().toLowerCase();
-        if (text === 'about' || text === 'home') {
+        if (text === 'about' || text === 'home' || text === 'identity') {
           aboutNavLink = link;
         }
       });

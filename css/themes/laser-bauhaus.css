@@ -1,41 +1,45 @@
 html[data-theme='laser-bauhaus'] {
-  --paper:       #fff8ea;
-  --paper-dark:  #f6ead4;
-  --paper-deep:  #ecd9b8;
+  --paper:       #ffffff;
+  --paper-dark:  #f3f3f3;
+  --paper-deep:  #e2e2e2;
 
-  --ink:         #0f1021;
-  --ink-mid:     #252844;
-  --ink-faint:   #44486f;
-  --ink-ghost:   #6d729e;
+  --ink:         #090a14;
+  --ink-mid:     #1a1d35;
+  --ink-faint:   #30355e;
+  --ink-ghost:   #5a6190;
 
-  --rust:        #ff2252;
-  --rust-light:  #ff5a7e;
-  --sage:        #0044ff;
-  --sage-light:  #4f79ff;
-  --ochre:       #ffb100;
-  --gold:        #ffca38;
-  --slate:       #12162f;
-  --slate-light: #2f3b74;
+  --rust:        #ff0039;
+  --rust-light:  #ff4a6f;
+  --sage:        #0037ff;
+  --sage-light:  #3560ff;
+  --ochre:       #ffc400;
+  --gold:        #ffd95a;
+  --slate:       #0d1230;
+  --slate-light: #2b3a82;
 
-  --link-inline: #0044ff;
-  --link-inline-hover: #2f67ff;
+  --link-inline: #0037ff;
+  --link-inline-hover: #1f4dff;
   --link-inline-visited: #0b2f9e;
-  --link-ui: #ff2252;
-  --link-ui-hover: #ff5a7e;
-  --tag-chip: #ff2252;
-  --tag-chip-hover: #ff5a7e;
+  --link-ui: #090a14;
+  --link-ui-hover: #ff0039;
+  --tag-chip: #ff0039;
+  --tag-chip-hover: #ff345f;
 
   --serif:       'Space Mono', 'Courier New', monospace;
   --serif-alt:   'Bebas Neue', Impact, sans-serif;
   --mono:        'Space Mono', 'Courier New', monospace;
 
-  --card-surface: var(--paper-dark);
+  --card-surface: color-mix(in srgb, var(--paper-dark) 90%, white 10%);
   --card-border-color: var(--ink);
-  --card-border-width: 2px;
-  --card-accent-color: var(--rust);
-  --card-accent-width: 6px;
-  --card-shadow-hover: 7px 7px 0 rgba(15, 16, 33, 0.2);
-  --shadow-nav-popover: 7px 7px 0 rgba(15, 16, 33, 0.25);
+  --card-border-width: 4px;
+  --card-accent-color: var(--sage);
+  --card-accent-width: 10px;
+  --card-shadow-hover:
+    12px 12px 0 rgba(9, 10, 20, 0.24),
+    -4px -4px 0 rgba(255, 0, 57, 0.2);
+  --shadow-nav-popover:
+    10px 10px 0 rgba(9, 10, 20, 0.26),
+    -4px -4px 0 rgba(0, 55, 255, 0.24);
 
   --viz-ink:        var(--ink);
   --viz-ink-mid:    var(--ink-mid);
@@ -53,35 +57,84 @@ html[data-theme='laser-bauhaus'] {
 
 [data-theme='laser-bauhaus'] body {
   background:
-    linear-gradient(155deg, rgba(0, 68, 255, 0.08) 0 16%, transparent 16% 100%),
-    linear-gradient(22deg, rgba(255, 34, 82, 0.08) 0 12%, transparent 12% 100%),
+    linear-gradient(148deg, rgba(0, 55, 255, 0.3) 0 13%, transparent 13% 100%),
+    linear-gradient(28deg, rgba(255, 0, 57, 0.24) 0 11%, transparent 11% 100%),
+    linear-gradient(90deg, rgba(255, 196, 0, 0.22) 0 5%, transparent 5% 100%),
     repeating-linear-gradient(
       90deg,
-      rgba(15, 16, 33, 0.03) 0 2px,
-      transparent 2px 18px
+      rgba(9, 10, 20, 0.12) 0 3px,
+      transparent 3px 20px
     ),
     var(--paper);
 }
 
 [data-theme='laser-bauhaus'] .main-nav {
-  border-bottom: 3px solid var(--ink);
-  background: color-mix(in srgb, var(--paper) 92%, white 8%);
+  border-bottom: 5px solid var(--ink);
+  background:
+    linear-gradient(
+      102deg,
+      rgba(255, 0, 57, 0.26) 0 16%,
+      rgba(0, 55, 255, 0.2) 16% 36%,
+      rgba(255, 196, 0, 0.24) 36% 52%,
+      transparent 44% 100%
+    ),
+    color-mix(in srgb, var(--paper) 88%, white 12%);
 }
 
 [data-theme='laser-bauhaus'] .nav-title,
 [data-theme='laser-bauhaus'] .hero-title,
 [data-theme='laser-bauhaus'] .module-header-title,
 [data-theme='laser-bauhaus'] .module-title {
+  color: var(--ink);
   font-style: normal;
-  letter-spacing: 0.045em;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+  line-height: 0.9;
+  text-shadow:
+    2px 2px 0 rgba(0, 55, 255, 0.22),
+    -2px -2px 0 rgba(255, 0, 57, 0.2);
 }
 
 [data-theme='laser-bauhaus'] .sim-summary-card,
 [data-theme='laser-bauhaus'] .q-card,
 [data-theme='laser-bauhaus'] .field-notes-card,
 [data-theme='laser-bauhaus'] .essay-link {
-  border: 2px solid var(--ink);
-  border-left: 8px solid var(--rust);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 196, 0, 0.18) 0 9%,
+      transparent 8% 100%
+    ),
+    var(--card-surface);
+  border: 4px solid var(--ink);
+  border-left: 12px solid var(--sage);
+  border-top: 8px solid var(--rust);
   border-radius: 0;
-  box-shadow: 6px 6px 0 rgba(15, 16, 33, 0.16);
+  box-shadow:
+    12px 12px 0 rgba(9, 10, 20, 0.2),
+    -3px -3px 0 rgba(0, 55, 255, 0.2);
+}
+
+[data-theme='laser-bauhaus'] :is(.module-sub-nav, .results-nav, .module-footer-nav) {
+  border-top: 4px solid var(--ink);
+  border-bottom: 4px solid var(--ink);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 55, 255, 0.16) 0 8%,
+      transparent 8% 92%,
+      rgba(255, 0, 57, 0.15) 92% 100%
+    );
+}
+
+[data-theme='laser-bauhaus'] :is(.module-sub-nav-link, .diagnosis-link, .footer-nav-link, .contact-social-link) {
+  color: var(--ink);
+  font-weight: 800;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme='laser-bauhaus'] :is(.module-sub-nav-link--active, .results-nav-link--active, .nav-link--active) {
+  color: var(--rust);
 }

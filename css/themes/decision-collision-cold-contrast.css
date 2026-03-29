@@ -1,0 +1,124 @@
+html[data-theme='decision-collision-cold-contrast'] {
+  --paper:       #f8fbff;
+  --paper-dark:  #e8f0fb;
+  --paper-deep:  #cfddf0;
+
+  --ink:         #071325;
+  --ink-mid:     #132641;
+  --ink-faint:   #29446b;
+  --ink-ghost:   #4b6d98;
+
+  --rust:        #ff2f7d;
+  --rust-light:  #ff639b;
+  --sage:        #0056ff;
+  --sage-light:  #337dff;
+  --ochre:       #1aa9ff;
+  --gold:        #6ec6ff;
+  --slate:       #173254;
+  --slate-light: #2f5886;
+
+  --serif:       'Space Mono', 'Courier New', monospace;
+  --serif-alt:   'Bebas Neue', Impact, sans-serif;
+  --mono:        'Space Mono', 'Courier New', monospace;
+
+  --fs-link-nav:                 0.74rem;
+  --fs-heading-hero-min:         2.45rem;
+  --fs-heading-hero-max:         5.25rem;
+  --fs-heading-module-min:       2.05rem;
+  --fs-heading-module-max:       3.45rem;
+  --fs-link-module-sub-nav:      0.78rem;
+  --fs-link-diagnosis:           0.78rem;
+  --fs-link-footer-nav:          0.78rem;
+  --fs-footer-text:              0.68rem;
+  --viz-fs-label:                0.78rem;
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+[data-theme='decision-collision-cold-contrast'] body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(168deg, rgba(0, 86, 255, 0.18) 0 18%, transparent 18% 100%),
+    linear-gradient(14deg, rgba(26, 169, 255, 0.14) 0 14%, transparent 14% 100%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(7, 19, 37, 0.06) 0 2px,
+      transparent 2px 14px
+    );
+}
+
+[data-theme='decision-collision-cold-contrast'] .main-nav {
+  background: rgba(248, 251, 255, 0.98);
+  border-bottom: 4px solid var(--ink);
+}
+
+[data-theme='decision-collision-cold-contrast'] .nav-title,
+[data-theme='decision-collision-cold-contrast'] .hero-title,
+[data-theme='decision-collision-cold-contrast'] .module-header-title,
+[data-theme='decision-collision-cold-contrast'] .module-title,
+[data-theme='decision-collision-cold-contrast'] .diagnosis-title {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  letter-spacing: 0.045em;
+  line-height: 1.02;
+}
+
+[data-theme='decision-collision-cold-contrast'] .hero-body,
+[data-theme='decision-collision-cold-contrast'] .module-header-body,
+[data-theme='decision-collision-cold-contrast'] .diagnosis-body,
+[data-theme='decision-collision-cold-contrast'] .essay-body,
+[data-theme='decision-collision-cold-contrast'] .field-notes-body {
+  font-family: 'Space Mono', 'Courier New', monospace;
+}
+
+[data-theme='decision-collision-cold-contrast'] .sim-summary-card,
+[data-theme='decision-collision-cold-contrast'] .q-card,
+[data-theme='decision-collision-cold-contrast'] .field-notes-card,
+[data-theme='decision-collision-cold-contrast'] .essay-link {
+  background: var(--paper-dark);
+  border: 3px solid var(--ink);
+  border-top: 10px solid var(--sage);
+  box-shadow: 8px 8px 0 rgba(7, 19, 37, 0.2);
+  border-radius: 0;
+}
+
+[data-theme='decision-collision-cold-contrast'] .module-sub-nav,
+[data-theme='decision-collision-cold-contrast'] .results-nav,
+[data-theme='decision-collision-cold-contrast'] .module-footer-nav {
+  border-color: var(--ink);
+  border-top-width: 2px;
+  border-bottom-width: 3px;
+}
+
+[data-theme='decision-collision-cold-contrast'] .section-label,
+[data-theme='decision-collision-cold-contrast'] .module-number,
+[data-theme='decision-collision-cold-contrast'] .module-status,
+[data-theme='decision-collision-cold-contrast'] .footer-text {
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+[data-theme='decision-collision-cold-contrast'] .module-sub-nav-link,
+[data-theme='decision-collision-cold-contrast'] .diagnosis-link,
+[data-theme='decision-collision-cold-contrast'] .footer-nav-link,
+[data-theme='decision-collision-cold-contrast'] .contact-social-link {
+  color: var(--sage);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+[data-theme='decision-collision-cold-contrast'] .module-sub-nav-link--active,
+[data-theme='decision-collision-cold-contrast'] .results-nav-link--active {
+  color: var(--rust);
+}

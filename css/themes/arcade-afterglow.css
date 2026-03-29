@@ -30,13 +30,15 @@ html[data-theme='arcade-afterglow'] {
   --mono:        'Space Mono', 'Courier New', monospace;
 
   --card-surface: color-mix(in srgb, var(--paper-dark) 86%, #1d0d39 14%);
-  --card-border-color: color-mix(in srgb, var(--sage) 36%, var(--paper-deep) 64%);
-  --card-accent-color: var(--rust);
-  --card-accent-width: 3px;
-  --card-shadow-hover: 0 0 18px rgba(255, 42, 166, 0.28);
+  --card-border-color: color-mix(in srgb, var(--sage) 50%, var(--paper-deep) 50%);
+  --card-accent-color: var(--sage);
+  --card-accent-width: 4px;
+  --card-shadow-hover:
+    0 0 0 1px rgba(111, 243, 255, 0.28),
+    0 0 24px rgba(255, 42, 166, 0.32);
   --shadow-nav-popover:
-    0 0 0 1px rgba(111, 243, 255, 0.32),
-    0 0 22px rgba(255, 42, 166, 0.26);
+    0 0 0 1px rgba(111, 243, 255, 0.4),
+    0 0 26px rgba(255, 42, 166, 0.3);
 
   --viz-ink:        var(--ink);
   --viz-ink-mid:    var(--ink-mid);
@@ -56,10 +58,16 @@ html[data-theme='arcade-afterglow'] {
   background:
     radial-gradient(circle at 12% 18%, rgba(255, 42, 166, 0.18), transparent 42%),
     radial-gradient(circle at 84% 12%, rgba(0, 231, 255, 0.16), transparent 40%),
+    radial-gradient(circle at 54% 86%, rgba(255, 224, 88, 0.12), transparent 34%),
+    repeating-linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0 3px,
+      rgba(255, 255, 255, 0.02) 3px 4px
+    ),
     repeating-linear-gradient(
       0deg,
-      rgba(255, 255, 255, 0.022) 0 1px,
-      transparent 1px 6px
+      rgba(255, 255, 255, 0.02) 0 1px,
+      transparent 1px 7px
     ),
     linear-gradient(165deg, #080315 0%, #120827 50%, #1f1140 100%);
 }
@@ -67,13 +75,41 @@ html[data-theme='arcade-afterglow'] {
 [data-theme='arcade-afterglow'] .nav-title,
 [data-theme='arcade-afterglow'] .hero-title,
 [data-theme='arcade-afterglow'] .module-header-title {
+  color: var(--ink);
   text-shadow:
-    0 0 12px rgba(255, 42, 166, 0.32),
-    0 0 18px rgba(0, 231, 255, 0.22);
+    0 0 14px rgba(255, 42, 166, 0.36),
+    0 0 24px rgba(0, 231, 255, 0.24);
 }
 
 [data-theme='arcade-afterglow'] .main-nav {
-  background: rgba(8, 3, 21, 0.9);
-  border-bottom: 1px solid color-mix(in srgb, var(--sage) 44%, transparent 56%);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 231, 255, 0.08) 0 28%,
+      rgba(255, 42, 166, 0.08) 28% 64%,
+      rgba(255, 224, 88, 0.08) 64% 100%
+    ),
+    rgba(8, 3, 21, 0.88);
+  border-bottom: 1px solid color-mix(in srgb, var(--sage) 48%, transparent 52%);
+  box-shadow:
+    0 0 0 1px rgba(111, 243, 255, 0.2),
+    0 0 20px rgba(255, 42, 166, 0.18);
   backdrop-filter: blur(4px);
+}
+
+[data-theme='arcade-afterglow'] :is(.module-sub-nav, .results-nav, .module-footer-nav) {
+  border-top: 1px solid rgba(111, 243, 255, 0.26);
+  border-bottom: 1px solid rgba(255, 42, 166, 0.26);
+  box-shadow: inset 0 0 12px rgba(111, 243, 255, 0.08);
+}
+
+[data-theme='arcade-afterglow'] :is(.section-label, .module-number, .module-status, .footer-text) {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72em;
+}
+
+[data-theme='arcade-afterglow'] :is(.module-sub-nav-link, .diagnosis-link, .footer-nav-link, .contact-social-link) {
+  text-shadow: 0 0 8px rgba(0, 231, 255, 0.24);
 }

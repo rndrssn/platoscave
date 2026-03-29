@@ -1,0 +1,156 @@
+html[data-theme='minimalist-brutalist'] {
+  --paper:       #ffffff;
+  --paper-dark:  #f7f7f7;
+  --paper-deep:  #e9e9e9;
+
+  --ink:         #050505;
+  --ink-mid:     #111111;
+  --ink-faint:   #2a2a2a;
+  --ink-ghost:   #4f4f4f;
+
+  /* Accent map: RGB + yellow */
+  --rust:        #ff0033; /* red */
+  --rust-light:  #ff4a70;
+  --sage:        #00cf5a; /* green */
+  --sage-light:  #3fe387;
+  --ochre:       #005bff; /* blue */
+  --gold:        #ffd800; /* yellow */
+  --slate:       #171717;
+  --slate-light: #2f2f2f;
+
+  --link-inline: #005bff;
+  --link-inline-hover: #2b78ff;
+  --link-inline-visited: #0039a8;
+  --link-ui: var(--ink);
+  --link-ui-hover: var(--rust);
+  --tag-chip: var(--rust);
+  --tag-chip-hover: var(--rust-light);
+
+  --serif:       'Rajdhani', 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --serif-alt:   'Bebas Neue', Impact, sans-serif;
+  --mono:        'JetBrains Mono', 'DM Mono', 'Courier New', monospace;
+
+  --card-surface: var(--paper-dark);
+  --card-border-color: var(--ink);
+  --card-border-width: 3px;
+  --card-accent-color: var(--ochre);
+  --card-accent-width: 8px;
+  --card-shadow-hover:
+    10px 10px 0 rgba(0, 0, 0, 0.22),
+    -2px -2px 0 rgba(0, 91, 255, 0.22);
+  --shadow-nav-popover: 0 0 0 rgba(0, 0, 0, 0);
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+[data-theme='minimalist-brutalist'] body {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.08) 0 2px, transparent 2px 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.03) 0 1px, transparent 1px 100%),
+    var(--paper);
+  background-size: 100% 100%, 100% 8px, auto;
+}
+
+[data-theme='minimalist-brutalist'] .main-nav {
+  border-bottom: 5px solid var(--ink);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 51, 0.17) 0 11%,
+      rgba(0, 207, 90, 0.15) 11% 22%,
+      rgba(0, 91, 255, 0.15) 22% 33%,
+      rgba(255, 216, 0, 0.16) 33% 44%,
+      transparent 44% 100%
+    ),
+    var(--paper);
+}
+
+[data-theme='minimalist-brutalist'] .nav-links.is-open {
+  border: 4px solid var(--ink);
+  border-top-width: 8px;
+  background: var(--paper-dark);
+  box-shadow:
+    12px 12px 0 rgba(0, 0, 0, 0.24),
+    -2px -2px 0 rgba(255, 0, 51, 0.2);
+}
+
+[data-theme='minimalist-brutalist'] .nav-title,
+[data-theme='minimalist-brutalist'] .hero-title,
+[data-theme='minimalist-brutalist'] .module-header-title,
+[data-theme='minimalist-brutalist'] .module-title,
+[data-theme='minimalist-brutalist'] .diagnosis-title {
+  color: var(--ink);
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 0.9;
+}
+
+[data-theme='minimalist-brutalist'] .module-entry,
+[data-theme='minimalist-brutalist'] .sim-summary-card,
+[data-theme='minimalist-brutalist'] .q-card,
+[data-theme='minimalist-brutalist'] .field-notes-card,
+[data-theme='minimalist-brutalist'] .essay-link {
+  border: 3px solid var(--ink);
+  border-left: 10px solid var(--ochre);
+  border-top: 8px solid var(--rust);
+  background: var(--paper-dark);
+  border-radius: 0;
+  box-shadow:
+    8px 8px 0 rgba(0, 0, 0, 0.18),
+    -2px -2px 0 rgba(0, 91, 255, 0.18);
+}
+
+[data-theme='minimalist-brutalist'] .module-sub-nav,
+[data-theme='minimalist-brutalist'] .results-nav,
+[data-theme='minimalist-brutalist'] .module-footer-nav {
+  border-top: 4px solid var(--ink);
+  border-bottom: 4px solid var(--ink);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 51, 0.13) 0 6%,
+      rgba(0, 207, 90, 0.13) 6% 12%,
+      rgba(0, 91, 255, 0.13) 12% 18%,
+      rgba(255, 216, 0, 0.14) 18% 24%,
+      transparent 24% 100%
+    );
+}
+
+[data-theme='minimalist-brutalist'] .module-sub-nav-link,
+[data-theme='minimalist-brutalist'] .diagnosis-link,
+[data-theme='minimalist-brutalist'] .footer-nav-link,
+[data-theme='minimalist-brutalist'] .contact-social-link {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme='minimalist-brutalist'] .module-sub-nav-link--active,
+[data-theme='minimalist-brutalist'] .results-nav-link--active,
+[data-theme='minimalist-brutalist'] .nav-link--active {
+  color: var(--rust);
+}
+
+[data-theme='minimalist-brutalist'] .status-live {
+  color: var(--sage);
+  font-weight: 700;
+}
+
+[data-theme='minimalist-brutalist'] .status-coming {
+  color: var(--ochre);
+  font-weight: 700;
+}

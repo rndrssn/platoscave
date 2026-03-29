@@ -62,10 +62,17 @@ function testCustomThemeIsTrimmed() {
   assert(result.setCall.value === 'urban-grid2', 'Expected trimmed theme value');
 }
 
+function testInvalidThemeFallsBackToDefault() {
+  const result = runWithTheme('not-a-real-theme');
+  assert(result.removed, 'Expected removeAttribute for invalid theme');
+  assert(result.setCall === null, 'Did not expect setAttribute for invalid theme');
+}
+
 function run() {
   testDefaultCasesClearTheme();
   testCustomThemeSetsDataTheme();
   testCustomThemeIsTrimmed();
+  testInvalidThemeFallsBackToDefault();
   console.log('PASS: tests/test-theme-bootstrap.js');
 }
 

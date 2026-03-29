@@ -33,12 +33,12 @@
 
   var FIBONACCI_LAYOUTS = {
     home: {
-      desktop: { xMin: 30, xMax: 96, yMin: 8, yMax: 28, sizeMin: 96, sizeMax: 114, jitterX: 0.55, jitterY: 0.55 },
-      mobile: { xMin: 24, xMax: 94, yMin: 10, yMax: 28, sizeMin: 72, sizeMax: 88, jitterX: 0.45, jitterY: 0.45 }
+      desktop: { xMin: 8, xMax: 92, yMin: 12, yMax: 90, sizeMin: 132, sizeMax: 176, jitterX: 1.6, jitterY: 1.6 },
+      mobile: { xMin: 10, xMax: 90, yMin: 14, yMax: 88, sizeMin: 102, sizeMax: 136, jitterX: 1.2, jitterY: 1.2 }
     },
     notes: {
-      desktop: { xMin: 28, xMax: 96, yMin: 9, yMax: 30, sizeMin: 94, sizeMax: 112, jitterX: 0.55, jitterY: 0.55 },
-      mobile: { xMin: 22, xMax: 94, yMin: 11, yMax: 30, sizeMin: 70, sizeMax: 86, jitterX: 0.45, jitterY: 0.45 }
+      desktop: { xMin: 8, xMax: 92, yMin: 12, yMax: 92, sizeMin: 128, sizeMax: 170, jitterX: 1.6, jitterY: 1.6 },
+      mobile: { xMin: 10, xMax: 90, yMin: 14, yMax: 90, sizeMin: 98, sizeMax: 132, jitterX: 1.2, jitterY: 1.2 }
     }
   };
 
@@ -151,7 +151,7 @@
       var baseX = slotX ? slotX.x : slot.x;
       var baseY = slotY ? slotY.y : slot.y;
       var opacity = parseFloat(doodle.dataset.opacity || '0.1');
-      var renderedSize = slot.size * 0.78;
+      var renderedSize = slot.size * 0.92;
       var dx = jitter[i] ? jitter[i].x : 0;
       var dy = jitter[i] ? jitter[i].y : 0;
       var clippedHalf = (renderedSize * 0.64) + 12;

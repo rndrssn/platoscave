@@ -1,4 +1,4 @@
-[data-theme='new-yorker'] {
+html[data-theme='new-yorker'] {
   --paper:       #f7f5f1;
   --paper-dark:  #efebe3;
   --paper-deep:  #ddd6ca;

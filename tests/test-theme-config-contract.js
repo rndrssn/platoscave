@@ -3,31 +3,21 @@
 const fs = require('fs');
 const path = require('path');
 
-const themesPath = path.join(__dirname, '..', 'css', 'themes.css');
+const themesDir = path.join(__dirname, '..', 'css', 'themes');
 const themeConfigPath = path.join(__dirname, '..', 'theme.config.js');
 const themeBootstrapPath = path.join(__dirname, '..', 'js', 'theme-bootstrap.js');
 
-function loadCssWithImports(entryPath, seen) {
-  const visited = seen || new Set();
-  const absEntry = path.resolve(entryPath);
-  if (visited.has(absEntry)) return '';
-  visited.add(absEntry);
+function loadAllThemeCss() {
+  const files = fs.readdirSync(themesDir)
+    .filter((name) => name.endsWith('.css'))
+    .filter((name) => !name.startsWith('_'))
+    .sort();
 
-  const css = fs.readFileSync(absEntry, 'utf8');
-  const importRe = /@import\s+url\(\s*['"]([^'"]+)['"]\s*\)\s*;/g;
-  let out = css;
-  let match;
+  assert(files.length > 0, 'No concrete theme files found under css/themes');
 
-  while ((match = importRe.exec(css)) !== null) {
-    const rel = match[1];
-    const childPath = path.resolve(path.dirname(absEntry), rel);
-    if (!fs.existsSync(childPath)) {
-      throw new Error('Missing imported CSS file: ' + childPath);
-    }
-    out += '\n' + loadCssWithImports(childPath, visited);
-  }
-
-  return out;
+  return files
+    .map((name) => fs.readFileSync(path.join(themesDir, name), 'utf8'))
+    .join('\n');
 }
 
 function assert(condition, message) {
@@ -71,7 +61,7 @@ function parseBootstrapAllowlist(bootstrapSource) {
 }
 
 function testThemeConfigAndThemeCssStayInSync() {
-  const cssSource = loadCssWithImports(themesPath);
+  const cssSource = loadAllThemeCss();
   const configSource = fs.readFileSync(themeConfigPath, 'utf8');
   const bootstrapSource = fs.readFileSync(themeBootstrapPath, 'utf8');
 

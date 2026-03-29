@@ -1,0 +1,79 @@
+html[data-theme='arcade-afterglow'] {
+  --paper:       #080315;
+  --paper-dark:  #120827;
+  --paper-deep:  #1f1140;
+
+  --ink:         #f7f7ff;
+  --ink-mid:     #ded9ff;
+  --ink-faint:   #b9abff;
+  --ink-ghost:   #8574cc;
+
+  --rust:        #ff2aa6;
+  --rust-light:  #ff63c1;
+  --sage:        #00e7ff;
+  --sage-light:  #6ff3ff;
+  --ochre:       #ffe058;
+  --gold:        #ffe98a;
+  --slate:       #3e3281;
+  --slate-light: #6658bf;
+
+  --link-inline: #00e7ff;
+  --link-inline-hover: #77f4ff;
+  --link-inline-visited: #37cde5;
+  --link-ui: #ff2aa6;
+  --link-ui-hover: #ff63c1;
+  --tag-chip: #ff2aa6;
+  --tag-chip-hover: #ff63c1;
+
+  --serif:       'Space Mono', 'Courier New', monospace;
+  --serif-alt:   'Bebas Neue', Impact, sans-serif;
+  --mono:        'Space Mono', 'Courier New', monospace;
+
+  --card-surface: color-mix(in srgb, var(--paper-dark) 86%, #1d0d39 14%);
+  --card-border-color: color-mix(in srgb, var(--sage) 36%, var(--paper-deep) 64%);
+  --card-accent-color: var(--rust);
+  --card-accent-width: 3px;
+  --card-shadow-hover: 0 0 18px rgba(255, 42, 166, 0.28);
+  --shadow-nav-popover:
+    0 0 0 1px rgba(111, 243, 255, 0.32),
+    0 0 22px rgba(255, 42, 166, 0.26);
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+[data-theme='arcade-afterglow'] body {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 42, 166, 0.18), transparent 42%),
+    radial-gradient(circle at 84% 12%, rgba(0, 231, 255, 0.16), transparent 40%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.022) 0 1px,
+      transparent 1px 6px
+    ),
+    linear-gradient(165deg, #080315 0%, #120827 50%, #1f1140 100%);
+}
+
+[data-theme='arcade-afterglow'] .nav-title,
+[data-theme='arcade-afterglow'] .hero-title,
+[data-theme='arcade-afterglow'] .module-header-title {
+  text-shadow:
+    0 0 12px rgba(255, 42, 166, 0.32),
+    0 0 18px rgba(0, 231, 255, 0.22);
+}
+
+[data-theme='arcade-afterglow'] .main-nav {
+  background: rgba(8, 3, 21, 0.9);
+  border-bottom: 1px solid color-mix(in srgb, var(--sage) 44%, transparent 56%);
+  backdrop-filter: blur(4px);
+}

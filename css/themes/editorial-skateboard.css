@@ -1,4 +1,4 @@
-[data-theme='editorial-skateboard'] {
+html[data-theme='editorial-skateboard'] {
   --paper:       #f4f0e6;
   --paper-dark:  #e7dfcf;
   --paper-deep:  #d3c3a6;

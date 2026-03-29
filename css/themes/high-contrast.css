@@ -1,4 +1,4 @@
-[data-theme='high-contrast'] {
+html[data-theme='high-contrast'] {
   --paper:       #f7f3e8;
   --paper-dark:  #e8deca;
   --paper-deep:  #d3c09b;

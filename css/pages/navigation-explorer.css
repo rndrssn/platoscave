@@ -3,12 +3,13 @@
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  gap: 0.5rem;
-  padding-top: 0.35rem;
-  padding-bottom: 1.25rem;
-  margin-top: 0.55rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--ink-ghost);
+  gap: 0.2rem;
+  padding-top: 0;
+  padding-bottom: 0.72rem;
+  padding-left: 0.78rem;
+  margin-top: 0.12rem;
+  margin-bottom: 1.55rem;
+  border-bottom: 0.75px dashed color-mix(in srgb, var(--ink-ghost) 58%, transparent 42%);
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -17,60 +18,98 @@
   position: relative;
 }
 
-.module-sub-nav-link {
+.module-sub-nav .module-sub-nav-link {
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: 0.62rem;
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink-faint);
+  letter-spacing: 0.075em;
+  color: var(--ink);
   text-decoration: none;
   transition: color 0.2s ease;
   white-space: nowrap;
   flex: 0 0 auto;
   scroll-snap-align: start;
-  min-height: 1.3rem;
+  min-height: 1rem;
+  padding: 0.01rem 0.05rem;
   display: inline-flex;
   align-items: center;
 }
 
 .module-sub-nav-number {
-  margin-right: 0.28rem;
+  margin-right: 0.22rem;
+  color: inherit;
 }
 
-.module-sub-nav-link:hover {
+.module-sub-nav .module-sub-nav-link:hover {
   color: var(--ink-mid);
   text-decoration: none;
 }
 
-.module-sub-nav-link:visited,
-.module-sub-nav-link:focus-visible {
+.module-sub-nav .module-sub-nav-link:visited {
+  color: var(--ink);
   text-decoration: none;
 }
 
-.module-sub-nav-link.module-sub-nav-link--active {
+.module-sub-nav .module-sub-nav-link:focus-visible {
+  color: var(--ink-mid);
+  text-decoration: none;
+}
+
+.module-sub-nav .module-sub-nav-link.module-sub-nav-link--active {
   color: var(--ink);
   font-weight: 400;
   text-decoration: none;
-  position: relative;
-}
-
-.module-sub-nav-link.module-sub-nav-link--active::before {
-  content: "";
-  width: 0.28rem;
-  height: 0.28rem;
-  border-radius: 999px;
-  background: var(--sage);
-  display: inline-block;
-  margin-right: 0.35rem;
-  flex: 0 0 auto;
 }
 
 .module-sub-nav-dot {
-  color: var(--ink-ghost);
-  font-size: 0.7rem;
+  font-size: 0;
+  width: 0.54rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   white-space: nowrap;
   flex: 0 0 auto;
+}
+
+.module-sub-nav-dot::before {
+  content: '/';
+  font-size: 0.58rem;
+  color: var(--ink-ghost);
+}
+
+.module-sub-nav .module-sub-nav-link.module-sub-nav-link--active .module-sub-nav-number,
+.module-sub-nav .module-sub-nav-link:focus-visible .module-sub-nav-number {
+  color: var(--rust);
+}
+
+.module-context-link {
+  border: none;
+  padding: 0;
+  position: relative;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-mid);
+}
+
+.module-context-link::before {
+  content: '/';
+  margin-right: 0.28rem;
+  color: var(--rust);
+}
+
+.module-context-number {
+  margin-bottom: 0.3rem;
+}
+
+.module-context-link::after {
+  content: '';
+  position: absolute;
+  left: 0.02rem;
+  bottom: -0.3rem;
+  width: 1px;
+  height: 0.22rem;
+  background: color-mix(in srgb, var(--rust) 48%, var(--ink-ghost) 52%);
 }
 
 @media (min-width: 960px) {
@@ -109,20 +148,42 @@
     overflow-x: visible;
     overflow-y: visible;
     scroll-snap-type: none;
-    row-gap: 0.02rem;
-    column-gap: 0.45rem;
-    padding-bottom: 0.85rem;
+    margin-top: 0.12rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.62rem;
+    padding-left: 0.62rem;
+    gap: 0.12rem 0.28rem;
     align-items: flex-start;
   }
 
   .module-sub-nav-link {
-    min-height: 1.15rem;
-    line-height: 1.1;
-    white-space: normal;
+    font-size: 0.58rem;
+    letter-spacing: 0.065em;
+    min-height: 0.95rem;
+    padding: 0;
   }
 
   .module-sub-nav-dot {
-    display: none;
+    display: inline-flex;
+    width: 0.4rem;
+  }
+
+  .module-sub-nav-dot::before {
+    font-size: 0.52rem;
+  }
+
+  .module-context-link {
+    font-size: 0.67rem;
+    letter-spacing: 0.085em;
+  }
+
+  .module-context-number {
+    margin-bottom: 0.24rem;
+  }
+
+  .module-context-link::after {
+    bottom: -0.22rem;
+    height: 0.17rem;
   }
 
   .module-footer-nav {

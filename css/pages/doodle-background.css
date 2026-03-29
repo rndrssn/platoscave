@@ -14,12 +14,14 @@
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  background: transparent;
 }
 
 .doodle-bg-item {
   position: absolute;
   height: auto;
   opacity: 0.14;
+  filter: contrast(1.06) brightness(0.9);
   user-select: none;
   -webkit-user-drag: none;
 }

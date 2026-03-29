@@ -117,7 +117,7 @@
     doodle.loading = 'lazy';
     doodle.decoding = 'async';
     doodle.dataset.angle = String((-20 + Math.random() * 40).toFixed(2));
-    doodle.dataset.opacity = String((0.13 + Math.random() * 0.05).toFixed(3));
+    doodle.dataset.opacity = String((0.15 + Math.random() * 0.05).toFixed(3));
     layer.appendChild(doodle);
     doodles.push(doodle);
 
@@ -165,7 +165,7 @@
       doodle.style.left = String(x) + '%';
       doodle.style.top = String(y) + '%';
       doodle.style.width = String(renderedSize) + 'px';
-      doodle.style.opacity = String(mobile ? Math.max(0.09, opacity - 0.02) : opacity);
+      doodle.style.opacity = String(mobile ? Math.max(0.11, opacity - 0.015) : opacity);
       doodle.style.transform = 'translate(-50%, -50%) rotate(' + doodle.dataset.angle + 'deg)';
     }
   }

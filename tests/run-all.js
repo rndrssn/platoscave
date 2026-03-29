@@ -16,6 +16,7 @@ const tests = [
   'test-gc-diagnosis-share.js',
   'test-gc-pressure-narrative.js',
   'test-theme-bootstrap.js',
+  'test-theme-config-contract.js',
   'test-nav-controller.js',
   'test-css-theme-contract.js',
   'test-navigation-links.js',

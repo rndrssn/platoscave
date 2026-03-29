@@ -2,7 +2,7 @@
 id: experience-skill-graph
 type: graph-data
 title: Experience-Skill Graph Data
-updated: 2026-03-27
+updated: 2026-03-29
 ---
 
 # Experience-Skill Graph Data
@@ -29,15 +29,16 @@ updated: 2026-03-27
 - skill-crossfn | Cross-functional Leadership | 140 | [[cat-leadership]]
 - skill-roadmap | Strategic Roadmapping | 150 | [[cat-leadership]]
 - skill-stakeholder | Stakeholder Management | 160 | [[cat-leadership]]
-- skill-innovation | Innovation Management | 170 | [[cat-leadership]]
-- skill-lean | Lean Development | 180 | [[cat-leadership]]
+- skill-people | People Management | 170 | [[cat-leadership]]
+- skill-innovation | Innovation Management | 180 | [[cat-leadership]]
+- skill-lean | Lean Development | 190 | [[cat-leadership]]
 
 ## Experiences
 - exp-tu | TU Delft PhD (2004-2008) | 0 | [[skill-analytics]], [[skill-ml]]
 - exp-tatasteel | Tata Steel (2008-2011) | 1 | [[skill-industrial]], [[skill-cv]], [[skill-ml]], [[skill-analytics]], [[skill-lean]]
 - exp-capgemini | Capgemini (2012-2013) | 2 | [[skill-analytics]], [[skill-stakeholder]]
 - exp-microscan | Omron Microscan (2013-2015) | 3 | [[skill-industrial]], [[skill-cv]], [[skill-analytics]], [[skill-lean]]
-- exp-fugro | Fugro (2015-2021) | 4 | [[skill-subsea]], [[skill-pm]], [[skill-agile]], [[skill-cv]], [[skill-embedded]], [[skill-robotics]], [[skill-strategy]], [[skill-innovation]]
-- exp-aiim | AIIM (2021) | 5 | [[skill-pm]], [[skill-agile]], [[skill-cv]], [[skill-ml]], [[skill-embedded]], [[skill-robotics]], [[skill-crossfn]], [[skill-innovation]]
+- exp-fugro | Fugro (2015-2021) | 4 | [[skill-subsea]], [[skill-pm]], [[skill-agile]], [[skill-cv]], [[skill-embedded]], [[skill-robotics]], [[skill-strategy]], [[skill-people]], [[skill-innovation]]
+- exp-aiim | AI in Motion (2021) | 5 | [[skill-pm]], [[skill-agile]], [[skill-cv]], [[skill-ml]], [[skill-embedded]], [[skill-robotics]], [[skill-crossfn]], [[skill-people]], [[skill-innovation]]
 - exp-ikea | IKEA (2021-2023) | 6 | [[skill-retail]], [[skill-pm]], [[skill-agile]], [[skill-ar]], [[skill-crossfn]], [[skill-roadmap]]
-- exp-yara | Yara (2023-Present) | 7 | [[skill-agtech]], [[skill-pm]], [[skill-agile]], [[skill-strategy]], [[skill-roadmap]], [[skill-stakeholder]], [[skill-innovation]]
+- exp-yara | Yara (2023-Present) | 7 | [[skill-agtech]], [[skill-pm]], [[skill-agile]], [[skill-strategy]], [[skill-roadmap]], [[skill-stakeholder]], [[skill-people]], [[skill-innovation]]

@@ -1,4 +1,4 @@
-[data-theme='urban-grid'] {
+html[data-theme='urban-grid'] {
   --paper:       #e7ebf0;
   --paper-dark:  #d7dde5;
   --paper-deep:  #bcc6d3;
@@ -43,7 +43,7 @@
   background-size: 24px 24px;
 }
 
-[data-theme='urban-grid1'] {
+html[data-theme='urban-grid1'] {
   --paper:       #edf1f7;
   --paper-dark:  #dfe6f1;
   --paper-deep:  #c8d3e3;
@@ -80,7 +80,7 @@
   --viz-sage-light: var(--sage-light);
 }
 
-[data-theme='urban-grid2'] {
+html[data-theme='urban-grid2'] {
   --paper:       #e2e8ef;
   --paper-dark:  #d1d9e3;
   --paper-deep:  #b3c0cf;
@@ -117,7 +117,7 @@
   --viz-sage-light: var(--sage-light);
 }
 
-[data-theme='urban-grid3'] {
+html[data-theme='urban-grid3'] {
   --paper:       #e8edf3;
   --paper-dark:  #d9e1ea;
   --paper-deep:  #bfccd9;

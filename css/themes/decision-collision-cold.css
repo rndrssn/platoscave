@@ -1,4 +1,4 @@
-[data-theme='decision-collision-cold'] {
+html[data-theme='decision-collision-cold'] {
   --paper:       #fafcff;
   --paper-dark:  #eef4fb;
   --paper-deep:  #d9e5f3;

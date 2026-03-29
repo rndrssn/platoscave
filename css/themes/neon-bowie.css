@@ -1,0 +1,109 @@
+html[data-theme='neon-bowie'] {
+  --paper:       #090111;
+  --paper-dark:  #140826;
+  --paper-deep:  #241344;
+
+  --ink:         #f6f2ff;
+  --ink-mid:     #d3c8ff;
+  --ink-faint:   #af9dff;
+  --ink-ghost:   #7d6dc9;
+
+  --rust:        #ff2b9c;
+  --rust-light:  #ff68b9;
+  --sage:        #00e7ff;
+  --sage-light:  #67f4ff;
+  --ochre:       #f4a726;
+  --gold:        #ffd75f;
+  --slate:       #4a3e87;
+  --slate-light: #6958be;
+
+  --link-inline: #00e7ff;
+  --link-inline-hover: #66f2ff;
+  --link-inline-visited: #42d2f0;
+  --link-ui: #ff2b9c;
+  --link-ui-hover: #ff68b9;
+  --tag-chip: #ff2b9c;
+  --tag-chip-hover: #ff68b9;
+
+  --serif:       'Space Mono', 'Courier New', monospace;
+  --serif-alt:   'Bebas Neue', Impact, sans-serif;
+  --mono:        'Space Mono', 'Courier New', monospace;
+
+  --card-border-color: color-mix(in srgb, var(--sage) 38%, var(--paper-deep) 62%);
+  --card-border-width: 1px;
+  --card-accent-color: var(--rust);
+  --card-accent-width: 3px;
+  --card-shadow-hover: 0 0 18px rgba(255, 43, 156, 0.26);
+  --shadow-nav-popover:
+    0 0 0 1px rgba(103, 244, 255, 0.35),
+    0 0 24px rgba(255, 43, 156, 0.2);
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+[data-theme='neon-bowie'] body {
+  background:
+    radial-gradient(circle at 12% 16%, rgba(255, 43, 156, 0.17), transparent 44%),
+    radial-gradient(circle at 82% 12%, rgba(0, 231, 255, 0.14), transparent 40%),
+    radial-gradient(circle at 52% 84%, rgba(255, 215, 95, 0.12), transparent 36%),
+    linear-gradient(165deg, #090111 0%, #130724 45%, #1e0f3e 100%);
+}
+
+[data-theme='neon-bowie'] .main-nav {
+  background: rgba(9, 1, 17, 0.9);
+  border-bottom: 1px solid color-mix(in srgb, var(--sage) 40%, transparent 60%);
+  backdrop-filter: blur(4px);
+}
+
+[data-theme='neon-bowie'] .nav-title,
+[data-theme='neon-bowie'] .hero-title,
+[data-theme='neon-bowie'] .module-header-title,
+[data-theme='neon-bowie'] .module-title,
+[data-theme='neon-bowie'] .diagnosis-title {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  letter-spacing: 0.045em;
+  text-shadow:
+    0 0 12px rgba(255, 43, 156, 0.35),
+    0 0 18px rgba(0, 231, 255, 0.18);
+}
+
+[data-theme='neon-bowie'] .nav-links.is-open {
+  border-color: color-mix(in srgb, var(--sage) 44%, var(--paper-deep) 56%);
+  border-top-color: var(--rust);
+}
+
+[data-theme='neon-bowie'] .sim-summary-card,
+[data-theme='neon-bowie'] .q-card,
+[data-theme='neon-bowie'] .field-notes-card,
+[data-theme='neon-bowie'] .essay-link {
+  background: color-mix(in srgb, var(--paper-dark) 82%, #1b0a34 18%);
+  border-color: color-mix(in srgb, var(--sage) 36%, var(--paper-deep) 64%);
+  box-shadow:
+    0 0 0 1px rgba(103, 244, 255, 0.18),
+    0 0 16px rgba(255, 43, 156, 0.17);
+}
+
+[data-theme='neon-bowie'] .module-sub-nav-link--active,
+[data-theme='neon-bowie'] .results-nav-link--active,
+[data-theme='neon-bowie'] .nav-link--active {
+  color: var(--rust);
+}
+
+[data-theme='neon-bowie'] .status-live {
+  color: var(--sage);
+}
+
+[data-theme='neon-bowie'] .status-coming {
+  color: var(--ochre);
+}

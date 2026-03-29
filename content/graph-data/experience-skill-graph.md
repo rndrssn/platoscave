@@ -23,6 +23,9 @@ updated: 2026-03-29
 - skill-embedded | Embedded/Edge Systems | 80 | [[cat-technical]]
 - skill-robotics | Robotics | 90 | [[cat-technical]]
 - skill-analytics | Data Analytics | 100 | [[cat-technical]]
+- skill-quantum | Quantum Mechanics | 105 | [[cat-technical]]
+- skill-complex-systems | Complex Systems | 106 | [[cat-technical]]
+- skill-condensed-matter | Condensed Matter Physics | 107 | [[cat-technical]]
 - skill-strategy | Product Strategy / Vision | 110 | [[cat-leadership]]
 - skill-pm | Product Management | 120 | [[cat-leadership]]
 - skill-agile | Agile Delivery | 130 | [[cat-leadership]]
@@ -34,7 +37,7 @@ updated: 2026-03-29
 - skill-lean | Lean Development | 190 | [[cat-leadership]]
 
 ## Experiences
-- exp-tu | TU Delft PhD (2004-2008) | 0 | [[skill-analytics]], [[skill-ml]]
+- exp-tu | TU Delft PhD (2004-2008) | 0 | [[skill-ml]], [[skill-quantum]], [[skill-complex-systems]], [[skill-condensed-matter]]
 - exp-tatasteel | Tata Steel (2008-2011) | 1 | [[skill-industrial]], [[skill-cv]], [[skill-ml]], [[skill-analytics]], [[skill-lean]]
 - exp-capgemini | Capgemini (2012-2013) | 2 | [[skill-analytics]], [[skill-stakeholder]]
 - exp-microscan | Omron Microscan (2013-2015) | 3 | [[skill-industrial]], [[skill-cv]], [[skill-analytics]], [[skill-lean]]

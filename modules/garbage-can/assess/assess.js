@@ -195,14 +195,14 @@ function showStage(id, delay) {
   }, delay);
 }
 
-function focusSimulationCanvas() {
-  var section = document.getElementById('section-simulation');
-  if (!section) return;
-  var navHeight = 72; // 4rem nav bar
-  if (typeof section.getBoundingClientRect === 'function') {
-    var y = section.getBoundingClientRect().top + window.pageYOffset - navHeight - 6;
-    window.scrollTo({ top: y, behavior: 'smooth' });
-  }
+function centerSimulationCanvasInViewport() {
+  var canvas = document.getElementById('viz-svg');
+  if (!canvas || typeof canvas.getBoundingClientRect !== 'function') return;
+  var rect = canvas.getBoundingClientRect();
+  var canvasCenterY = rect.top + window.pageYOffset + (rect.height / 2);
+  var viewportCenterY = (window.innerHeight || document.documentElement.clientHeight || 0) / 2;
+  var targetY = Math.max(0, canvasCenterY - viewportCenterY);
+  window.scrollTo({ top: targetY, behavior: 'smooth' });
 }
 
 // ─── Form submission ──────────────────────────────────────────────────────────
@@ -311,7 +311,7 @@ if (questionnaireForm) questionnaireForm.addEventListener('submit', function (e)
 
       runBtn.hidden = true;
       drawViz(simResult);
-      setTimeout(focusSimulationCanvas, 100);
+      setTimeout(centerSimulationCanvasInViewport, 80);
       setSimError('');
     } catch (error) {
       setSimError('Simulation failed. Please try again.');
@@ -336,7 +336,7 @@ if (questionnaireForm) questionnaireForm.addEventListener('submit', function (e)
         accessStructure
       });
       drawViz(newSim);
-      setTimeout(focusSimulationCanvas, 100);
+      setTimeout(centerSimulationCanvasInViewport, 80);
       setSimError('');
     } catch (error) {
       setSimError('Simulation failed. Please try again.');

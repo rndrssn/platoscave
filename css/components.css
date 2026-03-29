@@ -231,7 +231,7 @@
 }
 
 .js-enabled .nav-links.is-open .nav-modules-toggle::after {
-  content: '] [+]';
+  content: ']{+}';
   margin-left: 0.14rem;
   color: var(--ink-mid);
   font-size: 0.84rem;
@@ -240,7 +240,7 @@
 }
 
 .js-enabled .nav-links.is-open .nav-modules-toggle.is-expanded::after {
-  content: '] [−]';
+  content: ']{−}';
   color: var(--ink-mid);
 }
 

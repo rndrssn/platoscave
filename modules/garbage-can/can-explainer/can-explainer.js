@@ -34,8 +34,12 @@
     solution: 460,
     participant: 700
   };
-  var STREAM_TOP_Y = isMobile ? 72 : 96;
-  var STREAM_GATE_Y = CAN_Y - CAN_R - (isMobile ? 30 : 18);
+  // Keep stream entry clear of the top legend on narrow screens.
+  var STREAM_TOP_Y = isMobile ? 104 : 96;
+  // On mobile, enter slightly inside the can rim to preserve vertical separation from the legend.
+  var STREAM_GATE_Y = isMobile
+    ? (CAN_Y - CAN_R + 22)
+    : (CAN_Y - CAN_R - 18);
   var ADRIFT_Y = SVG_H - 18;
   var MAX_CYCLES = 50;
   var AUTO_RESET_DELAY_MS = 2200;

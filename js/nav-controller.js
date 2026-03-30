@@ -18,6 +18,40 @@
       { number: '04', title: 'Mix Mapper', slug: 'mix-mapper', path: 'mix-mapper/', status: 'coming-soon' },
       { number: '05', title: 'Experience-Skill Graph', slug: 'experience-skill-graph', path: 'experience-skill-graph/', status: 'live' }
     ];
+    var NAV_SWATCH_ALLOWLIST = [
+      'white',
+      'oxblood-glass',
+      'slate-signal',
+      'midnight-ink',
+      'rust-ember',
+    ];
+
+    function applyConfiguredNavSwatch() {
+      var root = document && document.documentElement;
+      if (!root || typeof root.setAttribute !== 'function' || typeof root.removeAttribute !== 'function') {
+        return;
+      }
+
+      var configured = '';
+      if (window && typeof window.PLATOSCAVE_NAV_SWATCH !== 'undefined' && window.PLATOSCAVE_NAV_SWATCH !== null) {
+        configured = String(window.PLATOSCAVE_NAV_SWATCH).trim();
+      }
+
+      if (!configured || configured === 'default' || configured === 'base') {
+        root.removeAttribute('data-nav-swatch');
+        return;
+      }
+
+      if (NAV_SWATCH_ALLOWLIST.indexOf(configured) === -1) {
+        if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+          console.warn('Unknown PLATOSCAVE_NAV_SWATCH:', configured, '- using default nav swatch');
+        }
+        root.removeAttribute('data-nav-swatch');
+        return;
+      }
+
+      root.setAttribute('data-nav-swatch', configured);
+    }
 
     function normalizeModuleStatus(status) {
       return status === 'live' ? 'live' : 'coming-soon';
@@ -80,6 +114,7 @@
     }
 
     ensureFooterActions();
+    applyConfiguredNavSwatch();
 
     var navToggle = document.querySelector('.nav-mobile-toggle');
     var navLinks = document.querySelector('.nav-links');

@@ -11,7 +11,7 @@
   padding: 0 2rem;
   height: 4rem;
   background: var(--nav-surface);
-  border-bottom: 1px solid var(--nav-surface-border);
+  border-bottom: 3px solid var(--nav-surface-border);
   -webkit-backdrop-filter: var(--nav-surface-filter);
   backdrop-filter: var(--nav-surface-filter);
 }
@@ -49,8 +49,8 @@
   min-width: 10.5rem;
   max-width: calc(100vw - 1.6rem);
   background: var(--nav-menu-surface);
-  border: 1px solid var(--nav-menu-border);
-  border-top: 1px solid var(--nav-menu-border);
+  border: none;
+  border-top: none;
   -webkit-backdrop-filter: var(--nav-menu-filter);
   backdrop-filter: var(--nav-menu-filter);
   box-shadow:
@@ -230,17 +230,13 @@
 }
 
 .js-enabled .nav-links.is-open .nav-modules-toggle::after {
-  content: ']{+}';
-  margin-left: 0.14rem;
-  color: var(--ink-mid);
-  font-size: 0.84rem;
-  font-weight: 400;
-  line-height: 1;
+  content: ']';
+  margin-left: 0.1rem;
+  color: var(--ink-ghost);
 }
 
 .js-enabled .nav-links.is-open .nav-modules-toggle.is-expanded::after {
-  content: ']{−}';
-  color: var(--ink-mid);
+  content: ']';
 }
 
 .nav-modules-submenu {
@@ -306,8 +302,8 @@
 .js-enabled .nav-links.is-open {
   /* This block is the final winner in the cascade for menu panel styling. */
   border: none;
-  border-top: 1px solid var(--nav-menu-border);
-  border-bottom: 1px solid var(--nav-menu-border);
+  border-top: none;
+  border-bottom: none;
   box-shadow: none;
   transform: none;
   background: var(--nav-menu-surface);
@@ -321,8 +317,7 @@
   background: var(--nav-menu-active-surface);
 }
 
-.js-enabled .nav-links.is-open .nav-link::before,
-.js-enabled .nav-links.is-open .nav-modules-toggle::before {
+.js-enabled .nav-links.is-open .nav-link::before {
   content: '[';
   width: auto;
   height: auto;
@@ -330,6 +325,23 @@
   background: transparent;
   color: var(--ink-ghost);
   margin-right: 0.1rem;
+}
+
+.js-enabled .nav-links.is-open .nav-modules-toggle::before {
+  content: '+[';
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-mid);
+  font-size: 1.16em;
+  font-weight: inherit;
+  line-height: 1;
+  margin-right: 0.04rem;
+}
+
+.js-enabled .nav-links.is-open .nav-modules-toggle.is-expanded::before {
+  content: '-[';
 }
 
 .js-enabled .nav-links.is-open .nav-link:not(.nav-modules-toggle)::after {

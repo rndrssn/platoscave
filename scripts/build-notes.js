@@ -166,19 +166,31 @@ function slugify(value) {
     .replace(/-+/g, '-');
 }
 
+function humanizeTagLabel(label) {
+  return String(label || '')
+    .trim()
+    .replace(/-/g, ' ')
+    .replace(/\s+/g, ' ');
+}
+
 function normalizeTags(tagsValue) {
   if (!Array.isArray(tagsValue)) return [];
   const seen = new Set();
   const tags = [];
   for (const raw of tagsValue) {
-    const label = String(raw || '').trim();
-    if (!label) continue;
-    const slug = slugify(label);
+    const source = String(raw || '').trim();
+    if (!source) continue;
+    const slug = slugify(source);
     if (!slug || seen.has(slug)) continue;
     seen.add(slug);
-    tags.push({ label, slug });
+    tags.push({ label: humanizeTagLabel(source), slug });
   }
   return tags;
+}
+
+function formatCount(count, singular, plural) {
+  const n = Number(count) || 0;
+  return String(n) + ' ' + (n === 1 ? singular : plural);
 }
 
 function resolveRelatedModules(relatedIds, modulesById) {
@@ -656,7 +668,7 @@ function writeTagsIndex(tagsWithCounts) {
     ? ('<div class="essay-links">\n'
       + tagsWithCounts.map((tag) => '          <a class="essay-link" href="./' + tag.slug + '/">\n'
         + '            <span class="essay-link-label">#' + escapeHtml(tag.label) + '</span>\n'
-        + '            <span class="essay-link-desc">' + escapeHtml(tag.noteCount + ' notes · ' + tag.moduleCount + ' modules') + '</span>\n'
+        + '            <span class="essay-link-desc">' + escapeHtml(formatCount(tag.noteCount, 'note', 'notes') + ' · ' + formatCount(tag.moduleCount, 'module', 'modules')) + '</span>\n'
         + '          </a>').join('\n')
       + '\n        </div>')
     : '<p class="essay-body">No tags yet.</p>';

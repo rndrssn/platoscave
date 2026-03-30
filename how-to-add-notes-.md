@@ -85,22 +85,6 @@ After merge to the deployed branch, the note is live at:
 
 
 
-### One-click publish from Obsidian edits
-
-If you edited one or more files in `content/notes/published/`, run:
-
-```bash
-scripts/publish-notes-now.sh
-```
-
-What it does:
-- detects changed published-note files
-- reads each note `slug` from frontmatter
-- runs `scripts/publish-note.sh` in quick mode with `--only` guards
-- publishes `sandbox -> develop -> main`
-
-This is the fastest safe flow when your goal is: edit note, run one command, publish.
-
 ### Fast path (one command)
 
 From `sandbox`, use:

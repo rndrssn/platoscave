@@ -108,4 +108,6 @@
   --viz-lh-legend:      1.7;
   --viz-scale:          1;
   --viz-scale-mobile:   1.06;
+  --viz-problem-radius: 4;
+  --viz-choice-radius:  34;
 }

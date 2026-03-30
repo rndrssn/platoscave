@@ -15,12 +15,15 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 ## Modules
 
+- **01 · Emergence Primer** *(planned)* — Animated visualization of simple rules producing emergent patterns.
+- **02 · Complexity Maturity Diagnostic** *(planned)* — Radar/positioning output from organisational survey questions.
 - **03 · The Garbage Can Model** — An interactive implementation of Cohen, March & Olsen's 1972 model of organizational decision-making. Includes a narrative essay, taxonomy of organisation types, a concept animation, an exploration surface, and an assessment flow.
   - **03.01 Narrative** (`/modules/garbage-can/`)
   - **03.02 Taxonomy** (`/modules/garbage-can/taxonomy/`)
   - **03.03 What's a Garbage Can?** (`/modules/garbage-can/can-explainer/`)
   - **03.04 Explore** (`/modules/garbage-can/explorer/`)
   - **03.05 Assess** (`/modules/garbage-can/assess/`)
+- **04 · The Mix Mapper** *(exploratory)* — High/low software content spectrum mapping for blended organisations.
 - **05 · My Experience-Skill Graph** — Interactive force-directed map linking chronology roles with domain, technical, and leadership skills.
   - **05.01 Graph** (`/modules/experience-skill-graph/`)
 

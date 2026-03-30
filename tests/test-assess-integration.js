@@ -5,6 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { FakeDocument, FakeElement, buildWindow } = require('./helpers/fake-dom');
+const { getDiagnosisPreview } = require('../gc-diagnosis.js');
+const { buildGcPressureNarrative } = require('../js/gc-pressure-narrative.js');
 
 function loadAssessWithHarness(harness) {
   const source = fs.readFileSync(path.join(__dirname, '..', 'modules', 'garbage-can', 'assess', 'assess.js'), 'utf8');
@@ -14,6 +16,7 @@ function loadAssessWithHarness(harness) {
     history: { scrollRestoration: 'auto' },
     scoreResponses: harness.scoreResponses,
     getDiagnosis: harness.getDiagnosis,
+    getDiagnosisPreview: getDiagnosisPreview,
     drawPositioning: harness.drawPositioning,
     drawEmptyState: harness.drawEmptyState,
     drawViz: harness.drawViz,
@@ -30,6 +33,7 @@ function loadAssessWithHarness(harness) {
 function makeAssessHarness() {
   const document = new FakeDocument();
   const windowObj = buildWindow(document);
+  windowObj.buildGcPressureNarrative = buildGcPressureNarrative;
 
   document.register(new FakeElement('button', { className: 'nav-mobile-toggle' }));
   document.register(new FakeElement('div', { className: 'nav-links' }));
@@ -69,7 +73,7 @@ function makeAssessHarness() {
   let drawVizCalls = 0;
   let drawPositioningCalls = 0;
   let runImpl = function() {
-    return Promise.resolve({ problemResolved: 0, ticks: [] });
+    return Promise.resolve({ problemResolved: 0, ticks: [], meta: { problems: 20 } });
   };
 
   return {
@@ -140,6 +144,7 @@ async function run() {
       resolution: 0.2,
       oversight: 0.5,
       flight: 0.3,
+      meta: { problems: 20 },
     });
   });
 

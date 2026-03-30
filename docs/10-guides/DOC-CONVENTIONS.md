@@ -211,16 +211,13 @@ docs/
 ├── 00-core/
 ├── 10-guides/
 ├── 20-reference/
-├── 30-tasks/
 ├── 40-principles/
 ├── 50-vision/
-├── 90-archive/
 └── README.md
 ```
 
 Rules:
 - Keep active docs in `00`–`50`.
-- Keep historical/superseded docs in `90-archive/`.
 - Keep `docs/README.md` as the index entrypoint.
 
 ---

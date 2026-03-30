@@ -15,14 +15,18 @@ function resolveSimulationCore() {
       try {
         return require(__dirname + '/gc-simulation-core.js');
       } catch (_err) {
-        // Continue to fallbacks for VM-eval test contexts.
+        if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+          console.warn('gc-simulation.js: __dirname-based require failed, trying fallbacks.', _err && _err.message);
+        }
       }
     }
 
     try {
       return require('./gc-simulation-core.js');
     } catch (_err2) {
-      // Continue.
+      if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+        console.warn('gc-simulation.js: relative require failed, trying cwd fallback.', _err2 && _err2.message);
+      }
     }
 
     try {
@@ -32,7 +36,9 @@ function resolveSimulationCore() {
         : require('process');
       return require(path.join(proc.cwd(), 'gc-simulation-core.js'));
     } catch (_err3) {
-      // Continue.
+      if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+        console.warn('gc-simulation.js: cwd-based require failed.', _err3 && _err3.message);
+      }
     }
   }
 

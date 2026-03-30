@@ -35,6 +35,14 @@
 
   function getBootstrapBaseHref() {
     if (!document || typeof document.getElementsByTagName !== 'function') return '';
+    // Preferred: document.currentScript is reliable for synchronously-executing scripts.
+    if (document.currentScript && typeof document.currentScript.src === 'string') {
+      var currentSrc = document.currentScript.src;
+      if (/js\/theme-bootstrap\.js(?:[?#].*)?$/i.test(currentSrc)) {
+        return currentSrc.replace(/js\/theme-bootstrap\.js(?:[?#].*)?$/i, '');
+      }
+    }
+    // Fallback: scan all script tags (handles async/deferred or older environments).
     var scripts = document.getElementsByTagName('script');
     for (var i = 0; i < scripts.length; i += 1) {
       var script = scripts[i];

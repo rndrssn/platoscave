@@ -79,9 +79,10 @@
       }
     }
     var isMobile = viewportW > 0 && viewportW <= 640;
+    var baseProblemRadius = readCssNumber('--viz-problem-radius', 4.0);
     return {
       isMobile: isMobile,
-      problemRadius: isMobile ? 4.6 : 4.0,
+      problemRadius: isMobile ? baseProblemRadius * 1.15 : baseProblemRadius,
       legendMarkerRadius: isMobile ? 6.4 : 5.8,
       resolveExitRadius: isMobile ? 2.0 : 1.7,
     };

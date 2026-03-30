@@ -5,6 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { FakeDocument, FakeElement, buildWindow } = require('./helpers/fake-dom');
+const { getDiagnosisPreview } = require('../gc-diagnosis.js');
+const { buildGcPressureNarrative } = require('../js/gc-pressure-narrative.js');
 
 function loadExplorerWithHarness(harness) {
   const source = fs.readFileSync(path.join(__dirname, '..', 'modules', 'garbage-can', 'explorer', 'explorer.js'), 'utf8');
@@ -15,6 +17,7 @@ function loadExplorerWithHarness(harness) {
     drawEmptyState: harness.drawEmptyState,
     drawViz: harness.drawViz,
     getDiagnosis: harness.getDiagnosis,
+    getDiagnosisPreview: getDiagnosisPreview,
     runGarbageCanSimulationAsync: harness.runGarbageCanSimulationAsync,
     setTimeout: function(fn) { fn(); return 0; },
     clearTimeout: function() {},
@@ -28,6 +31,7 @@ function loadExplorerWithHarness(harness) {
 function makeExplorerHarness() {
   const document = new FakeDocument();
   const windowObj = buildWindow(document);
+  windowObj.buildGcPressureNarrative = buildGcPressureNarrative;
 
   const navToggle = document.register(new FakeElement('button', { className: 'nav-mobile-toggle' }));
   const navLinks = document.register(new FakeElement('div', { className: 'nav-links' }));

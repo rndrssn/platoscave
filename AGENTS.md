@@ -53,37 +53,44 @@ Fast-lane override (skip planning and implement directly) is allowed only when t
 
 If the user says phrases like `confirm understanding`, `wdyt`, `let's discuss`, or `plan first`, remain in discussion mode and do not implement until explicit approval.
 
-## Default Context Pack (always load first)
+## Default Context Pack
+
+### Foundation (always load first)
 
 1. `README.md`
-2. `CLAUDE.md`
-3. `gc-simulation.js`
-4. `gc-viz.js`
-5. `modules/garbage-can/assess/assess.js`
-6. `modules/garbage-can/explorer/explorer.js`
+2. `docs/00-core/CORE.md`
+3. `docs/00-core/CORE-loading-rules.md`
+4. `docs/00-core/CORE-quality-gates.md`
+
+### GC logic and page wiring (load when task involves simulation, scoring, diagnosis, or viz)
+
+5. `gc-simulation.js`
+6. `gc-viz.js`
+7. `modules/garbage-can/assess/assess.js`
+8. `modules/garbage-can/explorer/explorer.js`
 
 If task scope is unclear, ask the user and proceed with explicit assumptions.
 
 ## Conditional Loading Rules
 
-- If working on semantics and labels:
-  - treat implementation and tests as canonical.
-  - align terminology across UI, summaries, and legends.
-- If local/private docs are referenced by user:
-  - load only those explicitly requested paths.
-- Prefer tracked `docs/` content when present in the workspace.
-- If `docs/` is missing locally, ask user before assuming private/local copies.
+Full conditional loading rules are in `docs/00-core/CORE-loading-rules.md`. Summary:
+
+- If editing GC logic: load GC logic and page wiring files above.
+- If editing docs: load `docs/10-guides/DOC-CONVENTIONS.md`.
+- If working on semantics and labels: treat implementation and tests as canonical; align terminology across UI, summaries, and legends.
+- If local/private docs are referenced by user: load only those explicitly requested paths.
+- Prefer tracked `docs/` content when present. If `docs/` is missing locally, ask before assuming private copies.
 
 ## Context and Token Constraints
 
-- Default max docs per run: 6
+- Default max docs per run: 8
 - Docs token budget per run: 8k
 - Never assume private/local docs by default.
 - If a doc is long, read relevant sections first; summarize before expanding more.
 
 Profiles:
-- `fast`: default pack + one conditional doc max.
-- `deep`: default pack + all relevant conditional docs up to budget.
+- `fast`: foundation pack + one conditional doc max.
+- `deep`: foundation pack + all relevant conditional docs up to budget.
 
 ## Hard Execution Gates
 
@@ -112,9 +119,15 @@ For semantics/labels/rules changes:
 
 - Theme bootstrap: `theme.config.js`, `js/theme-bootstrap.js`
 - Styles: `css/main.css` + layered css files
-- GC logic: `gc-simulation.js`, `gc-scoring.js`, `gc-diagnosis.js`, `gc-viz.js`
+- GC logic: `gc-simulation-core.js`, `gc-simulation.js`, `gc-scoring.js`, `gc-diagnosis.js`, `gc-viz.js`
+- GC narrative: `js/gc-pressure-narrative.js` (must load before assess.js / explorer.js)
 - GC page wiring: `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js`
 - Tests: `tests/run-all.js`
+
+Key design constraints:
+- The Assess path fixes problemInflow to 'moderate' — the survey does not capture inflow timing; Explorer exposes all four parameters. See `docs/10-guides/GUIDE-architecture.md`.
+- Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both are set by `js/gc-pressure-narrative.js` and `gc-diagnosis.js` before page wiring runs.
+- Use simResult.meta.problems (not a hardcoded constant) when computing problem proportions from simulation output.
 
 ## Task Templates (quick start)
 

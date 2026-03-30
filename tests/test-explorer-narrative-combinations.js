@@ -5,10 +5,13 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { FakeDocument, FakeElement, buildWindow } = require('./helpers/fake-dom');
+const { getDiagnosisPreview } = require('../gc-diagnosis.js');
+const { buildGcPressureNarrative } = require('../js/gc-pressure-narrative.js');
 
 function buildHarness() {
   const document = new FakeDocument();
   const windowObj = buildWindow(document);
+  windowObj.buildGcPressureNarrative = buildGcPressureNarrative;
 
   document.register(new FakeElement('button', { className: 'nav-mobile-toggle' }));
   document.register(new FakeElement('div', { className: 'nav-links' }));
@@ -31,6 +34,7 @@ function buildHarness() {
     drawEmptyState: function() {},
     drawViz: function() {},
     getDiagnosis: function() { return { title: 'Diag', body: 'Body. In organisations like yours, roughly 20% of problems remain unresolved.' }; },
+    getDiagnosisPreview: getDiagnosisPreview,
     runGarbageCanSimulationAsync: function() { return Promise.resolve({ ticks: [] }); },
     setTimeout: function(fn) { fn(); return 0; },
     clearTimeout: function() {},

@@ -25,6 +25,7 @@ const tests = [
   'test-gc-viz-event-contract.js',
   'test-gc-viz-typography-contract.js',
   'test-gc-simulation-import-no-side-effects.js',
+  'test-gc-simulation-require-fallback.js',
   'test-gc-simulation-matrix-builders.js',
   'test-gc-decision-type-classifier.js',
   'test-gc-simulation-meta-contract.js',

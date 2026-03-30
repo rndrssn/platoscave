@@ -119,6 +119,7 @@
     var navToggle = document.querySelector('.nav-mobile-toggle');
     var navLinks = document.querySelector('.nav-links');
     var modulesToggleButton = null;
+    var modulesHead = null;
     var modulesSubmenu = null;
     var modulesAutoExpand = false;
     var prefetchedMenuRoutes = Object.create(null);
@@ -145,6 +146,8 @@
       positionModulesSubmenu();
       modulesSubmenu.hidden = !open;
       modulesToggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+      modulesToggleButton.setAttribute('aria-label', open ? 'Collapse modules list' : 'Expand modules list');
+      modulesToggleButton.textContent = open ? '-' : '+';
       if (open) modulesToggleButton.classList.add('is-expanded');
       else modulesToggleButton.classList.remove('is-expanded');
     }
@@ -184,23 +187,31 @@
         modulesLink.getAttribute('aria-current') === 'page';
 
       var modulesLabel = (modulesLink.textContent || '').trim() || 'Modules';
-      var modulesToggleClass = (modulesLink.className || 'nav-link')
-        .replace(/\s*nav-link--active\b/g, '')
-        .trim();
-      if (!modulesToggleClass) modulesToggleClass = 'nav-link';
+      var modulesLinkClass = (modulesLink.className || 'nav-link').trim();
+      if (!modulesLinkClass) modulesLinkClass = 'nav-link';
+      var modulesAriaCurrent = modulesLink.getAttribute('aria-current');
+
+      modulesHead = document.createElement('div');
+      modulesHead.className = 'nav-modules-head';
 
       modulesToggleButton = document.createElement('button');
       modulesToggleButton.type = 'button';
-      modulesToggleButton.className = modulesToggleClass + ' nav-modules-toggle';
-      if (modulesAutoExpand) modulesToggleButton.classList.add('nav-link--active');
-      modulesToggleButton.textContent = modulesLabel;
+      modulesToggleButton.className = 'nav-modules-toggle';
+      modulesToggleButton.textContent = '+';
       modulesToggleButton.setAttribute('aria-expanded', modulesAutoExpand ? 'true' : 'false');
+      modulesToggleButton.setAttribute('aria-label', modulesAutoExpand ? 'Collapse modules list' : 'Expand modules list');
 
       modulesSubmenu = document.createElement('div');
       modulesSubmenu.className = 'nav-modules-submenu';
       modulesSubmenu.id = 'primary-nav-modules-submenu';
       modulesSubmenu.hidden = !modulesAutoExpand;
       modulesToggleButton.setAttribute('aria-controls', modulesSubmenu.id);
+
+      var modulesLandingLink = document.createElement('a');
+      modulesLandingLink.className = modulesLinkClass + ' nav-modules-link';
+      modulesLandingLink.href = modulesHref;
+      modulesLandingLink.textContent = modulesLabel;
+      if (modulesAriaCurrent) modulesLandingLink.setAttribute('aria-current', modulesAriaCurrent);
 
       var currentPath = '';
       if (window && window.location && typeof window.location.pathname === 'string') {
@@ -253,8 +264,10 @@
         modulesSubmenu.appendChild(createSubEntry(entry, isEntryActive(entry.slug)));
       });
 
-      modulesLink.parentNode.replaceChild(modulesToggleButton, modulesLink);
-      modulesToggleButton.insertAdjacentElement('afterend', modulesSubmenu);
+      modulesHead.appendChild(modulesToggleButton);
+      modulesHead.appendChild(modulesLandingLink);
+      modulesLink.parentNode.replaceChild(modulesHead, modulesLink);
+      modulesHead.insertAdjacentElement('afterend', modulesSubmenu);
       positionModulesSubmenu();
 
       modulesToggleButton.addEventListener('click', function (event) {

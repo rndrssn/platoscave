@@ -10,8 +10,10 @@
   justify-content: space-between;
   padding: 0 2rem;
   height: 4rem;
-  background: var(--paper);
-  border-bottom: 1px solid var(--ink-ghost);
+  background: var(--nav-surface);
+  border-bottom: 3px solid var(--nav-surface-border);
+  -webkit-backdrop-filter: var(--nav-surface-filter);
+  backdrop-filter: var(--nav-surface-filter);
 }
 
 .nav-title {
@@ -46,14 +48,11 @@
   width: max-content;
   min-width: 10.5rem;
   max-width: calc(100vw - 1.6rem);
-  background:
-    repeating-linear-gradient(
-      -8deg,
-      color-mix(in srgb, var(--paper-dark) 92%, var(--paper) 8%) 0 3px,
-      color-mix(in srgb, var(--paper-dark) 88%, var(--paper) 12%) 3px 6px
-    );
-  border: 1px solid var(--ink-ghost);
-  border-top: 1px solid var(--sage);
+  background: var(--nav-menu-surface);
+  border: none;
+  border-top: none;
+  -webkit-backdrop-filter: var(--nav-menu-filter);
+  backdrop-filter: var(--nav-menu-filter);
   box-shadow:
     var(--shadow-nav-popover),
     inset 0 0 0 1px color-mix(in srgb, var(--paper) 72%, var(--ink-ghost) 28%);
@@ -219,29 +218,45 @@
   display: block;
 }
 
-.js-enabled .nav-links.is-open .nav-modules-toggle {
-  justify-content: flex-start;
+.js-enabled .nav-links.is-open .nav-modules-head {
+  display: flex;
+  align-items: center;
   width: 100%;
+  gap: 0.02rem;
+}
+
+.js-enabled .nav-links.is-open .nav-modules-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: auto;
+  min-height: 2.5rem;
   background: transparent;
   border: none;
-  padding-left: 0.26rem;
-  padding-right: 0.26rem;
+  padding: 0.18rem 0.08rem 0.18rem 0.26rem;
   cursor: pointer;
-  text-align: left;
-}
-
-.js-enabled .nav-links.is-open .nav-modules-toggle::after {
-  content: ']{+}';
-  margin-left: 0.14rem;
-  color: var(--ink-mid);
-  font-size: 0.84rem;
-  font-weight: 400;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: calc(var(--fs-link-nav) * 1.16);
+  font-weight: 300;
   line-height: 1;
+  letter-spacing: 0.03em;
+  color: var(--ink-mid);
 }
 
-.js-enabled .nav-links.is-open .nav-modules-toggle.is-expanded::after {
-  content: ']{−}';
-  color: var(--ink-mid);
+.js-enabled .nav-links.is-open .nav-modules-toggle:hover,
+.js-enabled .nav-links.is-open .nav-modules-toggle:focus-visible {
+  color: var(--link-inline);
+}
+
+.js-enabled .nav-links.is-open .nav-modules-toggle:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+}
+
+.js-enabled .nav-links.is-open .nav-modules-link {
+  flex: 1 1 auto;
 }
 
 .nav-modules-submenu {
@@ -305,22 +320,24 @@
 
 /* ─── Nav Menu (Locked Variant) ─────────────────────────── */
 .js-enabled .nav-links.is-open {
+  /* This block is the final winner in the cascade for menu panel styling. */
   border: none;
-  border-top: 1px solid color-mix(in srgb, var(--ink-ghost) 72%, transparent 28%);
-  border-bottom: 1px solid color-mix(in srgb, var(--ink-ghost) 72%, transparent 28%);
+  border-top: none;
+  border-bottom: none;
   box-shadow: none;
   transform: none;
-  background: color-mix(in srgb, var(--paper) 92%, transparent 8%);
+  background: var(--nav-menu-surface);
+  -webkit-backdrop-filter: var(--nav-menu-filter);
+  backdrop-filter: var(--nav-menu-filter);
 }
 
 .js-enabled .nav-links.is-open .nav-link.nav-link--active,
-.js-enabled .nav-links.is-open .nav-modules-toggle.nav-link--active {
+.js-enabled .nav-links.is-open .nav-modules-link.nav-link--active {
   color: var(--link-inline);
-  background: color-mix(in srgb, var(--paper) 70%, var(--paper-dark) 30%);
+  background: var(--nav-menu-active-surface);
 }
 
-.js-enabled .nav-links.is-open .nav-link::before,
-.js-enabled .nav-links.is-open .nav-modules-toggle::before {
+.js-enabled .nav-links.is-open .nav-link::before {
   content: '[';
   width: auto;
   height: auto;
@@ -368,6 +385,19 @@
     padding: 0.12rem 0.16rem;
   }
 
+  .js-enabled .nav-links.is-open .nav-modules-head {
+    width: auto;
+    gap: 0.02rem;
+  }
+
+  .js-enabled .nav-links.is-open .nav-modules-toggle {
+    padding: 0.12rem 0.08rem 0.12rem 0.16rem;
+  }
+
+  .js-enabled .nav-links.is-open .nav-modules-link {
+    flex: 0 1 auto;
+  }
+
   .js-enabled .nav-links.is-open .nav-modules-submenu {
     position: absolute;
     top: calc(100% - 0.06rem);
@@ -382,7 +412,9 @@
     margin: 0;
     padding: 0.2rem 0 0.12rem 0.36rem;
     border-top: none;
-    background: color-mix(in srgb, var(--paper) 93%, transparent 7%);
+    background: var(--nav-submenu-surface);
+    -webkit-backdrop-filter: var(--nav-submenu-filter);
+    backdrop-filter: var(--nav-submenu-filter);
     z-index: 161;
   }
 

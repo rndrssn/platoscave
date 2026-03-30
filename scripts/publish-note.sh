@@ -103,6 +103,25 @@ if ! git diff --cached --quiet; then
   exit 1
 fi
 
+sync_target_branch() {
+  local target="$1"
+  echo "==> Preparing $target"
+  if git show-ref --verify --quiet "refs/heads/$target"; then
+    git checkout "$target"
+  else
+    git checkout -B "$target" "origin/$target"
+  fi
+  git merge --ff-only "origin/$target"
+}
+
+promote_sandbox_to_target() {
+  local target="$1"
+  echo "==> Merging sandbox -> $target"
+  sync_target_branch "$target"
+  git merge --no-ff sandbox -m "Merge branch 'sandbox' into $target"
+  git push origin "$target"
+}
+
 if [[ -n "$POLISH_TARGET" ]]; then
   echo "==> Polishing note spelling/punctuation"
   if [[ -f "$POLISH_TARGET" ]]; then
@@ -207,18 +226,26 @@ git commit -m "$COMMIT_MSG"
 echo "==> Pushing sandbox"
 git push origin sandbox
 
-echo "==> Merging sandbox -> develop"
-git checkout develop
-git merge --no-ff sandbox -m "Merge branch 'sandbox' into develop"
-git push origin develop
+echo "==> Fetching remote branch tips"
+git fetch origin sandbox develop main
 
-echo "==> Merging sandbox -> main"
-git checkout main
-git merge --no-ff sandbox -m "Merge branch 'sandbox' into main"
-git push origin main
+promote_sandbox_to_target develop
+promote_sandbox_to_target main
 
 echo "==> Returning to sandbox"
 git checkout sandbox
+
+echo "==> Verifying branch promotion"
+git fetch origin sandbox develop main
+SANDBOX_SHA="$(git rev-parse sandbox)"
+for target in develop main; do
+  if git merge-base --is-ancestor "$SANDBOX_SHA" "origin/$target"; then
+    echo "OK: origin/$target contains sandbox commit $SANDBOX_SHA"
+  else
+    echo "FAIL: origin/$target does not contain sandbox commit $SANDBOX_SHA" >&2
+    exit 1
+  fi
+done
 
 echo "==> Done"
 echo "sandbox: $(git rev-parse sandbox)"

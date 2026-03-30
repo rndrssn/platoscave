@@ -3,7 +3,7 @@ title: What works and what doesn't work
 slug: what-works-and-what-doesnt-work
 date: 2026-03-23
 status: published
-summary: A first field note on how traditionally managed organisations view epistemilogical access to outcome causes and effects.
+summary: A first field note on how traditionally managed organisations view epistemological access to outcome causes and effects.
 tags:
   - the-mix
 related_modules:

@@ -61,7 +61,7 @@ const MARKER = {
 };
 const CHOICE_LABEL_Y_OFFSET = 16;
 
-const CHOICE_RADIUS = 34;
+const CHOICE_RADIUS = readCssNumber('--viz-choice-radius', 34);
 const DESKTOP_CO_FIELD_HEIGHT_SCALE = 0.78;
 
 const GC_VIZ_DEFAULTS = (typeof window !== 'undefined' && window.GC_VIZ_CONFIG)

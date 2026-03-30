@@ -64,6 +64,16 @@ function getDiagnosis(decisionStructure, accessStructure, unresolvedShare) {
   };
 }
 
+/**
+ * getDiagnosisPreview(body)
+ * Strips the trailing simulation-dependent sentence from a diagnosis body,
+ * for display before a simulation result is available.
+ * Owned here because the regex is coupled to the exact text in DIAGNOSES above.
+ */
+function getDiagnosisPreview(body) {
+  return body.replace(/In organisations like yours, roughly.*$/, '').trim();
+}
+
 if (typeof module !== 'undefined') {
-  module.exports = { DIAGNOSIS_CLUSTERS, DIAGNOSES, getDiagnosis };
+  module.exports = { DIAGNOSIS_CLUSTERS, DIAGNOSES, getDiagnosis, getDiagnosisPreview };
 }

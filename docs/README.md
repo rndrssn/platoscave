@@ -20,18 +20,16 @@ token_cost_estimate: low
 - `docs/00-core/` — enforceable runtime rules and loading contract
 - `docs/10-guides/` — operational runbooks
 - `docs/20-reference/` — domain/source-of-truth references
-- `docs/30-tasks/` — active task retrieval targets
 - `docs/40-principles/` — principle-level policy and narrative contracts
 - `docs/50-vision/` — product vision and framing
-- `docs/90-archive/` — historical docs (opt-in only)
 
 ## Agent default pack
 
-1. `docs/00-core/CORE.md`
-2. `docs/00-core/CORE-loading-rules.md`
-3. `docs/00-core/CORE-quality-gates.md`
-4. `docs/30-tasks/TASK-current-work.md`
-5. `HANDOFF.md` (if present)
+1. `HANDOFF.md` (session state — load first)
+2. `README.md`
+3. `docs/00-core/CORE.md`
+4. `docs/00-core/CORE-loading-rules.md`
+5. `docs/00-core/CORE-quality-gates.md`
 
 ## Human quick start
 

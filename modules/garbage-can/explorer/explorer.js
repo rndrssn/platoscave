@@ -23,22 +23,10 @@ function setSimError(message) {
   simError.textContent = message;
   simError.hidden = false;
 }
+// gc-pressure-narrative.js is loaded before this file (see index.html script order).
+// This wrapper exists to give the call site a named function and a clear dependency contract.
 function buildExplorerNarrative(intensity, inflow, decision, access) {
-  if (typeof window !== 'undefined' && typeof window.buildGcPressureNarrative === 'function') {
-    return window.buildGcPressureNarrative(intensity, inflow, decision, access);
-  }
-  var decisionLabel = decision === 'unsegmented' ? 'Open participation' : titleCase(decision);
-  var accessLabel = access === 'unsegmented' ? 'Open' : titleCase(access);
-  return {
-    problemSummary: titleCase(intensity) + ' difficulty + ' + titleCase(inflow) + ' arrival rate',
-    coordinationSummary: decisionLabel + ' decision + ' + accessLabel + ' access',
-    synthesis: 'Combination selected. Run the simulation to see how this pressure profile shapes resolution, oversight, and flight.'
-  };
-}
-
-function titleCase(token) {
-  if (!token) return '';
-  return token.charAt(0).toUpperCase() + token.slice(1);
+  return window.buildGcPressureNarrative(intensity, inflow, decision, access);
 }
 
 function centerSimulationCanvasInViewport() {
@@ -103,9 +91,9 @@ function updateDiagnosis() {
   var diagnosis = getDiagnosis(decision, access, 0);
   var narrative = buildExplorerNarrative(intensity, inflow, decision, access);
 
-  // Strip the trailing percentage sentence — no simulation result yet
-  var bodyText = diagnosis.body;
-  bodyText = bodyText.replace(/In organisations like yours, roughly.*$/, '').trim();
+  // Strip the trailing percentage sentence — no simulation result yet.
+  // getDiagnosisPreview() owns this regex (see gc-diagnosis.js).
+  var bodyText = getDiagnosisPreview(diagnosis.body);
 
   document.getElementById('explorer-diagnosis-title').textContent = diagnosis.title;
   document.getElementById('explorer-diagnosis-body').textContent  = bodyText;

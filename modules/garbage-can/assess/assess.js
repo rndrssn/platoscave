@@ -52,17 +52,10 @@ function setSimError(message) {
   simError.hidden = false;
 }
 
+// gc-pressure-narrative.js is loaded before this file (see index.html script order).
+// This wrapper exists to give the call site a named function and a clear dependency contract.
 function buildAssessPressureNarrative(problemIntensity, problemInflow, decisionStructure, accessStructure) {
-  if (typeof window !== 'undefined' && typeof window.buildGcPressureNarrative === 'function') {
-    return window.buildGcPressureNarrative(problemIntensity, problemInflow, decisionStructure, accessStructure);
-  }
-  var decisionLabel = decisionStructure === 'unsegmented' ? 'open participation' : decisionStructure;
-  var accessLabel = accessStructure === 'unsegmented' ? 'open' : accessStructure;
-  return {
-    problemSummary: problemIntensity + ' difficulty + ' + problemInflow + ' arrival rate',
-    coordinationSummary: decisionLabel + ' decision + ' + accessLabel + ' access',
-    synthesis: 'Run the simulation to inspect how this pressure profile shapes decision outcomes over time.'
-  };
+  return window.buildGcPressureNarrative(problemIntensity, problemInflow, decisionStructure, accessStructure);
 }
 
 // ─── Results mini-nav ────────────────────────────────────────────────────────
@@ -225,10 +218,13 @@ if (questionnaireForm) questionnaireForm.addEventListener('submit', function (e)
   const scoring = scoreResponses(responses);
   const { energyLoad, decisionStructure, accessStructure, raw } = scoring;
   const problemIntensity = energyLoad;
+  // problemInflow is intentionally fixed at 'moderate' for the Assess path.
+  // The survey captures energy load and structural parameters but not inflow timing.
+  // Explorer exposes all four parameters and allows full inflow selection.
   const problemInflow = 'moderate';
 
   const diagnosis = getDiagnosis(decisionStructure, accessStructure, 0);
-  var diagnosisBodyPreview = diagnosis.body.replace(/In organisations like yours, roughly.*$/, '').trim();
+  var diagnosisBodyPreview = getDiagnosisPreview(diagnosis.body);
   var pressureNarrative = buildAssessPressureNarrative(problemIntensity, problemInflow, decisionStructure, accessStructure);
 
   // Reveal results area
@@ -303,8 +299,7 @@ if (questionnaireForm) questionnaireForm.addEventListener('submit', function (e)
         accessStructure
       });
 
-      const TOTAL_PROBLEMS = 20;
-      const resolvedProblemShare = Math.max(0, Math.min(1, simResult.problemResolved / TOTAL_PROBLEMS));
+      const resolvedProblemShare = Math.max(0, Math.min(1, simResult.problemResolved / simResult.meta.problems));
       const unresolvedShare = 1 - resolvedProblemShare;
       const diagnosisWithShare = getDiagnosis(decisionStructure, accessStructure, unresolvedShare);
       document.getElementById('diagnosis-body').textContent = diagnosisWithShare.body;

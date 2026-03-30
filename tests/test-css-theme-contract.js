@@ -3,6 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const tokensSource = fs.readFileSync(path.join(__dirname, '..', 'css', 'tokens.css'), 'utf8');
+
 const themesDir = path.join(__dirname, '..', 'css', 'themes');
 
 function loadAllThemeCss() {
@@ -95,9 +97,20 @@ function testRequiredTokensExistInEveryThemeTokenBlock() {
   }
 }
 
+function testVizGeometryTokensInRootTokens() {
+  const required = ['--viz-problem-radius', '--viz-choice-radius'];
+  for (const token of required) {
+    assert(
+      tokensSource.includes(token + ':'),
+      `css/tokens.css :root is missing required viz geometry token: ${token}`
+    );
+  }
+}
+
 function run() {
   testNoDuplicateVarDeclarationsPerThemeBlock();
   testRequiredTokensExistInEveryThemeTokenBlock();
+  testVizGeometryTokensInRootTokens();
   console.log('PASS: tests/test-css-theme-contract.js');
 }
 

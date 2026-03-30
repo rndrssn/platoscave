@@ -1,0 +1,223 @@
+/* ─── Mix Mapper module ─────────────────────────────── */
+.mix-mapper-page {
+  --mix-map-traditional: var(--viz-slate, var(--slate));
+  --mix-map-traditional-soft: var(--viz-slate-light, var(--slate-light));
+  --mix-map-complexity: var(--viz-sage, var(--sage));
+  --mix-map-complexity-soft: var(--viz-sage-light, var(--sage-light));
+  --mix-map-accent: var(--viz-rust-light, var(--rust-light));
+}
+
+.mix-mapper-intent-card {
+  max-width: none;
+}
+
+.mix-mapper-layout {
+  display: block;
+  margin-top: 1.5rem;
+}
+
+.mix-mapper-viz-card {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.mix-mapper-graph-title {
+  margin-bottom: 0.7rem;
+}
+
+.mix-mapper-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.mix-mapper-mode-btn {
+  font-family: var(--mono);
+  font-size: 0.69rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  border: 1px solid color-mix(in srgb, var(--ink-ghost) 62%, transparent 38%);
+  background: color-mix(in srgb, var(--paper) 82%, transparent 18%);
+  color: var(--ink-mid);
+  padding: 0.43rem 0.7rem;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.mix-mapper-mode-btn:hover {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--ink-mid) 72%, transparent 28%);
+}
+
+.mix-mapper-mode-btn:focus-visible {
+  outline: 1px solid var(--mix-map-accent);
+  outline-offset: 2px;
+}
+
+.mix-mapper-mode-btn.is-active {
+  color: var(--paper);
+  border-color: var(--mix-map-accent);
+  background: color-mix(in srgb, var(--mix-map-accent) 72%, var(--rust) 28%);
+}
+
+.mix-mapper-helper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.67rem;
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+  color: var(--ink-faint);
+  margin-bottom: 0.6rem;
+}
+
+.mix-mapper-helper-label {
+  color: var(--ink-mid);
+}
+
+.mix-mapper-helper-marker {
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.mix-mapper-helper-marker.is-line {
+  width: 1.35rem;
+  border-top: 2px solid var(--ink);
+}
+
+.mix-mapper-helper-marker.is-line.is-assumptions {
+  border-top-color: var(--sage);
+}
+
+.mix-mapper-helper-marker.is-dot {
+  width: 0.54rem;
+  height: 0.54rem;
+  border-radius: 999px;
+  background: var(--sage);
+}
+
+.mix-mapper-viz-shell {
+  border: 0;
+  background: transparent;
+  width: 66.6667%;
+  margin: 0 auto;
+  min-height: 22rem;
+  padding: 0;
+}
+
+.mix-mapper-svg {
+  --mix-map-node-fs-px: 8.8px;
+  --mix-map-node-width-scale: 0.72;
+  --mix-map-node-height-scale: 0.74;
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 22rem;
+  overflow: visible;
+}
+
+.mix-map-lane-title,
+.mix-map-lane-subtitle,
+.mix-map-compare-label {
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+}
+
+#mix-mapper-svg .mix-map-node-label {
+  font-family: var(--viz-font-mono, var(--mono));
+  font-size: var(--mix-map-node-fs-px, 10.5px);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  fill: var(--viz-ink-faint, var(--ink-faint));
+}
+
+.mix-mapper-svg .mix-map-node {
+  cursor: pointer;
+}
+
+.mix-mapper-svg .mix-map-edge {
+  cursor: pointer;
+}
+
+.mix-mapper-svg .mix-map-node:focus-visible {
+  outline: none;
+}
+
+.mix-mapper-svg .mix-map-node:focus-visible path {
+  stroke-width: 3.2;
+}
+
+.mix-mapper-fallback {
+  margin: 0.7rem 0 0;
+  max-width: none;
+}
+
+.mix-mapper-tooltip {
+  position: fixed;
+  z-index: 1400;
+  pointer-events: none;
+  max-width: 18rem;
+  background: color-mix(in srgb, var(--ink) 95%, transparent 5%);
+  color: var(--paper);
+  border: 1px solid color-mix(in srgb, var(--ink-ghost) 32%, transparent 68%);
+  padding: 0.6rem 0.68rem;
+  font-family: var(--mono);
+  font-size: 0.67rem;
+  line-height: 1.48;
+  letter-spacing: 0.03em;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.mix-mapper-tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mix-mapper-tooltip strong {
+  font-weight: 600;
+}
+
+.mix-mapper-tooltip-tags {
+  color: color-mix(in srgb, var(--paper) 76%, var(--ink-ghost) 24%);
+}
+
+@media (max-width: 720px) {
+  .mix-mapper-viz-card {
+    padding: 0;
+  }
+
+  .mix-mapper-viz-shell,
+  .mix-mapper-svg {
+    min-height: 20rem;
+  }
+
+  .mix-mapper-viz-shell {
+    width: 100%;
+  }
+
+  .mix-mapper-tooltip {
+    max-width: 15rem;
+    font-size: 0.62rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .mix-mapper-svg {
+    --mix-map-node-fs-px: 7.6px;
+    --mix-map-node-width-scale: 0.72;
+    --mix-map-node-height-scale: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mix-mapper-tooltip,
+  .mix-mapper-mode-btn {
+    transition: none;
+  }
+}

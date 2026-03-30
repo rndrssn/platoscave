@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="The Mix Mapper module placeholder in To the Bedrock." />
-  <title>The Mix Mapper · To the Bedrock</title>
+  <meta name="description" content="Module 04: a dual-lane lifecycle map comparing traditional phase-gated delivery and complexity-informed product work." />
+  <title>04 · The Mix Mapper · To the Bedrock</title>
   <script src="../../theme.config.js"></script>
   <script src="../../js/theme-bootstrap.js"></script>
   <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
@@ -24,44 +24,85 @@
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
 
-  <!-- Navigation -->
   <nav class="main-nav">
     <a class="nav-title" href="../../">To the Bedrock</a>
     <div class="nav-links" id="primary-nav">
       <a class="nav-link" href="../../">Identity</a>
       <a class="nav-link" href="../../notes/">Notes</a>
       <a class="nav-link nav-link--active" href="../../modules/" aria-current="page">Modules</a>
-
     </div>
     <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
-  <main id="main-content" class="main--narrow">
-    <div class="module-page">
-
+  <main id="main-content">
+    <div class="module-page mix-mapper-page">
       <header class="module-header">
         <p class="module-header-number">04 &middot; The Mix Mapper</p>
-        <h1 class="module-header-title">The Mix Mapper</h1>
-        <p class="module-header-body">This module is under development.</p>
+        <h1 class="module-header-title">Traditional and Complexity-Informed Lifecycle Map</h1>
+        <p class="module-header-body">
+          A side-by-side system map of product and innovation flow. This module makes assumptions visible through
+          structure, showing where a model optimizes for predictability and where it optimizes for learning.
+        </p>
       </header>
 
-      <!-- Footer nav -->
+      <div class="field-notes-card mix-mapper-intent-card" aria-label="Field notes">
+        <p class="field-notes-title">Field Notes</p>
+        <p class="field-notes-body">
+          The right lane models a phase-gated path with clear handoffs and narrow return routes. The left lane models
+          an adaptive path where evidence can travel upstream and reshape earlier choices.
+        </p>
+        <p class="field-notes-body">
+          Use the mode controls to switch the emphasis from process structure to assumption pressure and learning flow.
+        </p>
+      </div>
+
+      <section class="mix-mapper-layout" aria-label="Mix Mapper visualization and interpretation">
+        <article class="mix-mapper-viz-card" aria-labelledby="mix-mapper-graph-title">
+          <h2 id="mix-mapper-graph-title" class="essay-heading mix-mapper-graph-title">Dual-Lane Lifecycle Comparison</h2>
+
+          <div class="mix-mapper-controls" role="group" aria-label="Visualization mode">
+            <button type="button" class="mix-mapper-mode-btn is-active" data-mode="process" aria-pressed="true">Process</button>
+            <button type="button" class="mix-mapper-mode-btn" data-mode="assumptions" aria-pressed="false">Assumptions</button>
+            <button type="button" class="mix-mapper-mode-btn" data-mode="learning" aria-pressed="false">Learning</button>
+          </div>
+
+          <p id="mix-mapper-helper" class="mix-mapper-helper">
+            <span class="mix-mapper-helper-marker is-line is-process" aria-hidden="true"></span>
+            <span class="mix-mapper-helper-label">Process</span>
+          </p>
+
+          <div id="mix-mapper-viz-shell" class="mix-mapper-viz-shell">
+            <svg id="mix-mapper-svg" class="mix-mapper-svg" role="img" aria-label="Directed lifecycle map comparing complexity-informed and traditional delivery lanes"></svg>
+            <p id="mix-mapper-fallback" class="essay-body mix-mapper-fallback" hidden>Visualization unavailable. D3 failed to load.</p>
+            <noscript>
+              <p class="essay-body mix-mapper-fallback">JavaScript is required to render this visualization.</p>
+            </noscript>
+          </div>
+        </article>
+
+      </section>
+
       <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
         <a class="footer-nav-link" href="../garbage-can/" aria-label="Previous: 03 The Garbage Can Model">
           <span class="footer-nav-label-full">&larr; Previous: 03 Garbage Can</span>
           <span class="footer-nav-label-short">&larr; Previous</span>
         </a>
-        <span></span>
+        <a class="footer-nav-link" href="../experience-skill-graph/" aria-label="Next: 05 My Experience-Skill Graph">
+          <span class="footer-nav-label-full">Next: 05 Experience-Skill Graph &rarr;</span>
+          <span class="footer-nav-label-short">Next &rarr;</span>
+        </a>
       </nav>
-
     </div>
   </main>
+
+  <div id="mix-mapper-tooltip" class="mix-mapper-tooltip" role="status" aria-live="polite" aria-hidden="true"></div>
 
   <footer>
     <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../colophon/" class="footer-link">Site Notes</a></p>
   </footer>
 
+  <script src="../../assets/vendor/d3.v7.min.js"></script>
   <script src="../../js/nav-controller.js"></script>
-
+  <script src="./mix-mapper.js"></script>
 </body>
 </html>

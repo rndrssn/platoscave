@@ -4,7 +4,7 @@ type: GUIDE
 title: Testing and Release Guide
 status: ACTIVE
 created: 2026-03-19
-updated: 2026-03-24
+updated: 2026-03-30
 owner: Robert Andersson
 relates_to: [CORE-quality-gates, GUIDE-getting-started]
 tags: [testing, release]
@@ -19,6 +19,9 @@ token_cost_estimate: low
 
 1. `node tests/run-all.js`
 2. Optional browser smoke when Playwright is installed: `node tests/test-browser-smoke-optional.js`
+
+Nav theming guardrails included in `run-all`:
+- `tests/test-nav-theme-contract.js` ensures nav surfaces stay token-driven and prevents direct `.main-nav` theme overrides for the active theme.
 
 ## Notes-only release path
 

@@ -83,6 +83,15 @@
   --card-pad-x:                  1.1rem;
   --card-pad-y:                  1rem;
   --shadow-nav-popover:          0 8px 22px rgba(42, 32, 24, 0.14);
+  --nav-surface:                 color-mix(in srgb, var(--paper) 46%, transparent 54%);
+  --nav-surface-border:          color-mix(in srgb, var(--ink-ghost) 54%, transparent 46%);
+  --nav-surface-filter:          blur(12px) saturate(1.06);
+  --nav-menu-surface:            color-mix(in srgb, var(--paper) 50%, transparent 50%);
+  --nav-menu-border:             color-mix(in srgb, var(--ink-ghost) 44%, transparent 56%);
+  --nav-menu-filter:             blur(12px) saturate(1.06);
+  --nav-menu-active-surface:     color-mix(in srgb, var(--paper-dark) 44%, transparent 56%);
+  --nav-submenu-surface:         color-mix(in srgb, var(--paper) 54%, transparent 46%);
+  --nav-submenu-filter:          blur(10px) saturate(1.05);
 
   /* Visualization tokens consumed by gc-viz.js */
   --viz-ink:        var(--ink);

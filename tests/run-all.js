@@ -19,6 +19,7 @@ const tests = [
   'test-theme-config-contract.js',
   'test-nav-controller.js',
   'test-css-theme-contract.js',
+  'test-nav-theme-contract.js',
   'test-navigation-links.js',
   'test-no-cdn-runtime-deps.js',
   'test-gc-viz-contract.js',

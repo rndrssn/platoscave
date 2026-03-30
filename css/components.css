@@ -10,8 +10,10 @@
   justify-content: space-between;
   padding: 0 2rem;
   height: 4rem;
-  background: var(--paper);
-  border-bottom: 1px solid var(--ink-ghost);
+  background: var(--nav-surface);
+  border-bottom: 1px solid var(--nav-surface-border);
+  -webkit-backdrop-filter: var(--nav-surface-filter);
+  backdrop-filter: var(--nav-surface-filter);
 }
 
 .nav-title {
@@ -46,14 +48,11 @@
   width: max-content;
   min-width: 10.5rem;
   max-width: calc(100vw - 1.6rem);
-  background:
-    repeating-linear-gradient(
-      -8deg,
-      color-mix(in srgb, var(--paper-dark) 92%, var(--paper) 8%) 0 3px,
-      color-mix(in srgb, var(--paper-dark) 88%, var(--paper) 12%) 3px 6px
-    );
-  border: 1px solid var(--ink-ghost);
-  border-top: 1px solid var(--sage);
+  background: var(--nav-menu-surface);
+  border: 1px solid var(--nav-menu-border);
+  border-top: 1px solid var(--nav-menu-border);
+  -webkit-backdrop-filter: var(--nav-menu-filter);
+  backdrop-filter: var(--nav-menu-filter);
   box-shadow:
     var(--shadow-nav-popover),
     inset 0 0 0 1px color-mix(in srgb, var(--paper) 72%, var(--ink-ghost) 28%);
@@ -305,18 +304,21 @@
 
 /* ─── Nav Menu (Locked Variant) ─────────────────────────── */
 .js-enabled .nav-links.is-open {
+  /* This block is the final winner in the cascade for menu panel styling. */
   border: none;
-  border-top: 1px solid color-mix(in srgb, var(--ink-ghost) 72%, transparent 28%);
-  border-bottom: 1px solid color-mix(in srgb, var(--ink-ghost) 72%, transparent 28%);
+  border-top: 1px solid var(--nav-menu-border);
+  border-bottom: 1px solid var(--nav-menu-border);
   box-shadow: none;
   transform: none;
-  background: color-mix(in srgb, var(--paper) 92%, transparent 8%);
+  background: var(--nav-menu-surface);
+  -webkit-backdrop-filter: var(--nav-menu-filter);
+  backdrop-filter: var(--nav-menu-filter);
 }
 
 .js-enabled .nav-links.is-open .nav-link.nav-link--active,
 .js-enabled .nav-links.is-open .nav-modules-toggle.nav-link--active {
   color: var(--link-inline);
-  background: color-mix(in srgb, var(--paper) 70%, var(--paper-dark) 30%);
+  background: var(--nav-menu-active-surface);
 }
 
 .js-enabled .nav-links.is-open .nav-link::before,
@@ -382,7 +384,9 @@
     margin: 0;
     padding: 0.2rem 0 0.12rem 0.36rem;
     border-top: none;
-    background: color-mix(in srgb, var(--paper) 93%, transparent 7%);
+    background: var(--nav-submenu-surface);
+    -webkit-backdrop-filter: var(--nav-submenu-filter);
+    backdrop-filter: var(--nav-submenu-filter);
     z-index: 161;
   }
 

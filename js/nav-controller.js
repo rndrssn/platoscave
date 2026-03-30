@@ -18,6 +18,40 @@
       { number: '04', title: 'Mix Mapper', slug: 'mix-mapper', path: 'mix-mapper/', status: 'coming-soon' },
       { number: '05', title: 'Experience-Skill Graph', slug: 'experience-skill-graph', path: 'experience-skill-graph/', status: 'live' }
     ];
+    var NAV_SWATCH_ALLOWLIST = [
+      'white',
+      'oxblood-glass',
+      'slate-signal',
+      'midnight-ink',
+      'rust-ember',
+    ];
+
+    function applyConfiguredNavSwatch() {
+      var root = document && document.documentElement;
+      if (!root || typeof root.setAttribute !== 'function' || typeof root.removeAttribute !== 'function') {
+        return;
+      }
+
+      var configured = '';
+      if (window && typeof window.PLATOSCAVE_NAV_SWATCH !== 'undefined' && window.PLATOSCAVE_NAV_SWATCH !== null) {
+        configured = String(window.PLATOSCAVE_NAV_SWATCH).trim();
+      }
+
+      if (!configured || configured === 'default' || configured === 'base') {
+        root.removeAttribute('data-nav-swatch');
+        return;
+      }
+
+      if (NAV_SWATCH_ALLOWLIST.indexOf(configured) === -1) {
+        if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+          console.warn('Unknown PLATOSCAVE_NAV_SWATCH:', configured, '- using default nav swatch');
+        }
+        root.removeAttribute('data-nav-swatch');
+        return;
+      }
+
+      root.setAttribute('data-nav-swatch', configured);
+    }
 
     function normalizeModuleStatus(status) {
       return status === 'live' ? 'live' : 'coming-soon';
@@ -80,10 +114,12 @@
     }
 
     ensureFooterActions();
+    applyConfiguredNavSwatch();
 
     var navToggle = document.querySelector('.nav-mobile-toggle');
     var navLinks = document.querySelector('.nav-links');
     var modulesToggleButton = null;
+    var modulesHead = null;
     var modulesSubmenu = null;
     var modulesAutoExpand = false;
     var prefetchedMenuRoutes = Object.create(null);
@@ -110,6 +146,8 @@
       positionModulesSubmenu();
       modulesSubmenu.hidden = !open;
       modulesToggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+      modulesToggleButton.setAttribute('aria-label', open ? 'Collapse modules list' : 'Expand modules list');
+      modulesToggleButton.textContent = open ? '-' : '+';
       if (open) modulesToggleButton.classList.add('is-expanded');
       else modulesToggleButton.classList.remove('is-expanded');
     }
@@ -149,23 +187,31 @@
         modulesLink.getAttribute('aria-current') === 'page';
 
       var modulesLabel = (modulesLink.textContent || '').trim() || 'Modules';
-      var modulesToggleClass = (modulesLink.className || 'nav-link')
-        .replace(/\s*nav-link--active\b/g, '')
-        .trim();
-      if (!modulesToggleClass) modulesToggleClass = 'nav-link';
+      var modulesLinkClass = (modulesLink.className || 'nav-link').trim();
+      if (!modulesLinkClass) modulesLinkClass = 'nav-link';
+      var modulesAriaCurrent = modulesLink.getAttribute('aria-current');
+
+      modulesHead = document.createElement('div');
+      modulesHead.className = 'nav-modules-head';
 
       modulesToggleButton = document.createElement('button');
       modulesToggleButton.type = 'button';
-      modulesToggleButton.className = modulesToggleClass + ' nav-modules-toggle';
-      if (modulesAutoExpand) modulesToggleButton.classList.add('nav-link--active');
-      modulesToggleButton.textContent = modulesLabel;
+      modulesToggleButton.className = 'nav-modules-toggle';
+      modulesToggleButton.textContent = '+';
       modulesToggleButton.setAttribute('aria-expanded', modulesAutoExpand ? 'true' : 'false');
+      modulesToggleButton.setAttribute('aria-label', modulesAutoExpand ? 'Collapse modules list' : 'Expand modules list');
 
       modulesSubmenu = document.createElement('div');
       modulesSubmenu.className = 'nav-modules-submenu';
       modulesSubmenu.id = 'primary-nav-modules-submenu';
       modulesSubmenu.hidden = !modulesAutoExpand;
       modulesToggleButton.setAttribute('aria-controls', modulesSubmenu.id);
+
+      var modulesLandingLink = document.createElement('a');
+      modulesLandingLink.className = modulesLinkClass + ' nav-modules-link';
+      modulesLandingLink.href = modulesHref;
+      modulesLandingLink.textContent = modulesLabel;
+      if (modulesAriaCurrent) modulesLandingLink.setAttribute('aria-current', modulesAriaCurrent);
 
       var currentPath = '';
       if (window && window.location && typeof window.location.pathname === 'string') {
@@ -218,8 +264,10 @@
         modulesSubmenu.appendChild(createSubEntry(entry, isEntryActive(entry.slug)));
       });
 
-      modulesLink.parentNode.replaceChild(modulesToggleButton, modulesLink);
-      modulesToggleButton.insertAdjacentElement('afterend', modulesSubmenu);
+      modulesHead.appendChild(modulesToggleButton);
+      modulesHead.appendChild(modulesLandingLink);
+      modulesLink.parentNode.replaceChild(modulesHead, modulesLink);
+      modulesHead.insertAdjacentElement('afterend', modulesSubmenu);
       positionModulesSubmenu();
 
       modulesToggleButton.addEventListener('click', function (event) {

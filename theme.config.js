@@ -28,3 +28,11 @@
 
 /* Active */
 window.PLATOSCAVE_THEME = 'decision-collision-cold';
+
+/* Optional nav recolor swatch (decision-collision-cold) */
+// window.PLATOSCAVE_NAV_SWATCH = ''; // default nav tokens
+window.PLATOSCAVE_NAV_SWATCH = 'white';
+// window.PLATOSCAVE_NAV_SWATCH = 'oxblood-glass';
+// window.PLATOSCAVE_NAV_SWATCH = 'slate-signal';
+// window.PLATOSCAVE_NAV_SWATCH = 'midnight-ink';
+// window.PLATOSCAVE_NAV_SWATCH = 'rust-ember';

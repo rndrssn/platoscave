@@ -1,6 +1,6 @@
 [
   {
-    "label": "cost-overrun",
+    "label": "cost overrun",
     "slug": "cost-overrun",
     "notes": [
       "cost-overruns"
@@ -8,7 +8,7 @@
     "modules": []
   },
   {
-    "label": "decision-making",
+    "label": "decision making",
     "slug": "decision-making",
     "notes": [],
     "modules": [
@@ -24,7 +24,7 @@
     ]
   },
   {
-    "label": "long-tails",
+    "label": "long tails",
     "slug": "long-tails",
     "notes": [
       "cost-overruns"
@@ -48,7 +48,7 @@
     "modules": []
   },
   {
-    "label": "the-mix",
+    "label": "the mix",
     "slug": "the-mix",
     "notes": [
       "what-works-and-what-doesnt-work",

@@ -327,13 +327,17 @@
       var anchor = nodeById[row.anchorId];
       if (!anchor) return 0;
 
-      var lanePrefix = anchor.id ? anchor.id.charAt(0) : '';
-      var forward = nodeById[lanePrefix + String(anchor.step + 1)];
+      var forward = null;
+      var backward = null;
+      Object.keys(nodeById).forEach(function(id) {
+        var node = nodeById[id];
+        if (!node || node.lane !== anchor.lane) return;
+        if (node.step === anchor.step + 1) forward = node;
+        if (node.step === anchor.step - 1) backward = node;
+      });
+
       if (forward) return ((anchor.y + forward.y) / 2) + (Number(row.yOffset) || 0);
-
-      var backward = nodeById[lanePrefix + String(anchor.step - 1)];
       if (backward) return ((anchor.y + backward.y) / 2) + (Number(row.yOffset) || 0);
-
       return anchor.y + (Number(row.yOffset) || 0);
     }
 

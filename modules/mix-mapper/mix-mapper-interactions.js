@@ -122,11 +122,18 @@
           hideTooltip();
           clearHighlight();
         })
-        .on('keydown', function(event) {
+        .on('keydown', function(event, node) {
           if (event.key === 'Escape') {
             hideTooltip();
             clearHighlight();
             this.blur();
+            return;
+          }
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            var box = this.getBoundingClientRect();
+            highlightNode(node.id);
+            showTooltip(tooltipHtml(node), box.left + (box.width / 2), box.top + 8, { anchorMode: 'focus' });
           }
         });
     }

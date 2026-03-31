@@ -169,7 +169,6 @@
           return {
             color: neutralColor,
             width: Math.max(0.7, layout.edgeLearning - 0.06),
-            dash: null,
             opacity: 0.44,
             marker: 'url(#mix-map-arrow-process)'
           };
@@ -178,7 +177,6 @@
           return {
             color: neutralColor,
             width: Math.max(0.68, layout.edgeSecondary - 0.04),
-            dash: null,
             opacity: 0.34,
             marker: 'url(#mix-map-arrow-process)'
           };
@@ -186,7 +184,6 @@
         return {
           color: neutralColor,
           width: Math.max(0.68, layout.edgePrimary - 0.16),
-          dash: null,
           opacity: 0.38,
           marker: link.lane === 'complexity'
             ? 'url(#mix-map-arrow-process)'
@@ -202,7 +199,6 @@
           return {
             color: processColor,
             width: layout.edgePrimary + 0.25,
-            dash: null,
             opacity: 0.94,
             marker: 'url(#mix-map-arrow-process-active)'
           };
@@ -211,7 +207,6 @@
           return {
             color: processColor,
             width: layout.edgePrimary + 0.25,
-            dash: null,
             opacity: 0.94,
             marker: 'url(#mix-map-arrow-process-active)'
           };
@@ -220,7 +215,6 @@
           return {
             color: processColor,
             width: Math.max(0.62, layout.edgeSecondary - 0.26),
-            dash: null,
             opacity: 0.78,
             marker: 'url(#mix-map-arrow-process-active)'
           };
@@ -228,7 +222,6 @@
         return {
           color: processFaintColor,
           width: Math.max(0.58, layout.edgeSecondary - 0.54),
-          dash: null,
           opacity: 0.24,
           marker: link.lane === 'complexity'
             ? 'url(#mix-map-arrow-ink-faint)'
@@ -246,7 +239,6 @@
           return {
             color: assumptionColor,
             width: layout.edgePrimary + 0.12,
-            dash: null,
             opacity: 0.95,
             marker: assumptionMarker
           };
@@ -255,7 +247,6 @@
           return {
             color: assumptionColor,
             width: layout.edgeLearning + 0.28,
-            dash: null,
             opacity: 0.97,
             marker: assumptionMarker
           };
@@ -264,7 +255,6 @@
           return {
             color: COLORS.learningArrow,
             width: Math.max(0.82, layout.edgeLearning - 0.06),
-            dash: null,
             opacity: 0.74,
             marker: assumptionMarker
           };
@@ -273,7 +263,6 @@
           return {
             color: assumptionColor,
             width: Math.max(0.64, layout.edgeSecondary - 0.14),
-            dash: null,
             opacity: 0.46,
             marker: assumptionMarker
           };
@@ -281,7 +270,6 @@
         return {
           color: COLORS.inkFaint,
           width: Math.max(0.58, layout.edgeSecondary - 0.34),
-          dash: null,
           opacity: 0.24,
           marker: link.lane === 'complexity'
             ? 'url(#mix-map-arrow-ink-faint)'
@@ -297,7 +285,6 @@
           return {
             color: learningColor,
             width: layout.edgeLearning + 0.62,
-            dash: null,
             opacity: 0.98,
             marker: complexityLearningMarker
           };
@@ -306,7 +293,6 @@
           return {
             color: COLORS.inkFaint,
             width: Math.max(0.75, layout.edgeSecondary - 0.16),
-            dash: null,
             opacity: 0.24,
             marker: link.lane === 'complexity'
               ? 'url(#mix-map-arrow-ink-faint)'
@@ -317,7 +303,6 @@
           return {
             color: learningColor,
             width: Math.max(0.82, layout.edgeLearning - 0.06),
-            dash: null,
             opacity: 0.74,
             marker: 'url(#mix-map-arrow-assumption)'
           };
@@ -325,7 +310,6 @@
         return {
           color: COLORS.inkFaint,
           width: Math.max(0.6, layout.edgeSecondary - 0.5),
-          dash: null,
           opacity: 0.22,
           marker: link.lane === 'complexity'
             ? 'url(#mix-map-arrow-ink-faint)'

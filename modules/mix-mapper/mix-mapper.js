@@ -5,6 +5,7 @@
   var svgEl = document.getElementById('mix-mapper-svg');
   var tooltipEl = document.getElementById('mix-mapper-tooltip');
   var fallbackEl = document.getElementById('mix-mapper-fallback');
+  var legendEl = document.querySelector('.mix-mapper-legend');
   var modeButtons = Array.prototype.slice.call(document.querySelectorAll('.mix-mapper-legend-btn'));
 
   if (!shellEl || !svgEl || !tooltipEl || !modeButtons.length) return;
@@ -42,6 +43,51 @@
 
   function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
+  }
+
+  function readNumberCssVarFromEl(el, name, fallback) {
+    if (!el || typeof window === 'undefined') return fallback;
+    var raw = window.getComputedStyle(el).getPropertyValue(name);
+    var num = parseFloat(raw);
+    return Number.isFinite(num) ? num : fallback;
+  }
+
+  function resolveTypography(layout) {
+    var viewWidth = layout && Number.isFinite(layout.width) ? Math.max(1, layout.width) : 980;
+    var rect = svgEl.getBoundingClientRect();
+    // Use width-driven scale for stable first paint. Height can be transient before first viewBox render.
+    var widthScale = rect.width > 0 ? (rect.width / viewWidth) : 1;
+    var svgScale = clamp(widthScale, 0.25, 2.5);
+    var legendPx = readScopedCssNumber('--viz-fs-legend', 13);
+    var titlePx = readScopedCssNumber('--viz-fs-co-label', legendPx);
+
+    function pxToUserUnits(px, minPx, maxPx) {
+      var targetPx = clamp(px, minPx, maxPx);
+      return clamp(targetPx / svgScale, 8, 180);
+    }
+
+    return {
+      nodeFontU: pxToUserUnits(
+        readNumberCssVarFromEl(svgEl, '--mix-map-fs-node-px', Math.max(11.4, legendPx * 0.88)),
+        9.2,
+        13.2
+      ),
+      laneTitleFontU: pxToUserUnits(
+        readNumberCssVarFromEl(svgEl, '--mix-map-fs-lane-title-px', Math.max(11.6, titlePx * 0.84)),
+        11.2,
+        16.2
+      ),
+      laneSubtitleFontU: pxToUserUnits(
+        readNumberCssVarFromEl(svgEl, '--mix-map-fs-lane-subtitle-px', Math.max(10.2, legendPx * 0.76)),
+        10,
+        14
+      ),
+      compareFontU: pxToUserUnits(
+        readNumberCssVarFromEl(svgEl, '--mix-map-fs-compare-px', Math.max(9.4, legendPx * 0.72)),
+        8.4,
+        11.4
+      )
+    };
   }
 
   function buildColors() {
@@ -161,6 +207,10 @@
     getMode: function() {
       return state.mode;
     },
+    getLinkMode: function(link, fallbackMode) {
+      var resolved = resolveLinkMode(link);
+      return resolved || fallbackMode || state.mode || 'all';
+    },
     showTooltip: showTooltip,
     hideTooltip: hideTooltip,
     linkTooltipHtml: linkTooltipHtml,
@@ -184,6 +234,7 @@
     getColors: function() {
       return COLORS;
     },
+    getTypography: resolveTypography,
     getCurrentRenderStamp: function() {
       return state.renderStamp;
     }
@@ -193,16 +244,23 @@
 
   var state = {
     mode: 'all',
+    activeModes: {
+      process: false,
+      assumptions: false,
+      learning: false
+    },
     activeNodeId: null,
     layout: null,
     renderStamp: 0,
     nodeById: Object.create(null),
     linkSel: null,
+    linkOverlaySel: null,
     linkHitSel: null,
     nodeSel: null,
     pulseSel: null,
     pulseTimer: null,
-    resizeTimer: null
+    resizeTimer: null,
+    fontsSettled: false
   };
 
   function refreshColors() {
@@ -216,13 +274,18 @@
     prefersReducedMotion = !!reducedMotionQuery.matches;
   }
 
-  function setModeButtonState(activeMode) {
+  function setModeButtonState() {
+    var activeList = [];
     modeButtons.forEach(function(button) {
       var buttonMode = button.getAttribute('data-mode');
-      var isActive = buttonMode === activeMode;
+      var isActive = !!(buttonMode && state.activeModes[buttonMode]);
+      if (isActive) activeList.push(buttonMode);
       button.classList.toggle('is-active', isActive);
       button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
     });
+    if (legendEl) {
+      legendEl.setAttribute('data-active-mode', activeList.length ? activeList.join(',') : 'all');
+    }
   }
 
   function hideTooltip() {
@@ -275,7 +338,7 @@
 
   function pulseOpacityWithFocus(link) {
     if (prefersReducedMotion) return 0;
-    var baseOpacity = modePolicy.pulseOpacityForMode(state.mode, link, prefersReducedMotion);
+    var baseOpacity = modePolicy.pulseOpacityForMode(resolvePulseMode(link), link, prefersReducedMotion);
     if (baseOpacity <= 0) return 0;
     if (!state.activeNodeId) return baseOpacity;
     if (link.source === state.activeNodeId || link.target === state.activeNodeId) {
@@ -284,21 +347,99 @@
     return baseOpacity * 0.08;
   }
 
-  function applyMode(mode, skipTransition) {
+  function isProcessLayerLink(link) {
+    var role = getProcessRole(link);
+    return role === 'traditional-flow' || role === 'complexity-flow' || role === 'handoff-rework' || role === 'local-adjust';
+  }
+
+  function isAssumptionsLayerLink(link) {
+    var role = getAssumptionRole(link);
+    return role !== 'context';
+  }
+
+  function isLearningLayerLink(link) {
+    var role = getLearningRole(link);
+    return role === 'learning-loop' || role === 'legacy-upstream';
+  }
+
+  function resolveTooltipMode() {
+    if (state.mode !== 'all' && state.activeModes[state.mode]) return state.mode;
+    if (state.activeModes.process) return 'process';
+    if (state.activeModes.assumptions) return 'assumptions';
+    if (state.activeModes.learning) return 'learning';
+    return 'all';
+  }
+
+  function resolveLinkMode(link) {
+    if (state.activeModes.process && isProcessLayerLink(link)) return 'process';
+    if (state.activeModes.assumptions && isAssumptionsLayerLink(link)) return 'assumptions';
+    if (state.activeModes.learning && isLearningLayerLink(link)) return 'learning';
+    return 'all';
+  }
+
+  function resolvePulseMode(link) {
+    if (state.activeModes.learning && isLearningLayerLink(link)) return 'learning';
+    return 'all';
+  }
+
+  function shouldShowTraditionalAssumptionOverlay(link) {
+    return !!(
+      state.activeModes.process &&
+      state.activeModes.assumptions &&
+      link &&
+      link.lane === 'traditional' &&
+      isAssumptionsLayerLink(link)
+    );
+  }
+
+  function overlayStyle(link) {
+    if (!shouldShowTraditionalAssumptionOverlay(link)) {
+      return {
+        color: 'transparent',
+        width: 0,
+        opacity: 0,
+        marker: null
+      };
+    }
+
+    var assumptionStyle = modePolicy.modeStyle('assumptions', link, state.layout);
+    return {
+      color: assumptionStyle.color,
+      width: assumptionStyle.width * 0.66,
+      opacity: Math.min(0.78, Math.max(0.42, assumptionStyle.opacity * 0.72)),
+      marker: assumptionStyle.marker
+    };
+  }
+
+  function composedLinkOpacity(link, isConnected) {
+    var linkMode = resolveLinkMode(link);
+    var base = modePolicy.modeStyle(linkMode, link, state.layout).opacity;
+    if (isConnected) return Math.min(1, Math.max(base + 0.24, 0.62));
+    return Math.max(0.04, base * 0.35);
+  }
+
+  function applyMode(skipTransition) {
     if (!state.linkSel || !state.pulseSel) return;
 
     var duration = skipTransition ? 0 : 360;
+    var tooltipMode = resolveTooltipMode();
+    state.mode = tooltipMode;
 
-    setModeButtonState(mode);
-    interactionBindings.updateLinkAriaLabels(state, mode);
+    setModeButtonState();
+    interactionBindings.updateLinkAriaLabels(state, tooltipMode);
 
     // Update geometry immediately to avoid path-morph jumps between modes.
     state.linkSel.attr('d', function(link) {
-      return linkPath(link, state.nodeById, state.layout, mode);
+      return linkPath(link, state.nodeById, state.layout);
     });
     if (state.linkHitSel) {
       state.linkHitSel.attr('d', function(link) {
-        return linkPath(link, state.nodeById, state.layout, mode);
+        return linkPath(link, state.nodeById, state.layout);
+      });
+    }
+    if (state.linkOverlaySel) {
+      state.linkOverlaySel.attr('d', function(link) {
+        return linkPath(link, state.nodeById, state.layout);
       });
     }
 
@@ -306,26 +447,44 @@
       .transition()
       .duration(duration)
       .attr('stroke', function(link) {
-        return modePolicy.modeStyle(mode, link, state.layout).color;
+        return modePolicy.modeStyle(resolveLinkMode(link), link, state.layout).color;
       })
       .attr('stroke-width', function(link) {
-        return modePolicy.modeStyle(mode, link, state.layout).width * EDGE_STROKE_SCALE;
+        return modePolicy.modeStyle(resolveLinkMode(link), link, state.layout).width * EDGE_STROKE_SCALE;
       })
       .attr('opacity', function(link) {
-        return modePolicy.modeStyle(mode, link, state.layout).opacity;
+        return modePolicy.modeStyle(resolveLinkMode(link), link, state.layout).opacity;
       })
       .attr('marker-end', function(link) {
-        return modePolicy.modeStyle(mode, link, state.layout).marker;
+        return modePolicy.modeStyle(resolveLinkMode(link), link, state.layout).marker;
       });
+
+    if (state.linkOverlaySel) {
+      state.linkOverlaySel
+        .transition()
+        .duration(duration)
+        .attr('stroke', function(link) {
+          return overlayStyle(link).color;
+        })
+        .attr('stroke-width', function(link) {
+          return overlayStyle(link).width * EDGE_STROKE_SCALE;
+        })
+        .attr('opacity', function(link) {
+          return overlayStyle(link).opacity;
+        })
+        .attr('marker-end', function(link) {
+          return overlayStyle(link).marker;
+        });
+    }
 
     state.pulseSel
       .transition()
       .duration(duration)
       .attr('fill', function(link) {
-        return modePolicy.pulseDotColor(mode, link);
+        return modePolicy.pulseDotColor(resolvePulseMode(link), link);
       })
       .attr('opacity', function(link) {
-        return modePolicy.pulseOpacityForMode(mode, link, prefersReducedMotion);
+        return modePolicy.pulseOpacityForMode(resolvePulseMode(link), link, prefersReducedMotion);
       });
   }
 
@@ -338,7 +497,7 @@
       .duration(180)
       .style('opacity', 1);
 
-    applyMode(state.mode, true);
+    applyMode(true);
   }
 
   function highlightNode(nodeId) {
@@ -359,15 +518,27 @@
       .duration(120)
       .attr('opacity', function(link) {
         var isConnected = link.source === nodeId || link.target === nodeId;
-        return modePolicy.highlightLinkOpacity(state.mode, link, isConnected, state.layout);
+        return composedLinkOpacity(link, isConnected);
       });
+
+    if (state.linkOverlaySel) {
+      state.linkOverlaySel
+        .transition()
+        .duration(120)
+        .attr('opacity', function(link) {
+          var style = overlayStyle(link);
+          if (style.opacity <= 0) return 0;
+          var isConnected = link.source === nodeId || link.target === nodeId;
+          return isConnected ? style.opacity : Math.max(0.04, style.opacity * 0.25);
+        });
+    }
 
     state.pulseSel
       .transition()
       .duration(120)
       .attr('opacity', function(link) {
         if (prefersReducedMotion) return 0;
-        var baseOpacity = modePolicy.pulseOpacityForMode(state.mode, link, prefersReducedMotion);
+        var baseOpacity = modePolicy.pulseOpacityForMode(resolvePulseMode(link), link, prefersReducedMotion);
         if (baseOpacity <= 0) return 0;
         if (link.source === nodeId || link.target === nodeId) return Math.min(0.98, baseOpacity + 0.16);
         return baseOpacity * 0.08;
@@ -390,7 +561,7 @@
         var point;
 
         if (modePolicy.isForwardFlowLink(link) && link.__cascadeTotal && link.__cascadeOffset !== null) {
-          var laneDistance = ((elapsed * modePolicy.pulseSpeedPxPerMs(state.mode, link)) + (link.__cascadePhase || 0)) % link.__cascadeTotal;
+          var laneDistance = ((elapsed * modePolicy.pulseSpeedPxPerMs(resolvePulseMode(link), link)) + (link.__cascadePhase || 0)) % link.__cascadeTotal;
           var localDistance = laneDistance - link.__cascadeOffset;
           if (localDistance < 0 || localDistance > link.__pathLength) {
             point = link.__pathNode.getPointAtLength(0);
@@ -408,7 +579,7 @@
           return;
         }
 
-        var distancePx = modePolicy.pulseDistancePx(elapsed, link, idx, state.mode);
+        var distancePx = modePolicy.pulseDistancePx(elapsed, link, idx, resolvePulseMode(link));
         point = link.__pathNode.getPointAtLength(distancePx);
         pulseSel
           .attr('cx', point.x)
@@ -425,18 +596,19 @@
     var graph = renderer.renderGraph({
       shellEl: shellEl,
       renderStamp: renderStamp,
-      mode: state.mode
+      mode: 'all'
     });
     if (!graph) return;
 
     state.layout = graph.layout;
     state.nodeById = graph.nodeById;
     state.linkSel = graph.linkSel;
+    state.linkOverlaySel = graph.linkOverlaySel;
     state.linkHitSel = graph.linkHitSel;
     state.nodeSel = graph.nodeSel;
     state.pulseSel = graph.pulseSel;
 
-    applyMode(state.mode, true);
+    applyMode(true);
     bindPulseAnimation();
   }
 
@@ -448,12 +620,45 @@
     }, 120);
   }
 
-  interactionBindings.bindModeButtons(modeButtons, function(nextMode) {
-    state.mode = nextMode === state.mode ? 'all' : nextMode;
-    hideTooltip();
-    clearHighlight();
-    applyMode(state.mode, false);
-  });
+  function bindLegendModeButtons() {
+    if (!legendEl || typeof legendEl.addEventListener !== 'function') return;
+    if (
+      legendEl.__mixMapperLegendDelegatedHandler &&
+      typeof legendEl.removeEventListener === 'function'
+    ) {
+      legendEl.removeEventListener('click', legendEl.__mixMapperLegendDelegatedHandler, true);
+    }
+
+    var onLegendClick = function(event) {
+      var target = event && event.target ? event.target : null;
+      var targetEl = target && target.nodeType === 1
+        ? target
+        : (target && target.parentElement ? target.parentElement : null);
+      var button = targetEl && typeof targetEl.closest === 'function'
+        ? targetEl.closest('.mix-mapper-legend-btn')
+        : null;
+      if (!button) return;
+
+      var requestedMode = button.getAttribute('data-mode');
+      if (!requestedMode) return;
+
+      if (event && typeof event.preventDefault === 'function') event.preventDefault();
+      if (event && typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+      else if (event && typeof event.stopPropagation === 'function') event.stopPropagation();
+
+      var nextActive = !state.activeModes[requestedMode];
+      state.activeModes[requestedMode] = nextActive;
+      state.mode = requestedMode;
+      hideTooltip();
+      clearHighlight();
+      applyMode(false);
+    };
+
+    legendEl.__mixMapperLegendDelegatedHandler = onLegendClick;
+    legendEl.addEventListener('click', onLegendClick, true);
+  }
+
+  bindLegendModeButtons();
 
   window.addEventListener('resize', onResize);
 
@@ -461,7 +666,7 @@
     var onMotionPrefChanged = function(event) {
       prefersReducedMotion = !!event.matches;
       bindPulseAnimation();
-      applyMode(state.mode, true);
+      applyMode(true);
     };
 
     if (typeof reducedMotionQuery.addEventListener === 'function') {
@@ -472,4 +677,20 @@
   }
 
   renderGraph();
+
+  if (
+    typeof document !== 'undefined' &&
+    document.fonts &&
+    document.fonts.ready &&
+    typeof document.fonts.ready.then === 'function'
+  ) {
+    document.fonts.ready.then(function() {
+      if (state.fontsSettled) return;
+      state.fontsSettled = true;
+      hideTooltip();
+      renderGraph();
+    }).catch(function() {
+      // Ignore font readiness errors; first render already completed.
+    });
+  }
 })();

@@ -23,9 +23,11 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - **03.03 What's a Garbage Can?** (`/modules/garbage-can/can-explainer/`)
   - **03.04 Explore** (`/modules/garbage-can/explorer/`)
   - **03.05 Assess** (`/modules/garbage-can/assess/`)
-- **04 · The Mix Mapper** *(exploratory)* — High/low software content spectrum mapping for blended organisations.
+- **04 · Mix Mapper** — Lifecycle comparison that separates activity sequence from assumptions and feedback dynamics.
+  - **04.01 Process vs Knowledge** (`/modules/mix-mapper/`)
 - **05 · My Experience-Skill Graph** — Interactive force-directed map linking chronology roles with domain, technical, and leadership skills.
   - **05.01 Graph** (`/modules/experience-skill-graph/`)
+  - **05.02 CV** (`/modules/experience-skill-graph/cv/`)
 
 ## Built With
 
@@ -127,6 +129,15 @@ node tests/run-all.js
 - `run-all` includes navigation link checks and notes build checks.
 - Optional real-browser smoke test:
   - `tests/test-browser-smoke-optional.js` (auto-skips unless Playwright is installed)
+
+## Module Scaffolding
+
+- Canonical pattern: `xx.01` is the module root (`/modules/<slug>/`), not a nested subpage.
+- Create a new module landing page scaffold:
+  - `node scripts/new-module.js --number 06 --slug decision-theater --title "Decision Theater"`
+- The scaffold writes `modules/<slug>/index.html` with:
+  - root-level `xx.01` active sub-nav (`href="./"`)
+  - module back-arrow link to `/modules/`
 
 ## Themes
 

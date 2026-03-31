@@ -12,6 +12,9 @@
     var getMode = deps.getMode || function() {
       return 'all';
     };
+    var getLinkMode = deps.getLinkMode || function(_link, fallbackMode) {
+      return fallbackMode || getMode();
+    };
     var showTooltip = deps.showTooltip || function() {};
     var hideTooltip = deps.hideTooltip || function() {};
     var linkTooltipHtml = deps.linkTooltipHtml || function() {
@@ -31,12 +34,12 @@
       var activeMode = mode || getMode();
       if (state.linkSel) {
         state.linkSel.attr('aria-label', function(link) {
-          return linkAriaLabel(link, activeMode, state.nodeById);
+          return linkAriaLabel(link, getLinkMode(link, activeMode), state.nodeById);
         });
       }
       if (state.linkHitSel) {
         state.linkHitSel.attr('aria-label', function(link) {
-          return linkAriaLabel(link, activeMode, state.nodeById);
+          return linkAriaLabel(link, getLinkMode(link, activeMode), state.nodeById);
         });
       }
     }
@@ -46,21 +49,25 @@
         .attr('role', 'button')
         .attr('tabindex', 0)
         .attr('aria-label', function(link) {
-          return linkAriaLabel(link, getMode(), nodeById);
+          var modeForLink = getLinkMode(link, getMode());
+          return linkAriaLabel(link, modeForLink, nodeById);
         })
         .on('mousemove', function(event, link) {
-          showTooltip(linkTooltipHtml(link, getMode(), nodeById), event.clientX, event.clientY);
+          var modeForLink = getLinkMode(link, getMode());
+          showTooltip(linkTooltipHtml(link, modeForLink, nodeById), event.clientX, event.clientY);
         })
         .on('mouseenter', function(event, link) {
-          showTooltip(linkTooltipHtml(link, getMode(), nodeById), event.clientX, event.clientY);
+          var modeForLink = getLinkMode(link, getMode());
+          showTooltip(linkTooltipHtml(link, modeForLink, nodeById), event.clientX, event.clientY);
         })
         .on('mouseleave', function() {
           hideTooltip();
         })
         .on('focus', function(event, link) {
           var box = this.getBoundingClientRect();
+          var modeForLink = getLinkMode(link, getMode());
           showTooltip(
-            linkTooltipHtml(link, getMode(), nodeById),
+            linkTooltipHtml(link, modeForLink, nodeById),
             box.left + (box.width / 2),
             box.top + Math.max(10, box.height / 2),
             { anchorMode: 'focus' }
@@ -78,8 +85,9 @@
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
             var box = this.getBoundingClientRect();
+            var modeForLink = getLinkMode(link, getMode());
             showTooltip(
-              linkTooltipHtml(link, getMode(), nodeById),
+              linkTooltipHtml(link, modeForLink, nodeById),
               box.left + (box.width / 2),
               box.top + Math.max(10, box.height / 2),
               { anchorMode: 'focus' }
@@ -87,7 +95,8 @@
           }
         })
         .on('click', function(event, link) {
-          showTooltip(linkTooltipHtml(link, getMode(), nodeById), event.clientX, event.clientY);
+          var modeForLink = getLinkMode(link, getMode());
+          showTooltip(linkTooltipHtml(link, modeForLink, nodeById), event.clientX, event.clientY);
         });
     }
 
@@ -122,13 +131,37 @@
         });
     }
 
-    function bindModeButtons(modeButtons, onModeSelected) {
+    function resolveNextMode(currentMode, requestedMode) {
+      if (!requestedMode) return currentMode || 'all';
+      return requestedMode === currentMode ? 'all' : requestedMode;
+    }
+
+    function bindModeButtons(modeButtons, onModeSelected, options) {
+      options = options || {};
+      var getCurrentMode = typeof options.getMode === 'function'
+        ? options.getMode
+        : function() {
+          return 'all';
+        };
+
       modeButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-          var nextMode = button.getAttribute('data-mode');
-          if (!nextMode) return;
-          onModeSelected(nextMode);
-        });
+        if (!button || typeof button.addEventListener !== 'function') return;
+        if (
+          button.__mixMapperModeClickHandler &&
+          typeof button.removeEventListener === 'function'
+        ) {
+          button.removeEventListener('click', button.__mixMapperModeClickHandler);
+        }
+
+        var onClick = function() {
+          var requestedMode = button.getAttribute('data-mode');
+          if (!requestedMode) return;
+          var nextMode = resolveNextMode(getCurrentMode(), requestedMode);
+          onModeSelected(nextMode, requestedMode);
+        };
+
+        button.__mixMapperModeClickHandler = onClick;
+        button.addEventListener('click', onClick);
       });
     }
 
@@ -136,7 +169,8 @@
       updateLinkAriaLabels: updateLinkAriaLabels,
       bindLinkInteractions: bindLinkInteractions,
       bindNodeInteractions: bindNodeInteractions,
-      bindModeButtons: bindModeButtons
+      bindModeButtons: bindModeButtons,
+      resolveNextMode: resolveNextMode
     };
   }
 

@@ -105,8 +105,9 @@ function testSharedTraditionalEntryPortsStayAligned() {
 
 function testAssumptionDotMarkerContract() {
   assert(
-    /id === 'mix-map-arrow-assumption' \|\| id === 'mix-map-arrow-process-dot'/.test(geometrySource),
-    'Expected assumption and process-dot markers to use the shared dot marker branch'
+    /id === 'mix-map-arrow-assumption'/.test(geometrySource) &&
+      /id === 'mix-map-arrow-process-dot'/.test(geometrySource),
+    'Expected explicit dot marker branches for assumption and process-dot markers'
   );
   assert(
     /\.append\('circle'\)/.test(geometrySource),
@@ -115,6 +116,11 @@ function testAssumptionDotMarkerContract() {
   assert(
     /\.append\('line'\)/.test(geometrySource),
     'Expected dot-capable markers to include a small leader line before the endpoint dot'
+  );
+  assert(
+    /\.attr\('r',\s*3\.9\)/.test(geometrySource) &&
+      /\.attr\('r',\s*2\.9\)/.test(geometrySource),
+    'Expected assumption marker dot to be intentionally larger than process-dot marker'
   );
 }
 

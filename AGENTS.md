@@ -117,17 +117,16 @@ For semantics/labels/rules changes:
 
 ## Module IA Contract (Navigation + Numbering)
 
-- Live module root must be canonical `xx.01` at:
-  - `/modules/<slug>/`
+- Live module root must be canonical xx.01 at module root.
 - Root module page requirements:
-  - include `.module-back-link` to `../`
-  - include `.module-sub-nav`
+  - include class module-back-link pointing to ../
+  - include class module-sub-nav
   - exactly one active root section link with:
-    - `class` containing `.module-sub-nav-link--active`
-    - `href="./"`
-    - `aria-current="page"`
-    - section number `xx.01`
-- Do not use root hard redirect (`meta refresh`) for live module roots.
+    - class containing module-sub-nav-link--active
+    - href set to ./
+    - aria-current set to page
+    - section number xx.01
+- Do not use root hard redirect (meta refresh) for live module roots.
 - Legacy nested first-section paths may redirect to root for compatibility, never the reverse.
 - When creating new module roots, prefer:
   - `node scripts/new-module.js --number <xx> --slug <slug> --title "<Title>"`

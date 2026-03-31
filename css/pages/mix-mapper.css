@@ -28,6 +28,14 @@
   margin-bottom: 0.7rem;
 }
 
+.mix-mapper-viz-hint {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+  margin: 0 0 0.38rem;
+}
+
 .mix-mapper-legend {
   display: flex;
   flex-wrap: wrap;

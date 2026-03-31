@@ -58,7 +58,11 @@ function resolveCoreConfig() {
       var proc = (typeof process !== 'undefined' && process && typeof process.cwd === 'function')
         ? process
         : require('process');
-      return require(path.join(proc.cwd(), 'gc-simulation-config.js'));
+      try {
+        return require(path.join(proc.cwd(), 'modules', 'garbage-can', 'runtime', 'gc-simulation-config.js'));
+      } catch (_err4) {
+        return require(path.join(proc.cwd(), 'gc-simulation-config.js'));
+      }
     } catch (_err3) {
       // Continue.
     }

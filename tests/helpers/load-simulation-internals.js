@@ -6,8 +6,8 @@ const vm = require('vm');
 
 function loadSimulationInternals(options) {
   const opts = options || {};
-  const simPath = path.join(__dirname, '..', '..', 'gc-simulation.js');
-  const corePath = path.join(__dirname, '..', '..', 'gc-simulation-core.js');
+  const simPath = path.join(__dirname, '..', '..', 'modules', 'garbage-can', 'runtime', 'gc-simulation.js');
+  const corePath = path.join(__dirname, '..', '..', 'modules', 'garbage-can', 'runtime', 'gc-simulation-core.js');
   const simSource = fs.readFileSync(simPath, 'utf8');
   const coreSource = fs.readFileSync(corePath, 'utf8');
 

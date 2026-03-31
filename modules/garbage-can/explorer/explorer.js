@@ -4,7 +4,7 @@
  * explorer.js
  * Explore page — parameter selection and wiring
  *
- * Dependencies: d3.js, gc-simulation.js, gc-diagnosis.js, gc-viz.js
+ * Dependencies: d3.js + runtime files from ../runtime/
  */
 
 // ─── Results mini-nav ────────────────────────────────────────────────────────
@@ -23,7 +23,7 @@ function setSimError(message) {
   simError.textContent = message;
   simError.hidden = false;
 }
-// gc-pressure-narrative.js is loaded before this file (see index.html script order).
+// gc-pressure-narrative.js from ../runtime/ is loaded before this file (see index.html script order).
 // This wrapper exists to give the call site a named function and a clear dependency contract.
 function buildExplorerNarrative(intensity, inflow, decision, access) {
   return window.buildGcPressureNarrative(intensity, inflow, decision, access);

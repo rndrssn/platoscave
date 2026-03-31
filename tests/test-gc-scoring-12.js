@@ -9,7 +9,7 @@
  * Archetypes from docs/PRINCIPLE-organised-anarchy-questions.md
  */
 
-const { scoreResponses } = require('../gc-scoring.js');
+const { scoreResponses } = require('../modules/garbage-can/runtime/gc-scoring.js');
 
 let passed = 0;
 let failed = 0;

@@ -64,8 +64,8 @@ If the user says phrases like `confirm understanding`, `wdyt`, `let's discuss`, 
 
 ### GC logic and page wiring (load when task involves simulation, scoring, diagnosis, or viz)
 
-5. `gc-simulation.js`
-6. `gc-viz.js`
+5. `modules/garbage-can/runtime/gc-simulation.js`
+6. `modules/garbage-can/runtime/gc-viz.js`
 7. `modules/garbage-can/assess/assess.js`
 8. `modules/garbage-can/explorer/explorer.js`
 
@@ -119,14 +119,14 @@ For semantics/labels/rules changes:
 
 - Theme bootstrap: `theme.config.js`, `js/theme-bootstrap.js`
 - Styles: `css/main.css` + layered css files
-- GC logic: `gc-simulation-core.js`, `gc-simulation.js`, `gc-scoring.js`, `gc-diagnosis.js`, `gc-viz.js`
-- GC narrative: `js/gc-pressure-narrative.js` (must load before assess.js / explorer.js)
+- GC logic: `modules/garbage-can/runtime/gc-simulation-core.js`, `modules/garbage-can/runtime/gc-simulation.js`, `modules/garbage-can/runtime/gc-scoring.js`, `modules/garbage-can/runtime/gc-diagnosis.js`, `modules/garbage-can/runtime/gc-viz.js`
+- GC narrative: `modules/garbage-can/runtime/gc-pressure-narrative.js` (must load before assess.js / explorer.js)
 - GC page wiring: `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js`
 - Tests: `tests/run-all.js`
 
 Key design constraints:
 - The Assess path fixes problemInflow to 'moderate' — the survey does not capture inflow timing; Explorer exposes all four parameters. See `docs/10-guides/GUIDE-architecture.md`.
-- Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both are set by `js/gc-pressure-narrative.js` and `gc-diagnosis.js` before page wiring runs.
+- Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both are set by `modules/garbage-can/runtime/gc-pressure-narrative.js` and `modules/garbage-can/runtime/gc-diagnosis.js` before page wiring runs.
 - Use simResult.meta.problems (not a hardcoded constant) when computing problem proportions from simulation output.
 
 ## Task Templates (quick start)

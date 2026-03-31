@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const { getDiagnosis } = require('../gc-diagnosis');
+const { getDiagnosis } = require('../modules/garbage-can/runtime/gc-diagnosis');
 
 const res0 = getDiagnosis('hierarchical', 'unsegmented', 0);
 assert(/0% of problems remain unresolved/.test(res0.body), 'Expected 0% unresolved at unresolvedShare=0');

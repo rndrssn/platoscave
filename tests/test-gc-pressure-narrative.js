@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const { buildGcPressureNarrative } = require('../js/gc-pressure-narrative.js');
+const { buildGcPressureNarrative } = require('../modules/garbage-can/runtime/gc-pressure-narrative.js');
 
 const levels = ['light', 'moderate', 'heavy'];
 const structures = ['unsegmented', 'hierarchical', 'specialized'];

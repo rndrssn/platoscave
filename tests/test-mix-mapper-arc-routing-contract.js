@@ -24,8 +24,10 @@ function buildFixtures() {
   };
 
   const nodeById = {
+    c1: { id: 'c1', lane: 'complexity', step: 1, x: 200, y: 100 },
     c3: { id: 'c3', lane: 'complexity', step: 3, x: 200, y: 320 },
     c4: { id: 'c4', lane: 'complexity', step: 4, x: 200, y: 430 },
+    c6: { id: 'c6', lane: 'complexity', step: 6, x: 200, y: 650 },
     t3: { id: 't3', lane: 'traditional', step: 3, x: 520, y: 320 },
     t4: { id: 't4', lane: 'traditional', step: 4, x: 520, y: 430 },
     t6: { id: 't6', lane: 'traditional', step: 6, x: 520, y: 650 },
@@ -92,11 +94,63 @@ function testPrimaryLinksRemainVerticalWithinLane() {
   assert(nums[6] === nodeById.c3.x, 'Expected primary target X to stay centered');
 }
 
+function testArcControlPointsStayInsideCanvasBounds() {
+  const { nodeById } = buildFixtures();
+  const layout = {
+    compact: false,
+    allowArcOverflowX: false,
+    width: 640,
+    nodeWidth: 120,
+    nodeHeight: 40,
+    learningArc: 420,
+    feedbackArc: 320
+  };
+
+  const complexityLink = { source: 'c6', target: 'c1', lane: 'complexity', kind: 'learning' };
+  const traditionalLink = { source: 't6', target: 't3', lane: 'traditional', kind: 'learning' };
+  const complexityNums = parseNumbers(geometry.linkPath(complexityLink, nodeById, layout));
+  const traditionalNums = parseNumbers(geometry.linkPath(traditionalLink, nodeById, layout));
+
+  const complexityCurveX = complexityNums[2];
+  const traditionalCurveX = traditionalNums[2];
+
+  assert(complexityCurveX >= 0, 'Expected complexity arc control point to stay inside left canvas boundary');
+  assert(complexityCurveX <= layout.width, 'Expected complexity arc control point to stay inside right canvas boundary');
+  assert(traditionalCurveX >= 0, 'Expected traditional arc control point to stay inside left canvas boundary');
+  assert(traditionalCurveX <= layout.width, 'Expected traditional arc control point to stay inside right canvas boundary');
+}
+
+function testArcControlPointsCanOverflowDesktopWhenEnabled() {
+  const { nodeById } = buildFixtures();
+  const layout = {
+    compact: false,
+    allowArcOverflowX: true,
+    width: 640,
+    nodeWidth: 120,
+    nodeHeight: 40,
+    learningArc: 560,
+    feedbackArc: 460
+  };
+
+  const complexityLink = { source: 'c6', target: 'c1', lane: 'complexity', kind: 'learning' };
+  const traditionalLink = { source: 't6', target: 't3', lane: 'traditional', kind: 'learning' };
+  const complexityNums = parseNumbers(geometry.linkPath(complexityLink, nodeById, layout));
+  const traditionalNums = parseNumbers(geometry.linkPath(traditionalLink, nodeById, layout));
+
+  const complexityCurveX = complexityNums[2];
+  const traditionalCurveX = traditionalNums[2];
+
+  assert(complexityCurveX < 0, 'Expected complexity arc control point to overflow left boundary when desktop overflow is enabled');
+  assert(traditionalCurveX > layout.width, 'Expected traditional arc control point to overflow right boundary when desktop overflow is enabled');
+}
+
 function run() {
   testLaneSideSignContract();
   testComplexityArcAnchorsLeft();
   testTraditionalArcAnchorsRight();
   testPrimaryLinksRemainVerticalWithinLane();
+  testArcControlPointsStayInsideCanvasBounds();
+  testArcControlPointsCanOverflowDesktopWhenEnabled();
   console.log('PASS: tests/test-mix-mapper-arc-routing-contract.js');
 }
 

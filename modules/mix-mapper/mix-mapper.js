@@ -55,11 +55,14 @@
   function resolveTypography(layout) {
     var viewWidth = layout && Number.isFinite(layout.width) ? Math.max(1, layout.width) : 980;
     var rect = svgEl.getBoundingClientRect();
+    var shellWidth = shellEl && shellEl.clientWidth ? shellEl.clientWidth : 0;
+    var measuredWidth = rect && Number.isFinite(rect.width) ? rect.width : 0;
     // Use width-driven scale for stable first paint. Height can be transient before first viewBox render.
-    var widthScale = rect.width > 0 ? (rect.width / viewWidth) : 1;
+    var effectiveWidth = Math.max(measuredWidth, shellWidth);
+    var widthScale = effectiveWidth > 0 ? (effectiveWidth / viewWidth) : 1;
     var svgScale = clamp(widthScale, 0.25, 2.5);
-    var legendPx = readScopedCssNumber('--viz-fs-legend', 13);
-    var titlePx = readScopedCssNumber('--viz-fs-co-label', legendPx);
+    var nodeFontScale = clamp(readScopedCssNumber('--mix-map-node-font-scale', 1), 0.6, 1.3);
+    var nodeMinPx = layout && layout.compact ? 7.8 : 9.2;
 
     function pxToUserUnits(px, minPx, maxPx) {
       var targetPx = clamp(px, minPx, maxPx);
@@ -68,22 +71,22 @@
 
     return {
       nodeFontU: pxToUserUnits(
-        readNumberCssVarFromEl(svgEl, '--mix-map-fs-node-px', Math.max(11.4, legendPx * 0.88)),
-        9.2,
+        readNumberCssVarFromEl(svgEl, '--mix-map-fs-node-px', 11.2) * nodeFontScale,
+        nodeMinPx,
         13.2
       ),
       laneTitleFontU: pxToUserUnits(
-        readNumberCssVarFromEl(svgEl, '--mix-map-fs-lane-title-px', Math.max(11.6, titlePx * 0.84)),
+        readNumberCssVarFromEl(svgEl, '--mix-map-fs-lane-title-px', 14.8),
         11.2,
         16.2
       ),
       laneSubtitleFontU: pxToUserUnits(
-        readNumberCssVarFromEl(svgEl, '--mix-map-fs-lane-subtitle-px', Math.max(10.2, legendPx * 0.76)),
+        readNumberCssVarFromEl(svgEl, '--mix-map-fs-lane-subtitle-px', 11.6),
         10,
         14
       ),
       compareFontU: pxToUserUnits(
-        readNumberCssVarFromEl(svgEl, '--mix-map-fs-compare-px', Math.max(9.4, legendPx * 0.72)),
+        readNumberCssVarFromEl(svgEl, '--mix-map-fs-compare-px', 10.2),
         8.4,
         11.4
       )

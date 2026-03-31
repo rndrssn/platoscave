@@ -7,6 +7,10 @@
   }
   root.MixMapperGeometry = factory();
 }(typeof globalThis !== 'undefined' ? globalThis : this, function buildMixMapperGeometry() {
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
   function complexityLinkSpan(link, nodeById) {
     var source = nodeById[link.source];
     var target = nodeById[link.target];
@@ -72,6 +76,56 @@
     return traditionalTrackX(link, source, halfNodeW, layout, nodeById);
   }
 
+  function circularLateralReach(link, source, target, layout, nodeById) {
+    var verticalSpan = Math.max(1, Math.abs((source && source.y) - (target && target.y)));
+    var span = complexityLinkSpan(link, nodeById);
+    var ratio = layout && layout.compact ? 0.56 : 0.64;
+    var kindBoost = link && link.kind === 'learning' ? 1.08 : 1;
+    var spanBoost = (span - 1) * (layout && layout.compact ? 6 : 8);
+    return Math.max(32, (verticalSpan * ratio * kindBoost) + spanBoost);
+  }
+
+  function resolveArcCanvasBounds(layout, nodeById, halfNodeW) {
+    if (layout && layout.allowArcOverflowX) {
+      return { minX: -Infinity, maxX: Infinity };
+    }
+
+    var inset = Number.isFinite(layout.arcCanvasInset) && layout.arcCanvasInset >= 0
+      ? layout.arcCanvasInset
+      : 12;
+
+    if (Number.isFinite(layout.width) && layout.width > 0) {
+      return {
+        minX: inset,
+        maxX: Math.max(inset, layout.width - inset)
+      };
+    }
+
+    var minNodeX = Infinity;
+    var maxNodeX = -Infinity;
+    Object.keys(nodeById || {}).forEach(function(nodeId) {
+      var node = nodeById[nodeId];
+      if (!node || !Number.isFinite(node.x)) return;
+      minNodeX = Math.min(minNodeX, node.x);
+      maxNodeX = Math.max(maxNodeX, node.x);
+    });
+
+    if (!Number.isFinite(minNodeX) || !Number.isFinite(maxNodeX)) {
+      return { minX: -Infinity, maxX: Infinity };
+    }
+
+    var arcReach = Math.max(
+      24,
+      Number.isFinite(layout.learningArc) ? layout.learningArc : 190,
+      Number.isFinite(layout.feedbackArc) ? layout.feedbackArc : 118
+    ) * 1.2;
+
+    return {
+      minX: minNodeX - halfNodeW - arcReach,
+      maxX: maxNodeX + halfNodeW + arcReach
+    };
+  }
+
   function linkPath(link, nodeById, layout) {
     var source = nodeById[link.source];
     var target = nodeById[link.target];
@@ -95,7 +149,20 @@
         var targetX = arcPortX(target, halfNodeW);
         var sourceY = arcPortY(source);
         var targetY = arcPortY(target);
-        var curveX = laneArcTrackX(link, source, halfNodeW, layout, nodeById);
+        var rawCurveX = laneArcTrackX(link, source, halfNodeW, layout, nodeById);
+        var lateralReach = circularLateralReach(link, source, target, layout, nodeById);
+        var curveMinByShape = sourceX - lateralReach;
+        var curveMaxByShape = sourceX + lateralReach;
+        var shapedCurveX = clamp(rawCurveX, curveMinByShape, curveMaxByShape);
+        var bounds = resolveArcCanvasBounds(layout, nodeById, halfNodeW);
+        var curveX = clamp(shapedCurveX, bounds.minX, bounds.maxX);
+
+        if (source.lane === 'complexity' && curveX >= sourceX) {
+          curveX = Math.max(bounds.minX, sourceX - 1);
+        } else if (source.lane === 'traditional' && curveX <= sourceX) {
+          curveX = Math.min(bounds.maxX, sourceX + 1);
+        }
+
         return [
           'M', sourceX, sourceY,
           'C', curveX, sourceY,

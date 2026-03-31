@@ -29,14 +29,18 @@
         ? typography.nodeFontU
         : (layout.compact ? 10.8 : 11.4);
 
-      var charWidthU = nodeFontU * 0.62;
-      var labelWidthU = longestShortLabelLength() * charWidthU;
-      var horizontalPadU = layout.compact ? 16 : 18;
-      var requiredNodeWidth = Math.ceil(labelWidthU + horizontalPadU);
-
       var baseNodeWidth = layout.nodeWidth;
-      var maxNodeWidthByLane = Math.max(baseNodeWidth, Math.floor(layout.laneGap - (layout.compact ? 14 : 24)));
-      var nodeWidth = clamp(requiredNodeWidth, baseNodeWidth, maxNodeWidthByLane);
+      var fitContentNodeWidth = !!layout.fitContentNodeWidth;
+      var nodeWidth = baseNodeWidth;
+
+      if (fitContentNodeWidth) {
+        var charWidthU = nodeFontU * 0.62;
+        var labelWidthU = longestShortLabelLength() * charWidthU;
+        var horizontalPadU = layout.compact ? 16 : 18;
+        var requiredNodeWidth = Math.ceil(labelWidthU + horizontalPadU);
+        var maxNodeWidthByLane = Math.max(baseNodeWidth, Math.floor(layout.laneGap - (layout.compact ? 14 : 24)));
+        nodeWidth = clamp(requiredNodeWidth, baseNodeWidth, maxNodeWidthByLane);
+      }
 
       var laneGap = Math.max(layout.laneGap, nodeWidth + (layout.compact ? 22 : 38));
 

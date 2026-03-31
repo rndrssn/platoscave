@@ -84,8 +84,6 @@
       });
 
       var defs = svg.append('defs');
-      makeMarker(defs, 'mix-map-arrow-traditional', COLORS.traditionalArrow);
-      makeMarker(defs, 'mix-map-arrow-complexity', COLORS.complexityArrow);
       makeMarker(defs, 'mix-map-arrow-process', COLORS.processArrow);
       makeMarker(defs, 'mix-map-arrow-process-dot', COLORS.processArrow);
       makeMarker(defs, 'mix-map-arrow-process-active', COLORS.rust);
@@ -281,13 +279,7 @@
       var compareLineStart = layout.laneX.complexity + (layout.nodeWidth / 2) + compareInset;
       var compareLineEnd = layout.laneX.traditional - (layout.nodeWidth / 2) - compareInset;
 
-      overlayLayer.selectAll('.mix-map-compare-line')
-        .data([])
-        .join('line');
-
-      var compareHighlightLayer = overlayLayer.selectAll('.mix-map-layer--compare-highlight')
-        .data([null])
-        .join('g')
+      var compareHighlightLayer = overlayLayer.append('g')
         .attr('class', 'mix-map-layer mix-map-layer--compare-highlight')
         .attr('pointer-events', 'none');
 

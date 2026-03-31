@@ -1,6 +1,6 @@
 'use strict';
 var assert = require('assert');
-var diag = require('../gc-diagnosis.js');
+var diag = require('../modules/garbage-can/runtime/gc-diagnosis.js');
 
 var structures = ['unsegmented', 'hierarchical', 'specialized'];
 var passed = 0;

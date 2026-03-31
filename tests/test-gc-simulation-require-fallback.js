@@ -16,7 +16,7 @@ function assert(condition, message) {
 
 function testCwdFallbackResolvesModule() {
   const repoRoot = path.join(__dirname, '..');
-  const simPath = JSON.stringify(path.join(repoRoot, 'gc-simulation.js'));
+  const simPath = JSON.stringify(path.join(repoRoot, 'modules', 'garbage-can', 'runtime', 'gc-simulation.js'));
 
   // Patch Module._load to intercept the first two gc-simulation-core.js require
   // calls (simulating __dirname and ./ path failures), then let the cwd-based

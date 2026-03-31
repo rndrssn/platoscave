@@ -34,7 +34,11 @@ function resolveSimulationCore() {
       var proc = (typeof process !== 'undefined' && process && typeof process.cwd === 'function')
         ? process
         : require('process');
-      return require(path.join(proc.cwd(), 'gc-simulation-core.js'));
+      try {
+        return require(path.join(proc.cwd(), 'modules', 'garbage-can', 'runtime', 'gc-simulation-core.js'));
+      } catch (_err4) {
+        return require(path.join(proc.cwd(), 'gc-simulation-core.js'));
+      }
     } catch (_err3) {
       if (typeof console !== 'undefined' && typeof console.warn === 'function') {
         console.warn('gc-simulation.js: cwd-based require failed.', _err3 && _err3.message);

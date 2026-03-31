@@ -1,6 +1,6 @@
 'use strict';
 var assert = require('assert');
-var scoring = require('../gc-scoring.js');
+var scoring = require('../modules/garbage-can/runtime/gc-scoring.js');
 
 var tests = [
   {

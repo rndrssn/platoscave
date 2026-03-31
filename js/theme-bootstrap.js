@@ -24,6 +24,10 @@
     'chrome-glam',
     'minimalist-brutalist',
   ];
+  var THEME_ALIASES = {
+    'collision-decision-cold': 'decision-collision-cold',
+    'collision-decision': 'decision-collision'
+  };
 
   function removeThemeStylesheet() {
     if (!document || typeof document.getElementById !== 'function') return;
@@ -83,9 +87,26 @@
     document.head.appendChild(link);
   }
 
+  function normalizeThemeName(rawTheme) {
+    var trimmed = (rawTheme || '').trim();
+    if (!trimmed || trimmed === 'default' || trimmed === 'base') return '';
+
+    if (Object.prototype.hasOwnProperty.call(THEME_ALIASES, trimmed)) {
+      var canonical = THEME_ALIASES[trimmed];
+      if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+        console.warn('Deprecated PLATOSCAVE_THEME alias:', trimmed, '- using', canonical);
+      }
+      return canonical;
+    }
+
+    return trimmed;
+  }
+
   root.classList.add('js-enabled');
 
-  if (!configured || configured === 'default' || configured === 'base') {
+  configured = normalizeThemeName(configured);
+
+  if (!configured) {
     root.removeAttribute('data-theme');
     removeThemeStylesheet();
     return;

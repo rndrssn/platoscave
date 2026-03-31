@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const vizPath = path.join(__dirname, '..', 'gc-viz.js');
+const vizPath = path.join(__dirname, '..', 'modules', 'garbage-can', 'runtime', 'gc-viz.js');
 const source = fs.readFileSync(vizPath, 'utf8');
 
 function assert(condition, message) {

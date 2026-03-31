@@ -4,7 +4,7 @@ const assert = require('assert');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const simPath = path.join(__dirname, '..', 'gc-simulation.js');
+const simPath = path.join(__dirname, '..', 'modules', 'garbage-can', 'runtime', 'gc-simulation.js');
 
 const res = spawnSync(
   process.execPath,

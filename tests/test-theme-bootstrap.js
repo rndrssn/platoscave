@@ -62,6 +62,12 @@ function testCustomThemeIsTrimmed() {
   assert(result.setCall.value === 'urban-grid2', 'Expected trimmed theme value');
 }
 
+function testAliasThemeMapsToCanonicalName() {
+  const result = runWithTheme('collision-decision-cold');
+  assert(result.setCall !== null, 'Expected setAttribute for aliased custom theme');
+  assert(result.setCall.value === 'decision-collision-cold', 'Expected alias to map to canonical theme name');
+}
+
 function testInvalidThemeFallsBackToDefault() {
   const result = runWithTheme('not-a-real-theme');
   assert(result.removed, 'Expected removeAttribute for invalid theme');
@@ -72,6 +78,7 @@ function run() {
   testDefaultCasesClearTheme();
   testCustomThemeSetsDataTheme();
   testCustomThemeIsTrimmed();
+  testAliasThemeMapsToCanonicalName();
   testInvalidThemeFallsBackToDefault();
   console.log('PASS: tests/test-theme-bootstrap.js');
 }

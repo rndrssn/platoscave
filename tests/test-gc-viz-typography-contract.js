@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const vizPath = path.join(__dirname, '..', 'gc-viz.js');
+const vizPath = path.join(__dirname, '..', 'modules', 'garbage-can', 'runtime', 'gc-viz.js');
 const tokensPath = path.join(__dirname, '..', 'css', 'tokens.css');
 const mainCssPath = path.join(__dirname, '..', 'css', 'main.css');
 

@@ -32,12 +32,12 @@ Use this playbook when:
 Read ALL of these before forming opinions.
 
 ### Simulation core
-- `gc-simulation-config.js` — constants and configurable tables
-- `gc-simulation-core.js` — the actual algorithm
-- `gc-simulation.js` — public API wrapper; dependency resolution logic
-- `gc-scoring.js` — survey → parameter mapping
-- `gc-diagnosis.js` — structure pairs → cluster text + getDiagnosisPreview()
-- `gc-viz-config.js`, `gc-viz-helpers.js`, `gc-viz-timing.js` — viz support
+- `modules/garbage-can/runtime/gc-simulation-config.js` — constants and configurable tables
+- `modules/garbage-can/runtime/gc-simulation-core.js` — the actual algorithm
+- `modules/garbage-can/runtime/gc-simulation.js` — public API wrapper; dependency resolution logic
+- `modules/garbage-can/runtime/gc-scoring.js` — survey → parameter mapping
+- `modules/garbage-can/runtime/gc-diagnosis.js` — structure pairs → cluster text + getDiagnosisPreview()
+- `modules/garbage-can/runtime/gc-viz-config.js`, `modules/garbage-can/runtime/gc-viz-helpers.js`, `modules/garbage-can/runtime/gc-viz-timing.js` — viz support
 
 ### Page wiring
 - `modules/garbage-can/assess/assess.js`
@@ -46,7 +46,7 @@ Read ALL of these before forming opinions.
 - `modules/garbage-can/explorer/index.html` — script load order (bottom of file)
 
 ### Narrative
-- `js/gc-pressure-narrative.js`
+- `modules/garbage-can/runtime/gc-pressure-narrative.js`
 
 ### Theme system
 - `theme.config.js`

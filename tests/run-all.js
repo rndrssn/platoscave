@@ -21,6 +21,7 @@ const tests = [
   'test-mix-mapper-mode-motion-contract.js',
   'test-mix-mapper-link-narratives-contract.js',
   'test-mix-mapper-lane-header-fit-contract.js',
+  'test-mix-mapper-node-label-layout-contract.js',
   'test-mix-mapper-arc-routing-contract.js',
   'test-mix-mapper-link-anchor-and-marker-invariants.js',
   'test-mix-mapper-mode-matrix-contract.js',

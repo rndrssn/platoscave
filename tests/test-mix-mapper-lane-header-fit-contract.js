@@ -86,6 +86,10 @@ function testLaneHeaderOverlapDetectionExists() {
     /var spillsIntoNodes =/.test(source),
     'Expected overflow detection for lane subtitle region'
   );
+  assert(
+    /text-anchor',\s*'start'/.test(source),
+    'Expected lane header text to use left alignment'
+  );
 }
 
 function run() {

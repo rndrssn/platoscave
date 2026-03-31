@@ -15,7 +15,7 @@
       { number: '01', title: 'Emergence Primer', slug: 'emergence-primer', path: 'emergence-primer/', status: 'coming-soon' },
       { number: '02', title: 'Maturity Diagnostic', slug: 'maturity', path: 'maturity/', status: 'coming-soon' },
       { number: '03', title: 'Garbage Can Model', slug: 'garbage-can', path: 'garbage-can/', status: 'live' },
-      { number: '04', title: 'Mix Mapper', slug: 'mix-mapper', path: 'mix-mapper/', status: 'live' },
+      { number: '04', title: 'Management Mix Mapper', slug: 'mix-mapper', path: 'mix-mapper/', status: 'live' },
       { number: '05', title: 'Experience-Skill Graph', slug: 'experience-skill-graph', path: 'experience-skill-graph/', status: 'live' }
     ];
     var NAV_SWATCH_ALLOWLIST = [

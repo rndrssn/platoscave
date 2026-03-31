@@ -141,14 +141,22 @@ function testNodeUtilsModuleSurface() {
   assert(typeof nodeUtilsModule.createNodeUtils === 'function', 'Expected createNodeUtils export');
 
   const nodeUtils = nodeUtilsModule.createNodeUtils({
-    baseNodes: [{ id: 'x1', lane: 'traditional', step: 1, title: 'A', shortLabel: 'A', description: 'A', tags: [] }],
+    baseNodes: [{ id: 'x1', lane: 'traditional', step: 1, title: 'A', shortLabel: 'Incremental Delivery', description: 'A', tags: [] }],
     links: [{ source: 'x1', target: 'x2', lane: 'traditional', kind: 'primary' }],
     clamp: (value, min, max) => Math.max(min, Math.min(max, value))
   });
 
+  assert(typeof nodeUtils.resolveNodeGeometry === 'function', 'Expected resolveNodeGeometry helper');
   assert(typeof nodeUtils.buildNodes === 'function', 'Expected buildNodes helper');
   assert(typeof nodeUtils.nodeShapePath === 'function', 'Expected nodeShapePath helper');
   assert(typeof nodeUtils.connectedNodeIds === 'function', 'Expected connectedNodeIds helper');
+
+  const geometry = nodeUtils.resolveNodeGeometry(
+    { compact: false, nodeWidth: 120, nodeHeight: 40, laneGap: 200 },
+    { nodeFontU: 11.4 }
+  );
+  assert(geometry.nodeWidth >= 120, 'Expected geometry resolver to keep or increase node width');
+  assert(geometry.laneGap >= 200, 'Expected geometry resolver to keep or increase lane gap');
 }
 
 function testTooltipModuleSurface() {
@@ -182,6 +190,124 @@ function testInteractionsModuleSurface() {
   assert(typeof bindings.bindLinkInteractions === 'function', 'Expected bindLinkInteractions binding');
   assert(typeof bindings.bindNodeInteractions === 'function', 'Expected bindNodeInteractions binding');
   assert(typeof bindings.bindModeButtons === 'function', 'Expected bindModeButtons binding');
+  assert(typeof bindings.resolveNextMode === 'function', 'Expected resolveNextMode binding');
+}
+
+function testLegendToggleStickyBehavior() {
+  const bindings = interactionsModule.createInteractionBindings();
+
+  function makeModeButton(mode) {
+    const listeners = Object.create(null);
+    return {
+      getAttribute(name) {
+        return name === 'data-mode' ? mode : null;
+      },
+      addEventListener(type, handler) {
+        if (!listeners[type]) listeners[type] = [];
+        listeners[type].push(handler);
+      },
+      removeEventListener(type, handler) {
+        if (!listeners[type]) return;
+        listeners[type] = listeners[type].filter((fn) => fn !== handler);
+      },
+      click() {
+        if (!listeners.click || !listeners.click.length) return;
+        listeners.click.slice().forEach((fn) => fn());
+      }
+    };
+  }
+
+  const processButton = makeModeButton('process');
+  const learningButton = makeModeButton('learning');
+  const observedModes = [];
+  let currentMode = 'all';
+
+  bindings.bindModeButtons([processButton, learningButton], function(nextMode) {
+    observedModes.push(nextMode);
+    currentMode = nextMode;
+  }, {
+    getMode: () => currentMode
+  });
+
+  processButton.click();
+  processButton.click();
+  learningButton.click();
+
+  assert(
+    observedModes.join(',') === 'process,all,learning',
+    'Expected legend clicks to toggle active mode on first click and reset to all on second click'
+  );
+}
+
+function testLegendBindingIsIdempotent() {
+  const bindings = interactionsModule.createInteractionBindings();
+  const observedModes = [];
+  let currentMode = 'all';
+
+  const button = {
+    _listeners: [],
+    getAttribute(name) {
+      return name === 'data-mode' ? 'process' : null;
+    },
+    addEventListener(type, handler) {
+      if (type !== 'click') return;
+      this._listeners.push(handler);
+    },
+    removeEventListener(type, handler) {
+      if (type !== 'click') return;
+      this._listeners = this._listeners.filter((fn) => fn !== handler);
+    },
+    click() {
+      this._listeners.slice().forEach((fn) => fn());
+    }
+  };
+
+  const onModeSelected = (nextMode) => {
+    observedModes.push(nextMode);
+    currentMode = nextMode;
+  };
+
+  bindings.bindModeButtons([button], onModeSelected, { getMode: () => currentMode });
+  bindings.bindModeButtons([button], onModeSelected, { getMode: () => currentMode });
+  button.click();
+
+  assert(
+    observedModes.length === 1 && observedModes[0] === 'process',
+    'Expected rebinding mode buttons not to create duplicate click handlers'
+  );
+}
+
+function testRuntimeLegendToggleFallbackContract() {
+  assert(
+    /function\s+bindLegendModeButtons\(\)\s*\{/.test(runtimeSource),
+    'Expected runtime to bind legend mode buttons directly'
+  );
+  assert(
+    /legendEl\.addEventListener\('click',\s*onLegendClick,\s*true\)/.test(runtimeSource),
+    'Expected runtime to attach delegated capture-phase legend click handler'
+  );
+  assert(
+    /event\.stopImmediatePropagation\(\)/.test(runtimeSource),
+    'Expected delegated legend click handler to stop immediate propagation to avoid duplicate toggles'
+  );
+  assert(
+    /state\.activeModes\[requestedMode\]\s*=\s*nextActive/.test(runtimeSource),
+    'Expected runtime to toggle independent legend layer state per requested mode'
+  );
+  assert(
+    /target\.nodeType\s*===\s*1/.test(runtimeSource) &&
+    /target\.parentElement/.test(runtimeSource),
+    'Expected runtime legend handler to normalize non-element click targets (for example text nodes)'
+  );
+  assert(
+    /legendEl\.__mixMapperLegendDelegatedHandler/.test(runtimeSource),
+    'Expected runtime delegated legend bindings to be idempotent per legend root'
+  );
+  assert(
+    /function\s+resolveLinkMode\(link\)/.test(runtimeSource) &&
+    /function\s+resolvePulseMode\(link\)/.test(runtimeSource),
+    'Expected runtime to resolve composed link and pulse modes from multi-layer legend state'
+  );
 }
 
 function testRendererModuleSurface() {
@@ -208,8 +334,8 @@ function testRendererModuleSurface() {
 
 function testRuntimeUsesPolicyPulseDistanceSampling() {
   assert(
-    /modePolicy\.pulseDistancePx\(elapsed,\s*link,\s*idx,\s*state\.mode\)/.test(runtimeSource),
-    'Expected runtime to route pulse distance through mode policy helper'
+    /modePolicy\.pulseDistancePx\(elapsed,\s*link,\s*idx,\s*resolvePulseMode\(link\)\)/.test(runtimeSource),
+    'Expected runtime to route pulse distance through composed pulse-mode helper'
   );
   assert(/getPointAtLength\(distancePx\)/.test(runtimeSource), 'Expected pulse motion to sample path by distance');
 }
@@ -232,6 +358,44 @@ function testRuntimeUsesRendererModule() {
   );
 }
 
+function testRuntimeUsesScreenScaledTypography() {
+  assert(
+    /function\s+resolveTypography\s*\(layout\)\s*\{/.test(runtimeSource),
+    'Expected runtime typography resolver'
+  );
+  assert(
+    /svgEl\.getBoundingClientRect\(\)/.test(runtimeSource),
+    'Expected runtime to read SVG viewport size for typography scaling'
+  );
+  assert(
+    /readNumberCssVarFromEl\(svgEl,\s*'--mix-map-fs-node-px'/.test(runtimeSource),
+    'Expected runtime typography to be driven by CSS typography tokens'
+  );
+  assert(
+    /getTypography:\s*resolveTypography/.test(runtimeSource),
+    'Expected runtime to pass typography resolver to renderer'
+  );
+}
+
+function testRendererUsesTypographySurface() {
+  assert(
+    /var getTypography = typeof deps\.getTypography === 'function' \? deps\.getTypography/.test(rendererSource),
+    'Expected renderer to support injected typography resolver'
+  );
+  assert(
+    /var typography = getTypography\(layout\) \|\| \{\};/.test(rendererSource),
+    'Expected renderer to resolve typography from layout'
+  );
+  assert(
+    /layoutUtils\.layoutLaneHeaderText\([\s\S]*typography[\s\S]*\)/.test(rendererSource),
+    'Expected renderer to forward typography into lane header layout'
+  );
+  assert(
+    /layoutUtils\.layoutComparisonLabels\([\s\S]*typography\)/.test(rendererSource),
+    'Expected renderer to forward typography into comparison label layout'
+  );
+}
+
 function run() {
   testRoleHelpersBehavior();
   testGeometryModuleSurface();
@@ -239,13 +403,18 @@ function run() {
   testNodeUtilsModuleSurface();
   testModePolicyModuleSurface();
   testTooltipModuleSurface();
-  testInteractionsModuleSurface();
-  testRendererModuleSurface();
+testInteractionsModuleSurface();
+testLegendToggleStickyBehavior();
+testLegendBindingIsIdempotent();
+testRuntimeLegendToggleFallbackContract();
+testRendererModuleSurface();
   testRuntimeUsesSplitModules();
   testScriptLoadOrderContract();
   testRuntimeUsesPolicyPulseDistanceSampling();
   testRuntimeUsesInteractionBindings();
   testRuntimeUsesRendererModule();
+  testRuntimeUsesScreenScaledTypography();
+  testRendererUsesTypographySurface();
   console.log('PASS: tests/test-mix-mapper-mode-motion-contract.js');
 }
 

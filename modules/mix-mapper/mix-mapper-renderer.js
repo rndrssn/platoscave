@@ -26,6 +26,9 @@
     var getColors = typeof deps.getColors === 'function' ? deps.getColors : function() {
       return {};
     };
+    var getTypography = typeof deps.getTypography === 'function' ? deps.getTypography : function() {
+      return {};
+    };
     var getCurrentRenderStamp = typeof deps.getCurrentRenderStamp === 'function'
       ? deps.getCurrentRenderStamp
       : function() {
@@ -41,20 +44,44 @@
       var renderStamp = params.renderStamp || 0;
       if (!shellEl) return null;
 
+      var svg = d3Lib.select(svgEl);
+      svg.selectAll('*').remove();
+
       var COLORS = getColors();
       var layout = layoutUtils.getLayout(shellEl);
+      svg
+        .attr('viewBox', '0 0 ' + layout.width + ' ' + layout.height)
+        .attr('preserveAspectRatio', 'xMidYMid meet');
+      var typography = getTypography(layout) || {};
+      if (nodeUtils && typeof nodeUtils.resolveNodeGeometry === 'function') {
+        var geometry = nodeUtils.resolveNodeGeometry(layout, typography) || null;
+        if (geometry) {
+          if (Number.isFinite(geometry.nodeWidth) && geometry.nodeWidth > 0) {
+            layout.nodeWidth = geometry.nodeWidth;
+          }
+          if (Number.isFinite(geometry.nodeHeight) && geometry.nodeHeight > 0) {
+            layout.nodeHeight = geometry.nodeHeight;
+          }
+          if (Number.isFinite(geometry.laneGap) && geometry.laneGap > 0 && geometry.laneGap !== layout.laneGap) {
+            var maxLaneGap = Math.max(layout.laneGap, Math.min(geometry.laneGap, layout.width - (layout.compact ? 72 : 110)));
+            layout.laneGap = maxLaneGap;
+            var laneCenter = layout.width / 2;
+            layout.laneX = {
+              complexity: laneCenter - (layout.laneGap / 2),
+              traditional: laneCenter + (layout.laneGap / 2)
+            };
+          }
+          if (Number.isFinite(geometry.nodeFontU) && geometry.nodeFontU > 0) {
+            typography.nodeFontU = geometry.nodeFontU;
+          }
+        }
+      }
       var nodes = nodeUtils.buildNodes(layout);
       var nodeById = Object.create(null);
 
       nodes.forEach(function(node) {
         nodeById[node.id] = node;
       });
-
-      var svg = d3Lib.select(svgEl);
-      svg.selectAll('*').remove();
-      svg
-        .attr('viewBox', '0 0 ' + layout.width + ' ' + layout.height)
-        .attr('preserveAspectRatio', 'xMidYMid meet');
 
       var defs = svg.append('defs');
       makeMarker(defs, 'mix-map-arrow-traditional', COLORS.traditionalArrow);
@@ -91,7 +118,8 @@
         complexitySubtitleSel,
         layout,
         'Complexity-Informed',
-        'learning-oriented, uncertainty-aware, adaptive'
+        'learning-oriented, uncertainty-aware, adaptive',
+        typography
       );
 
       var traditionalTitleSel = bgLayer.append('text')
@@ -113,7 +141,8 @@
         traditionalSubtitleSel,
         layout,
         'Traditional',
-        'phase-gated, requirements-first, linear'
+        'phase-gated, requirements-first, linear',
+        typography
       );
 
       var linkSel = edgeLayer.selectAll('.mix-map-edge')
@@ -132,6 +161,24 @@
         .attr('stroke-linejoin', 'round')
         .attr('pointer-events', 'none')
         .attr('aria-hidden', 'true');
+
+      var linkOverlaySel = edgeLayer.selectAll('.mix-map-edge-overlay')
+        .data(links, function(link) {
+          return link.source + '>' + link.target + ':' + link.kind;
+        })
+        .join('path')
+        .attr('class', function(link) {
+          return 'mix-map-edge-overlay mix-map-edge-overlay--' + link.lane + ' mix-map-edge-overlay--' + link.kind;
+        })
+        .attr('d', function(link) {
+          return linkPath(link, nodeById, layout, mode);
+        })
+        .attr('fill', 'none')
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-linejoin', 'round')
+        .attr('pointer-events', 'none')
+        .attr('aria-hidden', 'true')
+        .attr('opacity', 0);
 
       var linkHitSel = edgeLayer.selectAll('.mix-map-edge-hit')
         .data(links, function(link) {
@@ -202,7 +249,7 @@
         })
         .attr('fill', COLORS.nodeFill)
         .attr('stroke', COLORS.nodeStroke)
-        .attr('stroke-width', 1.7);
+        .attr('stroke-width', Number.isFinite(layout.nodeStrokeWidth) ? layout.nodeStrokeWidth : 1.35);
 
       var nodeLabelSel = nodeSel.append('text')
         .attr('class', 'mix-map-node-label gc-viz__legend-text')
@@ -211,7 +258,20 @@
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
         .attr('pointer-events', 'none')
+        .attr('font-size', function() {
+          return (typography && Number.isFinite(typography.nodeFontU) && typography.nodeFontU > 0)
+            ? typography.nodeFontU
+            : null;
+        })
+        .attr('data-base-font-u', function() {
+          return (typography && Number.isFinite(typography.nodeFontU) && typography.nodeFontU > 0)
+            ? String(typography.nodeFontU)
+            : '';
+        })
         .text(function(node) {
+          return layoutUtils.fitHeaderLabel(node.shortLabel);
+        })
+        .attr('data-label-full', function(node) {
           return layoutUtils.fitHeaderLabel(node.shortLabel);
         });
 
@@ -221,19 +281,8 @@
       var compareLineEnd = layout.laneX.traditional - (layout.nodeWidth / 2) - 18;
 
       overlayLayer.selectAll('.mix-map-compare-line')
-        .data(comparisonLineRows)
-        .join('line')
-        .attr('class', 'mix-map-compare-line')
-        .attr('x1', compareLineStart)
-        .attr('x2', compareLineEnd)
-        .attr('y1', function(row) {
-          return layoutUtils.comparisonRowY(row, nodeById);
-        })
-        .attr('y2', function(row) {
-          return layoutUtils.comparisonRowY(row, nodeById);
-        })
-        .attr('stroke', COLORS.goldLine)
-        .attr('stroke-width', 0.7);
+        .data([])
+        .join('line');
 
       var compareHighlightLayer = overlayLayer.selectAll('.mix-map-layer--compare-highlight')
         .data([null])
@@ -246,13 +295,14 @@
         .join('text')
         .attr('class', 'mix-map-compare-label');
 
-      layoutUtils.layoutComparisonLabels(compareLabelSel, layout, nodeById, compareLineStart, compareLineEnd);
+      layoutUtils.layoutComparisonLabels(compareLabelSel, layout, nodeById, compareLineStart, compareLineEnd, typography);
       layoutUtils.renderComparisonHighlights(compareHighlightLayer, compareLabelSel);
 
       return {
         layout: layout,
         nodeById: nodeById,
         linkSel: linkSel,
+        linkOverlaySel: linkOverlaySel,
         linkHitSel: linkHitSel,
         nodeSel: nodeSel,
         pulseSel: pulseSel

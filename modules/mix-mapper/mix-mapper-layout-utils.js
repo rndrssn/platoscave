@@ -33,6 +33,10 @@
       var laneGap = compact
         ? Math.max(132, Math.round(width * 0.27))
         : Math.max(198, Math.round(width * 0.31));
+      var laneGapScale = clamp(readScopedCssNumber('--mix-map-lane-gap-scale', 1), 0.8, 2.4);
+      var laneGapMin = compact ? 132 : 198;
+      var laneGapMax = width * (compact ? 0.72 : 0.74);
+      laneGap = clamp(Math.round(laneGap * laneGapScale), laneGapMin, laneGapMax);
 
       var laneCenter = width / 2;
       var laneX = {
@@ -57,6 +61,7 @@
         compact ? 30 : 29,
         compact ? 58 : 56
       );
+      var nodeStrokeWidth = clamp(readScopedCssNumber('--mix-map-node-stroke-width', 1.35), 0.8, 2.2);
       var topY = compact ? 142 : 140;
       var bottomPad = compact ? 124 : 110;
       var stepGap = ((height - topY - bottomPad) / 5) * 0.6125;
@@ -69,10 +74,12 @@
         laneX: laneX,
         nodeWidth: nodeWidth,
         nodeHeight: nodeHeight,
+        nodeStrokeWidth: nodeStrokeWidth,
         topY: topY,
         stepGap: stepGap,
-        laneTitleSize: (compact ? 17 : 20) * 0.7,
-        laneSubtitleSize: (compact ? 11.5 : 13) * 0.7,
+        laneTitleSize: compact ? 13.6 : 14.8,
+        laneSubtitleSize: compact ? 10.6 : 11.6,
+        compareLabelSize: compact ? 9.8 : 10.8,
         edgePrimary: compact ? 2.1 : 2.4,
         edgeSecondary: compact ? 1.55 : 1.8,
         edgeLearning: compact ? 1.75 : 2.05,
@@ -86,35 +93,19 @@
       return text || '';
     }
 
-    function estimateLabelWidth(labelText, layout) {
-      var perCharWidth = layout.compact ? 5.25 : 5.8;
-      return String(labelText || '').length * perCharWidth;
-    }
-
     function fitNodeLabelsToWidth(labelSel, layout) {
-      var maxLabelWidth = layout.nodeWidth - (layout.compact ? 10 : 12);
-      if (maxLabelWidth <= 0) return;
-
       labelSel.each(function() {
         var labelNode = this;
+        var baseText = labelNode.getAttribute('data-label-full') || labelNode.textContent || '';
+        var baseFont = parseFloat(labelNode.getAttribute('data-base-font-u') || labelNode.getAttribute('font-size') || '0');
+        if (!(baseFont > 0)) {
+          baseFont = layout.compact ? 11.2 : 11.8;
+        }
+
+        labelNode.textContent = baseText;
+        labelNode.setAttribute('font-size', String(baseFont));
         labelNode.removeAttribute('textLength');
         labelNode.removeAttribute('lengthAdjust');
-
-        var measuredWidth = 0;
-        try {
-          measuredWidth = labelNode.getComputedTextLength();
-        } catch (error) {
-          measuredWidth = 0;
-        }
-
-        if (!(measuredWidth > 0)) {
-          measuredWidth = estimateLabelWidth(labelNode.textContent, layout);
-        }
-
-        if (measuredWidth > maxLabelWidth) {
-          labelNode.setAttribute('lengthAdjust', 'spacingAndGlyphs');
-          labelNode.setAttribute('textLength', String(maxLabelWidth));
-        }
       });
     }
 
@@ -227,24 +218,34 @@
       return anchor.y;
     }
 
-    function layoutComparisonLabels(labelSel, layout, nodeById, compareLineStart, compareLineEnd) {
+    function readTypographySize(typography, key, fallback) {
+      if (!typography || typeof typography !== 'object') return fallback;
+      var value = typography[key];
+      if (!Number.isFinite(value) || value <= 0) return fallback;
+      return value;
+    }
+
+    function layoutComparisonLabels(labelSel, layout, nodeById, compareLineStart, compareLineEnd, typography) {
       var COLORS = getColors();
-      var fontSize = layout.compact ? 6.5 : 7.3;
-      var lineHeight = fontSize * 1.32;
+      var fontSize = readTypographySize(typography, 'compareFontU', layout.compareLabelSize || (layout.compact ? 11.5 : 12.5));
       var minVerticalGap = layout.compact ? 4 : 5;
       var laneSpan = compareLineEnd - compareLineStart;
+      var compareLeftX = compareLineStart + (layout.compact ? 2 : 4);
       var maxLabelWidth = clamp(
         laneSpan - 8,
-        layout.compact ? 112 : 132,
-        layout.compact ? 184 : 232
+        42,
+        layout.compact ? 248 : 336
       );
+      if (maxLabelWidth < 84) fontSize *= 0.9;
+      if (maxLabelWidth < 64) fontSize *= 0.88;
+      var lineHeight = fontSize * 1.3;
 
       labelSel
-        .attr('x', layout.width / 2)
+        .attr('x', compareLeftX)
         .attr('y', function(row) {
           return comparisonRowY(row, nodeById);
         })
-        .attr('text-anchor', 'middle')
+        .attr('text-anchor', 'start')
         .attr('dominant-baseline', 'middle')
         .attr('font-size', fontSize)
         .attr('font-family', 'var(--mono)')
@@ -336,17 +337,19 @@
         .attr('opacity', 0.62);
     }
 
-    function layoutLaneHeaderText(titleSel, subtitleSel, layout, laneTitle, laneSubtitle) {
+    function layoutLaneHeaderText(titleSel, subtitleSel, layout, laneTitle, laneSubtitle, typography) {
       var laneTextWidth = clamp(
         layout.laneGap - (layout.compact ? 18 : 26),
         layout.compact ? 88 : 112,
         layout.compact ? 154 : 236
       );
+      var titleSizeBase = readTypographySize(typography, 'laneTitleFontU', layout.laneTitleSize);
+      var subtitleSizeBase = readTypographySize(typography, 'laneSubtitleFontU', layout.laneSubtitleSize);
 
       var scale = 1;
       for (var attempt = 0; attempt < 4; attempt += 1) {
-        var titleSize = layout.laneTitleSize * scale;
-        var subtitleSize = layout.laneSubtitleSize * scale;
+        var titleSize = titleSizeBase * scale;
+        var subtitleSize = subtitleSizeBase * scale;
         var titleLineHeight = titleSize * 1.18;
         var subtitleLineHeight = subtitleSize * 1.24;
 

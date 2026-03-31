@@ -62,9 +62,9 @@
   display: inline-flex;
   align-items: center;
   font-family: var(--mono);
-  font-size: 0.67rem;
+  font-size: 0.62rem;
   text-transform: uppercase;
-  letter-spacing: 0.075em;
+  letter-spacing: 0.06em;
   color: var(--ink-mid);
 }
 
@@ -135,16 +135,22 @@
 .mix-mapper-viz-shell {
   border: 0;
   background: transparent;
-  width: 66.6667%;
+  width: 86.6667%;
   margin: 0;
-  min-height: 22rem;
+  min-height: 24rem;
   padding: 0;
 }
 
 .mix-mapper-svg {
-  --mix-map-node-fs-px: 8.8px;
-  --mix-map-node-width-scale: 0.72;
-  --mix-map-node-height-scale: 0.74;
+  --mix-map-fs-node-px: 10.2px;
+  --mix-map-fs-lane-title-px: 13.8px;
+  --mix-map-fs-lane-subtitle-px: 12.2px;
+  --mix-map-fs-compare-px: 8.6px;
+  --mix-map-lane-gap-scale: 1.92;
+  --mix-map-node-stroke-width: 1.2;
+  --mix-map-node-letter-spacing: 0;
+  --mix-map-node-width-scale: 0.8;
+  --mix-map-node-height-scale: 0.78;
   display: block;
   width: 100%;
   height: auto;
@@ -155,16 +161,15 @@
 .mix-map-lane-title,
 .mix-map-lane-subtitle,
 .mix-map-compare-label {
-  font-family: var(--mono);
-  letter-spacing: 0.02em;
+  font-family: var(--viz-font-mono, var(--mono));
+  letter-spacing: 0.04em;
 }
 
 #mix-mapper-svg .mix-map-node-label {
-  font-family: var(--viz-font-mono, var(--mono));
-  font-size: var(--mix-map-node-fs-px, 10.5px);
+  font-family: var(--mono);
   font-weight: 300;
-  letter-spacing: 0.06em;
-  fill: var(--viz-ink-faint, var(--ink-faint));
+  letter-spacing: var(--mix-map-node-letter-spacing, 0);
+  fill: var(--ink-mid);
 }
 
 .mix-mapper-svg .mix-map-node {
@@ -231,7 +236,7 @@
 
   .mix-mapper-viz-shell,
   .mix-mapper-svg {
-    min-height: 20rem;
+    min-height: 22rem;
   }
 
   .mix-mapper-viz-shell {
@@ -246,9 +251,13 @@
 
 @media (max-width: 640px) {
   .mix-mapper-svg {
-    --mix-map-node-fs-px: 7.6px;
-    --mix-map-node-width-scale: 0.72;
-    --mix-map-node-height-scale: 0.72;
+    --mix-map-fs-node-px: 9.4px;
+    --mix-map-fs-lane-title-px: 12.4px;
+    --mix-map-fs-lane-subtitle-px: 11px;
+    --mix-map-fs-compare-px: 8.1px;
+    --mix-map-lane-gap-scale: 1.62;
+    --mix-map-node-width-scale: 0.82;
+    --mix-map-node-height-scale: 0.76;
   }
 }
 

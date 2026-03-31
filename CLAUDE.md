@@ -115,6 +115,28 @@ For semantics/labels/rules changes:
 - Changed contributor/release workflow:
   - Update `README.md` and any tracked workflow notes.
 
+## Module IA Contract (Navigation + Numbering)
+
+- Live module root must be canonical `xx.01` at:
+  - `/modules/<slug>/`
+- Root module page requirements:
+  - include `.module-back-link` to `../`
+  - include `.module-sub-nav`
+  - exactly one active root section link with:
+    - `class` containing `.module-sub-nav-link--active`
+    - `href="./"`
+    - `aria-current="page"`
+    - section number `xx.01`
+- Do not use root hard redirect (`meta refresh`) for live module roots.
+- Legacy nested first-section paths may redirect to root for compatibility, never the reverse.
+- When creating new module roots, prefer:
+  - `node scripts/new-module.js --number <xx> --slug <slug> --title "<Title>"`
+
+Tests enforcing this contract:
+- `tests/test-module-landing-pattern-contract.js`
+- `tests/test-nav-modules-menu-contract.js`
+- `tests/test-navigation-links.js`
+
 ## Critical Paths (minimal map)
 
 - Theme bootstrap: `theme.config.js`, `js/theme-bootstrap.js`

@@ -34,7 +34,7 @@
     <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
-  <main id="main-content">
+  <main id="main-content" class="main--narrow">
     <div class="module-page mix-mapper-page">
       <header class="module-header">
         <p class="module-header-number">04 &middot; The Mix Mapper</p>
@@ -60,16 +60,20 @@
         <article class="mix-mapper-viz-card" aria-labelledby="mix-mapper-graph-title">
           <h2 id="mix-mapper-graph-title" class="essay-heading mix-mapper-graph-title">Dual-Lane Lifecycle Comparison</h2>
 
-          <div class="mix-mapper-controls" role="group" aria-label="Visualization mode">
-            <button type="button" class="mix-mapper-mode-btn is-active" data-mode="process" aria-pressed="true">Process</button>
-            <button type="button" class="mix-mapper-mode-btn" data-mode="assumptions" aria-pressed="false">Assumptions</button>
-            <button type="button" class="mix-mapper-mode-btn" data-mode="learning" aria-pressed="false">Learning</button>
+          <div class="mix-mapper-legend" role="group" aria-label="Legend and mode filter">
+            <button type="button" class="mix-mapper-legend-btn" data-mode="process" aria-pressed="false">
+              <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--process" aria-hidden="true"></span>
+              <span class="mix-mapper-legend-label">Process</span>
+            </button>
+            <button type="button" class="mix-mapper-legend-btn" data-mode="assumptions" aria-pressed="false">
+              <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--assumptions" aria-hidden="true"></span>
+              <span class="mix-mapper-legend-label">Assumptions</span>
+            </button>
+            <button type="button" class="mix-mapper-legend-btn" data-mode="learning" aria-pressed="false">
+              <span class="mix-mapper-legend-marker mix-mapper-legend-marker--dot mix-mapper-legend-marker--learning" aria-hidden="true"></span>
+              <span class="mix-mapper-legend-label">Learning</span>
+            </button>
           </div>
-
-          <p id="mix-mapper-helper" class="mix-mapper-helper">
-            <span class="mix-mapper-helper-marker is-line is-process" aria-hidden="true"></span>
-            <span class="mix-mapper-helper-label">Process</span>
-          </p>
 
           <div id="mix-mapper-viz-shell" class="mix-mapper-viz-shell">
             <svg id="mix-mapper-svg" class="mix-mapper-svg" role="img" aria-label="Directed lifecycle map comparing complexity-informed and traditional delivery lanes"></svg>
@@ -103,6 +107,15 @@
 
   <script src="../../assets/vendor/d3.v7.min.js"></script>
   <script src="../../js/nav-controller.js"></script>
+  <script src="./mix-mapper-data.js"></script>
+  <script src="./mix-mapper-semantics.js"></script>
+  <script src="./mix-mapper-geometry.js"></script>
+  <script src="./mix-mapper-layout-utils.js"></script>
+  <script src="./mix-mapper-node-utils.js"></script>
+  <script src="./mix-mapper-mode-policy.js"></script>
+  <script src="./mix-mapper-tooltip.js"></script>
+  <script src="./mix-mapper-interactions.js"></script>
+  <script src="./mix-mapper-renderer.js"></script>
   <script src="./mix-mapper.js"></script>
 </body>
 </html>

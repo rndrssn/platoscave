@@ -1,68 +1,71 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-
-const source = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper.js'),
-  'utf8'
-);
+const data = require('../modules/mix-mapper/mix-mapper-data.js');
+const semantics = require('../modules/mix-mapper/mix-mapper-semantics.js');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+function findLink(source, target, kind) {
+  return data.LINKS.find((link) => link.source === source && link.target === target && link.kind === kind);
+}
+
 function testComplexityNarrativeMapExists() {
   assert(
-    /var\s+COMPLEXITY_LINK_NARRATIVES\s*=\s*\{/.test(source),
-    'Expected COMPLEXITY_LINK_NARRATIVES map'
+    data.COMPLEXITY_LINK_NARRATIVES && typeof data.COMPLEXITY_LINK_NARRATIVES === 'object',
+    'Expected COMPLEXITY_LINK_NARRATIVES map export'
   );
   assert(
-    /'c6>c1:learning'\s*:\s*\{/.test(source),
+    data.COMPLEXITY_LINK_NARRATIVES['c6>c1:learning'],
     'Expected c6>c1 learning narrative entry'
   );
+}
+
+function testComplexityNarrativeCoverageForComplexityLinks() {
+  const complexityLinks = data.LINKS.filter((link) => link.lane === 'complexity');
+  assert(complexityLinks.length > 0, 'Expected complexity links in graph');
+
+  const missing = complexityLinks.filter((link) => {
+    const key = semantics.linkKey(link);
+    return !data.COMPLEXITY_LINK_NARRATIVES[key];
+  });
+
   assert(
-    /Assumes post-launch evidence is captured and used to reshape upstream opportunity sensing\./.test(source),
-    'Expected explicit assumptions narrative for launch-to-sensing learning loop'
+    missing.length === 0,
+    'Expected explicit narrative coverage for all complexity links. Missing: ' +
+      missing.map((link) => semantics.linkKey(link)).join(', ')
   );
 }
 
-function testLinkNarrativeHelpersExist() {
-  assert(/function\s+defaultLinkNarrative\s*\(link,\s*mode\)\s*\{/.test(source), 'Expected defaultLinkNarrative helper');
-  assert(/function\s+complexityLinkNarrative\s*\(link,\s*mode\)\s*\{/.test(source), 'Expected complexityLinkNarrative helper');
-  assert(/function\s+linkTooltipHtml\s*\(link,\s*mode,\s*nodeById\)\s*\{/.test(source), 'Expected linkTooltipHtml helper');
-  assert(/function\s+linkAriaLabel\s*\(link,\s*mode,\s*nodeById\)\s*\{/.test(source), 'Expected linkAriaLabel helper');
-}
+function testNarrativeResolutionByMode() {
+  const link = findLink('c6', 'c2', 'learning');
+  assert(link, 'Missing c6 -> c2 learning link');
 
-function testLinksAreInteractive() {
+  const processText = semantics.complexityLinkNarrative(link, 'process', data.COMPLEXITY_LINK_NARRATIVES);
+  const assumptionsText = semantics.complexityLinkNarrative(link, 'assumptions', data.COMPLEXITY_LINK_NARRATIVES);
+  const learningText = semantics.complexityLinkNarrative(link, 'learning', data.COMPLEXITY_LINK_NARRATIVES);
+
+  assert(processText !== assumptionsText, 'Expected process and assumptions narratives to differ');
+  assert(learningText !== assumptionsText, 'Expected learning and assumptions narratives to differ');
   assert(
-    /\.attr\('role',\s*'button'\)/.test(source),
-    'Expected links to expose button role'
-  );
-  assert(
-    /\.attr\('tabindex',\s*0\)/.test(source),
-    'Expected links to be keyboard focusable'
-  );
-  assert(
-    /\.on\('mousemove',\s*function\(event,\s*link\)\s*\{[\s\S]*linkTooltipHtml\(link,\s*state\.mode,\s*nodeById\)/.test(source),
-    'Expected link mousemove to show mode-aware tooltip'
-  );
-  assert(
-    /\.on\('focus',\s*function\(event,\s*link\)\s*\{[\s\S]*showTooltip\(/.test(source),
-    'Expected link focus to show tooltip'
+    assumptionsText.includes('portfolio governance') || assumptionsText.includes('real outcomes'),
+    'Expected assumptions narrative to mention governance/outcome assumptions'
   );
 }
 
-function testAriaLabelsUpdateByMode() {
-  assert(/function\s+updateLinkAriaLabels\s*\(mode\)\s*\{/.test(source), 'Expected updateLinkAriaLabels helper');
-  assert(/updateLinkAriaLabels\(mode\);/.test(source), 'Expected applyMode to refresh link aria labels');
+function testModeLabelsContract() {
+  assert(semantics.modeLabel('all') === 'Overview', 'Expected all mode label');
+  assert(semantics.modeLabel('process') === 'Process', 'Expected process mode label');
+  assert(semantics.modeLabel('assumptions') === 'Assumptions', 'Expected assumptions mode label');
+  assert(semantics.modeLabel('learning') === 'Learning', 'Expected learning mode label');
 }
 
 function run() {
   testComplexityNarrativeMapExists();
-  testLinkNarrativeHelpersExist();
-  testLinksAreInteractive();
-  testAriaLabelsUpdateByMode();
+  testComplexityNarrativeCoverageForComplexityLinks();
+  testNarrativeResolutionByMode();
+  testModeLabelsContract();
   console.log('PASS: tests/test-mix-mapper-link-narratives-contract.js');
 }
 

@@ -26,77 +26,109 @@
   margin-bottom: 0.7rem;
 }
 
-.mix-mapper-controls {
+.mix-mapper-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.28rem 0.5rem;
   margin-bottom: 0.65rem;
 }
 
-.mix-mapper-mode-btn {
-  font-family: var(--mono);
-  font-size: 0.69rem;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  border: 1px solid color-mix(in srgb, var(--ink-ghost) 62%, transparent 38%);
-  background: color-mix(in srgb, var(--paper) 82%, transparent 18%);
-  color: var(--ink-mid);
-  padding: 0.43rem 0.7rem;
+.mix-mapper-legend-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.44rem;
+  padding: 0.2rem 0.28rem;
+  border: 0;
+  background: transparent;
   cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  opacity: 0.46;
+  transition: opacity 0.16s ease;
 }
 
-.mix-mapper-mode-btn:hover {
-  color: var(--ink);
-  border-color: color-mix(in srgb, var(--ink-mid) 72%, transparent 28%);
+.mix-mapper-legend-btn:hover {
+  opacity: 0.76;
 }
 
-.mix-mapper-mode-btn:focus-visible {
-  outline: 1px solid var(--mix-map-accent);
+.mix-mapper-legend-btn:focus-visible {
+  outline: 1px solid var(--ink-mid);
   outline-offset: 2px;
 }
 
-.mix-mapper-mode-btn.is-active {
-  color: var(--paper);
-  border-color: var(--mix-map-accent);
-  background: color-mix(in srgb, var(--mix-map-accent) 72%, var(--rust) 28%);
+.mix-mapper-legend-btn.is-active {
+  opacity: 1;
 }
 
-.mix-mapper-helper {
+.mix-mapper-legend-label {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
   font-family: var(--mono);
   font-size: 0.67rem;
   text-transform: uppercase;
   letter-spacing: 0.075em;
-  color: var(--ink-faint);
-  margin-bottom: 0.6rem;
-}
-
-.mix-mapper-helper-label {
   color: var(--ink-mid);
 }
 
-.mix-mapper-helper-marker {
+.mix-mapper-legend-marker {
   display: inline-block;
   flex: 0 0 auto;
 }
 
-.mix-mapper-helper-marker.is-line {
+.mix-mapper-legend-marker--line {
   width: 1.35rem;
-  border-top: 2px solid var(--ink);
+  border-top: 2px solid var(--ink-faint);
 }
 
-.mix-mapper-helper-marker.is-line.is-assumptions {
-  border-top-color: var(--sage);
+.mix-mapper-legend-marker--assumptions {
+  position: relative;
+  border-top: 0;
 }
 
-.mix-mapper-helper-marker.is-dot {
+.mix-mapper-legend-marker--assumptions::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 2px solid var(--ink-faint);
+  transform: translateY(-50%);
+}
+
+.mix-mapper-legend-marker--assumptions::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 0.63rem;
+  height: 0.63rem;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: color-mix(in srgb, var(--ink-faint) 82%, var(--paper) 18%);
+}
+
+.mix-mapper-legend-marker--dot {
   width: 0.54rem;
   height: 0.54rem;
   border-radius: 999px;
+  background: color-mix(in srgb, var(--ink-faint) 78%, var(--paper) 22%);
+}
+
+.mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--process {
+  border-top-color: var(--rust);
+}
+
+.mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--assumptions {
+  border-top-color: transparent;
+}
+
+.mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--assumptions::before {
+  border-top-color: var(--sage);
+}
+
+.mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--assumptions::after {
+  background: var(--sage);
+}
+
+.mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--learning {
   background: var(--sage);
 }
 
@@ -104,7 +136,7 @@
   border: 0;
   background: transparent;
   width: 66.6667%;
-  margin: 0 auto;
+  margin: 0;
   min-height: 22rem;
   padding: 0;
 }
@@ -143,6 +175,10 @@
   cursor: pointer;
 }
 
+.mix-mapper-svg .mix-map-edge-hit {
+  cursor: pointer;
+}
+
 .mix-mapper-svg .mix-map-node:focus-visible {
   outline: none;
 }
@@ -160,18 +196,19 @@
   position: fixed;
   z-index: 1400;
   pointer-events: none;
-  max-width: 18rem;
-  background: color-mix(in srgb, var(--ink) 95%, transparent 5%);
-  color: var(--paper);
-  border: 1px solid color-mix(in srgb, var(--ink-ghost) 32%, transparent 68%);
-  padding: 0.6rem 0.68rem;
+  max-width: 13.5rem;
+  background: color-mix(in srgb, var(--paper) 75%, transparent 25%);
+  color: var(--ink);
+  border: 0;
+  padding: 0.42rem 0.5rem;
   font-family: var(--mono);
-  font-size: 0.67rem;
-  line-height: 1.48;
-  letter-spacing: 0.03em;
+  font-size: 0.56rem;
+  line-height: 1.34;
+  letter-spacing: 0.02em;
   opacity: 0;
   transform: translateY(6px);
   transition: opacity 0.12s ease, transform 0.12s ease;
+  box-shadow: none;
 }
 
 .mix-mapper-tooltip.is-visible {
@@ -180,11 +217,11 @@
 }
 
 .mix-mapper-tooltip strong {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .mix-mapper-tooltip-tags {
-  color: color-mix(in srgb, var(--paper) 76%, var(--ink-ghost) 24%);
+  color: var(--ink-mid);
 }
 
 @media (max-width: 720px) {
@@ -202,8 +239,8 @@
   }
 
   .mix-mapper-tooltip {
-    max-width: 15rem;
-    font-size: 0.62rem;
+    max-width: 12rem;
+    font-size: 0.54rem;
   }
 }
 
@@ -217,7 +254,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .mix-mapper-tooltip,
-  .mix-mapper-mode-btn {
+  .mix-mapper-legend-btn {
     transition: none;
   }
 }

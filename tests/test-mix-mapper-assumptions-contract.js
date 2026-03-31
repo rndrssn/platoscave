@@ -1,62 +1,75 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-
-const source = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper.js'),
-  'utf8'
-);
+const data = require('../modules/mix-mapper/mix-mapper-data.js');
+const semantics = require('../modules/mix-mapper/mix-mapper-semantics.js');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-function testAssumptionRoleClassifierExists() {
+function findLink(source, target, kind) {
+  return data.LINKS.find((link) => link.source === source && link.target === target && link.kind === kind);
+}
+
+function testAssumptionRoleClassifierBehavior() {
+  const traditionalPrimary = findLink('t1', 't2', 'primary');
+  const traditionalMinor = findLink('t4', 't3', 'minor');
+  const complexityFeedback = findLink('c4', 'c3', 'feedback');
+  const complexityPrimary = findLink('c1', 'c2', 'primary');
+
+  assert(traditionalPrimary, 'Missing traditional primary fixture link');
+  assert(traditionalMinor, 'Missing traditional minor fixture link');
+  assert(complexityFeedback, 'Missing complexity feedback fixture link');
+  assert(complexityPrimary, 'Missing complexity primary fixture link');
+
   assert(
-    /function\s+getAssumptionRole\s*\(link\)\s*\{/.test(source),
-    'Expected getAssumptionRole(link) helper'
-  );
-  assert(
-    /if\s*\(link\.lane === 'traditional' && link\.kind === 'primary'\)\s*return 'certainty';/.test(source),
+    semantics.getAssumptionRole(traditionalPrimary) === 'certainty',
     'Expected traditional primary links to map to certainty role'
   );
   assert(
-    /if\s*\(link\.lane === 'complexity' && \(link\.kind === 'feedback' \|\| link\.kind === 'learning'\)\)\s*return 'learning-test';/.test(source),
-    'Expected complexity feedback\/learning links to map to learning-test role'
+    semantics.getAssumptionRole(traditionalMinor) === 'certainty-revisit',
+    'Expected traditional adaptive links to map to certainty-revisit role'
+  );
+  assert(
+    semantics.getAssumptionRole(complexityFeedback) === 'learning-test',
+    'Expected complexity feedback links to map to learning-test role'
+  );
+  assert(
+    semantics.getAssumptionRole(complexityPrimary) === 'context',
+    'Expected complexity primary links to map to context in assumptions lens'
   );
 }
 
-function testAssumptionsModeUsesUnifiedModeColor() {
-  assert(
-    /var assumptionColor = COLORS\.assumptionArrow;/.test(source),
-    'Expected assumptions mode to use one unified assumptions color'
+function testAssumptionNarrativeCoverage() {
+  const launchToSensing = findLink('c6', 'c1', 'learning');
+  assert(launchToSensing, 'Missing c6 -> c1 learning link');
+
+  const assumptionsNarrative = semantics.complexityLinkNarrative(
+    launchToSensing,
+    'assumptions',
+    data.COMPLEXITY_LINK_NARRATIVES
   );
+
   assert(
-    /marker:\s*'url\(#mix-map-arrow-assumption\)'/.test(source),
-    'Expected assumptions mode to use dedicated assumption arrow marker'
+    assumptionsNarrative.includes('post-launch evidence') &&
+      assumptionsNarrative.includes('upstream opportunity sensing'),
+    'Expected explicit assumptions narrative for launch-to-sensing learning loop'
   );
 }
 
-function testAssumptionMarkerDefined() {
+function testDataContractForAssumptionsView() {
+  assert(Array.isArray(data.LINKS), 'Expected LINKS array export');
+  assert(data.LINKS.length >= 10, 'Expected non-trivial link graph');
   assert(
-    /makeMarker\(defs,\s*'mix-map-arrow-assumption',\s*COLORS\.assumptionArrow\);/.test(source),
-    'Expected assumption marker definition in renderGraph()'
-  );
-}
-
-function testAssumptionsModeDisablesPulse() {
-  assert(
-    /if\s*\(mode === 'assumptions'\)\s*\{\s*return 0;\s*\}/.test(source),
-    'Expected assumptions mode pulse logic to be disabled'
+    data.LINKS.some((link) => link.lane === 'traditional' && link.kind === 'learning'),
+    'Expected at least one traditional learning/upstream link for assumptions contrast'
   );
 }
 
 function run() {
-  testAssumptionRoleClassifierExists();
-  testAssumptionsModeUsesUnifiedModeColor();
-  testAssumptionMarkerDefined();
-  testAssumptionsModeDisablesPulse();
+  testAssumptionRoleClassifierBehavior();
+  testAssumptionNarrativeCoverage();
+  testDataContractForAssumptionsView();
   console.log('PASS: tests/test-mix-mapper-assumptions-contract.js');
 }
 

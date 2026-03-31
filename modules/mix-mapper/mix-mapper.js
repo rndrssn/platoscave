@@ -243,6 +243,9 @@
     }
   });
 
+  // Visual scale applied to every stroke-width returned by modePolicy.modeStyle().
+  // modePolicy widths are tuned at this scale (0.6×) — do not factor it out of modePolicy
+  // without adjusting all width values there to compensate.
   var EDGE_STROKE_SCALE = 0.6;
 
   var state = {
@@ -425,6 +428,9 @@
     if (!state.linkSel || !state.pulseSel) return;
 
     var duration = skipTransition ? 0 : 360;
+    // resolveTooltipMode() reads state.mode as a tie-breaker before this call overwrites it.
+    // The read-then-write order is intentional: it picks the "previously committed mode"
+    // to resolve conflicts when multiple legend layers are active simultaneously.
     var tooltipMode = resolveTooltipMode();
     state.mode = tooltipMode;
 

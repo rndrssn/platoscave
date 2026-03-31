@@ -76,6 +76,9 @@
     return traditionalTrackX(link, source, halfNodeW, layout, nodeById);
   }
 
+  // Returns the maximum horizontal distance a bezier control point may stray from the
+  // source port anchor. Constraining this prevents arcs from widening into flat horizontal
+  // ellipses when the vertical span between nodes is small.
   function circularLateralReach(link, source, target, layout, nodeById) {
     var verticalSpan = Math.max(1, Math.abs((source && source.y) - (target && target.y)));
     var span = complexityLinkSpan(link, nodeById);
@@ -85,8 +88,12 @@
     return Math.max(32, (verticalSpan * ratio * kindBoost) + spanBoost);
   }
 
-  function resolveArcCanvasBounds(layout, nodeById, halfNodeW) {
+  function resolveArcCanvasBounds(layout) {
     if (layout && layout.allowArcOverflowX) {
+      return { minX: -Infinity, maxX: Infinity };
+    }
+
+    if (!Number.isFinite(layout.width) || layout.width <= 0) {
       return { minX: -Infinity, maxX: Infinity };
     }
 
@@ -94,35 +101,9 @@
       ? layout.arcCanvasInset
       : 12;
 
-    if (Number.isFinite(layout.width) && layout.width > 0) {
-      return {
-        minX: inset,
-        maxX: Math.max(inset, layout.width - inset)
-      };
-    }
-
-    var minNodeX = Infinity;
-    var maxNodeX = -Infinity;
-    Object.keys(nodeById || {}).forEach(function(nodeId) {
-      var node = nodeById[nodeId];
-      if (!node || !Number.isFinite(node.x)) return;
-      minNodeX = Math.min(minNodeX, node.x);
-      maxNodeX = Math.max(maxNodeX, node.x);
-    });
-
-    if (!Number.isFinite(minNodeX) || !Number.isFinite(maxNodeX)) {
-      return { minX: -Infinity, maxX: Infinity };
-    }
-
-    var arcReach = Math.max(
-      24,
-      Number.isFinite(layout.learningArc) ? layout.learningArc : 190,
-      Number.isFinite(layout.feedbackArc) ? layout.feedbackArc : 118
-    ) * 1.2;
-
     return {
-      minX: minNodeX - halfNodeW - arcReach,
-      maxX: maxNodeX + halfNodeW + arcReach
+      minX: inset,
+      maxX: Math.max(inset, layout.width - inset)
     };
   }
 
@@ -154,7 +135,7 @@
         var curveMinByShape = sourceX - lateralReach;
         var curveMaxByShape = sourceX + lateralReach;
         var shapedCurveX = clamp(rawCurveX, curveMinByShape, curveMaxByShape);
-        var bounds = resolveArcCanvasBounds(layout, nodeById, halfNodeW);
+        var bounds = resolveArcCanvasBounds(layout);
         var curveX = clamp(shapedCurveX, bounds.minX, bounds.maxX);
 
         if (source.lane === 'complexity' && curveX >= sourceX) {

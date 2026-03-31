@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const { scoreResponses } = require('../gc-scoring');
+const { scoreResponses } = require('../modules/garbage-can/runtime/gc-scoring');
 
 function makeResponses({ energy, access, decision }) {
   // Q0..Q4 = energy, Q5..Q7 = access (Q5 inverted), Q8..Q11 = decision

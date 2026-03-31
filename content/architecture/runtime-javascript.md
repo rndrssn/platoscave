@@ -24,16 +24,17 @@ Back to: [[architecture-overview]]
 
 ## Module 03 runtime (Garbage Can)
 
-Core model and visualization logic currently live in root JS files:
-- `gc-simulation-config.js`
-- `gc-simulation-core.js`
-- `gc-simulation.js`
-- `gc-scoring.js`
-- `gc-diagnosis.js`
-- `gc-viz-config.js`
-- `gc-viz-timing.js`
-- `gc-viz-helpers.js`
-- `gc-viz.js`
+Core model and visualization logic live in `modules/garbage-can/runtime/`:
+- `modules/garbage-can/runtime/gc-simulation-config.js`
+- `modules/garbage-can/runtime/gc-simulation-core.js`
+- `modules/garbage-can/runtime/gc-simulation.js`
+- `modules/garbage-can/runtime/gc-scoring.js`
+- `modules/garbage-can/runtime/gc-diagnosis.js`
+- `modules/garbage-can/runtime/gc-viz-config.js`
+- `modules/garbage-can/runtime/gc-viz-timing.js`
+- `modules/garbage-can/runtime/gc-viz-helpers.js`
+- `modules/garbage-can/runtime/gc-viz.js`
+- `modules/garbage-can/runtime/gc-pressure-narrative.js`
 
 Module-specific wiring:
 - `modules/garbage-can/explorer/explorer.js`

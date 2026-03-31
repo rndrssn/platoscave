@@ -5,8 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { FakeDocument, FakeElement, buildWindow } = require('./helpers/fake-dom');
-const { getDiagnosisPreview } = require('../gc-diagnosis.js');
-const { buildGcPressureNarrative } = require('../js/gc-pressure-narrative.js');
+const { getDiagnosisPreview } = require('../modules/garbage-can/runtime/gc-diagnosis.js');
+const { buildGcPressureNarrative } = require('../modules/garbage-can/runtime/gc-pressure-narrative.js');
 
 function loadAssessWithHarness(harness) {
   const source = fs.readFileSync(path.join(__dirname, '..', 'modules', 'garbage-can', 'assess', 'assess.js'), 'utf8');

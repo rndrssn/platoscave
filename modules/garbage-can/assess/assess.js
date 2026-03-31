@@ -4,7 +4,7 @@
  * assess.js
  * Assess page — questionnaire flow and wiring
  *
- * Dependencies: d3.js, gc-simulation.js, gc-scoring.js, gc-diagnosis.js, gc-viz.js
+ * Dependencies: d3.js + runtime files from ../runtime/
  */
 
 // ─── Questionnaire collapse/expand ───────────────────────────────────────────
@@ -52,7 +52,7 @@ function setSimError(message) {
   simError.hidden = false;
 }
 
-// gc-pressure-narrative.js is loaded before this file (see index.html script order).
+// gc-pressure-narrative.js from ../runtime/ is loaded before this file (see index.html script order).
 // This wrapper exists to give the call site a named function and a clear dependency contract.
 function buildAssessPressureNarrative(problemIntensity, problemInflow, decisionStructure, accessStructure) {
   return window.buildGcPressureNarrative(problemIntensity, problemInflow, decisionStructure, accessStructure);

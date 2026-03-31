@@ -460,9 +460,11 @@
         })
         .attr('rx', 0)
         .attr('ry', 0)
-        .attr('stroke', 'color-mix(in srgb, ' + COLORS.gold + ' 44%, transparent 56%)')
+        .attr('stroke', COLORS.gold)
+        .attr('stroke-opacity', 0.44)
         .attr('stroke-width', 0.3)
-        .attr('fill', 'color-mix(in srgb, ' + COLORS.gold + ' 24%, transparent 76%)')
+        .attr('fill', COLORS.gold)
+        .attr('fill-opacity', 0.24)
         .attr('opacity', 0.62);
     }
 

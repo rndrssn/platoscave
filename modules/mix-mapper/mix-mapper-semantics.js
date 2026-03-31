@@ -19,6 +19,18 @@
   }
 
   function defaultLinkNarrative(link, mode) {
+    if (mode === 'process') {
+      if (link.lane === 'traditional' && link.kind === 'primary') {
+        return 'A sequential handoff that advances work to the next gated phase.';
+      }
+      if (link.lane === 'traditional' && link.kind === 'minor') {
+        return 'A rework loop that sends work back within the current delivery sequence.';
+      }
+      if (link.lane === 'traditional' && link.kind === 'learning') {
+        return 'A late feedback path from release back to earlier phases — often triggers a new cycle.';
+      }
+    }
+
     if (mode === 'assumptions') {
       if (link.lane === 'traditional' && link.kind === 'primary') {
         return 'Assumes requirements can be known early and remain stable through downstream delivery.';

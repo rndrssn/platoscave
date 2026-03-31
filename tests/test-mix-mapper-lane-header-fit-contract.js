@@ -14,21 +14,29 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-function testLaneHeaderFontReduction() {
+function testTypographyHelperAndDefaults() {
   assert(
-    /laneTitleSize:\s*\(compact \? 17 : 20\) \* 0\.7,/.test(source),
-    'Expected lane title size to be reduced by 30%'
+    /function\s+readTypographySize\s*\(typography,\s*key,\s*fallback\)\s*\{/.test(source),
+    'Expected centralized typography size helper'
   );
   assert(
-    /laneSubtitleSize:\s*\(compact \? 11\.5 : 13\) \* 0\.7,/.test(source),
-    'Expected lane subtitle size to be reduced by 30%'
+    /laneTitleSize:\s*compact \? 13\.6 : 14\.8,/.test(source),
+    'Expected lane title fallback size near shared viz typography baseline'
+  );
+  assert(
+    /laneSubtitleSize:\s*compact \? 10\.6 : 11\.6,/.test(source),
+    'Expected lane subtitle fallback size near shared viz typography baseline'
+  );
+  assert(
+    /compareLabelSize:\s*compact \? 9\.8 : 10\.8,/.test(source),
+    'Expected comparison label fallback size near shared viz typography baseline'
   );
 }
 
 function testLaneHeaderFitHelperExists() {
   assert(
-    /function\s+layoutLaneHeaderText\s*\(titleSel,\s*subtitleSel,\s*layout,\s*laneTitle,\s*laneSubtitle\)\s*\{/.test(source),
-    'Expected layoutLaneHeaderText helper'
+    /function\s+layoutLaneHeaderText\s*\(titleSel,\s*subtitleSel,\s*layout,\s*laneTitle,\s*laneSubtitle,\s*typography\)\s*\{/.test(source),
+    'Expected typography-aware layoutLaneHeaderText helper'
   );
   assert(
     /wrapTextToWidth\(this,\s*laneTitle,\s*laneTextWidth,\s*titleLineHeight\);/.test(source),
@@ -37,6 +45,25 @@ function testLaneHeaderFitHelperExists() {
   assert(
     /wrapTextToWidth\(this,\s*laneSubtitle,\s*laneTextWidth,\s*subtitleLineHeight\);/.test(source),
     'Expected lane subtitle wrapping logic'
+  );
+  assert(
+    /readTypographySize\(typography,\s*'laneTitleFontU',\s*layout\.laneTitleSize\)/.test(source),
+    'Expected lane title sizing to allow runtime typography override'
+  );
+  assert(
+    /readTypographySize\(typography,\s*'laneSubtitleFontU',\s*layout\.laneSubtitleSize\)/.test(source),
+    'Expected lane subtitle sizing to allow runtime typography override'
+  );
+}
+
+function testComparisonTypographyOverrideExists() {
+  assert(
+    /function\s+layoutComparisonLabels\s*\(labelSel,\s*layout,\s*nodeById,\s*compareLineStart,\s*compareLineEnd,\s*typography\)\s*\{/.test(source),
+    'Expected typography-aware comparison label layout helper'
+  );
+  assert(
+    /readTypographySize\(typography,\s*'compareFontU',\s*layout\.compareLabelSize/.test(source),
+    'Expected comparison label size to allow runtime typography override'
   );
 }
 
@@ -62,8 +89,9 @@ function testLaneHeaderOverlapDetectionExists() {
 }
 
 function run() {
-  testLaneHeaderFontReduction();
+  testTypographyHelperAndDefaults();
   testLaneHeaderFitHelperExists();
+  testComparisonTypographyOverrideExists();
   testLaneHeaderOverlapDetectionExists();
   testLayoutUtilsExportSurface();
   console.log('PASS: tests/test-mix-mapper-lane-header-fit-contract.js');

@@ -4,7 +4,7 @@ type: REFERENCE
 title: Frontend Navigation Patterns
 status: ACTIVE
 created: 2026-03-22
-updated: 2026-03-24
+updated: 2026-03-31
 owner: Robert Andersson
 relates_to: [CORE, CORE-quality-gates, REFERENCE-css-architecture]
 tags: [navigation, ia, accessibility, responsive]
@@ -32,6 +32,10 @@ This document defines the canonical link and navigation patterns used across the
 - Pattern:
   - parent context line (for example `03 · The Garbage Can Model`)
   - local section nav (for example `03.01`, `03.02`, `03.03`, `03.04`, `03.05`)
+- Canonical root rule:
+  - `xx.01` must live at module root: `/modules/<slug>/`
+  - active root section link must be `href="./"` with `aria-current="page"`
+  - do not make `/modules/<slug>/` a hard redirect to a nested `xx.01` page
 - Markup:
   - parent context link uses `.module-context-link`
   - section nav uses `.module-sub-nav`
@@ -75,4 +79,5 @@ This document defines the canonical link and navigation patterns used across the
 - All active navigation elements expose `aria-current="page"`.
 - No navigation target has a touch area below `44x44px`.
 - Navigation remains usable at `320px` viewport width.
+- Live module root pages keep `xx.01` active at `href="./"` (no root meta refresh).
 - Navigation link test suite passes before deployment.

@@ -112,6 +112,36 @@
   background: color-mix(in srgb, var(--rust) 48%, var(--ink-ghost) 52%);
 }
 
+.module-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  margin: 0.08rem 0 0.22rem 0.02rem;
+  font-family: var(--mono);
+  font-size: 0;
+  font-weight: 300;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: color-mix(in srgb, var(--rust) 78%, var(--ink) 22%);
+  line-height: 1;
+}
+
+.module-back-link::before {
+  content: '\2190';
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.module-back-link:hover {
+  color: color-mix(in srgb, var(--rust) 60%, var(--ink-mid) 40%);
+}
+
+.module-back-link:focus-visible {
+  outline: 2px solid var(--rust);
+  outline-offset: 2px;
+}
+
 @media (min-width: 960px) {
   .module-sub-nav {
     flex-wrap: wrap;
@@ -184,6 +214,10 @@
   .module-context-link::after {
     bottom: -0.22rem;
     height: 0.17rem;
+  }
+
+  .module-back-link {
+    margin-bottom: 0.18rem;
   }
 
   .module-footer-nav {

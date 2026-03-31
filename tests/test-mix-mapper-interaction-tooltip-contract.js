@@ -37,16 +37,20 @@ function testHoverHitAreaIsIntentionallyLarge() {
 
 function testPointerTrackingOnHover() {
   assert(
-    /\.on\('mousemove',\s*function\(event,\s*link\)\s*\{\s*showTooltip\(linkTooltipHtml\(link,\s*getMode\(\),\s*nodeById\),\s*event\.clientX,\s*event\.clientY\);/s.test(interactionsSource),
-    'Expected link tooltip to follow pointer on mousemove'
+    /var getLinkMode = deps\.getLinkMode \|\| function\(_link,\s*fallbackMode\)\s*\{\s*return fallbackMode \|\| getMode\(\);\s*\};/.test(interactionsSource),
+    'Expected interactions module to support link-level mode resolution for tooltips and aria labels'
   );
   assert(
     /\.on\('mousemove',\s*function\(event,\s*node\)\s*\{\s*showTooltip\(tooltipHtml\(node\),\s*event\.clientX,\s*event\.clientY\);/s.test(interactionsSource),
     'Expected node tooltip to follow pointer on mousemove'
   );
   assert(
-    /\.on\('click',\s*function\(event,\s*link\)\s*\{\s*showTooltip\(linkTooltipHtml\(link,\s*getMode\(\),\s*nodeById\),\s*event\.clientX,\s*event\.clientY\);/s.test(interactionsSource),
-    'Expected click fallback to show tooltip at current pointer location'
+    /\.on\('mousemove',\s*function\(event,\s*link\)\s*\{\s*var modeForLink = getLinkMode\(link,\s*getMode\(\)\);\s*showTooltip\(linkTooltipHtml\(link,\s*modeForLink,\s*nodeById\),\s*event\.clientX,\s*event\.clientY\);/s.test(interactionsSource),
+    'Expected link tooltip to follow pointer on mousemove using resolved per-link mode'
+  );
+  assert(
+    /\.on\('click',\s*function\(event,\s*link\)\s*\{\s*var modeForLink = getLinkMode\(link,\s*getMode\(\)\);\s*showTooltip\(linkTooltipHtml\(link,\s*modeForLink,\s*nodeById\),\s*event\.clientX,\s*event\.clientY\);/s.test(interactionsSource),
+    'Expected click fallback to show tooltip with resolved per-link mode at current pointer location'
   );
 }
 

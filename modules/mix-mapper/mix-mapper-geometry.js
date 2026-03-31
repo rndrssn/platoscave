@@ -118,7 +118,33 @@
       .attr('markerHeight', 8)
       .attr('orient', 'auto');
 
-    if (id === 'mix-map-arrow-assumption' || id === 'mix-map-arrow-process-dot') {
+    if (id === 'mix-map-arrow-assumption') {
+      marker
+        .attr('viewBox', '0 -7 14 14')
+        .attr('markerWidth', 10.8)
+        .attr('markerHeight', 10.8)
+        .attr('refX', 10.8);
+
+      marker
+        .append('line')
+        .attr('x1', 0.9)
+        .attr('y1', 0)
+        .attr('x2', 4.4)
+        .attr('y2', 0)
+        .attr('stroke', color)
+        .attr('stroke-width', 1.22)
+        .attr('stroke-linecap', 'round');
+
+      marker
+        .append('circle')
+        .attr('cx', 8.4)
+        .attr('cy', 0)
+        .attr('r', 3.9)
+        .attr('fill', color);
+      return;
+    }
+
+    if (id === 'mix-map-arrow-process-dot') {
       marker
         .attr('viewBox', '0 -6 12 12')
         .attr('markerWidth', 9.2)

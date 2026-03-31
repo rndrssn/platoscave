@@ -118,7 +118,7 @@
         complexitySubtitleSel,
         layout,
         'Complexity-Informed',
-        'learning-oriented, uncertainty-aware, adaptive',
+        'learning-oriented\nuncertainty-aware\nadaptive',
         typography
       );
 
@@ -141,7 +141,7 @@
         traditionalSubtitleSel,
         layout,
         'Traditional',
-        'phase-gated, requirements-first, linear',
+        'phase-gated\nrequirements-first\nlinear',
         typography
       );
 
@@ -277,8 +277,9 @@
 
       layoutUtils.scheduleNodeLabelFit(nodeLabelSel, layout, renderStamp, getCurrentRenderStamp);
 
-      var compareLineStart = layout.laneX.complexity + (layout.nodeWidth / 2) + 18;
-      var compareLineEnd = layout.laneX.traditional - (layout.nodeWidth / 2) - 18;
+      var compareInset = layout.compact ? 8 : 12;
+      var compareLineStart = layout.laneX.complexity + (layout.nodeWidth / 2) + compareInset;
+      var compareLineEnd = layout.laneX.traditional - (layout.nodeWidth / 2) - compareInset;
 
       overlayLayer.selectAll('.mix-map-compare-line')
         .data([])

@@ -387,12 +387,21 @@ function testRendererUsesTypographySurface() {
     'Expected renderer to resolve typography from layout'
   );
   assert(
-    /layoutUtils\.layoutLaneHeaderText\([\s\S]*typography[\s\S]*\)/.test(rendererSource),
-    'Expected renderer to forward typography into lane header layout'
-  );
-  assert(
     /layoutUtils\.layoutComparisonLabels\([\s\S]*typography\)/.test(rendererSource),
     'Expected renderer to forward typography into comparison label layout'
+  );
+  assert(
+    /layoutUtils\.layoutLaneHeaderText\([\s\S]*typography[\s\S]*\)/.test(rendererSource),
+    'Expected renderer to render lane header text in SVG via layout helper'
+  );
+  assert(
+    /learning-oriented\\nuncertainty-aware\\nadaptive/.test(rendererSource) &&
+      /phase-gated\\nrequirements-first\\nlinear/.test(rendererSource),
+    'Expected lane subtitles to render as explicit multiline descriptors without pipe separators'
+  );
+  assert(
+    !/class="mix-mapper-lane-headings"/.test(htmlSource),
+    'Expected no duplicate HTML lane heading block when SVG lane headers are active'
   );
 }
 

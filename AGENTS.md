@@ -77,6 +77,12 @@ Full conditional loading rules are in `docs/00-core/CORE-loading-rules.md`. Summ
 
 - If editing GC logic: load GC logic and page wiring files above.
 - If editing docs: load `docs/10-guides/DOC-CONVENTIONS.md`.
+- If editing UI, CSS, navigation, or IA: load all of:
+  - `docs/10-guides/GUIDE-architecture.md`
+  - `docs/40-principles/principle-coding-standards.md`
+  - `docs/20-reference/REFERENCE-css-architecture.md`
+  - `docs/20-reference/navigation-patterns.md`
+- If editing Module 04 (Management Mix Mapper): load the split runtime files in `modules/mix-mapper/*` plus relevant Mix Mapper contract tests under `tests/`.
 - If working on semantics and labels: treat implementation and tests as canonical; align terminology across UI, summaries, and legends.
 - If local/private docs are referenced by user: load only those explicitly requested paths.
 - Prefer tracked `docs/` content when present. If `docs/` is missing locally, ask before assuming private copies.
@@ -112,6 +118,8 @@ For semantics/labels/rules changes:
   - Update tests and any user-facing summary logic/copy.
 - Changed UI labels/readouts:
   - Update all affected UI surfaces (legend, runtime text, summary).
+- Changed Module title/section naming or IA labels:
+  - Update `modules/index.html`, `js/nav-controller.js`, module page labels, and any compatibility redirect copy.
 - Changed contributor/release workflow:
   - Update `README.md` and any tracked workflow notes.
 
@@ -143,12 +151,14 @@ Tests enforcing this contract:
 - GC logic: `modules/garbage-can/runtime/gc-simulation-core.js`, `modules/garbage-can/runtime/gc-simulation.js`, `modules/garbage-can/runtime/gc-scoring.js`, `modules/garbage-can/runtime/gc-diagnosis.js`, `modules/garbage-can/runtime/gc-viz.js`
 - GC narrative: `modules/garbage-can/runtime/gc-pressure-narrative.js` (must load before assess.js / explorer.js)
 - GC page wiring: `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js`
+- Module 04 runtime: `modules/mix-mapper/mix-mapper-data.js`, `modules/mix-mapper/mix-mapper-semantics.js`, `modules/mix-mapper/mix-mapper-geometry.js`, `modules/mix-mapper/mix-mapper-layout-utils.js`, `modules/mix-mapper/mix-mapper-node-utils.js`, `modules/mix-mapper/mix-mapper-mode-policy.js`, `modules/mix-mapper/mix-mapper-tooltip.js`, `modules/mix-mapper/mix-mapper-interactions.js`, `modules/mix-mapper/mix-mapper-renderer.js`, `modules/mix-mapper/mix-mapper.js`
 - Tests: `tests/run-all.js`
 
 Key design constraints:
 - The Assess path fixes problemInflow to 'moderate' — the survey does not capture inflow timing; Explorer exposes all four parameters. See `docs/10-guides/GUIDE-architecture.md`.
 - Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both are set by `modules/garbage-can/runtime/gc-pressure-narrative.js` and `modules/garbage-can/runtime/gc-diagnosis.js` before page wiring runs.
 - Use simResult.meta.problems (not a hardcoded constant) when computing problem proportions from simulation output.
+- Module 04 root is canonical 04.01 at `/modules/mix-mapper/` and currently titled "Epistemic Bets" under module title "Management Mix Mapper".
 
 ## Task Templates (quick start)
 

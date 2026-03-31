@@ -40,7 +40,7 @@
       lane: 'complexity',
       step: 4,
       title: 'Solution Exploration, Design and Validation',
-      shortLabel: 'Explore and Validate',
+      shortLabel: 'Explore & Validate',
       description: 'Explore options in parallel and iterate with feedback.',
       tags: ['options', 'experiments', 'feedback']
     },
@@ -58,7 +58,7 @@
       lane: 'complexity',
       step: 6,
       title: 'Launch, Measure, Adapt and Change',
-      shortLabel: 'Launch and Learn',
+      shortLabel: 'Launch & Learn',
       description: 'Use market evidence to reshape upstream choices.',
       tags: ['measurement', 'learning', 'adaptation']
     },
@@ -112,7 +112,7 @@
       lane: 'traditional',
       step: 6,
       title: 'Release and Close Project',
-      shortLabel: 'Release and Close',
+      shortLabel: 'Release & Close',
       description: 'Deploy and close the project cycle.',
       tags: ['deployment', 'closure', 'handoff']
     }
@@ -208,15 +208,17 @@
   var COMPARISON_ROWS = [
     {
       anchorId: 'c1',
-      text: 'Opportunity sensing versus submitted request'
+      text: 'Opportunity sensing vs. submitted request',
+      yOffset: -10,
+      fontScale: 0.86
     },
     {
       anchorId: 'c3',
-      text: 'Assumptions tested versus requirements stabilized'
+      text: 'Assumptions tested vs. requirements stabilized'
     },
     {
       anchorId: 'c6',
-      text: 'Upstream learning versus project closure'
+      text: 'Upstream learning vs. project closure'
     }
   ];
 

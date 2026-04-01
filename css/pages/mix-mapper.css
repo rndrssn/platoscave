@@ -187,8 +187,11 @@
   font-weight: 300;
   letter-spacing: var(--mix-map-node-letter-spacing, 0);
   fill: var(--ink-mid);
-  dominant-baseline: middle;
   text-anchor: middle;
+}
+
+.mix-map-compare-dot-hit {
+  touch-action: manipulation;
 }
 
 .mix-mapper-svg .mix-map-node {

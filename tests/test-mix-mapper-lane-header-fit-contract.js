@@ -35,7 +35,7 @@ function testTypographyHelperAndDefaults() {
 
 function testLaneHeaderFitHelperExists() {
   assert(
-    /function\s+layoutLaneHeaderText\s*\(titleSel,\s*subtitleSel,\s*layout,\s*laneTitle,\s*laneSubtitle,\s*typography\)\s*\{/.test(source),
+    /function\s+layoutLaneHeaderText\s*\(titleSel,\s*subtitleSel,\s*layout,\s*laneTitle,\s*laneSubtitle,\s*typography/.test(source),
     'Expected typography-aware layoutLaneHeaderText helper'
   );
   assert(

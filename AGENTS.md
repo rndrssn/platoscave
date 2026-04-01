@@ -159,6 +159,9 @@ Key design constraints:
 - Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both are set by `modules/garbage-can/runtime/gc-pressure-narrative.js` and `modules/garbage-can/runtime/gc-diagnosis.js` before page wiring runs.
 - Use simResult.meta.problems (not a hardcoded constant) when computing problem proportions from simulation output.
 - Module 04 root is canonical 04.01 at `/modules/mix-mapper/` and currently titled "Epistemic Bets" under module title "Management Mix Mapper".
+- Mix Mapper SVG color rendering (iOS WebKit): do NOT use `color-mix(…, transparent)` in values set via D3 `.attr()` — it is ignored on iOS, producing fully-opaque color. Use `fill-opacity` / `stroke-opacity` SVG attributes instead.
+- Mix Mapper SVG text centering (iOS WebKit): `dominant-baseline: middle` and `text-anchor: middle` must be set as CSS properties on the label class (e.g., `#mix-mapper-svg .mix-map-node-label`), not only as SVG presentation attributes — CSS author styles take precedence and are reliably handled on iOS WebKit where SVG attrs may not be.
+- Mix Mapper `buildColors()` reads the `--viz-*` token tier directly (`--viz-ink-faint`, `--viz-ink-ghost`, `--viz-sage`, `--viz-rust`, etc.) matching the gc-viz contract. Do not revert to `--ink-*` UI tokens for SVG color reads.
 
 ## Task Templates (quick start)
 

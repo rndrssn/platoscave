@@ -27,11 +27,11 @@ function testNodeLabelWrappingContractInLayoutUtils() {
     'Expected layout to read node label max-lines setting'
   );
   assert(
-    /function\s+wrapNodeLabelLines\s*\(textEl,\s*text,\s*maxWidth,\s*lineHeight,\s*maxLines\)\s*\{/.test(layoutUtilsSource),
+    /function\s+wrapNodeLabelLines\s*\(textEl,\s*text,\s*maxWidth,\s*lineHeight,\s*maxLines/.test(layoutUtilsSource),
     'Expected dedicated node label wrapping helper'
   );
   assert(
-    /wrapNodeLabelLines\(labelNode,\s*baseText,\s*maxLabelWidth,\s*baseFont \* 1\.06,\s*maxLines\);/.test(layoutUtilsSource),
+    /wrapNodeLabelLines\(labelNode,\s*baseText,\s*maxLabelWidth,\s*baseFont \* 1\.06,\s*maxLines/.test(layoutUtilsSource),
     'Expected node label fit to route through max-lines wrapping helper'
   );
   assert(

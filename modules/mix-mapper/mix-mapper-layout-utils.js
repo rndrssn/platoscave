@@ -140,7 +140,9 @@
       return ellipsis;
     }
 
-    function wrapNodeLabelLines(textEl, text, maxWidth, lineHeight, maxLines) {
+    function wrapNodeLabelLines(textEl, text, maxWidth, lineHeight, maxLines, options) {
+      options = options || {};
+      var baselineOffset = Number.isFinite(options.baselineOffset) ? options.baselineOffset : 0;
       textEl.textContent = '';
       var words = String(text || '').trim().split(/\s+/).filter(Boolean);
       if (!words.length) return;
@@ -169,7 +171,7 @@
       }
 
       var xValue = textEl.getAttribute('x') || '0';
-      var firstDy = lines.length === 1 ? 0 : -((lines.length - 1) * lineHeight) / 2;
+      var firstDy = (lines.length === 1 ? 0 : -((lines.length - 1) * lineHeight) / 2) + baselineOffset;
 
       lines.forEach(function(line, index) {
         var tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
@@ -205,7 +207,7 @@
         labelNode.setAttribute('font-size', String(baseFont));
         labelNode.removeAttribute('textLength');
         labelNode.removeAttribute('lengthAdjust');
-        wrapNodeLabelLines(labelNode, baseText, maxLabelWidth, baseFont * 1.06, maxLines);
+        wrapNodeLabelLines(labelNode, baseText, maxLabelWidth, baseFont * 1.06, maxLines, { baselineOffset: baseFont * 0.33 });
       });
     }
 
@@ -348,7 +350,9 @@
       return value;
     }
 
-    function layoutLaneHeaderText(titleSel, subtitleSel, layout, laneTitle, laneSubtitle, typography) {
+    function layoutLaneHeaderText(titleSel, subtitleSel, layout, laneTitle, laneSubtitle, typography, options) {
+      options = options || {};
+      var forcedScale = Number.isFinite(options.scale) ? options.scale : null;
       var laneTextWidth = clamp(
         layout.laneGap - (layout.compact ? 18 : 26),
         layout.compact ? 88 : 112,
@@ -360,8 +364,9 @@
       var titleSizeBase = readTypographySize(typography, 'laneTitleFontU', layout.laneTitleSize);
       var subtitleSizeBase = readTypographySize(typography, 'laneSubtitleFontU', layout.laneSubtitleSize);
 
-      var scale = 1;
-      for (var attempt = 0; attempt < 4; attempt += 1) {
+      var scale = forcedScale !== null ? forcedScale : 1;
+      var maxAttempts = forcedScale !== null ? 1 : 4;
+      for (var attempt = 0; attempt < maxAttempts; attempt += 1) {
         var titleSize = titleSizeBase * 1.08 * scale;
         var subtitleSize = subtitleSizeBase * scale;
         var titleLineHeight = titleSize * 1.18;
@@ -393,9 +398,10 @@
         var overlapsTitle = !!(titleBox && subtitleBox && subtitleBox.y < (titleBox.y + titleBox.height + 1));
         var spillsIntoNodes = !!(subtitleBox && (subtitleBox.y + subtitleBox.height > layout.topY - 12));
 
-        if (!overlapsTitle && !spillsIntoNodes) break;
+        if (forcedScale !== null || !overlapsTitle && !spillsIntoNodes) break;
         scale *= 0.9;
       }
+      return scale;
     }
 
     return {

@@ -111,15 +111,6 @@
         .attr('class', 'mix-map-lane-subtitle')
         .attr('fill', COLORS.muted);
 
-      layoutUtils.layoutLaneHeaderText(
-        complexityTitleSel,
-        complexitySubtitleSel,
-        layout,
-        'Complexity-Informed',
-        'learning-oriented\nuncertainty-aware\nadaptive',
-        typography
-      );
-
       var traditionalTitleSel = bgLayer.append('text')
         .attr('x', layout.laneX.traditional)
         .attr('y', 56)
@@ -134,7 +125,15 @@
         .attr('class', 'mix-map-lane-subtitle')
         .attr('fill', COLORS.muted);
 
-      layoutUtils.layoutLaneHeaderText(
+      var complexityHeaderScale = layoutUtils.layoutLaneHeaderText(
+        complexityTitleSel,
+        complexitySubtitleSel,
+        layout,
+        'Complexity-Informed',
+        'learning-oriented\nuncertainty-aware\nadaptive',
+        typography
+      );
+      var traditionalHeaderScale = layoutUtils.layoutLaneHeaderText(
         traditionalTitleSel,
         traditionalSubtitleSel,
         layout,
@@ -142,6 +141,21 @@
         'phase-gated\nrequirements-first\nlinear',
         typography
       );
+      var minHeaderScale = Math.min(complexityHeaderScale, traditionalHeaderScale);
+      if (complexityHeaderScale > minHeaderScale) {
+        layoutUtils.layoutLaneHeaderText(
+          complexityTitleSel, complexitySubtitleSel, layout,
+          'Complexity-Informed', 'learning-oriented\nuncertainty-aware\nadaptive',
+          typography, { scale: minHeaderScale }
+        );
+      }
+      if (traditionalHeaderScale > minHeaderScale) {
+        layoutUtils.layoutLaneHeaderText(
+          traditionalTitleSel, traditionalSubtitleSel, layout,
+          'Traditional', 'phase-gated\nrequirements-first\nlinear',
+          typography, { scale: minHeaderScale }
+        );
+      }
 
       var linkSel = edgeLayer.selectAll('.mix-map-edge')
         .data(links, function(link) {
@@ -254,7 +268,6 @@
         .attr('x', 0)
         .attr('y', 0)
         .attr('text-anchor', 'middle')
-        .attr('dominant-baseline', 'middle')
         .attr('pointer-events', 'none')
         .attr('font-size', function() {
           return (typography && Number.isFinite(typography.nodeFontU) && typography.nodeFontU > 0)
@@ -278,7 +291,7 @@
       var dotCenterX = layout.width / 2;
       var dotRadius = layout.compact ? 4.5 : 5.5;
 
-      var compareDotSel = overlayLayer.selectAll('.mix-map-compare-dot')
+      overlayLayer.selectAll('.mix-map-compare-dot')
         .data(comparisonRows, function(row) {
           return row.anchorId;
         })
@@ -289,16 +302,31 @@
           return layoutUtils.comparisonRowY(row, nodeById);
         })
         .attr('r', dotRadius)
+        .attr('aria-hidden', 'true')
+        .attr('pointer-events', 'none')
+        .style('fill', COLORS.gold)
+        .style('fill-opacity', '0.65');
+
+      var compareDotHitSel = overlayLayer.selectAll('.mix-map-compare-dot-hit')
+        .data(comparisonRows, function(row) {
+          return row.anchorId;
+        })
+        .join('circle')
+        .attr('class', 'mix-map-compare-dot-hit')
+        .attr('cx', dotCenterX)
+        .attr('cy', function(row) {
+          return layoutUtils.comparisonRowY(row, nodeById);
+        })
+        .attr('r', 22)
         .attr('role', 'button')
         .attr('tabindex', 0)
         .attr('aria-label', function(row) {
           return row.text;
         })
-        .style('fill', COLORS.gold)
-        .style('fill-opacity', '0.65')
+        .style('fill', 'transparent')
         .style('cursor', 'pointer');
 
-      interactionBindings.bindDotInteractions(compareDotSel);
+      interactionBindings.bindDotInteractions(compareDotHitSel);
 
       return {
         layout: layout,

@@ -28,6 +28,9 @@
     };
     var highlightNode = deps.highlightNode || function() {};
     var clearHighlight = deps.clearHighlight || function() {};
+    var dotTooltipHtml = deps.dotTooltipHtml || function() {
+      return '';
+    };
 
     function updateLinkAriaLabels(state, mode) {
       if (!state || !state.nodeById) return;
@@ -138,6 +141,50 @@
         });
     }
 
+    function bindDotInteractions(selection) {
+      selection
+        .on('mouseenter', function(event, row) {
+          showTooltip(dotTooltipHtml(row), event.clientX, event.clientY);
+        })
+        .on('mousemove', function(event, row) {
+          showTooltip(dotTooltipHtml(row), event.clientX, event.clientY);
+        })
+        .on('mouseleave', function() {
+          hideTooltip();
+        })
+        .on('focus', function(event, row) {
+          var box = this.getBoundingClientRect();
+          showTooltip(
+            dotTooltipHtml(row),
+            box.left + (box.width / 2),
+            box.top + (box.height / 2),
+            { anchorMode: 'focus' }
+          );
+        })
+        .on('blur', function() {
+          hideTooltip();
+        })
+        .on('click', function(event, row) {
+          showTooltip(dotTooltipHtml(row), event.clientX, event.clientY);
+        })
+        .on('keydown', function(event, row) {
+          if (event.key === 'Escape') {
+            hideTooltip();
+            return;
+          }
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            var box = this.getBoundingClientRect();
+            showTooltip(
+              dotTooltipHtml(row),
+              box.left + (box.width / 2),
+              box.top + (box.height / 2),
+              { anchorMode: 'focus' }
+            );
+          }
+        });
+    }
+
     function resolveNextMode(currentMode, requestedMode) {
       if (!requestedMode) return currentMode || 'all';
       return requestedMode === currentMode ? 'all' : requestedMode;
@@ -176,6 +223,7 @@
       updateLinkAriaLabels: updateLinkAriaLabels,
       bindLinkInteractions: bindLinkInteractions,
       bindNodeInteractions: bindNodeInteractions,
+      bindDotInteractions: bindDotInteractions,
       bindModeButtons: bindModeButtons,
       resolveNextMode: resolveNextMode
     };

@@ -94,13 +94,13 @@
   }
 
   function buildColors() {
-    var ink = readScopedCssVar('--ink', '#2A2018');
-    var sage = readScopedCssVar('--sage', readScopedCssVar('--viz-sage', '#4A6741'));
-    var rust = readScopedCssVar('--rust', readScopedCssVar('--viz-rust', '#9A4F2F'));
+    var ink = readScopedCssVar('--viz-ink', '#2A2018');
+    var sage = readScopedCssVar('--viz-sage', '#4A6741');
+    var rust = readScopedCssVar('--viz-rust', '#8B3A2A');
     var text = ink;
-    var muted = readScopedCssVar('--ink-mid', '#5C4F3A');
-    var inkFaint = readScopedCssVar('--ink-faint', '#8E816D');
-    var ghost = readScopedCssVar('--ink-ghost', '#C8BDA8');
+    var muted = readScopedCssVar('--viz-ink-mid', '#5C4F3A');
+    var inkFaint = readScopedCssVar('--viz-ink-faint', '#7A6E5F');
+    var ghost = readScopedCssVar('--viz-ink-ghost', '#B0A490');
     var panel = readScopedCssVar('--paper', '#FAF8F1');
     var baseViz = readScopedCssVar('--viz-gold', '#B8943A');
     var toggleAccent = readScopedCssVar('--mix-map-accent', readScopedCssVar('--viz-rust-light', baseViz));
@@ -206,6 +206,11 @@
   var tooltipHtml = tooltipContent.tooltipHtml;
   var linkTooltipHtml = tooltipContent.linkTooltipHtml;
   var linkAriaLabel = tooltipContent.linkAriaLabel;
+  function dotTooltipHtml(row) {
+    if (!row || !row.text) return '';
+    return '<strong>' + row.text + '</strong>';
+  }
+
   var interactionBindings = INTERACTIONS.createInteractionBindings({
     getMode: function() {
       return state.mode;
@@ -219,6 +224,7 @@
     linkTooltipHtml: linkTooltipHtml,
     linkAriaLabel: linkAriaLabel,
     tooltipHtml: tooltipHtml,
+    dotTooltipHtml: dotTooltipHtml,
     highlightNode: highlightNode,
     clearHighlight: clearHighlight
   });

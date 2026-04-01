@@ -348,124 +348,6 @@
       return value;
     }
 
-    function layoutComparisonLabels(labelSel, layout, nodeById, compareLineStart, compareLineEnd, typography) {
-      var COLORS = getColors();
-      var fontSize = readTypographySize(typography, 'compareFontU', layout.compareLabelSize || (layout.compact ? 11.5 : 12.5));
-      var minVerticalGap = layout.compact ? 4 : 5;
-      var laneSpan = compareLineEnd - compareLineStart;
-      var compareCenterX = compareLineStart + (laneSpan / 2);
-      var maxLabelWidth = clamp(
-        laneSpan - 2,
-        42,
-        layout.compact ? 340 : 380
-      );
-      if (maxLabelWidth < 84) fontSize *= 0.9;
-      if (maxLabelWidth < 64) fontSize *= 0.88;
-
-      function rowFontSize(row) {
-        var rowScale = clamp(Number(row && row.fontScale) || 1, 0.72, 1.2);
-        return fontSize * rowScale;
-      }
-
-      labelSel
-        .attr('x', compareCenterX)
-        .attr('y', function(row) {
-          return comparisonRowY(row, nodeById);
-        })
-        .attr('text-anchor', 'middle')
-        .attr('dominant-baseline', 'middle')
-        .attr('font-size', function(row) {
-          return rowFontSize(row);
-        })
-        .attr('font-family', 'var(--mono)')
-        .attr('fill', COLORS.muted);
-
-      labelSel.each(function(row) {
-        wrapTextToWidth(this, row.text, maxLabelWidth, rowFontSize(row) * 1.3, { applyLengthAdjust: false });
-      });
-
-      var previousBottom = -Infinity;
-      labelSel
-        .sort(function(a, b) {
-          return comparisonRowY(a, nodeById) - comparisonRowY(b, nodeById);
-        })
-        .each(function(row) {
-          var textEl = this;
-          var baseY = comparisonRowY(row, nodeById);
-          textEl.setAttribute('y', String(baseY));
-
-          var box = getTextBox(textEl);
-          if (!box) return;
-
-          if (box.y < previousBottom + minVerticalGap) {
-            var shiftDown = (previousBottom + minVerticalGap) - box.y;
-            textEl.setAttribute('y', String(baseY + shiftDown));
-            box = getTextBox(textEl);
-          }
-
-          if (box) previousBottom = box.y + box.height;
-        });
-    }
-
-    function renderComparisonHighlights(highlightLayer, labelSel) {
-      var COLORS = getColors();
-      var marks = [];
-
-      labelSel.each(function(row) {
-        var textEl = this;
-        var tspans = Array.prototype.slice.call(textEl.querySelectorAll('tspan'));
-        if (!tspans.length) {
-          var loneBox = getTextBox(textEl);
-          if (!loneBox) return;
-          marks.push({
-            id: row.anchorId + '-line-0',
-            x: loneBox.x - 2.8,
-            y: loneBox.y - 1.4,
-            width: loneBox.width + 5.6,
-            height: loneBox.height + 2.8
-          });
-          return;
-        }
-
-        tspans.forEach(function(tspan, idx) {
-          var lineBox = getTextBox(tspan);
-          if (!lineBox) return;
-          marks.push({
-            id: row.anchorId + '-line-' + String(idx),
-            x: lineBox.x - 2.8,
-            y: lineBox.y - 1.4,
-            width: lineBox.width + 5.6,
-            height: lineBox.height + 2.8
-          });
-        });
-      });
-
-      highlightLayer.selectAll('.mix-map-compare-highlight')
-        .data(marks, function(mark) {
-          return mark.id;
-        })
-        .join('rect')
-        .attr('class', 'mix-map-compare-highlight')
-        .attr('x', function(mark) {
-          return mark.x;
-        })
-        .attr('y', function(mark) {
-          return mark.y;
-        })
-        .attr('width', function(mark) {
-          return mark.width;
-        })
-        .attr('height', function(mark) {
-          return mark.height;
-        })
-        .attr('rx', 0)
-        .attr('ry', 0)
-        .attr('stroke', 'color-mix(in srgb, ' + COLORS.gold + ' 44%, transparent 56%)')
-        .attr('stroke-width', 0.3)
-        .attr('fill', 'color-mix(in srgb, ' + COLORS.gold + ' 24%, transparent 76%)')
-        .attr('opacity', 0.62);
-    }
-
     function layoutLaneHeaderText(titleSel, subtitleSel, layout, laneTitle, laneSubtitle, typography) {
       var laneTextWidth = clamp(
         layout.laneGap - (layout.compact ? 18 : 26),
@@ -521,8 +403,6 @@
       fitHeaderLabel: fitHeaderLabel,
       scheduleNodeLabelFit: scheduleNodeLabelFit,
       comparisonRowY: comparisonRowY,
-      layoutComparisonLabels: layoutComparisonLabels,
-      renderComparisonHighlights: renderComparisonHighlights,
       layoutLaneHeaderText: layoutLaneHeaderText
     };
   }

@@ -28,6 +28,14 @@
   margin-bottom: 0.7rem;
 }
 
+.mix-mapper-viz-hint {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+  margin: 0 0 0.38rem;
+}
+
 .mix-mapper-legend {
   display: flex;
   flex-wrap: wrap;
@@ -179,6 +187,8 @@
   font-weight: 300;
   letter-spacing: var(--mix-map-node-letter-spacing, 0);
   fill: var(--ink-mid);
+  dominant-baseline: middle;
+  text-anchor: middle;
 }
 
 .mix-mapper-svg .mix-map-node {
@@ -260,6 +270,15 @@
 }
 
 @media (max-width: 640px) {
+  .mix-mapper-legend {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mix-mapper-legend-btn {
+    flex-direction: row-reverse;
+  }
+
   .mix-mapper-svg {
     --mix-map-fs-node-px: 9.4px;
     --mix-map-fs-lane-title-px: 13.4px;

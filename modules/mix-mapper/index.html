@@ -46,43 +46,43 @@
       <header class="module-header">
         <h1 class="module-header-title">Epistemic Bets</h1>
         <p class="module-header-body">
-          Many organizations run as a management mix. A traditional control model can coexist with a complexity-informed
-          digital unit in the same enterprise.
+          Many enterprises run as a management mix — a traditional control model and a complexity-informed
+          digital unit coexisting in the same organization.
         </p>
         <p class="module-header-body">
-          In this module, epistemic bets are the assumptions an organization makes about when it can know enough to decide.
+          Epistemic bets are the assumptions an organization makes about when it can know enough to decide.
         </p>
         <p class="module-header-body">
           In software-heavy work, activities happen in sequence, but understanding does not.
         </p>
         <p class="module-header-body">
-          Words like discovery, exploration, and incremental delivery do not create learning on their own. Learning appears
-          only when key assumptions are tested and decisions change with evidence.
+          Words like discovery, exploration, and incremental delivery do not create learning on their own. Learning only occurs when key assumptions are tested and decisions change with evidence.
         </p>
       </header>
 
       <section class="mix-mapper-layout" aria-label="Management Mix Mapper visualization and interpretation">
         <article class="mix-mapper-viz-card" aria-label="Epistemic Bets visualization">
+          <p class="mix-mapper-viz-hint">Select a lens to filter the map.</p>
           <div class="mix-mapper-legend" role="group" aria-label="Legend and mode filter">
             <button type="button" class="mix-mapper-legend-btn" data-mode="process" aria-pressed="false">
               <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--process" aria-hidden="true"></span>
-              <span class="mix-mapper-legend-label">Process Activity</span>
+              <span class="mix-mapper-legend-label">Process</span>
             </button>
             <button type="button" class="mix-mapper-legend-btn" data-mode="assumptions" aria-pressed="false">
               <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--assumptions" aria-hidden="true"></span>
-              <span class="mix-mapper-legend-label">Epistemic Bets</span>
+              <span class="mix-mapper-legend-label">Assumptions</span>
             </button>
             <button type="button" class="mix-mapper-legend-btn" data-mode="learning" aria-pressed="false">
               <span class="mix-mapper-legend-marker mix-mapper-legend-marker--dot mix-mapper-legend-marker--learning" aria-hidden="true"></span>
-              <span class="mix-mapper-legend-label">Evidence Feedback</span>
+              <span class="mix-mapper-legend-label">Learning</span>
             </button>
           </div>
 
           <div id="mix-mapper-viz-shell" class="mix-mapper-viz-shell">
             <svg id="mix-mapper-svg" class="mix-mapper-svg" role="img" aria-label="Directed lifecycle map comparing complexity-informed and traditional delivery lanes"></svg>
-            <p id="mix-mapper-fallback" class="essay-body mix-mapper-fallback" hidden>Visualization unavailable. D3 failed to load.</p>
+            <p id="mix-mapper-fallback" class="essay-body mix-mapper-fallback" hidden>The visualization couldn't load. Try refreshing the page.</p>
             <noscript>
-              <p class="essay-body mix-mapper-fallback">JavaScript is required to render this visualization.</p>
+              <p class="essay-body mix-mapper-fallback">This visualization requires JavaScript. Enable it in your browser settings to view it.</p>
             </noscript>
           </div>
         </article>

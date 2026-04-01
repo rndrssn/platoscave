@@ -56,14 +56,15 @@ function testLaneHeaderFitHelperExists() {
   );
 }
 
-function testComparisonTypographyOverrideExists() {
+function testComparisonDotPlacementHelperExists() {
+  const layoutUtils = layoutUtilsModule.createLayoutUtils({
+    clamp: (value, min, max) => Math.max(min, Math.min(max, value)),
+    readScopedCssNumber: (_name, fallback) => fallback,
+    getColors: () => ({ muted: '#5C4F3A', gold: '#B8943A' })
+  });
   assert(
-    /function\s+layoutComparisonLabels\s*\(labelSel,\s*layout,\s*nodeById,\s*compareLineStart,\s*compareLineEnd,\s*typography\)\s*\{/.test(source),
-    'Expected typography-aware comparison label layout helper'
-  );
-  assert(
-    /readTypographySize\(typography,\s*'compareFontU',\s*layout\.compareLabelSize/.test(source),
-    'Expected comparison label size to allow runtime typography override'
+    typeof layoutUtils.comparisonRowY === 'function',
+    'Expected comparisonRowY helper for dot placement'
   );
 }
 
@@ -95,7 +96,7 @@ function testLaneHeaderOverlapDetectionExists() {
 function run() {
   testTypographyHelperAndDefaults();
   testLaneHeaderFitHelperExists();
-  testComparisonTypographyOverrideExists();
+  testComparisonDotPlacementHelperExists();
   testLaneHeaderOverlapDetectionExists();
   testLayoutUtilsExportSurface();
   console.log('PASS: tests/test-mix-mapper-lane-header-fit-contract.js');

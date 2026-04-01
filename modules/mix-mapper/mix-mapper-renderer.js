@@ -275,21 +275,30 @@
 
       layoutUtils.scheduleNodeLabelFit(nodeLabelSel, layout, renderStamp, getCurrentRenderStamp);
 
-      var compareInset = layout.compact ? 8 : 12;
-      var compareLineStart = layout.laneX.complexity + (layout.nodeWidth / 2) + compareInset;
-      var compareLineEnd = layout.laneX.traditional - (layout.nodeWidth / 2) - compareInset;
+      var dotCenterX = layout.width / 2;
+      var dotRadius = layout.compact ? 4.5 : 5.5;
 
-      var compareHighlightLayer = overlayLayer.append('g')
-        .attr('class', 'mix-map-layer mix-map-layer--compare-highlight')
-        .attr('pointer-events', 'none');
+      var compareDotSel = overlayLayer.selectAll('.mix-map-compare-dot')
+        .data(comparisonRows, function(row) {
+          return row.anchorId;
+        })
+        .join('circle')
+        .attr('class', 'mix-map-compare-dot')
+        .attr('cx', dotCenterX)
+        .attr('cy', function(row) {
+          return layoutUtils.comparisonRowY(row, nodeById);
+        })
+        .attr('r', dotRadius)
+        .attr('role', 'button')
+        .attr('tabindex', 0)
+        .attr('aria-label', function(row) {
+          return row.text;
+        })
+        .style('fill', COLORS.gold)
+        .style('fill-opacity', '0.65')
+        .style('cursor', 'pointer');
 
-      var compareLabelSel = overlayLayer.selectAll('.mix-map-compare-label')
-        .data(comparisonRows)
-        .join('text')
-        .attr('class', 'mix-map-compare-label');
-
-      layoutUtils.layoutComparisonLabels(compareLabelSel, layout, nodeById, compareLineStart, compareLineEnd, typography);
-      layoutUtils.renderComparisonHighlights(compareHighlightLayer, compareLabelSel);
+      interactionBindings.bindDotInteractions(compareDotSel);
 
       return {
         layout: layout,

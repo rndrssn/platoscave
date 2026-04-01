@@ -206,6 +206,11 @@
   var tooltipHtml = tooltipContent.tooltipHtml;
   var linkTooltipHtml = tooltipContent.linkTooltipHtml;
   var linkAriaLabel = tooltipContent.linkAriaLabel;
+  function dotTooltipHtml(row) {
+    if (!row || !row.text) return '';
+    return '<strong>' + row.text + '</strong>';
+  }
+
   var interactionBindings = INTERACTIONS.createInteractionBindings({
     getMode: function() {
       return state.mode;
@@ -219,6 +224,7 @@
     linkTooltipHtml: linkTooltipHtml,
     linkAriaLabel: linkAriaLabel,
     tooltipHtml: tooltipHtml,
+    dotTooltipHtml: dotTooltipHtml,
     highlightNode: highlightNode,
     clearHighlight: clearHighlight
   });

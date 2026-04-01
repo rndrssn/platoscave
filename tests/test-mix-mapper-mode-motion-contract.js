@@ -118,7 +118,7 @@ function testLayoutUtilsModuleSurface() {
 
   assert(typeof layoutUtils.getLayout === 'function', 'Expected getLayout helper');
   assert(typeof layoutUtils.layoutLaneHeaderText === 'function', 'Expected layoutLaneHeaderText helper');
-  assert(typeof layoutUtils.layoutComparisonLabels === 'function', 'Expected layoutComparisonLabels helper');
+  assert(typeof layoutUtils.comparisonRowY === 'function', 'Expected comparisonRowY helper for dot placement');
 }
 
 function testModePolicyModuleSurface() {
@@ -387,8 +387,8 @@ function testRendererUsesTypographySurface() {
     'Expected renderer to resolve typography from layout'
   );
   assert(
-    /layoutUtils\.layoutComparisonLabels\([\s\S]*typography\)/.test(rendererSource),
-    'Expected renderer to forward typography into comparison label layout'
+    /layoutUtils\.comparisonRowY\(/.test(rendererSource),
+    'Expected renderer to use comparisonRowY for dot placement'
   );
   assert(
     /layoutUtils\.layoutLaneHeaderText\([\s\S]*typography[\s\S]*\)/.test(rendererSource),

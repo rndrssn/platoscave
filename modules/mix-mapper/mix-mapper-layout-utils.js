@@ -460,12 +460,11 @@
         })
         .attr('rx', 0)
         .attr('ry', 0)
-        .attr('stroke', COLORS.gold)
-        .attr('stroke-opacity', 0.44)
-        .attr('stroke-width', 0.3)
-        .attr('fill', COLORS.gold)
-        .attr('fill-opacity', 0.24)
-        .attr('opacity', 0.62);
+        .style('stroke', COLORS.gold)
+        .style('stroke-width', '0.3px')
+        .style('stroke-opacity', '0.27')
+        .style('fill', COLORS.gold)
+        .style('fill-opacity', '0.15');
     }
 
     function layoutLaneHeaderText(titleSel, subtitleSel, layout, laneTitle, laneSubtitle, typography) {

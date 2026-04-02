@@ -220,8 +220,12 @@
   filter: drop-shadow(0 0 6px var(--viz-rust, #8B3A2A));
 }
 
-.mix-mapper-svg .mix-map-edge-hit:focus {
-  filter: drop-shadow(0 0 4px var(--viz-ink-mid, #5C4F3A));
+.mix-map-edge-group--complexity:focus-within .mix-map-edge:not(.mix-map-edge--learning) {
+  filter: drop-shadow(0 0 5px var(--viz-sage, #4A6741));
+}
+
+.mix-map-edge-group--traditional:focus-within .mix-map-edge:not(.mix-map-edge--learning) {
+  filter: drop-shadow(0 0 5px var(--viz-rust, #8B3A2A));
 }
 
 .mix-map-compare-dot-group:focus-within .mix-map-compare-dot {

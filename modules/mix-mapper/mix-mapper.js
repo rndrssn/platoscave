@@ -208,7 +208,9 @@
   var linkAriaLabel = tooltipContent.linkAriaLabel;
   function dotTooltipHtml(row) {
     if (!row || !row.text) return '';
-    return '<strong>' + row.text + '</strong>';
+    var tooltipContent = TOOLTIP.createTooltipContent({});
+    var safeText = tooltipContent.escapeHtml(row.text);
+    return '<div class="mix-mapper-tooltip-header">' + safeText + '</div>';
   }
 
   var interactionBindings = INTERACTIONS.createInteractionBindings({

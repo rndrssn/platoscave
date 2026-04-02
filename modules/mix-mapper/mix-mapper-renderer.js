@@ -137,7 +137,7 @@
         traditionalTitleSel,
         traditionalSubtitleSel,
         layout,
-        'Traditional',
+        'Taylorist Plan-Driven',
         'phase-gated\nrequirements-first\nlinear',
         typography
       );
@@ -152,15 +152,22 @@
       if (traditionalHeaderScale > minHeaderScale) {
         layoutUtils.layoutLaneHeaderText(
           traditionalTitleSel, traditionalSubtitleSel, layout,
-          'Traditional', 'phase-gated\nrequirements-first\nlinear',
+          'Taylorist Plan-Driven', 'phase-gated\nrequirements-first\nlinear',
           typography, { scale: minHeaderScale }
         );
       }
 
-      var linkSel = edgeLayer.selectAll('.mix-map-edge')
+      var linkGroupSel = edgeLayer.selectAll('.mix-map-edge-group')
         .data(links, function(link) {
           return link.source + '>' + link.target + ':' + link.kind;
         })
+        .join('g')
+        .attr('class', function(link) {
+          return 'mix-map-edge-group mix-map-edge-group--' + link.lane;
+        });
+
+      var linkSel = linkGroupSel.selectAll('.mix-map-edge')
+        .data(function(link) { return [link]; })
         .join('path')
         .attr('class', function(link) {
           return 'mix-map-edge mix-map-edge--' + link.lane + ' mix-map-edge--' + link.kind;
@@ -174,10 +181,8 @@
         .attr('pointer-events', 'none')
         .attr('aria-hidden', 'true');
 
-      var linkOverlaySel = edgeLayer.selectAll('.mix-map-edge-overlay')
-        .data(links, function(link) {
-          return link.source + '>' + link.target + ':' + link.kind;
-        })
+      var linkOverlaySel = linkGroupSel.selectAll('.mix-map-edge-overlay')
+        .data(function(link) { return [link]; })
         .join('path')
         .attr('class', function(link) {
           return 'mix-map-edge-overlay mix-map-edge-overlay--' + link.lane + ' mix-map-edge-overlay--' + link.kind;
@@ -192,10 +197,8 @@
         .attr('aria-hidden', 'true')
         .attr('opacity', 0);
 
-      var linkHitSel = edgeLayer.selectAll('.mix-map-edge-hit')
-        .data(links, function(link) {
-          return link.source + '>' + link.target + ':' + link.kind;
-        })
+      var linkHitSel = linkGroupSel.selectAll('.mix-map-edge-hit')
+        .data(function(link) { return [link]; })
         .join('path')
         .attr('class', 'mix-map-edge-hit')
         .attr('d', function(link) {
@@ -211,10 +214,8 @@
 
       interactionBindings.bindLinkInteractions(linkHitSel, nodeById);
 
-      var pulseSel = edgeLayer.selectAll('.mix-map-pulse')
-        .data(links, function(link) {
-          return link.source + '>' + link.target + ':' + link.kind;
-        })
+      var pulseSel = linkGroupSel.selectAll('.mix-map-pulse')
+        .data(function(link) { return [link]; })
         .join('circle')
         .attr('class', 'mix-map-pulse')
         .attr('r', layout.pulseRadius)

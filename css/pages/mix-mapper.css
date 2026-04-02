@@ -206,12 +206,26 @@
   cursor: pointer;
 }
 
-.mix-mapper-svg .mix-map-node:focus-visible {
+.mix-mapper-svg .mix-map-node:focus,
+.mix-mapper-svg .mix-map-edge-hit:focus,
+.mix-map-compare-dot-hit:focus {
   outline: none;
 }
 
-.mix-mapper-svg .mix-map-node:focus-visible path {
-  stroke-width: 3.2;
+.mix-mapper-svg .mix-map-node--complexity:focus {
+  filter: drop-shadow(0 0 6px var(--viz-sage, #4A6741));
+}
+
+.mix-mapper-svg .mix-map-node--traditional:focus {
+  filter: drop-shadow(0 0 6px var(--viz-rust, #8B3A2A));
+}
+
+.mix-mapper-svg .mix-map-edge-hit:focus {
+  filter: drop-shadow(0 0 4px var(--viz-ink-mid, #5C4F3A));
+}
+
+.mix-map-compare-dot-group:focus-within .mix-map-compare-dot {
+  filter: drop-shadow(0 0 7px #B8943A);
 }
 
 .mix-mapper-fallback {

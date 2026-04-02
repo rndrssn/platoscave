@@ -220,7 +220,7 @@
 }
 
 .mix-mapper-tooltip {
-  position: fixed;
+  position: absolute;
   z-index: 1400;
   pointer-events: none;
   max-width: 13.5rem;

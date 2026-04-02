@@ -291,26 +291,15 @@
       var dotCenterX = layout.width / 2;
       var dotRadius = layout.compact ? 4.5 : 5.5;
 
-      overlayLayer.selectAll('.mix-map-compare-dot')
+      var compareDotGroupSel = overlayLayer.selectAll('.mix-map-compare-dot-group')
         .data(comparisonRows, function(row) {
           return row.anchorId;
         })
-        .join('circle')
-        .attr('class', 'mix-map-compare-dot')
-        .attr('cx', dotCenterX)
-        .attr('cy', function(row) {
-          return layoutUtils.comparisonRowY(row, nodeById);
-        })
-        .attr('r', dotRadius)
-        .attr('aria-hidden', 'true')
-        .attr('pointer-events', 'none')
-        .style('fill', COLORS.gold)
-        .style('fill-opacity', '0.65');
+        .join('g')
+        .attr('class', 'mix-map-compare-dot-group');
 
-      var compareDotHitSel = overlayLayer.selectAll('.mix-map-compare-dot-hit')
-        .data(comparisonRows, function(row) {
-          return row.anchorId;
-        })
+      var compareDotHitSel = compareDotGroupSel.selectAll('.mix-map-compare-dot-hit')
+        .data(function(row) { return [row]; })
         .join('circle')
         .attr('class', 'mix-map-compare-dot-hit')
         .attr('cx', dotCenterX)
@@ -325,6 +314,20 @@
         })
         .style('fill', 'transparent')
         .style('cursor', 'pointer');
+
+      compareDotGroupSel.selectAll('.mix-map-compare-dot')
+        .data(function(row) { return [row]; })
+        .join('circle')
+        .attr('class', 'mix-map-compare-dot')
+        .attr('cx', dotCenterX)
+        .attr('cy', function(row) {
+          return layoutUtils.comparisonRowY(row, nodeById);
+        })
+        .attr('r', dotRadius)
+        .attr('aria-hidden', 'true')
+        .attr('pointer-events', 'none')
+        .style('fill', COLORS.gold)
+        .style('fill-opacity', '0.65');
 
       interactionBindings.bindDotInteractions(compareDotHitSel);
 

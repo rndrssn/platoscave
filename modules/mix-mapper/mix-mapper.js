@@ -335,8 +335,10 @@
     nextLeft = clamp(nextLeft, viewportPad, viewportWidth - tooltipWidth - viewportPad);
     nextTop = clamp(nextTop, viewportPad, viewportHeight - tooltipHeight - viewportPad);
 
-    tooltipEl.style.left = String(nextLeft) + 'px';
-    tooltipEl.style.top = String(nextTop) + 'px';
+    var scrollX = window.pageXOffset || window.scrollX || 0;
+    var scrollY = window.pageYOffset || window.scrollY || 0;
+    tooltipEl.style.left = String(nextLeft + scrollX) + 'px';
+    tooltipEl.style.top = String(nextTop + scrollY) + 'px';
     tooltipEl.classList.add('is-visible');
     tooltipEl.setAttribute('aria-hidden', 'false');
   }

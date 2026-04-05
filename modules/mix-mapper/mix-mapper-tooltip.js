@@ -32,7 +32,9 @@
       var safeTitle = escapeHtml(String(node.step) + '. ' + node.title);
       var safeDesc = escapeHtml(node.description);
       var safeTags = escapeHtml(node.tags.join(' · '));
-      return '<strong>' + safeTitle + '</strong><br>' + safeDesc + '<br><span class="mix-mapper-tooltip-tags">' + safeTags + '</span>';
+      return '<div class="mix-mapper-tooltip-header">' + safeTitle + '</div>' +
+        '<div class="mix-mapper-tooltip-body">' + safeDesc + '</div>' +
+        '<div class="mix-mapper-tooltip-meta">' + safeTags + '</div>';
     }
 
     function linkTooltipHtml(link, mode, nodeById) {
@@ -40,14 +42,16 @@
       var target = nodeById[link.target];
       if (!source || !target) return '';
 
-      var title = escapeHtml(source.shortLabel + ' to ' + target.shortLabel);
-      var lens = modeLabel(mode);
+      var title = escapeHtml(source.shortLabel + ' \u2192 ' + target.shortLabel);
+      var lens = escapeHtml(modeLabel(mode));
       var narrative = escapeHtml(complexityLinkNarrative(link, mode));
       var semantic = escapeHtml(link.semantic || '');
+      var modeKey = mode === 'all' ? 'all' : mode;
 
-      return '<strong>' + title + '</strong><br>' +
-        '<span class="mix-mapper-tooltip-tags">' + escapeHtml(lens) + '</span>: ' + narrative +
-        '<br><span class="mix-mapper-tooltip-tags">' + semantic + '</span>';
+      return '<div class="mix-mapper-tooltip-header">' + title + '</div>' +
+        '<div class="mix-mapper-tooltip-lens mix-mapper-tooltip-lens--' + modeKey + '">' + lens + '</div>' +
+        '<div class="mix-mapper-tooltip-body">' + narrative + '</div>' +
+        (semantic ? '<div class="mix-mapper-tooltip-meta">' + semantic + '</div>' : '');
     }
 
     function linkAriaLabel(link, mode, nodeById) {

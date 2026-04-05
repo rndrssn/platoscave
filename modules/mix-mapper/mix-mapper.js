@@ -126,7 +126,7 @@
       processArrow: ink,
       learningArrow: sage,
       assumptionArrow: sage,
-      nodeFill: 'color-mix(in srgb, ' + ink + ' 20%, ' + panel + ' 80%)',
+      nodeFill: 'color-mix(in srgb, ' + ink + ' 18%, ' + panel + ' 82%)',
       nodeStroke: ink,
       processTraditionalFlow: 'color-mix(in srgb, ' + readScopedCssVar('--mix-map-traditional', readScopedCssVar('--viz-slate', baseViz)) + ' 78%, ' + panel + ' 22%)',
       processComplexityFlow: 'color-mix(in srgb, ' + readScopedCssVar('--mix-map-complexity', readScopedCssVar('--viz-sage', baseViz)) + ' 78%, ' + panel + ' 22%)',
@@ -208,7 +208,9 @@
   var linkAriaLabel = tooltipContent.linkAriaLabel;
   function dotTooltipHtml(row) {
     if (!row || !row.text) return '';
-    return '<strong>' + row.text + '</strong>';
+    var tooltipContent = TOOLTIP.createTooltipContent({});
+    var safeText = tooltipContent.escapeHtml(row.text);
+    return '<div class="mix-mapper-tooltip-header">' + safeText + '</div>';
   }
 
   var interactionBindings = INTERACTIONS.createInteractionBindings({
@@ -226,7 +228,9 @@
     tooltipHtml: tooltipHtml,
     dotTooltipHtml: dotTooltipHtml,
     highlightNode: highlightNode,
-    clearHighlight: clearHighlight
+    clearHighlight: clearHighlight,
+    highlightLink: highlightLink,
+    clearLinkHighlight: clearLinkHighlight
   });
   var renderer = RENDERER.createRenderer({
     d3: d3,
@@ -515,6 +519,26 @@
       .style('opacity', 1);
 
     applyMode(true);
+  }
+
+  function highlightLink(link) {
+    if (!state.linkSel || !link || !state.layout) return;
+    if (getAssumptionRole(link) === 'context') return;
+    var hStyle = modePolicy.modeStyle('assumptions', link, state.layout);
+    state.linkSel
+      .filter(function(l) { return l === link; })
+      .interrupt()
+      .style('stroke', hStyle.color)
+      .style('stroke-width', String(hStyle.width * EDGE_STROKE_SCALE))
+      .style('opacity', '1');
+  }
+
+  function clearLinkHighlight() {
+    if (!state.linkSel) return;
+    state.linkSel
+      .style('stroke', null)
+      .style('stroke-width', null)
+      .style('opacity', null);
   }
 
   function highlightNode(nodeId) {

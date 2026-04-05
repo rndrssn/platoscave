@@ -212,23 +212,10 @@
   outline: none;
 }
 
-.mix-mapper-svg .mix-map-node--complexity:focus {
-  filter: drop-shadow(0 0 6px var(--viz-sage, #4A6741));
-}
 
-.mix-mapper-svg .mix-map-node--traditional:focus {
-  filter: drop-shadow(0 0 6px var(--viz-rust, #8B3A2A));
-}
 
-.mix-map-edge-group--complexity:focus-within .mix-map-edge:not(.mix-map-edge--learning) {
-  filter: drop-shadow(0 0 5px var(--viz-sage, #4A6741));
-}
-
-.mix-map-edge-group--traditional:focus-within .mix-map-edge:not(.mix-map-edge--learning) {
-  filter: drop-shadow(0 0 5px var(--viz-rust, #8B3A2A));
-}
-
-.mix-map-compare-dot-group:focus-within .mix-map-compare-dot {
+.mix-map-compare-dot-group:focus-within .mix-map-compare-dot,
+.mix-map-compare-dot-group.is-highlighted .mix-map-compare-dot {
   filter: drop-shadow(0 0 7px #B8943A);
 }
 

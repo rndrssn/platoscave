@@ -1,5 +1,26 @@
 [
   {
+    "title": "PM-ing and Complexity",
+    "slug": "pm-complexity",
+    "summary": "For linear dynamic environments (problems, solutions, organisations, and their interactions): Your job is to (0) extract signal from noise, (1) understand for whom which signal is ambiguous, (2) make ambiguity less ambiguous for who it matters. For dynamic non-linear environments: Your challenge is to (0) read signals from noise in a system where your interventions remakes the system you're trying to read, (1) understand for whom which signal is ambiguous, (2) make ambiguity less ambiguous for who it matters.(3) expect emergence where the patterns produced cannot be read back from the parts and interactions, leading to a reconfigure of (0)",
+    "date": "2026-04-10",
+    "tags": [
+      {
+        "label": "complexity",
+        "slug": "complexity"
+      },
+      {
+        "label": "emergence",
+        "slug": "emergence"
+      },
+      {
+        "label": "product management",
+        "slug": "product-management"
+      }
+    ],
+    "relatedModules": []
+  },
+  {
     "title": "Semantic modernization & new jargon",
     "slug": "semantics",
     "summary": "Semantic modernization & new jargon Semantic modernization & re-jargonization without epistemic change -how the organization believes knowledge is created, validated, and justified- probably wastes trillions in traditionally managed high software-content enterprising. While activities must happen in time sequence, understanding does not progress linearly (in “knowledge work”). The most important knowledge about users/customers/clients, feasibility and business value alignment -often emerges only after partial solutions exist.",

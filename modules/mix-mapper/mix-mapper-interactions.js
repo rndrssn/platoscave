@@ -28,6 +28,8 @@
     };
     var highlightNode = deps.highlightNode || function() {};
     var clearHighlight = deps.clearHighlight || function() {};
+    var highlightLink = deps.highlightLink || function() {};
+    var clearLinkHighlight = deps.clearLinkHighlight || function() {};
     var dotTooltipHtml = deps.dotTooltipHtml || function() {
       return '';
     };
@@ -60,13 +62,16 @@
           showTooltip(linkTooltipHtml(link, modeForLink, nodeById), event.clientX, event.clientY);
         })
         .on('mouseenter', function(event, link) {
+          highlightLink(link);
           var modeForLink = getLinkMode(link, getMode());
           showTooltip(linkTooltipHtml(link, modeForLink, nodeById), event.clientX, event.clientY);
         })
         .on('mouseleave', function() {
+          clearLinkHighlight();
           hideTooltip();
         })
         .on('focus', function(event, link) {
+          highlightLink(link);
           var box = this.getBoundingClientRect();
           var modeForLink = getLinkMode(link, getMode());
           showTooltip(
@@ -77,6 +82,7 @@
           );
         })
         .on('blur', function() {
+          clearLinkHighlight();
           hideTooltip();
         })
         .on('keydown', function(event, link) {
@@ -109,19 +115,27 @@
           showTooltip(tooltipHtml(node), event.clientX, event.clientY);
         })
         .on('mouseenter', function(event, node) {
+          var path = this.querySelector('path');
+          if (path) path.style.setProperty('fill', 'color-mix(in srgb, var(--viz-ink, #2A2018) 38%, var(--paper, #FAF8F1) 62%)');
           highlightNode(node.id);
           showTooltip(tooltipHtml(node), event.clientX, event.clientY);
         })
         .on('mouseleave', function() {
+          var path = this.querySelector('path');
+          if (path) path.style.removeProperty('fill');
           hideTooltip();
           clearHighlight();
         })
         .on('focus', function(event, node) {
+          var path = this.querySelector('path');
+          if (path) path.style.setProperty('fill', 'color-mix(in srgb, var(--viz-ink, #2A2018) 38%, var(--paper, #FAF8F1) 62%)');
           var box = this.getBoundingClientRect();
           highlightNode(node.id);
           showTooltip(tooltipHtml(node), box.left + (box.width / 2), box.top + 8, { anchorMode: 'focus' });
         })
         .on('blur', function() {
+          var path = this.querySelector('path');
+          if (path) path.style.removeProperty('fill');
           hideTooltip();
           clearHighlight();
         })
@@ -144,15 +158,18 @@
     function bindDotInteractions(selection) {
       selection
         .on('mouseenter', function(event, row) {
+          if (this.parentNode) this.parentNode.classList.add('is-highlighted');
           showTooltip(dotTooltipHtml(row), event.clientX, event.clientY);
         })
         .on('mousemove', function(event, row) {
           showTooltip(dotTooltipHtml(row), event.clientX, event.clientY);
         })
         .on('mouseleave', function() {
+          if (this.parentNode) this.parentNode.classList.remove('is-highlighted');
           hideTooltip();
         })
         .on('focus', function(event, row) {
+          if (this.parentNode) this.parentNode.classList.add('is-highlighted');
           var box = this.getBoundingClientRect();
           showTooltip(
             dotTooltipHtml(row),
@@ -162,6 +179,7 @@
           );
         })
         .on('blur', function() {
+          if (this.parentNode) this.parentNode.classList.remove('is-highlighted');
           hideTooltip();
         })
         .on('click', function(event, row) {

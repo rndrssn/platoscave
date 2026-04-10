@@ -80,9 +80,13 @@ function testReadableTooltipPlacementInViewport() {
 
 function testTooltipReadabilityStylingContract() {
   assert(/\.mix-mapper-tooltip\s*\{/.test(cssSource), 'Expected dedicated tooltip style block');
-  assert(/max-width:\s*13\.5rem;/.test(cssSource), 'Expected bounded tooltip width for readability');
-  assert(/line-height:\s*1\.34;/.test(cssSource), 'Expected readable tooltip line-height');
-  assert(/font-size:\s*0\.56rem;/.test(cssSource), 'Expected small but explicit tooltip font size');
+  assert(/max-width:\s*14rem;/.test(cssSource), 'Expected bounded tooltip width for readability');
+  assert(/line-height:\s*1\.48;/.test(cssSource), 'Expected readable tooltip line-height');
+  assert(/font-size:\s*0\.6rem;/.test(cssSource), 'Expected small but explicit tooltip font size');
+  assert(/\.mix-mapper-tooltip-header\s*\{/.test(cssSource), 'Expected tooltip header block class');
+  assert(/\.mix-mapper-tooltip-lens--process/.test(cssSource), 'Expected lens colour variant for process mode');
+  assert(/\.mix-mapper-tooltip-lens--assumptions/.test(cssSource), 'Expected lens colour variant for assumptions mode');
+  assert(/\.mix-mapper-tooltip-lens--learning/.test(cssSource), 'Expected lens colour variant for learning mode');
 }
 
 function run() {

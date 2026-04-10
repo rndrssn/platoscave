@@ -1,5 +1,13 @@
 [
   {
+    "label": "complexity",
+    "slug": "complexity",
+    "notes": [
+      "pm-complexity"
+    ],
+    "modules": []
+  },
+  {
     "label": "cost overrun",
     "slug": "cost-overrun",
     "notes": [
@@ -14,6 +22,14 @@
     "modules": [
       "03-garbage-can"
     ]
+  },
+  {
+    "label": "emergence",
+    "slug": "emergence",
+    "notes": [
+      "pm-complexity"
+    ],
+    "modules": []
   },
   {
     "label": "garbage can model",
@@ -38,6 +54,14 @@
     "modules": [
       "03-garbage-can"
     ]
+  },
+  {
+    "label": "product management",
+    "slug": "product-management",
+    "notes": [
+      "pm-complexity"
+    ],
+    "modules": []
   },
   {
     "label": "statistics",

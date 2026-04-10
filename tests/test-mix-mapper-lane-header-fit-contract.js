@@ -88,8 +88,8 @@ function testLaneHeaderOverlapDetectionExists() {
     'Expected overflow detection for lane subtitle region'
   );
   assert(
-    /text-anchor',\s*'start'/.test(source),
-    'Expected lane header text to use left alignment'
+    /text-anchor',\s*'middle'/.test(source),
+    'Expected lane header text to use centre alignment'
   );
 }
 

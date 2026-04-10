@@ -373,8 +373,8 @@
         var subtitleLineHeight = subtitleSize * 1.32;
 
         titleSel
-          .attr('x', laneLeftX)
-          .attr('text-anchor', 'start')
+          .attr('x', laneCenterX)
+          .attr('text-anchor', 'middle')
           .attr('font-size', titleSize);
         titleSel.each(function() {
           wrapTextToWidth(this, laneTitle, laneTextWidth, titleLineHeight);
@@ -386,8 +386,8 @@
           : 78;
 
         subtitleSel
-          .attr('x', laneLeftX)
-          .attr('text-anchor', 'start')
+          .attr('x', laneCenterX)
+          .attr('text-anchor', 'middle')
           .attr('font-size', subtitleSize)
           .attr('y', subtitleY);
         subtitleSel.each(function() {

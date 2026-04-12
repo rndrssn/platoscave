@@ -27,7 +27,7 @@
   <nav class="main-nav">
     <a class="nav-title" href="../../">To the Bedrock</a>
     <div class="nav-links" id="primary-nav">
-      <a class="nav-link" href="../../">Identity</a>
+      <a class="nav-link" href="../../">Home</a>
       <a class="nav-link" href="../../notes/">Notes</a>
       <a class="nav-link nav-link--active" href="../../modules/" aria-current="page">Modules</a>
     </div>
@@ -54,7 +54,7 @@
 
       <article class="module-essay">
         <section class="essay-section">
-          <p class="cv-graph-helper">Tap, hover, or focus nodes to inspect connections. Drag nodes to explore layout.</p>
+          <p class="cv-graph-helper">Hover or tap a node to explore connections. Drag to rearrange.</p>
           <ul class="cv-graph-legend">
             <li>
               <button class="cv-graph-legend-btn" type="button" data-legend-type="experience" aria-pressed="false">
@@ -75,7 +75,7 @@
           <div class="cv-graph-node-detail" id="cv-graph-node-detail" aria-live="polite"></div>
           <div class="cv-graph-surface" id="cv-graph-surface">
             <svg id="cv-force-graph" class="cv-graph-svg" role="img" aria-label="Force-directed graph of my experience and skills"></svg>
-            <p id="cv-graph-fallback" class="essay-body" hidden>Graph unavailable. D3 failed to load.</p>
+            <p id="cv-graph-fallback" class="essay-body" hidden>Graph unavailable — try refreshing the page.</p>
           </div>
         </section>
       </article>
@@ -591,7 +591,7 @@
       }).catch(function(err) {
         console.error('Failed to load graph data from Markdown', err);
         if (fallback) {
-          fallback.textContent = 'Graph unavailable. Failed to load graph data.';
+          fallback.textContent = 'Graph unavailable \u2014 try refreshing the page.';
           fallback.hidden = false;
         }
       });

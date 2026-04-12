@@ -874,6 +874,7 @@
   height: 0.52rem;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--ink-ghost) 78%, transparent 22%);
+  animation: cv-legend-swatch-pulse 3.2s ease-in-out infinite;
 }
 
 .cv-graph-swatch--experience {
@@ -889,6 +890,53 @@
 .cv-graph-swatch--category {
   background: var(--sage-light);
   border-color: color-mix(in srgb, var(--sage-light) 78%, var(--paper) 22%);
+}
+
+.cv-graph-node-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  margin: 0.4rem 0 0.1rem;
+  font-family: var(--mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  min-height: 1rem;
+  visibility: hidden;
+}
+
+.cv-graph-node-detail.is-visible {
+  visibility: visible;
+}
+
+.cv-graph-detail-swatch {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+  animation: cv-detail-swatch-pulse 1.4s ease-in-out infinite;
+}
+
+.cv-graph-detail-swatch.cv-graph-swatch--experience {
+  background: var(--rust-light);
+}
+
+.cv-graph-detail-swatch.cv-graph-swatch--skill {
+  background: var(--gold);
+}
+
+.cv-graph-detail-swatch.cv-graph-swatch--category {
+  background: var(--sage-light);
+}
+
+.cv-graph-detail-label {
+  color: var(--ink-mid);
+}
+
+@keyframes cv-detail-swatch-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.72; }
+  50% { transform: scale(2); opacity: 1; }
 }
 
 .cv-graph-surface {
@@ -1049,12 +1097,14 @@
 }
 
 @keyframes cv-legend-swatch-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.76; }
-  50% { transform: scale(1.16); opacity: 1; }
+  0%, 100% { transform: scale(1); opacity: 0.72; }
+  50% { transform: scale(1.5); opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cv-graph-node {
+  .cv-graph-node,
+  .cv-graph-swatch,
+  .cv-graph-detail-swatch {
     animation: none;
   }
 }

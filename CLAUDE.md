@@ -98,6 +98,15 @@ Profiles:
 - `fast`: foundation pack + one conditional doc max.
 - `deep`: foundation pack + all relevant conditional docs up to budget.
 
+## Git Workflow
+
+- **`sandbox`** is the working branch. All development, commits, and iteration happen here.
+- **`main`** is the stable/production branch. It reflects what is live on GitHub Pages.
+- Never commit directly to `main` during development.
+- Only merge `sandbox` → `main` when the user explicitly says "release to main" or "commit and release to main".
+- After releasing, switch back to `sandbox` immediately.
+- Push `sandbox` to remote at the end of sessions or when releasing, so both branches stay in sync on the remote.
+
 ## Hard Execution Gates
 
 For code changes:

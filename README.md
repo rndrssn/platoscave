@@ -23,8 +23,8 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - **03.03 What's a Garbage Can?** (`/modules/garbage-can/can-explainer/`)
   - **03.04 Explore** (`/modules/garbage-can/explorer/`)
   - **03.05 Assess** (`/modules/garbage-can/assess/`)
-- **04 · Mix Mapper** — Lifecycle comparison that separates activity sequence from assumptions and feedback dynamics.
-  - **04.01 Process vs Knowledge** (`/modules/mix-mapper/`)
+- **04 · Management Mix Mapper** — Maps where traditional control and complexity-informed learning coexist, clash, or drift apart. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
+  - **04.01 Epistemic Bets** (`/modules/mix-mapper/`)
 - **05 · My Experience-Skill Graph** — Interactive force-directed map linking chronology roles with domain, technical, and leadership skills.
   - **05.01 Graph** (`/modules/experience-skill-graph/`)
   - **05.02 CV** (`/modules/experience-skill-graph/cv/`)

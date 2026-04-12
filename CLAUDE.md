@@ -100,12 +100,19 @@ Profiles:
 
 ## Git Workflow
 
+Three-branch flow: `sandbox` → `develop` → `main`
+
 - **`sandbox`** is the working branch. All development, commits, and iteration happen here.
-- **`main`** is the stable/production branch. It reflects what is live on GitHub Pages.
-- Never commit directly to `main` during development.
-- Only merge `sandbox` → `main` when the user explicitly says "release to main" or "commit and release to main".
-- After releasing, switch back to `sandbox` immediately.
-- Push `sandbox` to remote at the end of sessions or when releasing, so both branches stay in sync on the remote.
+- **`develop`** is the staging branch. Merged from sandbox when a set of changes is ready to integrate and test together.
+- **`main`** is the production branch. It reflects what is live on GitHub Pages.
+
+Rules:
+- Never commit directly to `develop` or `main`.
+- Merge `sandbox` → `develop` only when the user explicitly says "release to develop".
+- Merge `develop` → `main` only when the user explicitly says "release to main".
+- "commit and release to main" means: commit on sandbox → merge to develop → merge to main.
+- After any release, switch back to `sandbox` immediately.
+- Push all affected branches to remote after each release.
 
 ## Hard Execution Gates
 

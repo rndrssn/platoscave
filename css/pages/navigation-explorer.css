@@ -129,7 +129,7 @@
 
 .module-back-link::before {
   content: '\2190';
-  font-size: 0.7rem;
+  font-size: 0.875rem;
   line-height: 1;
 }
 

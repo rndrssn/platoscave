@@ -2,9 +2,31 @@
 
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 const root = process.cwd();
 const docsRoot = path.join(root, 'docs');
+
+// Local-overlay docs (synced via scripts/sync-local-docs.sh) are intentionally
+// gitignored. A relates_to ref that resolves only to an overlay path is a
+// known carve-out, not a broken reference.
+const OVERLAY_PREFIXES = [
+  'docs/00-core/',
+  'docs/10-guides/',
+  'docs/20-reference/',
+  'docs/30-tasks/',
+  'docs/40-principles/',
+  'docs/50-vision/'
+];
+
+function isOverlayRef(ref) {
+  for (const prefix of OVERLAY_PREFIXES) {
+    const candidate = prefix + ref + '.md';
+    const r = spawnSync('git', ['check-ignore', '-q', '--', candidate], { cwd: root });
+    if (r.status === 0) return true;
+  }
+  return false;
+}
 
 function walk(dir) {
   const out = [];
@@ -118,10 +140,10 @@ for (const f of files) {
   if (!m) continue;
   const refs = m[1].split(',').map((s) => s.trim()).filter(Boolean);
   for (const ref of refs) {
-    if (!resolvable.has(ref)) {
-      console.error('FAIL: unresolved relates_to reference', ref + ':', r);
-      failed++;
-    }
+    if (resolvable.has(ref)) continue;
+    if (isOverlayRef(ref)) continue; // intentional local-overlay reference
+    console.error('FAIL: unresolved relates_to reference', ref + ':', r);
+    failed++;
   }
 }
 

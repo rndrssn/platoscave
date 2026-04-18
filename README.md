@@ -122,6 +122,14 @@ node tests/run-all.js
 2. Commit and release through normal flow:
    - `sandbox` -> `develop` -> `main`
 
+## Deployment
+
+The site deploys automatically to GitHub Pages on every push to `main`. If the live site does not update after a release, GitHub Pages may have missed the trigger — push an empty commit to force a redeploy:
+
+```
+git commit --allow-empty -m "Force GitHub Pages redeploy" && git push origin main
+```
+
 ## Testing
 
 - Canonical full suite:

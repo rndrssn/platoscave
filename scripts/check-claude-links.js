@@ -2,12 +2,22 @@
 
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 const root = process.cwd();
 const CONTRACT_FILES = ['CLAUDE.md', 'AGENTS.md'];
 
 function collectBacktickPaths(source) {
   return [...source.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
+}
+
+// Local-overlay docs (synced via scripts/sync-local-docs.sh) are intentionally
+// gitignored. A missing path that is gitignored is a known overlay reference,
+// not a broken link. git check-ignore returns exit 0 only for paths that match
+// a gitignore rule AND are not tracked in the index.
+function isOverlayPath(p) {
+  const r = spawnSync('git', ['check-ignore', '-q', '--', p], { cwd: root });
+  return r.status === 0;
 }
 
 function checkReferencedPaths(contractName, source) {
@@ -22,6 +32,7 @@ function checkReferencedPaths(contractName, source) {
 
     const abs = path.join(root, p);
     if (!fs.existsSync(abs)) {
+      if (isOverlayPath(p)) continue; // intentional local-overlay reference
       console.error('FAIL: missing referenced path in ' + contractName + ' ->', p);
       failed++;
     }

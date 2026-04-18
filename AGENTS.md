@@ -140,7 +140,7 @@ Tests enforcing this contract:
 - Assess path fixes problemInflow to 'moderate' — survey does not capture inflow timing. Explorer exposes all four parameters. See `docs/10-guides/GUIDE-architecture.md`.
 - Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both set by gc-pressure-narrative.js and gc-diagnosis.js before page wiring runs.
 - Use simResult.meta.problems (not a hardcoded constant) when computing problem proportions.
-- Module 04 root is canonical 04.01 at `modules/mix-mapper/`, titled "Epistemic Bets" under "Management Mix Mapper".
+- Module 04 root is canonical 04.01 at `modules/mix-mapper/`, titled "Epistemic Bets" under "Management Mix".
 - Mix Mapper SVG colors: never use color-mix(…, transparent) via D3 .attr() — broken on iOS WebKit. Use D3 .style() for all visual properties (fill, stroke, fill-opacity, stroke-opacity) on SVG elements.
 - Mix Mapper SVG text: dominant-baseline and text-anchor must be CSS properties on the label class in `css/pages/mix-mapper.css`, not SVG presentation attributes.
 - buildColors() reads --viz-* token tier (--viz-ink-faint, --viz-ink-ghost, --viz-sage, --viz-rust, etc.). Do not revert to --ink-* UI tokens.

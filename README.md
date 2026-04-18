@@ -23,7 +23,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - **03.03 What's a Garbage Can?** (`/modules/garbage-can/can-explainer/`)
   - **03.04 Explore** (`/modules/garbage-can/explorer/`)
   - **03.05 Assess** (`/modules/garbage-can/assess/`)
-- **04 · Management Mix Mapper** — Maps where traditional control and complexity-informed learning coexist, clash, or drift apart. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
+- **04 · Management Mix** — Maps where traditional control and complexity-informed learning coexist, clash, or drift apart. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
   - **04.01 Epistemic Bets** (`/modules/mix-mapper/`)
 - **05 · My Experience-Skill Graph** — Interactive force-directed map linking chronology roles with domain, technical, and leadership skills.
   - **05.01 Graph** (`/modules/experience-skill-graph/`)
@@ -124,7 +124,12 @@ node tests/run-all.js
 
 ## Deployment
 
-The site deploys automatically to GitHub Pages on every push to `main`. If the live site does not update after a release, GitHub Pages may have missed the trigger — push an empty commit to force a redeploy:
+The site deploys to GitHub Pages via the `Deploy to GitHub Pages` GitHub Actions workflow ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)). It runs on every push to `main`:
+
+1. `node tests/run-all.js` runs first
+2. On success, the site is uploaded and deployed via `actions/deploy-pages`
+
+If a deploy needs to be re-run, trigger it manually from the Actions tab (`Run workflow` on the `Deploy to GitHub Pages` workflow), or push an empty commit:
 
 ```
 git commit --allow-empty -m "Force GitHub Pages redeploy" && git push origin main

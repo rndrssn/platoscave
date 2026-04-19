@@ -12,7 +12,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     var DEFAULT_MODULE_MENU_ITEMS = [
       { number: '00', title: 'Modules Overview', slug: '', path: '', status: 'live' },
-      { number: '01', title: 'Emergence Primer', slug: 'emergence-primer', path: 'emergence-primer/', status: 'coming-soon' },
+      { number: '01', title: 'Emergence Primer', slug: 'emergence-primer', path: 'emergence-primer/', status: 'live' },
       { number: '02', title: 'Complexity Maturity Diagnostic', slug: 'maturity', path: 'maturity/', status: 'coming-soon' },
       { number: '03', title: 'Garbage Can Model', slug: 'garbage-can', path: 'garbage-can/', status: 'live' },
       { number: '04', title: 'Management Mix', slug: 'mix-mapper', path: 'mix-mapper/', status: 'live' },

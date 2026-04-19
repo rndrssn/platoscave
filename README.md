@@ -32,6 +32,12 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - **06.01 The Descent** (`/modules/the-descent/`)
   - **06.02 Section Map** (`/modules/the-descent/section-map/`)
 
+### Module 06 Contract (Minimal)
+
+- Canonical root is `06.01` at `/modules/the-descent/`.
+- Section Map is `06.02` at `/modules/the-descent/section-map/`.
+- `06.02` runtime is data-driven (`STATIONS`, `TRACKS`, `ARTIFACTS`) and the anchor mode toggle must remain mouse + keyboard accessible (Enter/Space on toggleable rows).
+
 ## Built With
 
 - Plain HTML, CSS, and JavaScript — no framework runtime

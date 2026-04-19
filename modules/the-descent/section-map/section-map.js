@@ -235,7 +235,6 @@
 
       if (canToggleHere) {
         const toggle = () => setMode(station.anchorFor);
-        hoverRect.on('click', toggle);
         g.on('click', toggle);
         g.on('keydown', (event) => {
           if (event.key === 'Enter' || event.key === ' ') {

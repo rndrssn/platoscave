@@ -56,12 +56,6 @@
       </header>
 
       <section class="section-map-layout" aria-label="Section map visualization">
-        <div class="section-map-controls" role="group" aria-label="Brief type">
-          <button type="button" class="section-map-mode-btn is-active" data-mode="improvement" aria-pressed="true">Improvement brief</button>
-          <button type="button" class="section-map-mode-btn" data-mode="new-feature" aria-pressed="false">New-feature brief</button>
-        </div>
-        <p id="section-map-caption" class="section-map-caption" aria-live="polite"></p>
-
         <div class="section-map-legend" role="group" aria-label="Legend">
           <span class="section-map-legend-item">
             <svg class="section-map-legend-anchor" viewBox="0 0 18 18" aria-hidden="true">
@@ -84,6 +78,8 @@
           </span>
         </div>
 
+        <p id="section-map-caption" class="section-map-caption" aria-live="polite"></p>
+
         <div id="section-map-shell" class="section-map-shell">
           <svg id="section-map-svg" class="section-map-svg" role="img" aria-label="Vertical descent of eight brief sections with three thresholds"></svg>
           <p id="section-map-fallback" class="essay-body section-map-fallback" hidden>The visualization couldn't load. Try refreshing the page.</p>
@@ -91,6 +87,10 @@
             <p class="essay-body section-map-fallback">This visualization requires JavaScript. Enable it in your browser settings to view it.</p>
           </noscript>
         </div>
+
+        <p class="section-map-footnote">
+          Each section has one home. As the work moves forward through Narrative &rarr; Brief &rarr; Plan &rarr; Story &rarr; Ticket, earlier artifacts rarely get re-synced &mdash; what you see is the documentation problem in miniature. Ultimately the code becomes the brief.
+        </p>
       </section>
 
       <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">

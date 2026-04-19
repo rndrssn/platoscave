@@ -1,17 +1,17 @@
 (function () {
   'use strict';
 
-  // Per-station readiness percentages (0-100) and document home,
+  // Per-station readiness percentages (0-100) and restated-in set,
   // carried over from the prototype at sandbox/brief_section_map.html.
   const STATIONS = [
-    { id: 'problem',       number: 1, label: 'The Problem',         exploration: 70,  solutioning: 10,  dev: 5,  livesIn: 'brief',     tip: 'Why this work exists. Ambiguity is highest here — that is correct.' },
-    { id: 'direction',     number: 2, label: 'Direction',           exploration: 100, solutioning: 20,  dev: 10, livesIn: 'brief',     tip: 'Desired change in the world. Outcome, not solution. The last fully open station.' },
-    { id: 'where-we-are',  number: 3, label: 'Where We Are',        exploration: 100, solutioning: 50,  dev: 25, livesIn: 'brief',     tip: 'Baseline for improvement briefs. Anchors design and engineering in the existing system.', anchorFor: 'improvement' },
-    { id: 'people',        number: 4, label: 'People',              exploration: 100, solutioning: 65,  dev: 25, livesIn: 'brief',     tip: 'Users, jobs, conditions. Load-bearing for new-feature briefs where no baseline exists.',  anchorFor: 'new-feature' },
-    { id: 'scope',         number: 5, label: 'Scope',               exploration: 100, solutioning: 75,  dev: 35, livesIn: 'brief-prd', tip: 'In, out, open questions. The open-questions column should shrink as discovery progresses.' },
-    { id: 'slices',        number: 6, label: 'Slices',              exploration: 100, solutioning: 100, dev: 55, livesIn: 'brief-prd', tip: 'User-facing units of value. Loose here, tightened into ticket-ready form later.' },
-    { id: 'constraints',   number: 7, label: 'Constraints',         exploration: 100, solutioning: 100, dev: 70, livesIn: 'brief-prd', tip: 'Legal, technical, deadlines, non-functional. Keep short — or scope has crept in disguised.' },
-    { id: 'acceptance',    number: 8, label: 'Acceptance Criteria', exploration: 100, solutioning: 100, dev: 95, livesIn: 'prd',       tip: 'Binary pass/fail. The most precise thing in the document.' }
+    { id: 'problem',       number: 1, label: 'The Problem',         exploration: 70,  solutioning: 10,  dev: 5,  livesIn: 'narrative',                tip: 'Why this work exists. Ambiguity is highest here — that is correct.' },
+    { id: 'direction',     number: 2, label: 'Direction',           exploration: 100, solutioning: 20,  dev: 10, livesIn: 'brief',                    tip: 'Desired change in the world. Outcome, not solution. The last fully open station.' },
+    { id: 'where-we-are',  number: 3, label: 'Where We Are',        exploration: 100, solutioning: 50,  dev: 25, livesIn: 'brief',                    tip: 'Baseline for improvement briefs. Anchors design and engineering in the existing system.', anchorFor: 'improvement' },
+    { id: 'people',        number: 4, label: 'People',              exploration: 100, solutioning: 65,  dev: 25, livesIn: 'brief',                    tip: 'Users, jobs, conditions. Load-bearing for new-feature briefs where no baseline exists.',  anchorFor: 'new-feature' },
+    { id: 'scope',         number: 5, label: 'Scope',               exploration: 100, solutioning: 75,  dev: 35, livesIn: 'brief',                    tip: 'In, out, open questions. The open-questions column should shrink as discovery progresses.' },
+    { id: 'slices',        number: 6, label: 'Slices',              exploration: 100, solutioning: 100, dev: 55, livesIn: 'story',                    tip: 'User-facing units of value. Loose in the brief, tight in stories.' },
+    { id: 'constraints',   number: 7, label: 'Constraints',         exploration: 100, solutioning: 100, dev: 70, livesIn: 'story', consideredIn: ['plan'], tip: 'Legal, technical, deadlines, non-functional. Considered in the plan; crystallizes in stories.' },
+    { id: 'acceptance',    number: 8, label: 'Acceptance Criteria', exploration: 100, solutioning: 100, dev: 95, livesIn: 'ticket',                   tip: 'Binary pass/fail. The most precise thing in the document.' }
   ];
 
   const TRACKS = [
@@ -20,20 +20,23 @@
     { key: 'dev',         label: 'Dev',      className: 'section-map-bar--dev' }
   ];
 
-  const LIVES_IN_LABELS = {
-    'brief':     'Brief',
-    'brief-prd': 'Brief \u2192 PRD',
-    'prd':       'PRD'
-  };
+  const ARTIFACTS = [
+    { id: 'narrative', label: 'Narrative' },
+    { id: 'brief',     label: 'Brief' },
+    { id: 'plan',      label: 'Plan' },
+    { id: 'story',     label: 'Story' },
+    { id: 'ticket',    label: 'Ticket' }
+  ];
 
   const CAPTIONS = {
-    'improvement': 'Anchor: Where We Are — the existing system is the ground.',
-    'new-feature': 'Anchor: People — no system yet, so users carry the weight.'
+    'improvement': 'Anchor: Where We Are — something already exists. How it works today is what we stand on.',
+    'new-feature': 'Anchor: People — nothing exists yet. Who we\u2019re building for is what we stand on.'
   };
 
   const state = { mode: 'improvement' };
 
   let resizeRaf = 0;
+  let svgRef, shellRef, tooltipRef, captionRef;
 
   function init() {
     const svgEl = document.getElementById('section-map-svg');
@@ -46,28 +49,25 @@
       return;
     }
 
-    const captionEl = document.getElementById('section-map-caption');
-    const buttons = document.querySelectorAll('.section-map-mode-btn');
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        state.mode = btn.dataset.mode;
-        buttons.forEach(b => {
-          const active = b.dataset.mode === state.mode;
-          b.classList.toggle('is-active', active);
-          b.setAttribute('aria-pressed', active ? 'true' : 'false');
-        });
-        updateCaption(captionEl);
-        render(svgEl, shellEl, tooltipEl);
-      });
-    });
+    svgRef = svgEl;
+    shellRef = shellEl;
+    tooltipRef = tooltipEl;
+    captionRef = document.getElementById('section-map-caption');
 
-    updateCaption(captionEl);
-    render(svgEl, shellEl, tooltipEl);
+    updateCaption(captionRef);
+    render(svgRef, shellRef, tooltipRef);
 
     window.addEventListener('resize', () => {
       cancelAnimationFrame(resizeRaf);
-      resizeRaf = requestAnimationFrame(() => render(svgEl, shellEl, tooltipEl));
+      resizeRaf = requestAnimationFrame(() => render(svgRef, shellRef, tooltipRef));
     });
+  }
+
+  function setMode(mode) {
+    if (!mode || state.mode === mode) return;
+    state.mode = mode;
+    updateCaption(captionRef);
+    render(svgRef, shellRef, tooltipRef);
   }
 
   function updateCaption(el) {
@@ -90,7 +90,9 @@
     const barStartX = 232;
     const barWidth = 58;
     const barGap = 22;
-    const livesInX = barStartX + 3 * barWidth + 2 * barGap + 14;
+    const artifactStartX = barStartX + 3 * barWidth + 2 * barGap + 22;
+    const artifactStep = 44;
+    const artifactDotR = 4;
 
     const svg = d3.select(svgEl)
       .attr('viewBox', `0 0 ${VIEW_W} ${height}`)
@@ -126,10 +128,17 @@
         .attr('x', cx).attr('y', headerY)
         .text(track.label);
     });
+    const artifactGroupCenter = artifactStartX + (ARTIFACTS.length - 1) * artifactStep / 2;
     headerG.append('text')
-      .attr('class', 'section-map-col-header section-map-col-header--left')
-      .attr('x', livesInX).attr('y', headerY)
+      .attr('class', 'section-map-col-header')
+      .attr('x', artifactGroupCenter).attr('y', headerY - 12)
       .text('Lives in');
+    ARTIFACTS.forEach((artifact, ai) => {
+      headerG.append('text')
+        .attr('class', 'section-map-col-header section-map-col-header--sub')
+        .attr('x', artifactStartX + ai * artifactStep).attr('y', headerY)
+        .text(artifact.label);
+    });
 
     // Spine
     svg.append('line')
@@ -144,12 +153,19 @@
       const isAnchor = station.anchorFor === state.mode;
       const isShadowAnchor = station.anchorFor && station.anchorFor !== state.mode;
 
+      const canToggleHere = isShadowAnchor;
       const g = stationG.append('g')
         .attr('class', 'section-map-station'
           + (isAnchor ? ' is-anchor' : '')
-          + (isShadowAnchor ? ' is-shadow' : ''))
-        .attr('transform', `translate(0, ${y})`)
-        .style('cursor', 'help');
+          + (isShadowAnchor ? ' is-shadow' : '')
+          + (canToggleHere ? ' is-toggleable' : ''))
+        .attr('transform', `translate(0, ${y})`);
+
+      if (canToggleHere) {
+        g.attr('tabindex', 0)
+          .attr('role', 'button')
+          .attr('aria-label', 'Switch anchor to ' + station.label);
+      }
 
       g.append('circle')
         .attr('class', 'section-map-station-dot')
@@ -161,6 +177,11 @@
           .attr('class', 'section-map-station-halo')
           .attr('cx', spineX).attr('cy', 0)
           .attr('r', 12);
+      } else if (canToggleHere) {
+        g.append('circle')
+          .attr('class', 'section-map-station-halo section-map-station-halo--shadow')
+          .attr('cx', spineX).attr('cy', 0)
+          .attr('r', 11);
       }
 
       g.append('text')
@@ -189,21 +210,40 @@
           .attr('height', 8);
       });
 
-      // Lives-in label
-      g.append('text')
-        .attr('class', 'section-map-lives-in section-map-lives-in--' + station.livesIn)
-        .attr('x', livesInX).attr('y', 4)
-        .text(LIVES_IN_LABELS[station.livesIn] || '');
+      // Lives-in artifact dots — single filled dot for home, hollow for considered.
+      const consideredSet = new Set(station.consideredIn || []);
+      ARTIFACTS.forEach((artifact, ai) => {
+        const cx = artifactStartX + ai * artifactStep;
+        const isHome = station.livesIn === artifact.id;
+        const isConsidered = consideredSet.has(artifact.id);
+        if (!isHome && !isConsidered) return;
+        g.append('circle')
+          .attr('class', 'section-map-artifact-dot' + (isHome ? ' is-home' : ' is-considered'))
+          .attr('cx', cx).attr('cy', 0)
+          .attr('r', artifactDotR);
+      });
 
       // Hover target spans the whole row
-      g.append('rect')
-        .attr('class', 'section-map-row-hover')
+      const hoverRect = g.append('rect')
+        .attr('class', 'section-map-row-hover' + (canToggleHere ? ' is-toggleable' : ''))
         .attr('x', 0).attr('y', -rowHeight / 2)
         .attr('width', VIEW_W).attr('height', rowHeight)
         .attr('fill', 'transparent')
         .on('mouseenter', (event) => showTip(tooltipEl, event, station.label, station.tip))
         .on('mousemove', (event) => moveTip(tooltipEl, event))
         .on('mouseleave', () => hideTip(tooltipEl));
+
+      if (canToggleHere) {
+        const toggle = () => setMode(station.anchorFor);
+        hoverRect.on('click', toggle);
+        g.on('click', toggle);
+        g.on('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            toggle();
+          }
+        });
+      }
     });
 
     // Axis hints on the spine

@@ -76,6 +76,7 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | Task involves | Load |
 |---------------|------|
 | GC simulation, scoring, diagnosis, viz | `modules/garbage-can/runtime/gc-simulation.js`, `modules/garbage-can/runtime/gc-viz.js`, `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js` |
+| Module 06 The Descent | `modules/the-descent/index.html`, `modules/the-descent/section-map/index.html`, `modules/the-descent/section-map/section-map.js`, `css/pages/the-descent.css` |
 | UI, CSS, navigation, IA | `docs/10-guides/GUIDE-architecture.md`, `docs/40-principles/PRINCIPLE-coding-standards.md`, `docs/20-reference/REFERENCE-css-architecture.md`, `docs/20-reference/navigation-patterns.md` |
 | Module 04 Mix Mapper | All files in `modules/mix-mapper/*` + relevant contract tests in `tests/` |
 | Documentation edits | `docs/10-guides/DOC-CONVENTIONS.md` |
@@ -132,6 +133,7 @@ Tests enforcing this contract:
 | GC logic | `modules/garbage-can/runtime/gc-simulation-core.js`, `modules/garbage-can/runtime/gc-simulation.js`, `modules/garbage-can/runtime/gc-scoring.js`, `modules/garbage-can/runtime/gc-diagnosis.js`, `modules/garbage-can/runtime/gc-viz.js` |
 | GC narrative | `modules/garbage-can/runtime/gc-pressure-narrative.js` — must load before assess.js / explorer.js |
 | GC page wiring | `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js` |
+| Module 06 runtime | `modules/the-descent/index.html`, `modules/the-descent/section-map/index.html`, `modules/the-descent/section-map/section-map.js`, `css/pages/the-descent.css` |
 | Module 04 runtime | `modules/mix-mapper/mix-mapper-data.js`, `modules/mix-mapper/mix-mapper-semantics.js`, `modules/mix-mapper/mix-mapper-geometry.js`, `modules/mix-mapper/mix-mapper-layout-utils.js`, `modules/mix-mapper/mix-mapper-node-utils.js`, `modules/mix-mapper/mix-mapper-mode-policy.js`, `modules/mix-mapper/mix-mapper-tooltip.js`, `modules/mix-mapper/mix-mapper-interactions.js`, `modules/mix-mapper/mix-mapper-renderer.js`, `modules/mix-mapper/mix-mapper.js` |
 | Tests | `tests/run-all.js` |
 
@@ -140,6 +142,8 @@ Tests enforcing this contract:
 - Assess path fixes problemInflow to 'moderate' — survey does not capture inflow timing. Explorer exposes all four parameters. See `docs/10-guides/GUIDE-architecture.md`.
 - Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both set by gc-pressure-narrative.js and gc-diagnosis.js before page wiring runs.
 - Use simResult.meta.problems (not a hardcoded constant) when computing problem proportions.
+- Module 06 root is canonical section 06.01 at `modules/the-descent/`; Section Map is section 06.02 at `modules/the-descent/section-map/`.
+- Section Map anchor switch behavior is part of the feature contract: activating the shadow anchor row toggles mode and must stay keyboard-accessible (Enter/Space).
 - Module 04 root is canonical 04.01 at `modules/mix-mapper/`, titled "Epistemic Bets" under "Management Mix".
 - Mix Mapper SVG colors: never use color-mix(…, transparent) via D3 .attr() — broken on iOS WebKit. Use D3 .style() for all visual properties (fill, stroke, fill-opacity, stroke-opacity) on SVG elements.
 - Mix Mapper SVG text: dominant-baseline and text-anchor must be CSS properties on the label class in `css/pages/mix-mapper.css`, not SVG presentation attributes.

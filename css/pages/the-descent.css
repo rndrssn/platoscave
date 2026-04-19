@@ -16,7 +16,7 @@
 
 .the-descent-page {
   --section-map-exploration: var(--viz-rust, #8B3A2A);
-  --section-map-solutioning: var(--viz-slate, #5C6F7A);
+  --section-map-solutioning: var(--viz-gold, #B8943A);
   --section-map-dev: var(--viz-sage, #4A6741);
 }
 
@@ -24,45 +24,24 @@
   margin-top: 1.5rem;
 }
 
-.section-map-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 0.5rem;
+@media (min-width: 960px) {
+  .section-map-layout {
+    margin-left: -80px;
+    margin-right: -80px;
+  }
 }
+
 
 .section-map-caption {
   font-family: var(--mono);
   font-size: 0.66rem;
+  line-height: 1.5;
   letter-spacing: 0.03em;
   color: var(--ink-mid);
   margin: 0 0 0.8rem;
-  min-height: 1rem;
+  min-height: 3em;
 }
 
-.section-map-mode-btn {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 0.34rem 0.62rem;
-  border: 1px solid rgba(42,32,24,0.18);
-  background: transparent;
-  color: var(--ink-mid);
-  cursor: pointer;
-  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
-}
-
-.section-map-mode-btn:hover {
-  color: var(--ink);
-  border-color: rgba(42,32,24,0.35);
-}
-
-.section-map-mode-btn.is-active {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
-}
 
 .section-map-legend {
   display: flex;
@@ -126,8 +105,7 @@
 }
 
 .section-map-station.is-shadow .section-map-station-dot {
-  fill: var(--ink-faint);
-  opacity: 0.55;
+  fill: var(--ink);
 }
 
 .section-map-station-halo {
@@ -135,6 +113,26 @@
   stroke: var(--viz-rust, #8B3A2A);
   stroke-width: 1;
   opacity: 0.55;
+}
+
+.section-map-station-halo--shadow {
+  stroke: var(--ink-faint);
+  opacity: 1;
+  stroke-opacity: 0.35;
+  animation: section-map-halo-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes section-map-halo-pulse {
+  0%, 100% { r: 8;  stroke-opacity: 0.2; }
+  50%      { r: 14; stroke-opacity: 0.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-map-station-halo--shadow {
+    animation: none;
+    r: 11;
+    stroke-opacity: 0.45;
+  }
 }
 
 .section-map-station.is-anchor .section-map-station-dot {
@@ -164,7 +162,7 @@
 }
 
 .section-map-station.is-shadow .section-map-station-label {
-  fill: var(--ink-faint);
+  fill: var(--ink);
 }
 
 .section-map-col-header {
@@ -192,23 +190,23 @@
 .section-map-bar--solutioning { fill: var(--section-map-solutioning); }
 .section-map-bar--dev         { fill: var(--section-map-dev); }
 
-.section-map-lives-in {
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  fill: var(--ink-mid);
-  text-transform: uppercase;
+.section-map-artifact-dot {
+  stroke: rgba(42,32,24,0.42);
+  stroke-width: 1;
+}
+
+.section-map-artifact-dot.is-home {
+  fill: rgba(42,32,24,0.42);
+}
+
+.section-map-artifact-dot.is-considered {
+  fill: none;
+}
+
+.section-map-col-header--sub {
+  font-size: 0.46rem;
   letter-spacing: 0.08em;
-  dominant-baseline: middle;
-  text-anchor: start;
-}
-
-.section-map-lives-in--brief-prd {
-  fill: var(--ink);
-}
-
-.section-map-lives-in--prd {
-  fill: var(--section-map-dev);
-  font-weight: 500;
+  fill: var(--ink-faint);
 }
 
 .section-map-axis-hint {
@@ -224,9 +222,46 @@
   cursor: help;
 }
 
+.section-map-row-hover.is-toggleable {
+  cursor: pointer;
+}
+
+.section-map-station.is-toggleable .section-map-station-label {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(42,32,24,0.35);
+}
+
+.section-map-station.is-toggleable:hover .section-map-station-label,
+.section-map-station.is-toggleable:focus .section-map-station-label {
+  fill: var(--viz-rust, #8B3A2A);
+  text-decoration-color: var(--viz-rust, #8B3A2A);
+}
+
+.section-map-station.is-toggleable:focus {
+  outline: none;
+}
+
+.section-map-station.is-toggleable:focus .section-map-station-dot {
+  stroke: var(--viz-rust, #8B3A2A);
+  stroke-width: 1.5;
+}
+
 .section-map-fallback {
   margin: 0.7rem 0 0;
   max-width: none;
+}
+
+.section-map-footnote {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  color: var(--ink-mid);
+  margin: 1rem 0 0;
+  max-width: 42rem;
 }
 
 .section-map-tooltip {

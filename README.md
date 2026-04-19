@@ -25,9 +25,10 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - **03.05 Assess** (`/modules/garbage-can/assess/`)
 - **04 · Management Mix** — Maps where traditional control and complexity-informed learning coexist, clash, or drift apart. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
   - **04.01 Epistemic Bets** (`/modules/mix-mapper/`)
-- **05 · My Experience-Skill Graph** — Interactive force-directed map linking chronology roles with domain, technical, and leadership skills.
-  - **05.01 Graph** (`/modules/experience-skill-graph/`)
+- **05 · CV & Skills** — CV plus interactive force-directed skills graph linking role chronology with domain, technical, and leadership depth.
+  - **05.01 Skills Graph** (`/modules/experience-skill-graph/`)
   - **05.02 CV** (`/modules/experience-skill-graph/cv/`)
+  - Shortcut URLs: `/skills/` -> `05.01`, `/cv/` -> `05.02`
 - **06 · The Descent** — How one piece of product work moves from open problem to verifiable criterion. The sections of a brief as stations of a descent. Paired narratively with Module 04 (same epistemic bet, at unit scale).
   - **06.01 The Descent** (`/modules/the-descent/`)
   - **06.02 Section Map** (`/modules/the-descent/section-map/`)

@@ -28,6 +28,8 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - **05 · My Experience-Skill Graph** — Interactive force-directed map linking chronology roles with domain, technical, and leadership skills.
   - **05.01 Graph** (`/modules/experience-skill-graph/`)
   - **05.02 CV** (`/modules/experience-skill-graph/cv/`)
+- **06 · The Descent** — How one piece of product work moves from open problem to verifiable criterion. The sections of a brief as stations of a descent. Paired narratively with Module 04 (same epistemic bet, at unit scale).
+  - **06.01 The Descent** (`/modules/the-descent/`)
 
 ## Built With
 

@@ -1,0 +1,13 @@
+/* ─── The Descent (Module 06) ─────────────────────────── */
+
+.the-descent-page .taxonomy-dimension-title .section-sub {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 300;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}

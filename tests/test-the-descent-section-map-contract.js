@@ -46,6 +46,7 @@ function testDataContract() {
 }
 
 function testInteractionContract() {
+  assert(/function setMode\(mode\)\s*\{[\s\S]*hideTip\(tooltipRef\);/.test(runtimeSource), 'Expected mode switch to hide any visible tooltip before rerender');
   assert(/g\.attr\('tabindex',\s*0\)/.test(runtimeSource), 'Expected toggleable station rows to be keyboard-focusable');
   assert(/g\.on\('click',\s*toggle\);/.test(runtimeSource), 'Expected single click toggle binding on station row group');
   assert(!/hoverRect\.on\('click',\s*toggle\);/.test(runtimeSource), 'Expected no duplicate click toggle binding on hover rect');

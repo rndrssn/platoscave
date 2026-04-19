@@ -4,7 +4,7 @@
   // Per-station readiness percentages (0-100) and restated-in set,
   // carried over from the prototype at sandbox/brief_section_map.html.
   const STATIONS = [
-    { id: 'problem',       number: 1, label: 'The Problem',         exploration: 70,  solutioning: 10,  dev: 5,  livesIn: 'narrative',                tip: 'Why this work exists. Ambiguity is highest here — that is correct.' },
+    { id: 'problem',       number: 1, label: 'The Problem',         exploration: 70,  solutioning: 10,  dev: 5,  livesIn: 'narrative',                tip: 'Why this work exists. Ambiguity is highest here.' },
     { id: 'direction',     number: 2, label: 'Direction',           exploration: 100, solutioning: 20,  dev: 10, livesIn: 'brief',                    tip: 'Desired change in the world. Outcome, not solution. The last fully open station.' },
     { id: 'where-we-are',  number: 3, label: 'Where We Are',        exploration: 100, solutioning: 50,  dev: 25, livesIn: 'brief',                    tip: 'Baseline for improvement briefs. Anchors design and engineering in the existing system.', anchorFor: 'improvement' },
     { id: 'people',        number: 4, label: 'People',              exploration: 100, solutioning: 65,  dev: 25, livesIn: 'brief',                    tip: 'Users, jobs, conditions. Load-bearing for new-feature briefs where no baseline exists.',  anchorFor: 'new-feature' },
@@ -66,6 +66,7 @@
   function setMode(mode) {
     if (!mode || state.mode === mode) return;
     state.mode = mode;
+    hideTip(tooltipRef);
     updateCaption(captionRef);
     render(svgRef, shellRef, tooltipRef);
   }

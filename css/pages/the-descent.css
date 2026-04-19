@@ -1,0 +1,327 @@
+/* ─── The Descent (Module 06) ─────────────────────────── */
+
+.the-descent-page .taxonomy-dimension-title .section-sub {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 300;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+/* ─── Section Map (06.02) ──────────────────────────────── */
+
+.the-descent-page {
+  --section-map-readiness: var(--ink-ghost, #C8BDA8);
+  --section-map-anchor-active: var(--viz-rust, #8B3A2A);
+  --section-map-anchor-inactive: var(--ink-mid, #5C5752);
+  --section-map-ink-spine: rgba(42,32,24,0.22);
+  --section-map-ink-surface: rgba(42,32,24,0.08);
+  --section-map-ink-strong: rgba(42,32,24,0.42);
+  --section-map-ink-underline: rgba(42,32,24,0.35);
+  --section-map-ink-border: rgba(42,32,24,0.12);
+  --section-map-ink-shadow: rgba(42,32,24,0.1);
+}
+
+.section-map-layout {
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 960px) {
+  .section-map-layout {
+    margin-left: -80px;
+    margin-right: -80px;
+  }
+}
+
+
+.section-map-caption {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+  color: var(--ink-mid);
+  margin: 0 0 0.8rem;
+  min-height: 3em;
+}
+
+
+.section-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.section-map-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-mid);
+}
+
+.section-map-legend-anchor {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--section-map-anchor-active);
+  flex-shrink: 0;
+}
+
+.section-map-legend-bar {
+  display: inline-block;
+  width: 1.2rem;
+  height: 0.34rem;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.section-map-legend-bar--exploration { background: var(--section-map-readiness); }
+.section-map-legend-bar--solutioning { background: var(--section-map-readiness); }
+.section-map-legend-bar--dev         { background: var(--section-map-readiness); }
+
+.section-map-legend-dot {
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 50%;
+  border: 1px solid var(--section-map-ink-strong);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.section-map-legend-dot--home {
+  background: var(--section-map-ink-strong);
+}
+
+.section-map-legend-dot--restated {
+  background: transparent;
+}
+
+.section-map-shell {
+  position: relative;
+  width: 100%;
+  color: var(--ink);
+}
+
+.section-map-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--ink);
+  overflow: visible;
+}
+
+.section-map-spine {
+  stroke: var(--section-map-ink-spine);
+  stroke-width: 1;
+}
+
+.section-map-station-dot {
+  fill: var(--ink);
+  transition: r 0.18s ease;
+}
+
+.section-map-station.is-shadow .section-map-station-dot {
+  fill: var(--section-map-anchor-inactive);
+}
+
+.section-map-station-halo {
+  fill: none;
+  stroke: var(--section-map-anchor-active);
+  stroke-width: 1;
+  opacity: 0.55;
+  animation: section-map-halo-pulse 2.4s ease-in-out infinite;
+}
+
+.section-map-station-halo--shadow {
+  stroke: var(--section-map-anchor-inactive);
+  opacity: 1;
+  stroke-opacity: 0.45;
+  animation: none;
+}
+
+@keyframes section-map-halo-pulse {
+  0%, 100% { r: 8;  stroke-opacity: 0.2; }
+  50%      { r: 14; stroke-opacity: 0.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-map-station-halo {
+    animation: none;
+  }
+}
+
+.section-map-station.is-anchor .section-map-station-dot {
+  fill: var(--section-map-anchor-active);
+}
+
+.section-map-station-number {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  fill: var(--ink-faint);
+  text-anchor: end;
+  letter-spacing: 0.04em;
+  dominant-baseline: middle;
+}
+
+.section-map-station-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  fill: var(--ink);
+  letter-spacing: 0.02em;
+  dominant-baseline: middle;
+}
+
+.section-map-station.is-anchor .section-map-station-label {
+  fill: var(--section-map-anchor-active);
+  font-weight: 500;
+}
+
+.section-map-station.is-shadow .section-map-station-label {
+  fill: var(--section-map-anchor-inactive);
+}
+
+.section-map-col-header {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  fill: var(--ink-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+}
+
+.section-map-col-header--left {
+  text-anchor: start;
+}
+
+.section-map-bar-bg {
+  fill: var(--section-map-ink-surface);
+}
+
+.section-map-bar {
+  fill: var(--ink-mid);
+}
+
+.section-map-bar--exploration { fill: var(--section-map-readiness); }
+.section-map-bar--solutioning { fill: var(--section-map-readiness); }
+.section-map-bar--dev         { fill: var(--section-map-readiness); }
+
+.section-map-artifact-dot {
+  stroke: var(--section-map-ink-strong);
+  stroke-width: 1;
+}
+
+.section-map-artifact-dot.is-home {
+  fill: var(--section-map-ink-strong);
+}
+
+.section-map-artifact-dot.is-considered {
+  fill: none;
+}
+
+.section-map-col-header--sub {
+  font-size: 0.5rem;
+  letter-spacing: 0.02em;
+  fill: var(--ink-faint);
+  text-transform: none;
+}
+
+.section-map-axis-hint {
+  font-family: var(--mono);
+  font-size: 0.54rem;
+  fill: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+}
+
+.section-map-row-hover {
+  cursor: help;
+}
+
+.section-map-row-hover.is-toggleable {
+  cursor: pointer;
+}
+
+.section-map-station.is-toggleable .section-map-station-label {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--section-map-ink-underline);
+}
+
+.section-map-station.is-toggleable:hover .section-map-station-label,
+.section-map-station.is-toggleable:focus .section-map-station-label {
+  fill: var(--ink-mid);
+  text-decoration-color: var(--ink-mid);
+}
+
+.section-map-station.is-toggleable:focus {
+  outline: none;
+}
+
+.section-map-station.is-toggleable:focus .section-map-station-dot {
+  stroke: var(--ink-mid);
+  stroke-width: 1.5;
+}
+
+.section-map-fallback {
+  margin: 0.7rem 0 0;
+  max-width: none;
+}
+
+.section-map-footnote {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  color: var(--ink-mid);
+  margin: 1rem 0 0;
+  max-width: 42rem;
+}
+
+.section-map-tooltip {
+  position: absolute;
+  z-index: 1400;
+  pointer-events: none;
+  max-width: 16rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--section-map-ink-border);
+  padding: 0.46rem 0.56rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  line-height: 1.48;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  box-shadow: 0 2px 12px var(--section-map-ink-shadow);
+}
+
+.section-map-tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-map-tooltip-header {
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  color: var(--ink);
+}
+
+.section-map-tooltip-body {
+  color: var(--ink-mid);
+}
+
+.section-map-tooltip-meta {
+  margin-top: 0.24rem;
+  color: var(--ink-faint);
+}

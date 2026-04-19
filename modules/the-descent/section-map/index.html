@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Module 06.02: visual map of the eight stations of a brief, the three thresholds, and how improvement and new-feature briefs differ in what carries the weight." />
+  <title>06.02 · Section Map · The Descent · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../../css/fonts.css" />
+  <link rel="stylesheet" href="../../../css/tokens.css" />
+  <link rel="stylesheet" href="../../../css/base.css" />
+  <link rel="stylesheet" href="../../../css/layout.css" />
+  <link rel="stylesheet" href="../../../css/components.css" />
+  <link rel="stylesheet" href="../../../css/utilities.css" />
+  <link rel="stylesheet" href="../../../css/themes.css" />
+  <link rel="stylesheet" href="../../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <nav class="main-nav">
+    <a class="nav-title" href="../../../">To the Bedrock</a>
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../../">Home</a>
+      <a class="nav-link" href="../../../notes/">Notes</a>
+      <a class="nav-link nav-link--active" href="../../../modules/" aria-current="page">Modules</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+  </nav>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page the-descent-page">
+      <a class="module-back-link" href="../../" aria-label="Back to Modules"></a>
+      <a class="module-header-number module-context-number module-context-link" href="../">06 &middot; The Descent</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">06.01</span> Stations</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">06.02</span> Section Map</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Section Map</h1>
+        <p class="module-header-body">
+          The descent, at a glance. Eight stations down the spine; three thresholds where the brief unlocks further kinds of work. Ambiguity lives at the top and is drained as you go down.
+        </p>
+        <p class="module-header-body">
+          Every descent needs firm ground while <em>Problem</em> and <em>Direction</em> stay open. That ground &mdash; the <em>anchor</em> &mdash; lives in different places depending on whether the thing already exists.
+        </p>
+      </header>
+
+      <section class="section-map-layout" aria-label="Section map visualization">
+        <div class="section-map-controls" role="group" aria-label="Brief type">
+          <button type="button" class="section-map-mode-btn is-active" data-mode="improvement" aria-pressed="true">Improvement brief</button>
+          <button type="button" class="section-map-mode-btn" data-mode="new-feature" aria-pressed="false">New-feature brief</button>
+        </div>
+        <p id="section-map-caption" class="section-map-caption" aria-live="polite"></p>
+
+        <div class="section-map-legend" role="group" aria-label="Legend">
+          <span class="section-map-legend-item">
+            <svg class="section-map-legend-anchor" viewBox="0 0 18 18" aria-hidden="true">
+              <circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="1"/>
+              <circle cx="9" cy="9" r="3.5" fill="currentColor"/>
+            </svg>
+            Anchor
+          </span>
+          <span class="section-map-legend-item">
+            <span class="section-map-legend-bar section-map-legend-bar--exploration" aria-hidden="true"></span>
+            Design exploration
+          </span>
+          <span class="section-map-legend-item">
+            <span class="section-map-legend-bar section-map-legend-bar--solutioning" aria-hidden="true"></span>
+            Design solutioning
+          </span>
+          <span class="section-map-legend-item">
+            <span class="section-map-legend-bar section-map-legend-bar--dev" aria-hidden="true"></span>
+            Dev-readiness
+          </span>
+        </div>
+
+        <div id="section-map-shell" class="section-map-shell">
+          <svg id="section-map-svg" class="section-map-svg" role="img" aria-label="Vertical descent of eight brief sections with three thresholds"></svg>
+          <p id="section-map-fallback" class="essay-body section-map-fallback" hidden>The visualization couldn't load. Try refreshing the page.</p>
+          <noscript>
+            <p class="essay-body section-map-fallback">This visualization requires JavaScript. Enable it in your browser settings to view it.</p>
+          </noscript>
+        </div>
+      </section>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../" aria-label="Previous: 06.01 Stations">
+          <span class="footer-nav-label-full">&larr; Previous: 06.01 Stations</span>
+          <span class="footer-nav-label-short">&larr; Previous</span>
+        </a>
+        <span></span>
+      </nav>
+    </div>
+  </main>
+
+  <div id="section-map-tooltip" class="section-map-tooltip" role="status" aria-live="polite" aria-hidden="true"></div>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../../assets/vendor/d3.v7.min.js"></script>
+  <script src="../../../js/nav-controller.js"></script>
+  <script src="./section-map.js"></script>
+</body>
+</html>

@@ -11,3 +11,254 @@
   margin-left: 0.5rem;
   vertical-align: middle;
 }
+
+/* ─── Section Map (06.02) ──────────────────────────────── */
+
+.the-descent-page {
+  --section-map-exploration: var(--viz-rust, #8B3A2A);
+  --section-map-solutioning: var(--viz-slate, #5C6F7A);
+  --section-map-dev: var(--viz-sage, #4A6741);
+}
+
+.section-map-layout {
+  margin-top: 1.5rem;
+}
+
+.section-map-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-map-caption {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-mid);
+  margin: 0 0 0.8rem;
+  min-height: 1rem;
+}
+
+.section-map-mode-btn {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.34rem 0.62rem;
+  border: 1px solid rgba(42,32,24,0.18);
+  background: transparent;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+.section-map-mode-btn:hover {
+  color: var(--ink);
+  border-color: rgba(42,32,24,0.35);
+}
+
+.section-map-mode-btn.is-active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.section-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.section-map-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-mid);
+}
+
+.section-map-legend-anchor {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--viz-rust, #8B3A2A);
+  flex-shrink: 0;
+}
+
+.section-map-legend-bar {
+  display: inline-block;
+  width: 1.2rem;
+  height: 0.34rem;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.section-map-legend-bar--exploration { background: var(--section-map-exploration); }
+.section-map-legend-bar--solutioning { background: var(--section-map-solutioning); }
+.section-map-legend-bar--dev         { background: var(--section-map-dev); }
+
+.section-map-shell {
+  position: relative;
+  width: 100%;
+  color: var(--ink);
+}
+
+.section-map-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--ink);
+  overflow: visible;
+}
+
+.section-map-spine {
+  stroke: rgba(42,32,24,0.22);
+  stroke-width: 1;
+}
+
+.section-map-station-dot {
+  fill: var(--ink);
+  transition: r 0.18s ease;
+}
+
+.section-map-station.is-shadow .section-map-station-dot {
+  fill: var(--ink-faint);
+  opacity: 0.55;
+}
+
+.section-map-station-halo {
+  fill: none;
+  stroke: var(--viz-rust, #8B3A2A);
+  stroke-width: 1;
+  opacity: 0.55;
+}
+
+.section-map-station.is-anchor .section-map-station-dot {
+  fill: var(--viz-rust, #8B3A2A);
+}
+
+.section-map-station-number {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  fill: var(--ink-faint);
+  text-anchor: end;
+  letter-spacing: 0.04em;
+  dominant-baseline: middle;
+}
+
+.section-map-station-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  fill: var(--ink);
+  letter-spacing: 0.02em;
+  dominant-baseline: middle;
+}
+
+.section-map-station.is-anchor .section-map-station-label {
+  fill: var(--viz-rust, #8B3A2A);
+  font-weight: 500;
+}
+
+.section-map-station.is-shadow .section-map-station-label {
+  fill: var(--ink-faint);
+}
+
+.section-map-col-header {
+  font-family: var(--mono);
+  font-size: 0.5rem;
+  fill: var(--ink-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-anchor: middle;
+}
+
+.section-map-col-header--left {
+  text-anchor: start;
+}
+
+.section-map-bar-bg {
+  fill: rgba(42,32,24,0.08);
+}
+
+.section-map-bar {
+  fill: var(--ink-mid);
+}
+
+.section-map-bar--exploration { fill: var(--section-map-exploration); }
+.section-map-bar--solutioning { fill: var(--section-map-solutioning); }
+.section-map-bar--dev         { fill: var(--section-map-dev); }
+
+.section-map-lives-in {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  fill: var(--ink-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  dominant-baseline: middle;
+  text-anchor: start;
+}
+
+.section-map-lives-in--brief-prd {
+  fill: var(--ink);
+}
+
+.section-map-lives-in--prd {
+  fill: var(--section-map-dev);
+  font-weight: 500;
+}
+
+.section-map-axis-hint {
+  font-family: var(--mono);
+  font-size: 0.48rem;
+  fill: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  text-anchor: middle;
+}
+
+.section-map-row-hover {
+  cursor: help;
+}
+
+.section-map-fallback {
+  margin: 0.7rem 0 0;
+  max-width: none;
+}
+
+.section-map-tooltip {
+  position: absolute;
+  z-index: 1400;
+  pointer-events: none;
+  max-width: 16rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid rgba(42,32,24,0.12);
+  padding: 0.46rem 0.56rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  line-height: 1.48;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  box-shadow: 0 2px 12px rgba(42,32,24,0.1);
+}
+
+.section-map-tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-map-tooltip-header {
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  color: var(--ink);
+}
+
+.section-map-tooltip-body {
+  color: var(--ink-mid);
+}

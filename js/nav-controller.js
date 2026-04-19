@@ -16,7 +16,7 @@
       { number: '02', title: 'Complexity Maturity Diagnostic', slug: 'maturity', path: 'maturity/', status: 'coming-soon' },
       { number: '03', title: 'Garbage Can Model', slug: 'garbage-can', path: 'garbage-can/', status: 'live' },
       { number: '04', title: 'Management Mix', slug: 'mix-mapper', path: 'mix-mapper/', status: 'live' },
-      { number: '05', title: 'Experience-Skill Graph', slug: 'experience-skill-graph', path: 'experience-skill-graph/', status: 'live' },
+      { number: '05', title: 'CV & Skills', slug: 'experience-skill-graph', path: 'experience-skill-graph/', status: 'live' },
       { number: '06', title: 'The Descent', slug: 'the-descent', path: 'the-descent/', status: 'live' }
     ];
     var NAV_SWATCH_ALLOWLIST = [

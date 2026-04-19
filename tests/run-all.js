@@ -30,6 +30,7 @@ const tests = [
   'test-nav-modules-menu-contract.js',
   'test-module-landing-pattern-contract.js',
   'test-module-subpage-back-link-contract.js',
+  'test-the-descent-section-map-contract.js',
   'test-css-theme-contract.js',
   'test-nav-theme-contract.js',
   'test-navigation-links.js',

@@ -3,13 +3,17 @@
 (function initEmergencePrimer() {
   var canvas = document.getElementById('ep-life-canvas');
   if (!canvas) return;
+  var overlayCanvas = document.getElementById('ep-life-overlay');
 
   var fallback = document.getElementById('ep-life-fallback');
-  var ctx = canvas.getContext && canvas.getContext('2d');
-  if (!ctx) {
+  var cellCtx = canvas.getContext && canvas.getContext('2d');
+  if (!cellCtx) {
     if (fallback) fallback.hidden = false;
     return;
   }
+  var overlayCtx = null;
+  if (overlayCanvas && overlayCanvas.getContext) overlayCtx = overlayCanvas.getContext('2d');
+  var ctx = cellCtx;
 
   var playButton = document.getElementById('ep-life-play');
   var stopButton = document.getElementById('ep-life-stop');
@@ -32,6 +36,10 @@
 
   canvas.width = COLUMNS * CELL_SIZE;
   canvas.height = ROWS * CELL_SIZE;
+  if (overlayCanvas) {
+    overlayCanvas.width = canvas.width;
+    overlayCanvas.height = canvas.height;
+  }
 
   var grid = new Uint8Array(TOTAL_CELLS);
   var nextGrid = new Uint8Array(TOTAL_CELLS);
@@ -43,6 +51,12 @@
   var running = false;
   var timerId = null;
   var ganttEmitterEvents = [];
+  var ganttActiveBounds = {
+    minX: 0,
+    maxX: COLUMNS - 1,
+    minY: 0,
+    maxY: ROWS - 1
+  };
 
   function cssVar(name, fallbackValue) {
     var raw = getComputedStyle(document.documentElement).getPropertyValue(name);
@@ -244,6 +258,12 @@
     ganttGateMask.fill(0);
     ganttDependencyMask.fill(0);
     var layout = buildGanttLayout();
+    ganttActiveBounds = {
+      minX: layout.activeMinX,
+      maxX: COLUMNS - 1,
+      minY: layout.activeMinY,
+      maxY: ROWS - 1
+    };
 
     for (var i = 0; i < layout.phases.length; i += 1) {
       var phase = layout.phases[i];
@@ -364,7 +384,7 @@
 
   function drawGanttLabelsAndMilestones(layout) {
     var phaseFontPx = Math.max(16, Math.floor(CELL_SIZE * 3.1));
-    var gateFontPx = Math.max(14, Math.floor(CELL_SIZE * 2.6));
+    var gateFontPx = Math.max(20, Math.floor(CELL_SIZE * 3.8));
     var phaseLineHeight = Math.max(18, Math.floor(phaseFontPx * 1.08));
     var milestoneLabelAllowlist = {
       'business-case': true,
@@ -456,7 +476,7 @@
       var gy = gate.y * CELL_SIZE;
 
       if (!milestoneLabelAllowlist[gate.id]) continue;
-      ctx.fillStyle = colors.gold;
+      ctx.fillStyle = colors.rust;
       ctx.textAlign = 'left';
       var gateHalf = Math.ceil(gateFontPx * 0.6);
       var labelY = resolveLabelY(gy, gateHalf);
@@ -482,7 +502,7 @@
       }
     }
 
-    ctx.fillStyle = colors.gold;
+    ctx.fillStyle = colors.rust;
     for (var yy = 0; yy < ROWS; yy += 1) {
       for (var xx = 0; xx < COLUMNS; xx += 1) {
         if (!ganttGateMask[indexFor(xx, yy)]) continue;
@@ -495,14 +515,25 @@
 
   function drawGrid() {
     // Transparent dead cells: clear to canvas background (white in CSS).
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    cellCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = colors.alive;
+    cellCtx.fillStyle = colors.alive;
     for (var y = 0; y < ROWS; y += 1) {
       for (var x = 0; x < COLUMNS; x += 1) {
         if (!grid[indexFor(x, y)]) continue;
-        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        cellCtx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
       }
+    }
+
+    if (overlayCtx) {
+      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      if (isGanttMode()) {
+        var previousCtx = ctx;
+        ctx = overlayCtx;
+        drawGanttScaffold();
+        ctx = previousCtx;
+      }
+      return;
     }
 
     drawGanttScaffold();
@@ -758,6 +789,17 @@
 
   function neighborCount(x, y) {
     var total = 0;
+    var minX = 0;
+    var maxX = COLUMNS - 1;
+    var minY = 0;
+    var maxY = ROWS - 1;
+
+    if (isGanttMode()) {
+      minX = ganttActiveBounds.minX;
+      maxX = ganttActiveBounds.maxX;
+      minY = ganttActiveBounds.minY;
+      maxY = ganttActiveBounds.maxY;
+    }
 
     for (var dy = -1; dy <= 1; dy += 1) {
       for (var dx = -1; dx <= 1; dx += 1) {
@@ -766,10 +808,10 @@
         var nx = x + dx;
         var ny = y + dy;
 
-        if (nx < 0) nx = COLUMNS - 1;
-        if (nx >= COLUMNS) nx = 0;
-        if (ny < 0) ny = ROWS - 1;
-        if (ny >= ROWS) ny = 0;
+        if (nx < minX) nx = maxX;
+        if (nx > maxX) nx = minX;
+        if (ny < minY) ny = maxY;
+        if (ny > maxY) ny = minY;
 
         total += grid[indexFor(nx, ny)];
       }
@@ -791,11 +833,11 @@
 
   function clampGanttLifeArea(liveBuffer) {
     if (!isGanttMode()) return;
-
-    var layout = buildGanttLayout();
+    var minX = ganttActiveBounds.minX;
+    var minY = ganttActiveBounds.minY;
     for (var y = 0; y < ROWS; y += 1) {
       for (var x = 0; x < COLUMNS; x += 1) {
-        if (x >= layout.activeMinX && y >= layout.activeMinY) continue;
+        if (x >= minX && y >= minY) continue;
         liveBuffer[indexFor(x, y)] = 0;
       }
     }

@@ -90,7 +90,10 @@
 
             <p class="ep-life-mode-note">Click a seed chip to reseed.</p>
 
-            <canvas id="ep-life-canvas" class="ep-life-canvas" data-life-kind="gantt" width="960" height="600" role="img" aria-label="Gantt erosion Conway simulation grid at 192 by 120 cells"></canvas>
+            <div class="ep-life-stage">
+              <canvas id="ep-life-canvas" class="ep-life-canvas ep-life-canvas--cells" data-life-kind="gantt" width="960" height="600" role="img" aria-label="Gantt erosion Conway simulation grid at 192 by 120 cells"></canvas>
+              <canvas id="ep-life-overlay" class="ep-life-canvas ep-life-canvas--overlay" width="960" height="600" aria-hidden="true"></canvas>
+            </div>
 
             <p id="ep-life-fallback" class="essay-body ep-life-fallback" hidden>
               Canvas rendering is unavailable in this browser.

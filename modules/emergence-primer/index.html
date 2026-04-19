@@ -48,7 +48,7 @@
       <header class="module-header">
         <h1 class="module-header-title">Conway's Game of Life</h1>
         <p class="module-header-body">
-          Conway's Game of Life is a discrete mathematical system on a two-dimensional grid. Each cell is binary (alive or dead), time advances in synchronous ticks, and state transitions follow one local rule set: B3/S23.
+          Conway's Game of Life is a discrete mathematical system on a two-dimensional grid. Each cell is either alive or dead, and time advances in synchronized steps. At each step, a cell changes state based only on its eight immediate neighbours: birth on exactly 3 neighbours, survival on 2 or 3. This shorthand is written as B3/S23.
         </p>
       </header>
 
@@ -91,7 +91,10 @@
 
             <p class="ep-life-mode-note">Click a seed chip to reseed.</p>
 
-            <canvas id="ep-life-canvas" class="ep-life-canvas" data-life-kind="vanilla" width="960" height="600" role="img" aria-label="Vanilla Conway simulation grid at 192 by 120 cells"></canvas>
+            <div class="ep-life-stage">
+              <canvas id="ep-life-canvas" class="ep-life-canvas ep-life-canvas--cells" data-life-kind="vanilla" width="960" height="600" role="img" aria-label="Vanilla Conway simulation grid at 192 by 120 cells"></canvas>
+              <canvas id="ep-life-overlay" class="ep-life-canvas ep-life-canvas--overlay" width="960" height="600" aria-hidden="true"></canvas>
+            </div>
 
             <p id="ep-life-fallback" class="essay-body ep-life-fallback" hidden>
               Canvas rendering is unavailable in this browser.

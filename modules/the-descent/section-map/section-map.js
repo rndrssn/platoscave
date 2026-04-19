@@ -16,7 +16,7 @@
 
   const TRACKS = [
     { key: 'exploration', label: 'Explore',  className: 'section-map-bar--exploration' },
-    { key: 'solutioning', label: 'Converge', className: 'section-map-bar--solutioning' },
+    { key: 'solutioning', label: 'Solution', className: 'section-map-bar--solutioning' },
     { key: 'dev',         label: 'Dev',      className: 'section-map-bar--dev' }
   ];
 

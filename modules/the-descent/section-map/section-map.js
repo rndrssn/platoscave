@@ -5,11 +5,11 @@
   // carried over from the prototype at sandbox/brief_section_map.html.
   const STATIONS = [
     { id: 'problem',       number: 1, label: 'The Problem',         exploration: 70,  solutioning: 10,  dev: 5,  livesIn: 'narrative',                tip: 'Why this work exists. Ambiguity is highest here.' },
-    { id: 'direction',     number: 2, label: 'Direction',           exploration: 100, solutioning: 20,  dev: 10, livesIn: 'brief',                    tip: 'Desired change in the world. Outcome, not solution. The last fully open station.' },
-    { id: 'where-we-are',  number: 3, label: 'Where We Are',        exploration: 100, solutioning: 50,  dev: 25, livesIn: 'brief',                    tip: 'Baseline for improvement briefs. Anchors design and engineering in the existing system.', anchorFor: 'improvement' },
-    { id: 'people',        number: 4, label: 'People',              exploration: 100, solutioning: 65,  dev: 25, livesIn: 'brief',                    tip: 'Users, jobs, conditions. Load-bearing for new-feature briefs where no baseline exists.',  anchorFor: 'new-feature' },
-    { id: 'scope',         number: 5, label: 'Scope',               exploration: 100, solutioning: 75,  dev: 35, livesIn: 'brief',                    tip: 'In, out, open questions. The open-questions column should shrink as discovery progresses.' },
-    { id: 'slices',        number: 6, label: 'Slices',              exploration: 100, solutioning: 100, dev: 55, livesIn: 'story',                    tip: 'User-facing units of value. Loose in the brief, tight in stories.' },
+    { id: 'direction',     number: 2, label: 'Direction',           exploration: 75,  solutioning: 20,  dev: 10, livesIn: 'brief',                    tip: 'Desired change in the world. Outcome, not solution. The last fully open station.' },
+    { id: 'where-we-are',  number: 3, label: 'Where We Are',        exploration: 100, solutioning: 50,  dev: 25, livesIn: 'brief',                    tip: 'Improvement anchor. Baseline for existing-feature briefs; anchors design and engineering in the current system.', anchorFor: 'improvement' },
+    { id: 'people',        number: 4, label: 'People',              exploration: 100, solutioning: 65,  dev: 25, livesIn: 'brief',                    tip: 'New-feature anchor. Users, jobs, and conditions when no existing baseline exists.',  anchorFor: 'new-feature' },
+    { id: 'scope',         number: 5, label: 'Scope',               exploration: 100, solutioning: 75,  dev: 35, livesIn: 'brief', consideredIn: ['plan'], tip: 'In, out, open questions. Home is the brief; restated in the plan as choices narrow.' },
+    { id: 'slices',        number: 6, label: 'Slices',              exploration: 100, solutioning: 100, dev: 55, livesIn: 'story', consideredIn: ['plan'], tip: 'User-facing units of value. Considered in planning, then made concrete in stories.' },
     { id: 'constraints',   number: 7, label: 'Constraints',         exploration: 100, solutioning: 100, dev: 70, livesIn: 'story', consideredIn: ['plan'], tip: 'Legal, technical, deadlines, non-functional. Considered in the plan; crystallizes in stories.' },
     { id: 'acceptance',    number: 8, label: 'Acceptance Criteria', exploration: 100, solutioning: 100, dev: 95, livesIn: 'ticket',                   tip: 'Binary pass/fail. The most precise thing in the document.' }
   ];
@@ -27,16 +27,39 @@
     { id: 'story',     label: 'Story' },
     { id: 'ticket',    label: 'Ticket' }
   ];
+  const ARTIFACT_LABEL_BY_ID = Object.create(null);
+  ARTIFACTS.forEach((artifact) => {
+    ARTIFACT_LABEL_BY_ID[artifact.id] = artifact.label;
+  });
 
   const CAPTIONS = {
-    'improvement': 'Anchor: Where We Are — something already exists. How it works today is what we stand on.',
-    'new-feature': 'Anchor: People — nothing exists yet. Who we\u2019re building for is what we stand on.'
+    'improvement': 'Current anchor: Where We Are (improvement / existing feature). Something already exists; how it works today is what we stand on.',
+    'new-feature': 'Current anchor: People (new feature / new utility). Nothing exists yet; who we build for is what we stand on.'
   };
 
   const state = { mode: 'improvement' };
 
   let resizeRaf = 0;
   let svgRef, shellRef, tooltipRef, captionRef;
+
+  function anchorModeLabel(mode) {
+    if (mode === 'improvement') return 'improvement (existing feature)';
+    if (mode === 'new-feature') return 'new feature';
+    return mode || 'anchor';
+  }
+
+  function artifactLabel(id) {
+    return ARTIFACT_LABEL_BY_ID[id] || id || 'Unknown';
+  }
+
+  function placementSummary(station) {
+    const home = artifactLabel(station.livesIn);
+    const restated = (station.consideredIn || [])
+      .map((artifactId) => artifactLabel(artifactId))
+      .join(', ');
+    if (!restated) return 'Home: ' + home + '.';
+    return 'Home: ' + home + '. Restated in: ' + restated + '.';
+  }
 
   function init() {
     const svgEl = document.getElementById('section-map-svg');
@@ -92,7 +115,7 @@
     const barWidth = 58;
     const barGap = 22;
     const artifactStartX = barStartX + 3 * barWidth + 2 * barGap + 22;
-    const artifactStep = 44;
+    const artifactStep = 46;
     const artifactDotR = 4;
 
     const svg = d3.select(svgEl)
@@ -125,10 +148,15 @@
     TRACKS.forEach((track, i) => {
       const cx = barStartX + i * (barWidth + barGap) + barWidth / 2;
       headerG.append('text')
-        .attr('class', 'section-map-col-header')
+        .attr('class', 'section-map-col-header section-map-col-header--sub')
         .attr('x', cx).attr('y', headerY)
         .text(track.label);
     });
+    const readinessGroupCenter = barStartX + (3 * barWidth + 2 * barGap) / 2;
+    headerG.append('text')
+      .attr('class', 'section-map-col-header')
+      .attr('x', readinessGroupCenter).attr('y', headerY - 12)
+      .text('Readiness');
     const artifactGroupCenter = artifactStartX + (ARTIFACTS.length - 1) * artifactStep / 2;
     headerG.append('text')
       .attr('class', 'section-map-col-header')
@@ -165,7 +193,7 @@
       if (canToggleHere) {
         g.attr('tabindex', 0)
           .attr('role', 'button')
-          .attr('aria-label', 'Switch anchor to ' + station.label);
+          .attr('aria-label', 'Switch anchor to ' + station.label + ' (' + anchorModeLabel(station.anchorFor) + ')');
       }
 
       g.append('circle')
@@ -230,7 +258,7 @@
         .attr('x', 0).attr('y', -rowHeight / 2)
         .attr('width', VIEW_W).attr('height', rowHeight)
         .attr('fill', 'transparent')
-        .on('mouseenter', (event) => showTip(tooltipEl, event, station.label, station.tip))
+        .on('mouseenter', (event) => showTip(tooltipEl, event, station.label, station.tip, placementSummary(station)))
         .on('mousemove', (event) => moveTip(tooltipEl, event))
         .on('mouseleave', () => hideTip(tooltipEl));
 
@@ -258,7 +286,7 @@
       .text('precision');
   }
 
-  function showTip(el, event, header, body) {
+  function showTip(el, event, header, body, meta) {
     if (!el) return;
     el.innerHTML = '';
     const h = document.createElement('div');
@@ -269,6 +297,12 @@
     b.className = 'section-map-tooltip-body';
     b.textContent = body;
     el.appendChild(b);
+    if (meta) {
+      const m = document.createElement('div');
+      m.className = 'section-map-tooltip-meta';
+      m.textContent = meta;
+      el.appendChild(m);
+    }
     el.classList.add('is-visible');
     el.setAttribute('aria-hidden', 'false');
     moveTip(el, event);

@@ -15,9 +15,9 @@
 /* ─── Section Map (06.02) ──────────────────────────────── */
 
 .the-descent-page {
-  --section-map-exploration: var(--viz-rust, #8B3A2A);
-  --section-map-solutioning: var(--viz-gold, #B8943A);
-  --section-map-dev: var(--viz-sage, #4A6741);
+  --section-map-readiness: var(--ink-ghost, #C8BDA8);
+  --section-map-anchor-active: var(--viz-rust, #8B3A2A);
+  --section-map-anchor-inactive: var(--ink-mid, #5C5752);
   --section-map-ink-spine: rgba(42,32,24,0.22);
   --section-map-ink-surface: rgba(42,32,24,0.08);
   --section-map-ink-strong: rgba(42,32,24,0.42);
@@ -70,7 +70,7 @@
 .section-map-legend-anchor {
   width: 0.9rem;
   height: 0.9rem;
-  color: var(--viz-rust, #8B3A2A);
+  color: var(--section-map-anchor-active);
   flex-shrink: 0;
 }
 
@@ -82,9 +82,26 @@
   flex-shrink: 0;
 }
 
-.section-map-legend-bar--exploration { background: var(--section-map-exploration); }
-.section-map-legend-bar--solutioning { background: var(--section-map-solutioning); }
-.section-map-legend-bar--dev         { background: var(--section-map-dev); }
+.section-map-legend-bar--exploration { background: var(--section-map-readiness); }
+.section-map-legend-bar--solutioning { background: var(--section-map-readiness); }
+.section-map-legend-bar--dev         { background: var(--section-map-readiness); }
+
+.section-map-legend-dot {
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 50%;
+  border: 1px solid var(--section-map-ink-strong);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.section-map-legend-dot--home {
+  background: var(--section-map-ink-strong);
+}
+
+.section-map-legend-dot--restated {
+  background: transparent;
+}
 
 .section-map-shell {
   position: relative;
@@ -111,21 +128,22 @@
 }
 
 .section-map-station.is-shadow .section-map-station-dot {
-  fill: var(--ink);
+  fill: var(--section-map-anchor-inactive);
 }
 
 .section-map-station-halo {
   fill: none;
-  stroke: var(--viz-rust, #8B3A2A);
+  stroke: var(--section-map-anchor-active);
   stroke-width: 1;
   opacity: 0.55;
+  animation: section-map-halo-pulse 2.4s ease-in-out infinite;
 }
 
 .section-map-station-halo--shadow {
-  stroke: var(--ink-faint);
+  stroke: var(--section-map-anchor-inactive);
   opacity: 1;
-  stroke-opacity: 0.35;
-  animation: section-map-halo-pulse 2.4s ease-in-out infinite;
+  stroke-opacity: 0.45;
+  animation: none;
 }
 
 @keyframes section-map-halo-pulse {
@@ -134,15 +152,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .section-map-station-halo--shadow {
+  .section-map-station-halo {
     animation: none;
-    r: 11;
-    stroke-opacity: 0.45;
   }
 }
 
 .section-map-station.is-anchor .section-map-station-dot {
-  fill: var(--viz-rust, #8B3A2A);
+  fill: var(--section-map-anchor-active);
 }
 
 .section-map-station-number {
@@ -163,12 +179,12 @@
 }
 
 .section-map-station.is-anchor .section-map-station-label {
-  fill: var(--viz-rust, #8B3A2A);
+  fill: var(--section-map-anchor-active);
   font-weight: 500;
 }
 
 .section-map-station.is-shadow .section-map-station-label {
-  fill: var(--ink);
+  fill: var(--section-map-anchor-inactive);
 }
 
 .section-map-col-header {
@@ -192,9 +208,9 @@
   fill: var(--ink-mid);
 }
 
-.section-map-bar--exploration { fill: var(--section-map-exploration); }
-.section-map-bar--solutioning { fill: var(--section-map-solutioning); }
-.section-map-bar--dev         { fill: var(--section-map-dev); }
+.section-map-bar--exploration { fill: var(--section-map-readiness); }
+.section-map-bar--solutioning { fill: var(--section-map-readiness); }
+.section-map-bar--dev         { fill: var(--section-map-readiness); }
 
 .section-map-artifact-dot {
   stroke: var(--section-map-ink-strong);
@@ -210,9 +226,10 @@
 }
 
 .section-map-col-header--sub {
-  font-size: 0.52rem;
-  letter-spacing: 0.07em;
+  font-size: 0.5rem;
+  letter-spacing: 0.02em;
   fill: var(--ink-faint);
+  text-transform: none;
 }
 
 .section-map-axis-hint {
@@ -242,8 +259,8 @@
 
 .section-map-station.is-toggleable:hover .section-map-station-label,
 .section-map-station.is-toggleable:focus .section-map-station-label {
-  fill: var(--viz-rust, #8B3A2A);
-  text-decoration-color: var(--viz-rust, #8B3A2A);
+  fill: var(--ink-mid);
+  text-decoration-color: var(--ink-mid);
 }
 
 .section-map-station.is-toggleable:focus {
@@ -251,7 +268,7 @@
 }
 
 .section-map-station.is-toggleable:focus .section-map-station-dot {
-  stroke: var(--viz-rust, #8B3A2A);
+  stroke: var(--ink-mid);
   stroke-width: 1.5;
 }
 
@@ -302,4 +319,9 @@
 
 .section-map-tooltip-body {
   color: var(--ink-mid);
+}
+
+.section-map-tooltip-meta {
+  margin-top: 0.24rem;
+  color: var(--ink-faint);
 }

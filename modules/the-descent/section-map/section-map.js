@@ -1,14 +1,14 @@
 (function () {
   'use strict';
 
-  // Per-station readiness percentages (0-100) and restated-in set,
+  // Per-station readiness percentages (0-100) and also-in set,
   // carried over from the prototype at sandbox/brief_section_map.html.
   const STATIONS = [
     { id: 'problem',       number: 1, label: 'The Problem',         exploration: 70,  solutioning: 10,  dev: 5,  livesIn: 'narrative',                tip: 'Why this work exists. Ambiguity is highest here.' },
     { id: 'direction',     number: 2, label: 'Direction',           exploration: 75,  solutioning: 20,  dev: 10, livesIn: 'brief',                    tip: 'Desired change in the world. Outcome, not solution. The last fully open station.' },
     { id: 'where-we-are',  number: 3, label: 'Where We Are',        exploration: 100, solutioning: 50,  dev: 25, livesIn: 'brief',                    tip: 'Improvement anchor. Baseline for existing-feature briefs; anchors design and engineering in the current system.', anchorFor: 'improvement' },
     { id: 'people',        number: 4, label: 'People',              exploration: 100, solutioning: 65,  dev: 25, livesIn: 'brief',                    tip: 'New-feature anchor. Users, jobs, and conditions when no existing baseline exists.',  anchorFor: 'new-feature' },
-    { id: 'scope',         number: 5, label: 'Scope',               exploration: 100, solutioning: 75,  dev: 35, livesIn: 'brief', consideredIn: ['plan'], tip: 'In, out, open questions. Home is the brief; restated in the plan as choices narrow.' },
+    { id: 'scope',         number: 5, label: 'Scope',               exploration: 100, solutioning: 75,  dev: 35, livesIn: 'brief', consideredIn: ['plan'], tip: 'In, out, open questions. Home is the brief; also in the plan as choices narrow.' },
     { id: 'slices',        number: 6, label: 'Slices',              exploration: 100, solutioning: 100, dev: 55, livesIn: 'story', consideredIn: ['plan'], tip: 'User-facing units of value. Considered in planning, then made concrete in stories.' },
     { id: 'constraints',   number: 7, label: 'Constraints',         exploration: 100, solutioning: 100, dev: 70, livesIn: 'story', consideredIn: ['plan'], tip: 'Legal, technical, deadlines, non-functional. Considered in the plan; crystallizes in stories.' },
     { id: 'acceptance',    number: 8, label: 'Acceptance Criteria', exploration: 100, solutioning: 100, dev: 95, livesIn: 'ticket',                   tip: 'Binary pass/fail. The most precise thing in the document.' }
@@ -33,8 +33,8 @@
   });
 
   const CAPTIONS = {
-    'improvement': 'Current anchor: Where We Are (improvement / existing feature). Something already exists; how it works today is what we stand on.',
-    'new-feature': 'Current anchor: People (new feature / new utility). Nothing exists yet; who we build for is what we stand on.'
+    'improvement': 'Current anchor: Where We Are (improvement brief). Something already exists; how it works today is what we stand on.',
+    'new-feature': 'Current anchor: People (new-feature brief). Nothing exists yet; who we build for is what we stand on.'
   };
 
   const state = { mode: 'improvement' };
@@ -43,8 +43,8 @@
   let svgRef, shellRef, tooltipRef, captionRef;
 
   function anchorModeLabel(mode) {
-    if (mode === 'improvement') return 'improvement (existing feature)';
-    if (mode === 'new-feature') return 'new feature';
+    if (mode === 'improvement') return 'improvement brief';
+    if (mode === 'new-feature') return 'new-feature brief';
     return mode || 'anchor';
   }
 
@@ -54,11 +54,11 @@
 
   function placementSummary(station) {
     const home = artifactLabel(station.livesIn);
-    const restated = (station.consideredIn || [])
+    const alsoIn = (station.consideredIn || [])
       .map((artifactId) => artifactLabel(artifactId))
       .join(', ');
-    if (!restated) return 'Home: ' + home + '.';
-    return 'Home: ' + home + '. Restated in: ' + restated + '.';
+    if (!alsoIn) return 'Home: ' + home + '.';
+    return 'Home: ' + home + '. Also in: ' + alsoIn + '.';
   }
 
   function init() {
@@ -156,7 +156,7 @@
     headerG.append('text')
       .attr('class', 'section-map-col-header')
       .attr('x', readinessGroupCenter).attr('y', headerY - 12)
-      .text('Readiness');
+      .text('Handover readiness');
     const artifactGroupCenter = artifactStartX + (ARTIFACTS.length - 1) * artifactStep / 2;
     headerG.append('text')
       .attr('class', 'section-map-col-header')

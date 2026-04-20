@@ -170,6 +170,25 @@ Tests enforcing this contract:
 2. Keep aligned with code as source of truth
 3. Validate links/references if conventions changed
 
+## Handoff Trigger
+
+Stop feature work and produce a `HANDOFF.md` update when any of these fire:
+
+- The system warns that context is approaching the limit or autocompaction is imminent.
+- The user reports context usage at or above 80% (checked via the /context slash command).
+- The user explicitly asks for a handoff.
+
+Handoff structure (keep consistent with prior `HANDOFF.md`):
+
+1. Session summary — what this session was about
+2. Repository + branch state
+3. Commits from this session
+4. Files changed (grouped by commit or WIP)
+5. Validation run result (`node tests/run-all.js`)
+6. Open decisions / WIP
+7. Suggested next actions
+8. Session start checklist
+
 ## Final Response Contract
 
 Report on completion:

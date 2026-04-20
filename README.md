@@ -15,7 +15,9 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 ## Modules
 
-- **01 · Emergence Primer** *(planned)* — Animated visualization of simple rules producing emergent patterns.
+- **01 · Emergence Primer** — Conway's Game of Life as a science-first emergence primer.
+  - **01.01 Conway's Game of Life** (`/modules/emergence-primer/`)
+  - **01.02 GANTT meets Game of Life** (`/modules/emergence-primer/ganttgol/`)
 - **02 · Complexity Maturity Diagnostic** *(planned)* — Radar/positioning output from organisational survey questions.
 - **03 · The Garbage Can Model** — An interactive implementation of Cohen, March & Olsen's 1972 model of organizational decision-making. Includes a narrative essay, taxonomy of organisation types, a concept animation, an exploration surface, and an assessment flow.
   - **03.01 Narrative** (`/modules/garbage-can/`)

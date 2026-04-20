@@ -3,70 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Module 01.01: Conway's Game of Life simulation." />
-  <title>01.01 · Conway's Game of Life · Emergence Primer · To the Bedrock</title>
-  <script src="../../theme.config.js"></script>
-  <script src="../../js/theme-bootstrap.js"></script>
-  <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="../../css/fonts.css" />
-  <link rel="stylesheet" href="../../css/tokens.css" />
-  <link rel="stylesheet" href="../../css/base.css" />
-  <link rel="stylesheet" href="../../css/layout.css" />
-  <link rel="stylesheet" href="../../css/components.css" />
-  <link rel="stylesheet" href="../../css/utilities.css" />
-  <link rel="stylesheet" href="../../css/themes.css" />
-  <link rel="stylesheet" href="../../css/gc-viz.css" />
-  <link rel="stylesheet" href="../../css/pages.css" />
-  <link rel="icon" type="image/png" href="../../assets/images/doodles/skate_c.png" />
-  <link rel="apple-touch-icon" href="../../assets/images/doodles/skate_c.png" />
+  <meta name="description" content="Module 01.02: GANTT meets Game of Life as a planning-versus-emergence simulation." />
+  <title>01.02 · GANTT meets Game of Life · Emergence Primer · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../../css/fonts.css" />
+  <link rel="stylesheet" href="../../../css/tokens.css" />
+  <link rel="stylesheet" href="../../../css/base.css" />
+  <link rel="stylesheet" href="../../../css/layout.css" />
+  <link rel="stylesheet" href="../../../css/components.css" />
+  <link rel="stylesheet" href="../../../css/utilities.css" />
+  <link rel="stylesheet" href="../../../css/themes.css" />
+  <link rel="stylesheet" href="../../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <nav class="main-nav">
-    <a class="nav-title" href="../../">To the Bedrock</a>
+    <a class="nav-title" href="../../../">To the Bedrock</a>
     <div class="nav-links" id="primary-nav">
-      <a class="nav-link" href="../../">Home</a>
-      <a class="nav-link" href="../../notes/">Notes</a>
-      <a class="nav-link nav-link--active" href="../../modules/" aria-current="page">Modules</a>
+      <a class="nav-link" href="../../../">Home</a>
+      <a class="nav-link" href="../../../notes/">Notes</a>
+      <a class="nav-link nav-link--active" href="../../../modules/" aria-current="page">Modules</a>
     </div>
     <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
   </nav>
 
   <main id="main-content" class="main--narrow">
     <div class="module-page emergence-primer-page">
-      <a class="module-back-link" href="../" aria-label="Back to Modules"></a>
-      <a class="module-header-number module-context-number module-context-link" href="./">01 &middot; Emergence Primer</a>
+      <a class="module-back-link" href="../../" aria-label="Back to Modules"></a>
+      <a class="module-header-number module-context-number module-context-link" href="../">01 &middot; Emergence Primer</a>
 
       <nav class="module-sub-nav" aria-label="Module sections">
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01.01</span> Conway's Game of Life</a>
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01.01</span> Conway's Game of Life</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link" href="ganttgol/"><span class="module-sub-nav-number">01.02</span> GANTT meets Game of Life</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01.02</span> GANTT meets Game of Life</a>
       </nav>
 
       <header class="module-header">
-        <h1 class="module-header-title">Conway's Game of Life</h1>
+        <h1 class="module-header-title">GANTT meets Game of Life</h1>
         <p class="module-header-body">
-          Conway's Game of Life is a discrete mathematical model on a two-dimensional grid. Each cell is either alive or dead, and time advances in fixed ticks. On each tick, a dead cell is born with exactly 3 live neighbours, and a live cell survives with 2 or 3 live neighbours. This is the classic B3/S23 rule.
+          This simulation is an abstract comparison between two management logics. The Gantt scaffold represents a Tayloristic, plan-first model with linear phases and fixed dependencies. The Game of Life layer represents local interaction and feedback. As feedback accumulates, parts of the plan can hold while other parts are rewritten.
         </p>
       </header>
 
       <article class="module-essay">
         <section class="essay-section">
-          <h2 class="essay-heading">Scientific interest</h2>
+          <h2 class="essay-heading">What This Is Saying</h2>
           <p class="essay-body">
-            The update rule is deterministic: the next state of each cell depends only on its current state and the count of its eight live neighbours. There is no randomness in the rule itself. Given the same initial state, each run produces the same trajectory. But deterministic does not mean easy to predict; to know what happens, you still need to run the system forward.
+            In hard predictive project models, weak signals are often treated as noise until late, and plans are managed as if the system were mostly closed. That can work for complicated work, where cause and effect can be analysed and stabilised. Complex product work is different: open, coupled, and continuously perturbed by users, markets, operations, and adjacent teams.
           </p>
           <p class="essay-body">
-            That is why the model is scientifically useful. Simple local rules create rich global behaviour: stable structures, oscillators, moving patterns, long transients, and sensitivity to initial conditions. Complexity emerges from interaction, not from central control.
+            Planning still matters. The failure mode is treating first assumptions as fixed. Once work meets reality, feedback loops can amplify and reshape outcomes faster than static phase logic can adapt. For any chosen seed, this simulation is deterministic: the same initial state yields the same trajectory. This is a playful abstraction of that shift.
           </p>
 
           <div class="ep-life-panel">
-            <div class="ep-life-toolbar ep-life-toolbar--inline" role="group" aria-label="Conway Game of Life controls">
+            <div class="ep-life-toolbar ep-life-toolbar--inline" role="group" aria-label="Gantt Game of Life controls">
               <span class="can-controls ep-life-controls" role="group" aria-label="Simulation controls">
                 <button class="can-media-btn can-media-btn--play" id="ep-life-start" aria-label="Start simulation" title="Start simulation" aria-pressed="false" type="button"><span class="can-media-glyph can-media-glyph--play" aria-hidden="true"></span></button>
-                <button class="can-icon-btn" id="ep-life-reset" aria-label="Reset simulation" title="Reset simulation" type="button"></button>
               </span>
 
             </div>
@@ -89,7 +88,7 @@
             <p class="ep-life-mode-note">Press Start to run. Changing seed reseeds and pauses. Same seed gives the same run.</p>
 
             <div class="ep-life-stage">
-              <canvas id="ep-life-canvas" class="ep-life-canvas ep-life-canvas--cells" data-life-kind="vanilla" width="960" height="600" role="img" aria-label="Vanilla Conway simulation grid at 192 by 120 cells"></canvas>
+              <canvas id="ep-life-canvas" class="ep-life-canvas ep-life-canvas--cells" data-life-kind="gantt" width="960" height="600" role="img" aria-label="Gantt and Conway simulation grid at 192 by 120 cells"></canvas>
               <canvas id="ep-life-overlay" class="ep-life-canvas ep-life-canvas--overlay" width="960" height="600" aria-hidden="true"></canvas>
             </div>
 
@@ -125,9 +124,12 @@
       </article>
 
       <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
-        <span></span>
-        <a class="footer-nav-link" href="ganttgol/" aria-label="Next: 01.02 GANTT meets Game of Life">
-          <span class="footer-nav-label-full">Next: 01.02 GANTT meets Game of Life &rarr;</span>
+        <a class="footer-nav-link" href="../" aria-label="Previous: 01.01 Conway's Game of Life">
+          <span class="footer-nav-label-full">&larr; Previous: 01.01 Conway's Game of Life</span>
+          <span class="footer-nav-label-short">&larr; Previous</span>
+        </a>
+        <a class="footer-nav-link" href="../../garbage-can/" aria-label="Next: 03.01 Garbage Can Narrative">
+          <span class="footer-nav-label-full">Next: 03.01 Garbage Can &rarr;</span>
           <span class="footer-nav-label-short">Next &rarr;</span>
         </a>
       </nav>
@@ -135,10 +137,10 @@
   </main>
 
   <footer>
-    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../colophon/" class="footer-link">Site Notes</a></p>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
   </footer>
 
-  <script src="../../js/nav-controller.js"></script>
-  <script src="./emergence-primer.js"></script>
+  <script src="../../../js/nav-controller.js"></script>
+  <script src="../emergence-primer.js"></script>
 </body>
 </html>

@@ -64,18 +64,19 @@
 
           <div class="ep-life-panel">
             <div class="ep-life-toolbar ep-life-toolbar--inline" role="group" aria-label="Conway Game of Life controls">
-              <span class="can-controls ep-life-controls" role="group" aria-label="Playback controls">
-                <span class="can-media-pair" role="group" aria-label="Play and stop">
-                  <button class="can-media-btn can-media-btn--stop is-active" id="ep-life-stop" aria-label="Stop simulation" title="Stop simulation" aria-pressed="true" type="button"><span class="can-media-glyph can-media-glyph--stop" aria-hidden="true"></span></button>
-                  <button class="can-media-btn can-media-btn--play" id="ep-life-play" aria-label="Play simulation" title="Play simulation" aria-pressed="false" type="button"><span class="can-media-glyph can-media-glyph--play" aria-hidden="true"></span></button>
-                </span>
+              <span class="can-controls ep-life-controls" role="group" aria-label="Simulation controls">
+                <button class="can-media-btn can-media-btn--play" id="ep-life-start" aria-label="Start simulation" title="Start simulation" aria-pressed="false" type="button"><span class="can-media-glyph can-media-glyph--play" aria-hidden="true"></span></button>
                 <button class="can-icon-btn" id="ep-life-reset" aria-label="Reset simulation" title="Reset simulation" type="button"></button>
               </span>
 
             </div>
 
             <div class="ep-seed-picker" role="group" aria-label="Seed selector">
-              <button class="ep-seed-btn is-active" type="button" data-ep-seed="r-pentomino" aria-pressed="true">
+              <button class="ep-seed-btn is-active" type="button" data-ep-seed="bunnies" aria-pressed="true">
+                <canvas class="ep-seed-preview" width="44" height="44" aria-hidden="true"></canvas>
+                <span class="ep-seed-label">Bunnies</span>
+              </button>
+              <button class="ep-seed-btn" type="button" data-ep-seed="r-pentomino" aria-pressed="false">
                 <canvas class="ep-seed-preview" width="44" height="44" aria-hidden="true"></canvas>
                 <span class="ep-seed-label">R-pentomino</span>
               </button>
@@ -83,13 +84,9 @@
                 <canvas class="ep-seed-preview" width="44" height="44" aria-hidden="true"></canvas>
                 <span class="ep-seed-label">Acorn</span>
               </button>
-              <button class="ep-seed-btn" type="button" data-ep-seed="bunnies" aria-pressed="false">
-                <canvas class="ep-seed-preview" width="44" height="44" aria-hidden="true"></canvas>
-                <span class="ep-seed-label">Bunnies</span>
-              </button>
             </div>
 
-            <p class="ep-life-mode-note">Click a seed chip to reseed.</p>
+            <p class="ep-life-mode-note">Press Start to run. Click a seed chip to reseed.</p>
 
             <div class="ep-life-stage">
               <canvas id="ep-life-canvas" class="ep-life-canvas ep-life-canvas--cells" data-life-kind="vanilla" width="960" height="600" role="img" aria-label="Vanilla Conway simulation grid at 192 by 120 cells"></canvas>

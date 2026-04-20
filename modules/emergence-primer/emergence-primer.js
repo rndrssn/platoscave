@@ -15,8 +15,7 @@
   if (overlayCanvas && overlayCanvas.getContext) overlayCtx = overlayCanvas.getContext('2d');
   var ctx = cellCtx;
 
-  var playButton = document.getElementById('ep-life-play');
-  var stopButton = document.getElementById('ep-life-stop');
+  var startButton = document.getElementById('ep-life-start');
   var resetButton = document.getElementById('ep-life-reset');
   var seedSelect = document.getElementById('ep-life-seed');
   var seedButtons = Array.prototype.slice.call(
@@ -72,7 +71,7 @@
     rust: cssVar('--viz-rust', cssVar('--rust', '#B65231')),
     gold: cssVar('--viz-gold', cssVar('--gold', '#D4AF37'))
   };
-  var defaultSeed = isGanttMode() ? 'bunnies' : 'r-pentomino';
+  var defaultSeed = 'bunnies';
   var currentSeed = defaultSeed;
 
   function indexFor(x, y) {
@@ -128,17 +127,17 @@
       { id: 'requirements-freeze', label: 'Req freeze', month: 6.15, row: 2.5 },
       { id: 'design-signoff', label: 'Design sign-off', month: 7.1, row: 3.5 },
       { id: 'change-approval', label: 'Change approval', month: 7.78, row: 4.5 },
-      { id: 'go-live', label: 'Go-live', month: 7.92, row: 5 },
-      { id: 'closure', label: 'Closure', month: 8.0, row: 5 }
+      { id: 'go-live', label: 'Go-live', month: 7.92, row: 5.6 },
+      { id: 'closure', label: 'Closure', month: 8.0, row: 6.0 }
     ];
 
     var gates = gateDefs.map(function(def) {
       return {
         id: def.id,
         label: def.label,
-        x: monthToX(def.month),
-        y: yTop + (def.row * rowGap) + Math.floor(barHeight / 2),
-        r: 3
+        x: Math.round(monthToX(def.month)),
+        y: Math.round(yTop + (def.row * rowGap) + Math.floor(barHeight / 2)),
+        r: 2
       };
     });
 
@@ -384,7 +383,7 @@
 
   function drawGanttLabelsAndMilestones(layout) {
     var phaseFontPx = Math.max(16, Math.floor(CELL_SIZE * 3.1));
-    var gateFontPx = Math.max(20, Math.floor(CELL_SIZE * 3.8));
+    var gateFontPx = Math.max(14, phaseFontPx - 2);
     var phaseLineHeight = Math.max(18, Math.floor(phaseFontPx * 1.08));
     var milestoneLabelAllowlist = {
       'business-case': true,
@@ -867,22 +866,11 @@
     generation += 1;
   }
 
-  function syncControlState() {
-    if (playButton) {
-      playButton.classList.toggle('is-active', running);
-      playButton.setAttribute('aria-pressed', running ? 'true' : 'false');
-    }
-    if (stopButton) {
-      stopButton.classList.toggle('is-active', !running);
-      stopButton.setAttribute('aria-pressed', running ? 'false' : 'true');
-    }
-  }
-
   function stopSimulation() {
     if (timerId) clearInterval(timerId);
     timerId = null;
     running = false;
-    syncControlState();
+    syncStartControl();
   }
 
   function startSimulation() {
@@ -897,20 +885,31 @@
     }, intervalMs);
 
     running = true;
-    syncControlState();
+    syncStartControl();
   }
 
-  function reseedSimulation() {
-    var seedName = isGanttMode() ? defaultSeed : currentSeed;
+  function syncStartControl() {
+    if (!startButton) return;
+    startButton.classList.toggle('is-active', running);
+    startButton.setAttribute('aria-pressed', running ? 'true' : 'false');
+  }
+
+  function reseedSimulation(seedName) {
+    var resolvedSeed = seedName || currentSeed;
+    var shouldResume = running;
     stopSimulation();
-    applySeed(seedName);
+    applySeed(resolvedSeed);
+    if (shouldResume) startSimulation();
   }
 
-  if (playButton) playButton.addEventListener('click', startSimulation);
-  if (stopButton) stopButton.addEventListener('click', stopSimulation);
+  if (startButton) {
+    startButton.addEventListener('click', startSimulation);
+  }
 
   if (resetButton) {
-    resetButton.addEventListener('click', reseedSimulation);
+    resetButton.addEventListener('click', function () {
+      reseedSimulation(currentSeed);
+    });
   }
 
   if (seedSelect) {
@@ -934,5 +933,5 @@
   renderSeedPreviews();
   setActiveSeed(resolveInitialSeed());
   applySeed(currentSeed);
-  syncControlState();
+  syncStartControl();
 })();

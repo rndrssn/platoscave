@@ -11,12 +11,12 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     var DEFAULT_MODULE_MENU_ITEMS = [
-      { number: '01', title: 'Emergence Primer', slug: 'emergence-primer', path: 'emergence-primer/', status: 'live' },
+      { number: '01', title: 'Emergence Primer', slug: 'emergence-primer', path: 'emergence-primer/' },
       { number: '02', title: 'Diagnostics', slug: 'maturity', path: 'maturity/', status: 'coming-soon' },
-      { number: '03', title: 'Garbage Can Model', slug: 'garbage-can', path: 'garbage-can/', status: 'live' },
-      { number: '04', title: 'Management Mix', slug: 'mix-mapper', path: 'mix-mapper/', status: 'live' },
-      { number: '05', title: 'CV & Skills', slug: 'experience-skill-graph', path: 'experience-skill-graph/', status: 'live' },
-      { number: '06', title: 'The Descent', slug: 'the-descent', path: 'the-descent/', status: 'live' }
+      { number: '03', title: 'Garbage Can Model', slug: 'garbage-can', path: 'garbage-can/' },
+      { number: '04', title: 'Management Mix', slug: 'mix-mapper', path: 'mix-mapper/' },
+      { number: '05', title: 'CV & Skills', slug: 'experience-skill-graph', path: 'experience-skill-graph/' },
+      { number: '06', title: 'The Descent', slug: 'the-descent', path: 'the-descent/' }
     ];
     var NAV_SWATCH_ALLOWLIST = [
       'white',
@@ -54,7 +54,7 @@
     }
 
     function normalizeModuleStatus(status) {
-      return status === 'live' ? 'live' : 'coming-soon';
+      return status === 'coming-soon' ? 'coming-soon' : '';
     }
 
     function getModuleMenuItems() {
@@ -228,19 +228,19 @@
 
       function createSubEntry(entry, isActive) {
         var label = (entry.number ? entry.number + ' ' : '') + entry.title;
-        var isLive = entry.status === 'live';
-        var node = isLive ? document.createElement('a') : document.createElement('span');
+        var isComingSoon = entry.status === 'coming-soon';
+        var node = isComingSoon ? document.createElement('span') : document.createElement('a');
         node.className =
           'nav-sublink' +
           (isActive ? ' nav-sublink--active' : '') +
-          (isLive ? '' : ' nav-sublink--coming');
-        if (isLive) {
-          node.href = entry.href;
-        } else {
+          (isComingSoon ? ' nav-sublink--coming' : '');
+        if (isComingSoon) {
           node.setAttribute('aria-disabled', 'true');
+        } else {
+          node.href = entry.href;
         }
         node.textContent = label;
-        if (!isLive) {
+        if (isComingSoon) {
           var state = document.createElement('span');
           state.className = 'nav-sublink-state';
           state.textContent = 'Coming soon';

@@ -17,7 +17,7 @@ function parseNavDefaults(source) {
   assert(blockMatch, 'Could not locate DEFAULT_MODULE_MENU_ITEMS block in js/nav-controller.js');
 
   const block = blockMatch[1];
-  const entryRegex = /{\s*number:\s*'([^']+)'\s*,\s*title:\s*'([^']*)'\s*,\s*slug:\s*'([^']*)'\s*,\s*path:\s*'([^']*)'\s*,\s*status:\s*'([^']+)'\s*}/g;
+  const entryRegex = /{\s*number:\s*'([^']+)'\s*,\s*title:\s*'([^']*)'\s*,\s*slug:\s*'([^']*)'\s*,\s*path:\s*'([^']*)'(?:\s*,\s*status:\s*'([^']+)')?\s*}/g;
   const out = [];
   let match = entryRegex.exec(block);
   while (match) {
@@ -26,7 +26,7 @@ function parseNavDefaults(source) {
       title: match[2],
       slug: match[3],
       path: match[4],
-      status: match[5],
+      status: match[5] === 'coming-soon' ? 'coming-soon' : '',
     });
     match = entryRegex.exec(block);
   }
@@ -46,12 +46,12 @@ function countActiveSubNavLinks(html) {
 
 function run() {
   const navEntries = parseNavDefaults(navControllerSource)
-    .filter((entry) => entry.status === 'live' && entry.slug);
+    .filter((entry) => entry.status !== 'coming-soon' && entry.slug);
 
   navEntries.forEach((entry) => {
     assert(
       entry.path === entry.slug + '/',
-      'Live module ' + entry.number + ' must land at /modules/' + entry.slug + '/ (found path=' + entry.path + ')'
+      'Available module ' + entry.number + ' must land at /modules/' + entry.slug + '/ (found path=' + entry.path + ')'
     );
 
     const relIndexPath = path.join('modules', entry.slug, 'index.html');

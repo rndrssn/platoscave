@@ -40,6 +40,9 @@ Do not edit files, run build/test commands, or execute write operations until ap
 **Discussion-only mode** (do not implement until explicit approval):
 - `confirm understanding` · `wdyt` · `let's discuss` · `plan first`
 
+**Rollback recommendation gate:**
+- If solving effort grows beyond expected user benefit, or surprising regressions appear, recommend rollback to the last stable branch/commit (prior breakpoint) before continuing.
+
 ## Git Workflow
 
 Three-branch flow: `sandbox` → `develop` → `main`

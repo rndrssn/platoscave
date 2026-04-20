@@ -80,16 +80,6 @@
         </section>
       </article>
 
-      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
-        <a class="footer-nav-link" href="../" aria-label="Back to Modules">
-          <span class="footer-nav-label-full">&larr; Back to Modules</span>
-          <span class="footer-nav-label-short">&larr; Modules</span>
-        </a>
-        <a class="footer-nav-link" href="cv/" aria-label="Next: 05.02 CV">
-          <span class="footer-nav-label-full">Next: 05.02 CV &rarr;</span>
-          <span class="footer-nav-label-short">Next &rarr;</span>
-        </a>
-      </nav>
     </div>
   </main>
 
@@ -108,14 +98,26 @@
       if (!surface || !svgEl) return;
 
       var activeDetailNode = null;
+      var DETAIL_TYPE_CLASS_BY_TYPE = {
+        category: 'cv-graph-swatch--category',
+        skill: 'cv-graph-swatch--skill',
+        experience: 'cv-graph-swatch--experience',
+      };
 
       function showNodeDetail(d, sticky) {
         if (!nodeDetailEl) return;
         if (sticky) activeDetailNode = d;
-        var typeClass = 'cv-graph-swatch--' + d.type;
-        nodeDetailEl.innerHTML =
-          '<span class="cv-graph-detail-swatch ' + typeClass + '"></span>' +
-          '<span class="cv-graph-detail-label">' + d.label + '</span>';
+        var type = String(d && d.type || '');
+        var typeClass = DETAIL_TYPE_CLASS_BY_TYPE[type] || DETAIL_TYPE_CLASS_BY_TYPE.skill;
+
+        nodeDetailEl.textContent = '';
+        var swatch = document.createElement('span');
+        swatch.className = 'cv-graph-detail-swatch ' + typeClass;
+        var label = document.createElement('span');
+        label.className = 'cv-graph-detail-label';
+        label.textContent = String(d && d.label || '');
+        nodeDetailEl.appendChild(swatch);
+        nodeDetailEl.appendChild(label);
         nodeDetailEl.classList.add('is-visible');
       }
 
@@ -124,7 +126,7 @@
         if (!force && activeDetailNode) return;
         activeDetailNode = null;
         nodeDetailEl.classList.remove('is-visible');
-        nodeDetailEl.innerHTML = '';
+        nodeDetailEl.textContent = '';
       }
       if (!window.d3) {
         if (fallback) fallback.hidden = false;

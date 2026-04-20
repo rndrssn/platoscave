@@ -66,6 +66,19 @@ function isExternalHref(href) {
   return /^https?:\/\//i.test(value);
 }
 
+function sanitizeHref(hrefRaw) {
+  const value = String(hrefRaw || '').trim();
+  if (!value) return '#';
+
+  const schemeProbe = value.replace(/[\u0000-\u001F\u007F\s]+/g, '').toLowerCase();
+  if (/^(javascript|data|vbscript):/.test(schemeProbe)) return '#';
+
+  if (/^(https?:\/\/|mailto:)/i.test(value)) return value;
+  if (/^(#|\?|\/|\.\/|\.\.\/)/.test(value)) return value;
+
+  return '#';
+}
+
 function splitFrontmatter(raw) {
   if (!raw.startsWith('---')) return { frontmatter: {}, body: raw };
   const match = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/);
@@ -228,8 +241,9 @@ function renderInline(rawText) {
   text = escapeHtml(text);
 
   text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
-    const safeHref = escapeAttr(href.trim());
-    const externalAttrs = isExternalHref(href)
+    const sanitizedHref = sanitizeHref(href);
+    const safeHref = escapeAttr(sanitizedHref);
+    const externalAttrs = isExternalHref(sanitizedHref)
       ? ' target="_blank" rel="noopener noreferrer"'
       : '';
     return '<a href="' + safeHref + '"' + externalAttrs + '>' + label + '</a>';
@@ -785,4 +799,12 @@ function build() {
   console.log('Generated tags:', tags.length);
 }
 
-build();
+if (require.main === module) {
+  build();
+} else {
+  module.exports = {
+    sanitizeHref,
+    renderInline,
+    renderMarkdown,
+  };
+}

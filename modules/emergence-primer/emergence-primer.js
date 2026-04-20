@@ -75,6 +75,20 @@
   };
   var defaultSeed = 'bunnies';
   var currentSeed = defaultSeed;
+  var CANVAS_TEXT_TARGET_CSS_PX = {
+    timelineMonth: 7,
+    timelineQuarter: 7,
+    phaseLabel: 6,
+    milestoneLabel: 5
+  };
+  var ganttModel = null;
+  if (typeof window !== 'undefined' && typeof window.createEmergenceGanttModel === 'function') {
+    ganttModel = window.createEmergenceGanttModel({
+      columns: COLUMNS,
+      rows: ROWS,
+      cellSize: CELL_SIZE
+    });
+  }
 
   function indexFor(x, y) {
     return y * COLUMNS + x;
@@ -84,93 +98,38 @@
     return lifeKind === 'gantt';
   }
 
+  function getCanvasDownscaleFactor() {
+    if (!canvas || typeof canvas.getBoundingClientRect !== 'function') return 1;
+    var rect = canvas.getBoundingClientRect();
+    if (!rect || !rect.width) return 1;
+    return canvas.width / rect.width;
+  }
+
+  function responsiveCanvasFontPx(basePx, targetCssPx, maxPx) {
+    var downscale = getCanvasDownscaleFactor();
+    var responsivePx = Math.round(targetCssPx * downscale);
+    var withMin = Math.max(basePx, responsivePx);
+    if (typeof maxPx === 'number') return Math.min(maxPx, withMin);
+    return withMin;
+  }
+
   function buildGanttLayout() {
-    var months = ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
-    var labelAxisX = 3;
-    var xStart = 34;
-    var xEnd = 186;
-    var yTop = 30;
-    var rowGap = 14;
-    var barHeight = 7;
-    var timelineY = 10;
-
-    function monthToX(monthIndex) {
-      var span = months.length - 1;
-      return Math.round(xStart + ((xEnd - xStart) * monthIndex) / span);
+    if (ganttModel && typeof ganttModel.buildLayout === 'function') {
+      return ganttModel.buildLayout();
     }
-
-    var phaseDefs = [
-      { id: 'requirements', label: 'Requirements Freeze', start: 0.2, end: 2.0, row: 0 },
-      { id: 'design', label: 'Solution Design Sign-off', start: 2.5, end: 3.6, row: 1 },
-      { id: 'build', label: 'Build', start: 4.0, end: 6.0, row: 2 },
-      { id: 'sit', label: 'System Integration Test', start: 6.3, end: 7.0, row: 3 },
-      { id: 'uat', label: 'UAT & Change Approval', start: 7.2, end: 7.7, row: 4 },
-      { id: 'hypercare', label: 'Release / Hypercare', start: 7.85, end: 8.0, row: 5 }
-    ];
-
-    var phases = phaseDefs.map(function(def) {
-      var y0 = yTop + (def.row * rowGap);
-      var x0 = monthToX(def.start);
-      var x1 = monthToX(def.end);
-      if (x1 <= x0) x1 = x0 + 1;
-
-      return {
-        id: def.id,
-        label: def.label,
-        x0: x0,
-        x1: x1,
-        y0: y0,
-        y1: y0 + barHeight
-      };
-    });
-
-    var gateDefs = [
-      { id: 'business-case', label: 'Business case', month: 2.25, row: 0.5 },
-      { id: 'requirements-freeze', label: 'Requirements freeze', month: 6.15, row: 2.5 },
-      { id: 'design-signoff', label: 'Design sign-off', month: 7.1, row: 3.5 },
-      { id: 'change-approval', label: 'Change approval', month: 7.78, row: 4.5 },
-      { id: 'go-live', label: 'Go-live', month: 7.92, row: 5.6 },
-      { id: 'closure', label: 'Closure', month: 8.0, row: 6.0 }
-    ];
-
-    var gates = gateDefs.map(function(def) {
-      return {
-        id: def.id,
-        label: def.label,
-        x: Math.round(monthToX(def.month)),
-        y: Math.round(yTop + (def.row * rowGap) + Math.floor(barHeight / 2)),
-        r: 2
-      };
-    });
-
-    var dependencies = [
-      { from: 'phase:requirements', to: 'phase:design' },
-      { from: 'phase:design', to: 'phase:build' },
-      { from: 'phase:build', to: 'phase:sit' },
-      { from: 'phase:sit', to: 'phase:uat' },
-      { from: 'phase:uat', to: 'gate:change-approval' },
-      { from: 'gate:change-approval', to: 'gate:go-live' }
-    ];
-
-    var quarters = [
-      { label: 'Q4', start: 0, end: 1 },
-      { label: 'Q1', start: 2, end: 4 },
-      { label: 'Q2', start: 5, end: 7 }
-    ];
-
     return {
-      months: months,
-      quarters: quarters,
-      timelineY: timelineY,
-      labelAxisX: labelAxisX,
-      xStart: xStart,
-      xEnd: xEnd,
-      yTop: yTop,
-      activeMinX: xStart - 1,
-      activeMinY: yTop - 4,
-      phases: phases,
-      gates: gates,
-      dependencies: dependencies
+      months: [],
+      quarters: [],
+      timelineY: 10,
+      labelAxisX: 3,
+      xStart: 34,
+      xEnd: 186,
+      yTop: 30,
+      activeMinX: 33,
+      activeMinY: 26,
+      phases: [],
+      gates: [],
+      dependencies: []
     };
   }
 
@@ -201,96 +160,17 @@
     }
   }
 
-  function maskDrawHorizontal(maskBuffer, x0, x1, y, halfThickness) {
-    var sx = Math.min(x0, x1);
-    var ex = Math.max(x0, x1);
-    var thickness = halfThickness || 0;
-
-    for (var yy = y - thickness; yy <= y + thickness; yy += 1) {
-      if (yy < 0 || yy >= ROWS) continue;
-      for (var xx = sx; xx <= ex; xx += 1) {
-        if (xx < 0 || xx >= COLUMNS) continue;
-        maskBuffer[indexFor(xx, yy)] = 1;
-      }
-    }
-  }
-
-  function maskDrawVertical(maskBuffer, x, y0, y1, halfThickness) {
-    var sy = Math.min(y0, y1);
-    var ey = Math.max(y0, y1);
-    var thickness = halfThickness || 0;
-
-    for (var xx = x - thickness; xx <= x + thickness; xx += 1) {
-      if (xx < 0 || xx >= COLUMNS) continue;
-      for (var yy = sy; yy <= ey; yy += 1) {
-        if (yy < 0 || yy >= ROWS) continue;
-        maskBuffer[indexFor(xx, yy)] = 1;
-      }
-    }
-  }
-
   function buildDependencyRoute(fromNode, toNode) {
-    if (!fromNode || !toNode) return null;
-
-    var sx = fromNode.x;
-    var sy = fromNode.y;
-    var tx = toNode.x;
-    var ty = toNode.y;
-    var elbowX = Math.max(sx + 2, Math.floor((sx + tx) / 2));
-    if (tx < sx) elbowX = sx + 2;
-
-    return {
-      sx: sx,
-      sy: sy,
-      tx: tx,
-      ty: ty,
-      elbowX: elbowX,
-      dir: tx >= elbowX ? 1 : -1
-    };
+    if (!ganttModel || typeof ganttModel.buildDependencyRoute !== 'function') return null;
+    return ganttModel.buildDependencyRoute(fromNode, toNode);
   }
 
   function forEachDependencyMaskCell(route, visitor) {
     if (!route || typeof visitor !== 'function') return;
-
-    var seen = {};
-    function mark(xx, yy) {
-      if (xx < 0 || xx >= COLUMNS || yy < 0 || yy >= ROWS) return;
-      var idx = indexFor(xx, yy);
-      if (seen[idx]) return;
-      seen[idx] = 1;
-      visitor(idx, xx, yy);
-    }
-
-    var sx = route.sx;
-    var ex = route.elbowX;
-    if (sx > ex) {
-      var swap = sx;
-      sx = ex;
-      ex = swap;
-    }
-    for (var x = sx; x <= ex; x += 1) mark(x, route.sy);
-
-    var sy = route.sy;
-    var ey = route.ty;
-    if (sy > ey) {
-      var swapY = sy;
-      sy = ey;
-      ey = swapY;
-    }
-    for (var y = sy; y <= ey; y += 1) mark(route.elbowX, y);
-
-    var hx0 = route.elbowX;
-    var hx1 = route.tx;
-    if (hx0 > hx1) {
-      var swapX = hx0;
-      hx0 = hx1;
-      hx1 = swapX;
-    }
-    for (var xx = hx0; xx <= hx1; xx += 1) mark(xx, route.ty);
-
-    mark(route.tx, route.ty);
-    mark(route.tx - route.dir, route.ty - 1);
-    mark(route.tx - route.dir, route.ty + 1);
+    if (!ganttModel || typeof ganttModel.forEachDependencyCell !== 'function') return;
+    ganttModel.forEachDependencyCell(route, function collect(xx, yy) {
+      visitor(indexFor(xx, yy), xx, yy);
+    });
   }
 
   function maskDrawDependencyRoute(maskBuffer, fromNode, toNode) {
@@ -335,8 +215,18 @@
     var timelineYPx = layout.timelineY * pxPerCell;
     var startXPx = layout.xStart * pxPerCell;
     var endXPx = layout.xEnd * pxPerCell;
-    var labelFontPx = Math.max(18, Math.floor(pxPerCell * 3.4));
-    var quarterFontPx = Math.max(20, Math.floor(pxPerCell * 3.8));
+    var labelFontBasePx = Math.max(18, Math.floor(pxPerCell * 3.4));
+    var quarterFontBasePx = Math.max(20, Math.floor(pxPerCell * 3.8));
+    var labelFontPx = responsiveCanvasFontPx(
+      labelFontBasePx,
+      CANVAS_TEXT_TARGET_CSS_PX.timelineMonth,
+      42
+    );
+    var quarterFontPx = responsiveCanvasFontPx(
+      quarterFontBasePx,
+      CANVAS_TEXT_TARGET_CSS_PX.timelineQuarter,
+      46
+    );
 
     ctx.save();
     ctx.globalAlpha = 0.74;
@@ -374,31 +264,8 @@
   }
 
   function resolveDependencyNode(layout, ref, anchorSide) {
-    if (!ref) return null;
-
-    if (ref.indexOf('phase:') === 0) {
-      var phaseId = ref.slice('phase:'.length);
-      for (var i = 0; i < layout.phases.length; i += 1) {
-        var phase = layout.phases[i];
-        if (phase.id !== phaseId) continue;
-        return {
-          x: anchorSide === 'from' ? phase.x1 : phase.x0,
-          y: Math.floor((phase.y0 + phase.y1) / 2)
-        };
-      }
-      return null;
-    }
-
-    if (ref.indexOf('gate:') === 0) {
-      var gateId = ref.slice('gate:'.length);
-      for (var j = 0; j < layout.gates.length; j += 1) {
-        var gate = layout.gates[j];
-        if (gate.id !== gateId) continue;
-        return { x: gate.x, y: gate.y };
-      }
-    }
-
-    return null;
+    if (!ganttModel || typeof ganttModel.resolveDependencyNode !== 'function') return null;
+    return ganttModel.resolveDependencyNode(layout, ref, anchorSide);
   }
 
   function dependencyMaskCoverage(route, maskBuffer) {
@@ -432,9 +299,9 @@
   function drawGanttDependencies(layout) {
     ctx.save();
     ctx.strokeStyle = colors.inkMid;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.lineWidth = Math.max(0.8, CELL_SIZE * 0.18);
+    ctx.lineJoin = 'miter';
+    ctx.lineCap = 'square';
+    ctx.lineWidth = Math.max(1, CELL_SIZE * 0.22);
 
     for (var i = 0; i < layout.dependencies.length; i += 1) {
       var dep = layout.dependencies[i];
@@ -448,24 +315,30 @@
 
       var sx = (route.sx + 0.5) * CELL_SIZE;
       var sy = (route.sy + 0.5) * CELL_SIZE;
-      var elbowX = (route.elbowX + 0.5) * CELL_SIZE;
+      var ex = (route.elbowX + 0.5) * CELL_SIZE;
       var tx = (route.tx + 0.5) * CELL_SIZE;
       var ty = (route.ty + 0.5) * CELL_SIZE;
 
-      ctx.globalAlpha = 0.14 + (0.72 * coverage);
+      ctx.globalAlpha = 0.22 + (0.72 * coverage);
       ctx.beginPath();
       ctx.moveTo(sx, sy);
-      ctx.lineTo(elbowX, sy);
-      ctx.lineTo(elbowX, ty);
+      ctx.lineTo(ex, sy);
+      ctx.lineTo(ex, ty);
       ctx.lineTo(tx, ty);
-      ctx.stroke();
-
       var arrowSize = Math.max(2.2, CELL_SIZE * 0.34);
-      ctx.beginPath();
-      ctx.moveTo(tx, ty);
-      ctx.lineTo(tx - (route.dir * arrowSize), ty - (arrowSize * 0.85));
-      ctx.moveTo(tx, ty);
-      ctx.lineTo(tx - (route.dir * arrowSize), ty + (arrowSize * 0.85));
+      if (route.tx !== route.elbowX) {
+        var xBack = tx - (route.dirX * arrowSize);
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(xBack, ty - (arrowSize * 0.75));
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(xBack, ty + (arrowSize * 0.75));
+      } else if (route.sy !== route.ty) {
+        var yBack = ty - (route.dirY * arrowSize);
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(tx - (arrowSize * 0.75), yBack);
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(tx + (arrowSize * 0.75), yBack);
+      }
       ctx.stroke();
     }
 
@@ -512,105 +385,69 @@
   }
 
   function drawGanttLabelsAndMilestones(layout) {
-    var phaseFontPx = Math.max(16, Math.floor(CELL_SIZE * 3.1));
-    var gateFontPx = Math.max(14, phaseFontPx - 2);
+    if (!ganttModel || typeof ganttModel.buildLabelPlan !== 'function') return;
+
+    var phaseLabelTargetCssPx = CANVAS_TEXT_TARGET_CSS_PX.phaseLabel;
+    if (canvas && typeof canvas.getBoundingClientRect === 'function') {
+      var rect = canvas.getBoundingClientRect();
+      if (rect && rect.width && rect.width <= 360) {
+        phaseLabelTargetCssPx = Math.max(5, phaseLabelTargetCssPx - 1);
+      }
+    }
+
+    var phaseFontBasePx = Math.max(14, Math.floor(CELL_SIZE * 2.8));
+    var phaseFontPx = responsiveCanvasFontPx(
+      phaseFontBasePx,
+      phaseLabelTargetCssPx,
+      42
+    );
+    var gateFontBasePx = Math.max(9, Math.floor(CELL_SIZE * 2.0));
+    var gateFontPx = responsiveCanvasFontPx(
+      gateFontBasePx,
+      CANVAS_TEXT_TARGET_CSS_PX.milestoneLabel,
+      38
+    );
     var phaseLineHeight = Math.max(18, Math.floor(phaseFontPx * 1.08));
-    var milestoneLabelAllowlist = {
-      'business-case': true,
-      'requirements-freeze': true,
-      'design-signoff': true,
-      'change-approval': true,
-      'go-live': true,
-      'closure': true
-    };
-    var reservedBands = [];
+    var phaseLabelX = (layout.labelAxisX * CELL_SIZE);
+    var milestoneLabelX = phaseLabelX;
+    var labelPlan = ganttModel.buildLabelPlan(layout, {
+      phaseFontPx: phaseFontPx,
+      gateFontPx: gateFontPx,
+      phaseLineHeight: phaseLineHeight,
+      canvasHeightPx: ROWS * CELL_SIZE,
+      phaseLabelColumnX: phaseLabelX,
+      milestoneLabelColumnX: milestoneLabelX
+    });
+    if (!labelPlan) return;
 
-    function collidesReserved(top, bottom) {
-      for (var bandIndex = 0; bandIndex < reservedBands.length; bandIndex += 1) {
-        var band = reservedBands[bandIndex];
-        if (bottom < band.top || top > band.bottom) continue;
-        return true;
-      }
-      return false;
-    }
-
-    function reserveBand(centerY, halfHeight) {
-      reservedBands.push({
-        top: centerY - halfHeight - 2,
-        bottom: centerY + halfHeight + 2
-      });
-    }
-
-    function resolveLabelY(desiredY, halfHeight) {
-      var minY = halfHeight + 1;
-      var maxY = (ROWS * CELL_SIZE) - halfHeight - 1;
-      var clamped = Math.max(minY, Math.min(maxY, desiredY));
-      if (!collidesReserved(clamped - halfHeight, clamped + halfHeight)) return clamped;
-
-      for (var delta = 2; delta <= 120; delta += 2) {
-        var upY = clamped - delta;
-        if (upY >= minY && !collidesReserved(upY - halfHeight, upY + halfHeight)) return upY;
-
-        var downY = clamped + delta;
-        if (downY <= maxY && !collidesReserved(downY - halfHeight, downY + halfHeight)) return downY;
-      }
-
-      return clamped;
+    var gateById = Object.create(null);
+    for (var i = 0; i < layout.gates.length; i += 1) {
+      gateById[layout.gates[i].id] = layout.gates[i];
     }
 
     ctx.save();
-    ctx.fillStyle = colors.inkMid;
+    ctx.fillStyle = colors.scaffold;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.font = String(phaseFontPx) + 'px monospace';
     ctx.globalAlpha = 0.82;
-
-    var wrappedLabelsByPhase = {
-      requirements: ['Requirements', 'Freeze'],
-      design: ['Solution Design', 'Sign-off'],
-      build: ['Build'],
-      sit: ['System Integration', 'Test'],
-      uat: ['UAT & Change', 'Approval'],
-      hypercare: ['Release /', 'Hypercare']
-    };
-
-    for (var i = 0; i < layout.phases.length; i += 1) {
-      var phase = layout.phases[i];
-      var labelLines = wrappedLabelsByPhase[phase.id] || [phase.label];
-      var labelX = (layout.labelAxisX * CELL_SIZE);
-      var centerY = Math.round(((phase.y0 + phase.y1) / 2) * CELL_SIZE);
-
-      if (labelLines.length <= 1) {
-        ctx.fillText(labelLines[0], labelX, centerY);
-        reserveBand(centerY, Math.ceil(phaseFontPx * 0.6));
-        continue;
-      }
-
-      var firstY = centerY - Math.round(phaseLineHeight * 0.5);
-      for (var lineIndex = 0; lineIndex < labelLines.length; lineIndex += 1) {
-        var lineY = firstY + (lineIndex * phaseLineHeight);
-        ctx.fillText(labelLines[lineIndex], labelX, lineY);
-        reserveBand(lineY, Math.ceil(phaseFontPx * 0.6));
-      }
+    for (var phaseIndex = 0; phaseIndex < labelPlan.phase.length; phaseIndex += 1) {
+      var phaseLine = labelPlan.phase[phaseIndex];
+      ctx.textAlign = phaseLine.align === 'right' ? 'right' : 'left';
+      ctx.fillText(phaseLine.text, phaseLine.x, phaseLine.y);
     }
 
     ctx.globalAlpha = 0.9;
     ctx.textBaseline = 'middle';
     ctx.font = String(gateFontPx) + 'px monospace';
-    var milestoneLabelX = (layout.labelAxisX * CELL_SIZE);
-    for (var j = 0; j < layout.gates.length; j += 1) {
-      var gate = layout.gates[j];
+    for (var milestoneIndex = 0; milestoneIndex < labelPlan.milestones.length; milestoneIndex += 1) {
+      var milestoneLine = labelPlan.milestones[milestoneIndex];
+      var gate = gateById[milestoneLine.gateId];
+      if (!gate) continue;
       if (!isGateStillVisible(gate)) continue;
-
-      var gy = gate.y * CELL_SIZE;
-
-      if (!milestoneLabelAllowlist[gate.id]) continue;
       ctx.fillStyle = colors.rust;
-      ctx.textAlign = 'left';
-      var gateHalf = Math.ceil(gateFontPx * 0.6);
-      var labelY = resolveLabelY(gy, gateHalf);
-      ctx.fillText(gate.label, milestoneLabelX, labelY);
-      reserveBand(labelY, gateHalf);
+      ctx.textAlign = milestoneLine.align === 'right' ? 'right' : 'left';
+      ctx.fillText(milestoneLine.text, milestoneLine.x, milestoneLine.y);
     }
 
     ctx.restore();

@@ -46,6 +46,7 @@ function htmlShell(params) {
     + '  <meta charset="UTF-8" />\n'
     + '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n'
     + '  <meta name="description" content="' + escapeAttr(description) + '" />\n'
+    + '  <meta http-equiv="Content-Security-Policy" content="default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\' data:; font-src \'self\'; connect-src \'self\'; object-src \'none\'; base-uri \'self\'; frame-ancestors \'none\'; form-action \'self\'" />\n'
     + '  <title>' + escapeHtml(title) + '</title>\n'
     + '  <script src="' + prefix + 'theme.config.js"></script>\n'
     + '  <script src="' + prefix + 'js/theme-bootstrap.js"></script>\n'

@@ -98,14 +98,26 @@
       if (!surface || !svgEl) return;
 
       var activeDetailNode = null;
+      var DETAIL_TYPE_CLASS_BY_TYPE = {
+        category: 'cv-graph-swatch--category',
+        skill: 'cv-graph-swatch--skill',
+        experience: 'cv-graph-swatch--experience',
+      };
 
       function showNodeDetail(d, sticky) {
         if (!nodeDetailEl) return;
         if (sticky) activeDetailNode = d;
-        var typeClass = 'cv-graph-swatch--' + d.type;
-        nodeDetailEl.innerHTML =
-          '<span class="cv-graph-detail-swatch ' + typeClass + '"></span>' +
-          '<span class="cv-graph-detail-label">' + d.label + '</span>';
+        var type = String(d && d.type || '');
+        var typeClass = DETAIL_TYPE_CLASS_BY_TYPE[type] || DETAIL_TYPE_CLASS_BY_TYPE.skill;
+
+        nodeDetailEl.textContent = '';
+        var swatch = document.createElement('span');
+        swatch.className = 'cv-graph-detail-swatch ' + typeClass;
+        var label = document.createElement('span');
+        label.className = 'cv-graph-detail-label';
+        label.textContent = String(d && d.label || '');
+        nodeDetailEl.appendChild(swatch);
+        nodeDetailEl.appendChild(label);
         nodeDetailEl.classList.add('is-visible');
       }
 
@@ -114,7 +126,7 @@
         if (!force && activeDetailNode) return;
         activeDetailNode = null;
         nodeDetailEl.classList.remove('is-visible');
-        nodeDetailEl.innerHTML = '';
+        nodeDetailEl.textContent = '';
       }
       if (!window.d3) {
         if (fallback) fallback.hidden = false;

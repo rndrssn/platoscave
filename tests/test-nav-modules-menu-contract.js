@@ -21,7 +21,7 @@ function parseNavDefaults(source) {
   assert(blockMatch, 'Could not locate DEFAULT_MODULE_MENU_ITEMS block in js/nav-controller.js');
 
   const block = blockMatch[1];
-  const entryRegex = /{\s*number:\s*'([^']+)'\s*,\s*title:\s*'([^']*)'\s*,\s*slug:\s*'([^']*)'\s*,\s*path:\s*'([^']*)'\s*,\s*status:\s*'([^']+)'\s*}/g;
+  const entryRegex = /{\s*number:\s*'([^']+)'\s*,\s*title:\s*'([^']*)'\s*,\s*slug:\s*'([^']*)'\s*,\s*path:\s*'([^']*)'(?:\s*,\s*status:\s*'([^']+)')?\s*}/g;
   const out = new Map();
   let match = entryRegex.exec(block);
   while (match) {
@@ -30,7 +30,7 @@ function parseNavDefaults(source) {
       title: match[2],
       slug: match[3],
       path: match[4],
-      status: match[5],
+      status: match[5] === 'coming-soon' ? 'coming-soon' : '',
     });
     match = entryRegex.exec(block);
   }
@@ -44,7 +44,7 @@ function parseModulesIndex(source) {
   const out = new Map();
   let match = liRegex.exec(source);
   while (match) {
-    const state = match[1] === 'live' ? 'live' : 'coming-soon';
+    const state = match[1] === 'coming' ? 'coming-soon' : '';
     const block = match[2];
     const numberMatch = block.match(/<span class="module-number">(\d{2})\s*&middot;<\/span>/);
     if (!numberMatch) {
@@ -78,19 +78,19 @@ function run() {
       'Status mismatch for module ' + number + ': nav=' + navEntry.status + ', modules/index=' + entry.status
     );
 
-    if (entry.status === 'live') {
+    if (entry.status !== 'coming-soon') {
       assert(entry.href, 'Expected live module ' + number + ' to have clickable href in modules/index.html');
-      assert(navEntry.path, 'Expected live module ' + number + ' to have path in DEFAULT_MODULE_MENU_ITEMS');
+      assert(navEntry.path, 'Expected available module ' + number + ' to have path in DEFAULT_MODULE_MENU_ITEMS');
       assert(
         navEntry.path === entry.href,
-        'Path mismatch for live module ' + number + ': nav=' + navEntry.path + ', modules/index=' + entry.href
+        'Path mismatch for available module ' + number + ': nav=' + navEntry.path + ', modules/index=' + entry.href
       );
     }
   });
 
   const mixMapper = navDefaults.get('04');
   assert(mixMapper, 'Missing Mix Mapper (04) entry in DEFAULT_MODULE_MENU_ITEMS');
-  assert(mixMapper.status === 'live', 'Expected Mix Mapper (04) nav menu status to be live');
+  assert(mixMapper.status !== 'coming-soon', 'Expected Mix Mapper (04) nav menu to be available');
 
   console.log('PASS: tests/test-nav-modules-menu-contract.js');
 }

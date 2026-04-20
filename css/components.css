@@ -1338,7 +1338,6 @@ main.main--narrow + footer {
   margin-left: 1rem;
 }
 
-.status-live   { color: var(--ochre); }
 .status-coming { color: var(--ink-ghost); }
 
 /* ─── Tablet — min-width: 640px ──────────────────────────── */

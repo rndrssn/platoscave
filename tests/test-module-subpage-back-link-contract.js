@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const SUBPAGE_PATHS = [
+  'modules/emergence-primer/ganttgol/index.html',
   'modules/garbage-can/taxonomy/index.html',
   'modules/garbage-can/can-explainer/index.html',
   'modules/garbage-can/explorer/index.html',

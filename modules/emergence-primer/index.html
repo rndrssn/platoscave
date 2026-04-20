@@ -48,18 +48,18 @@
       <header class="module-header">
         <h1 class="module-header-title">Conway's Game of Life</h1>
         <p class="module-header-body">
-          Conway's Game of Life is a discrete mathematical system on a two-dimensional grid. Each cell is either alive or dead, and time advances in synchronized steps. At each step, a cell changes state based only on its eight immediate neighbours: birth on exactly 3 neighbours, survival on 2 or 3. This shorthand is written as B3/S23.
+          Conway's Game of Life is a discrete mathematical system running on a two-dimensional grid world. Each cell is either alive or dead, and time advances in discrete steps 1 tick at a time. At each step, a cell changes state based only on very simple rules based on its eight immediate neighbours: a cell is born on exactly 3 neighbours, a cell survies with 2 or 3 (alive) neighbors. This classic Conway's Game of Life rule is written as B3/S23. There are indeed other variations.
         </p>
       </header>
 
       <article class="module-essay">
         <section class="essay-section">
-          <h2 class="essay-heading">Math and Science View</h2>
+          <h2 class="essay-heading">Scientific interest</h2>
           <p class="essay-body">
-            Formally, each update is deterministic: the next state of a cell depends only on its current state and the count of its eight neighbours. Birth happens on exactly 3 neighbours. Survival happens on 2 or 3. All other cases go to dead. There is no randomness in the rule itself.
+            Formally, each update is deterministic and in fact the entire Game of Life is deterministic: the next state of a cell depends only on its current state and the count of its eight dead or alive neighbours. Birth happens on exactly 3 neighbours. Survival happens on 2 or 3. All other cases go to dead. There is no randomness in the rule itself.
           </p>
           <p class="essay-body">
-            The scientific interest is that simple local rules create rich global behaviour: stable structures, oscillators, moving patterns, long transients, and sensitivity to initial conditions. So this is a compact model of emergence: complexity from local interaction, not from central control.
+            The scientific interest comes from that the GoL is an evidence that simple local rules can create rich global behaviour: stable structures, oscillators, moving patterns, long transients, and sensitivity to initial conditions. So this is a compact model of emergence: how simple local rules can create surprising patterns not immediately obvious from the initial configuration and local rules.
           </p>
 
           <div class="ep-life-panel">

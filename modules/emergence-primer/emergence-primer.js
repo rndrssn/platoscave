@@ -17,6 +17,8 @@
 
   var startButton = document.getElementById('ep-life-start');
   var resetButton = document.getElementById('ep-life-reset');
+  var patternToggleButton = document.querySelector('[data-ep-pattern-toggle]');
+  var patternPanel = document.getElementById('ep-pattern-panel');
   var seedSelect = document.getElementById('ep-life-seed');
   var seedButtons = Array.prototype.slice.call(
     document.querySelectorAll('.ep-seed-btn[data-ep-seed]')
@@ -124,7 +126,7 @@
 
     var gateDefs = [
       { id: 'business-case', label: 'Business case', month: 2.25, row: 0.5 },
-      { id: 'requirements-freeze', label: 'Req freeze', month: 6.15, row: 2.5 },
+      { id: 'requirements-freeze', label: 'Requirements freeze', month: 6.15, row: 2.5 },
       { id: 'design-signoff', label: 'Design sign-off', month: 7.1, row: 3.5 },
       { id: 'change-approval', label: 'Change approval', month: 7.78, row: 4.5 },
       { id: 'go-live', label: 'Go-live', month: 7.92, row: 5.6 },
@@ -227,8 +229,8 @@
     }
   }
 
-  function maskDrawDependencyRoute(maskBuffer, fromNode, toNode) {
-    if (!fromNode || !toNode) return;
+  function buildDependencyRoute(fromNode, toNode) {
+    if (!fromNode || !toNode) return null;
 
     var sx = fromNode.x;
     var sy = fromNode.y;
@@ -237,19 +239,65 @@
     var elbowX = Math.max(sx + 2, Math.floor((sx + tx) / 2));
     if (tx < sx) elbowX = sx + 2;
 
-    maskDrawHorizontal(maskBuffer, sx, elbowX, sy, 0);
-    maskDrawVertical(maskBuffer, elbowX, sy, ty, 0);
-    maskDrawHorizontal(maskBuffer, elbowX, tx, ty, 0);
+    return {
+      sx: sx,
+      sy: sy,
+      tx: tx,
+      ty: ty,
+      elbowX: elbowX,
+      dir: tx >= elbowX ? 1 : -1
+    };
+  }
 
-    // Small arrowhead so the dependency direction remains visible pre-erosion.
-    var dir = tx >= elbowX ? 1 : -1;
-    if (tx >= 0 && tx < COLUMNS && ty >= 0 && ty < ROWS) {
-      maskBuffer[indexFor(tx, ty)] = 1;
-      if ((tx - dir) >= 0 && (tx - dir) < COLUMNS) {
-        if ((ty - 1) >= 0) maskBuffer[indexFor(tx - dir, ty - 1)] = 1;
-        if ((ty + 1) < ROWS) maskBuffer[indexFor(tx - dir, ty + 1)] = 1;
-      }
+  function forEachDependencyMaskCell(route, visitor) {
+    if (!route || typeof visitor !== 'function') return;
+
+    var seen = {};
+    function mark(xx, yy) {
+      if (xx < 0 || xx >= COLUMNS || yy < 0 || yy >= ROWS) return;
+      var idx = indexFor(xx, yy);
+      if (seen[idx]) return;
+      seen[idx] = 1;
+      visitor(idx, xx, yy);
     }
+
+    var sx = route.sx;
+    var ex = route.elbowX;
+    if (sx > ex) {
+      var swap = sx;
+      sx = ex;
+      ex = swap;
+    }
+    for (var x = sx; x <= ex; x += 1) mark(x, route.sy);
+
+    var sy = route.sy;
+    var ey = route.ty;
+    if (sy > ey) {
+      var swapY = sy;
+      sy = ey;
+      ey = swapY;
+    }
+    for (var y = sy; y <= ey; y += 1) mark(route.elbowX, y);
+
+    var hx0 = route.elbowX;
+    var hx1 = route.tx;
+    if (hx0 > hx1) {
+      var swapX = hx0;
+      hx0 = hx1;
+      hx1 = swapX;
+    }
+    for (var xx = hx0; xx <= hx1; xx += 1) mark(xx, route.ty);
+
+    mark(route.tx, route.ty);
+    mark(route.tx - route.dir, route.ty - 1);
+    mark(route.tx - route.dir, route.ty + 1);
+  }
+
+  function maskDrawDependencyRoute(maskBuffer, fromNode, toNode) {
+    var route = buildDependencyRoute(fromNode, toNode);
+    forEachDependencyMaskCell(route, function(idx) {
+      maskBuffer[idx] = 1;
+    });
   }
 
   function initializeGanttMask() {
@@ -353,16 +401,98 @@
     return null;
   }
 
-  function drawGanttDependencies() {
-    ctx.save();
-    ctx.globalAlpha = 0.64;
-    ctx.fillStyle = colors.inkMid;
+  function dependencyMaskCoverage(route, maskBuffer) {
+    var total = 0;
+    var remaining = 0;
+    forEachDependencyMaskCell(route, function(idx) {
+      total += 1;
+      if (maskBuffer[idx]) remaining += 1;
+    });
+    if (!total) return 0;
+    return remaining / total;
+  }
 
-    for (var y = 0; y < ROWS; y += 1) {
-      for (var x = 0; x < COLUMNS; x += 1) {
-        if (!ganttDependencyMask[indexFor(x, y)]) continue;
-        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+  function gateMaskCoverage(gate, maskBuffer) {
+    var total = 0;
+    var remaining = 0;
+    for (var dy = -gate.r; dy <= gate.r; dy += 1) {
+      for (var dx = -gate.r; dx <= gate.r; dx += 1) {
+        if (Math.abs(dx) + Math.abs(dy) > gate.r) continue;
+        var x = gate.x + dx;
+        var y = gate.y + dy;
+        if (x < 0 || y < 0 || x >= COLUMNS || y >= ROWS) continue;
+        total += 1;
+        if (maskBuffer[indexFor(x, y)]) remaining += 1;
       }
+    }
+    if (!total) return 0;
+    return remaining / total;
+  }
+
+  function drawGanttDependencies(layout) {
+    ctx.save();
+    ctx.strokeStyle = colors.inkMid;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = Math.max(0.8, CELL_SIZE * 0.18);
+
+    for (var i = 0; i < layout.dependencies.length; i += 1) {
+      var dep = layout.dependencies[i];
+      var fromNode = resolveDependencyNode(layout, dep.from, 'from');
+      var toNode = resolveDependencyNode(layout, dep.to, 'to');
+      var route = buildDependencyRoute(fromNode, toNode);
+      if (!route) continue;
+
+      var coverage = dependencyMaskCoverage(route, ganttDependencyMask);
+      if (coverage <= 0) continue;
+
+      var sx = (route.sx + 0.5) * CELL_SIZE;
+      var sy = (route.sy + 0.5) * CELL_SIZE;
+      var elbowX = (route.elbowX + 0.5) * CELL_SIZE;
+      var tx = (route.tx + 0.5) * CELL_SIZE;
+      var ty = (route.ty + 0.5) * CELL_SIZE;
+
+      ctx.globalAlpha = 0.14 + (0.72 * coverage);
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.lineTo(elbowX, sy);
+      ctx.lineTo(elbowX, ty);
+      ctx.lineTo(tx, ty);
+      ctx.stroke();
+
+      var arrowSize = Math.max(2.2, CELL_SIZE * 0.34);
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(tx - (route.dir * arrowSize), ty - (arrowSize * 0.85));
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(tx - (route.dir * arrowSize), ty + (arrowSize * 0.85));
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  function drawGanttMilestones(layout) {
+    ctx.save();
+    ctx.fillStyle = colors.rust;
+
+    var diamondRadius = Math.max(2.4, CELL_SIZE * 0.42) * 3;
+    for (var i = 0; i < layout.gates.length; i += 1) {
+      var gate = layout.gates[i];
+      var coverage = gateMaskCoverage(gate, ganttGateMask);
+      if (coverage <= 0) continue;
+
+      var cx = (gate.x + 0.5) * CELL_SIZE;
+      var cy = (gate.y + 0.5) * CELL_SIZE;
+      ctx.globalAlpha = 0.14 + (0.82 * coverage);
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - diamondRadius);
+      ctx.lineTo(cx + diamondRadius, cy);
+      ctx.lineTo(cx, cy + diamondRadius);
+      ctx.lineTo(cx - diamondRadius, cy);
+      ctx.closePath();
+      ctx.fill();
     }
 
     ctx.restore();
@@ -491,7 +621,7 @@
 
     var layout = buildGanttLayout();
     drawGanttTimeline(layout);
-    drawGanttDependencies();
+    drawGanttDependencies(layout);
 
     ctx.fillStyle = colors.scaffold;
     for (var y = 0; y < ROWS; y += 1) {
@@ -501,14 +631,7 @@
       }
     }
 
-    ctx.fillStyle = colors.rust;
-    for (var yy = 0; yy < ROWS; yy += 1) {
-      for (var xx = 0; xx < COLUMNS; xx += 1) {
-        if (!ganttGateMask[indexFor(xx, yy)]) continue;
-        ctx.fillRect(xx * CELL_SIZE, yy * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-      }
-    }
-
+    drawGanttMilestones(layout);
     drawGanttLabelsAndMilestones(layout);
   }
 
@@ -594,6 +717,26 @@
     return null;
   }
 
+  function canonicalPattern(patternName) {
+    if (patternName === 'block') {
+      return [[0, 0], [1, 0], [0, 1], [1, 1]];
+    }
+
+    if (patternName === 'beehive') {
+      return [[1, 0], [2, 0], [0, 1], [3, 1], [1, 2], [2, 2]];
+    }
+
+    if (patternName === 'blinker') {
+      return [[0, 1], [1, 1], [2, 1]];
+    }
+
+    if (patternName === 'glider') {
+      return [[1, 0], [2, 1], [0, 2], [1, 2], [2, 2]];
+    }
+
+    return null;
+  }
+
   function resolveInitialSeed() {
     if (seedSelect && seedPattern(seedSelect.value)) return seedSelect.value;
 
@@ -667,6 +810,60 @@
         );
       }
     }
+  }
+
+  function renderCanonicalPatternPreviews() {
+    var patternCanvases = Array.prototype.slice.call(
+      document.querySelectorAll('.ep-pattern-preview[data-ep-pattern]')
+    );
+    var previewCellSize = 5;
+
+    for (var i = 0; i < patternCanvases.length; i += 1) {
+      var previewCanvas = patternCanvases[i];
+      if (!previewCanvas || typeof previewCanvas.getContext !== 'function') continue;
+
+      var previewCtx = previewCanvas.getContext('2d');
+      if (!previewCtx) continue;
+
+      previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+      var patternName = previewCanvas.getAttribute('data-ep-pattern');
+      var pattern = canonicalPattern(patternName);
+      if (!pattern || !pattern.length) continue;
+
+      var maxX = 0;
+      var maxY = 0;
+      for (var j = 0; j < pattern.length; j += 1) {
+        maxX = Math.max(maxX, pattern[j][0]);
+        maxY = Math.max(maxY, pattern[j][1]);
+      }
+
+      var cellsW = maxX + 1;
+      var cellsH = maxY + 1;
+      var patternW = cellsW * previewCellSize;
+      var patternH = cellsH * previewCellSize;
+      var offsetX = Math.floor((previewCanvas.width - patternW) / 2);
+      var offsetY = Math.floor((previewCanvas.height - patternH) / 2);
+
+      previewCtx.fillStyle = colors.alive;
+      for (var k = 0; k < pattern.length; k += 1) {
+        previewCtx.fillRect(
+          offsetX + (pattern[k][0] * previewCellSize),
+          offsetY + (pattern[k][1] * previewCellSize),
+          previewCellSize,
+          previewCellSize
+        );
+      }
+    }
+  }
+
+  function setPatternPanelOpen(isOpen) {
+    if (!patternToggleButton || !patternPanel) return;
+    patternToggleButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    patternToggleButton.textContent = isOpen ? '- Patterns to look for' : '+ Patterns to look for';
+    patternPanel.classList.toggle('is-open', isOpen);
+    patternPanel.classList.toggle('is-collapsed', !isOpen);
+    patternPanel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
   }
 
   function resolveEmitterSeed(seedName) {
@@ -930,7 +1127,16 @@
     });
   }
 
+  if (patternToggleButton && patternPanel) {
+    setPatternPanelOpen(false);
+    patternToggleButton.addEventListener('click', function () {
+      var isExpanded = patternToggleButton.getAttribute('aria-expanded') === 'true';
+      setPatternPanelOpen(!isExpanded);
+    });
+  }
+
   renderSeedPreviews();
+  renderCanonicalPatternPreviews();
   setActiveSeed(resolveInitialSeed());
   applySeed(currentSeed);
   syncStartControl();

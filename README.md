@@ -9,37 +9,37 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ## Site Structure
 
 - **Home** (`/`) — identity and orientation
-- **Modules** (`/modules/`) — interactive artifacts (numbered `xx`, `xx.yy`)
+- **Modules** (`/modules/`) — interactive artifacts with local section numbering inside each module
 - **Notes** (`/notes/`) — narrative context, stories, and reflections (text-first)
 - **Site Notes** (`/colophon/`) — utility/meta information
 
 ## Modules
 
-- **01 · Emergence Primer** — Conway's Game of Life as a science-first emergence primer.
-  - **01.01 Conway's Game of Life** (`/modules/emergence-primer/`)
-  - **01.02 GANTT meets Game of Life** (`/modules/emergence-primer/ganttgol/`)
-- **02 · Diagnostics** *(planned)* — Radar/positioning output from organisational survey questions.
-- **03 · The Garbage Can Model** — An interactive implementation of Cohen, March & Olsen's 1972 model of organizational decision-making. Includes a narrative essay, taxonomy of organisation types, a concept animation, an exploration surface, and an assessment flow.
-  - **03.01 Narrative** (`/modules/garbage-can/`)
-  - **03.02 Taxonomy** (`/modules/garbage-can/taxonomy/`)
-  - **03.03 What's a Garbage Can?** (`/modules/garbage-can/can-explainer/`)
-  - **03.04 Explore** (`/modules/garbage-can/explorer/`)
-  - **03.05 Assess** (`/modules/garbage-can/assess/`)
-- **04 · Management Mix** — Maps where traditional control and complexity-informed learning coexist, clash, or drift apart. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
-  - **04.01 Epistemic Bets** (`/modules/mix-mapper/`)
-- **05 · CV & Skills** — CV plus interactive force-directed skills graph linking role chronology with domain, technical, and leadership depth.
-  - **05.01 Skills Graph** (`/modules/experience-skill-graph/`)
-  - **05.02 CV** (`/modules/experience-skill-graph/cv/`)
-  - Shortcut URLs: `/skills/` -> `05.01`, `/cv/` -> `05.02`
-- **06 · The Descent** — How one piece of product work moves from open problem to verifiable criterion. The sections of a brief as stations of a descent. Paired narratively with Module 04 (same epistemic bet, at unit scale).
-  - **06.01 The Descent** (`/modules/the-descent/`)
-  - **06.02 Section Map** (`/modules/the-descent/section-map/`)
+- **Emergence Primer** — Local rules yielding global patterns.
+  - **01 Conway's Game of Life** (`/modules/emergence-primer/`)
+  - **02 GANTT meets Game of Life** (`/modules/emergence-primer/ganttgol/`)
+- **Organisational Diagnostic** *(planned)* — A situation check for predictive vs adaptive contexts.
+- **The Garbage Can Model** — Organisational choice under ambiguity. An interactive implementation of Cohen, March & Olsen's 1972 model, with narrative essay, taxonomy of organisation types, a concept animation, an exploration surface, and an assessment flow.
+  - **01 Narrative** (`/modules/garbage-can/`)
+  - **02 Taxonomy** (`/modules/garbage-can/taxonomy/`)
+  - **03 What's a Garbage Can?** (`/modules/garbage-can/can-explainer/`)
+  - **04 Explore** (`/modules/garbage-can/explorer/`)
+  - **05 Assess** (`/modules/garbage-can/assess/`)
+- **Management Mix** — Where traditional control and adaptive learning coexist. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
+  - **01 Epistemic Bets** (`/modules/mix-mapper/`)
+- **The Descent** — From open problem to verifiable criterion. The sections of a brief as stations of a descent. Paired narratively with Module 04 (same epistemic bet, at unit scale).
+  - **01 The Descent** (`/modules/the-descent/`)
+  - **02 Section Map** (`/modules/the-descent/section-map/`)
+
+### Also on site
+
+- **CV & Skills** — force-directed skills graph plus CV. Reachable via the footer and the shortcut URLs `/skills/` → `/modules/experience-skill-graph/` and `/cv/` → `/modules/experience-skill-graph/cv/`.
 
 ### Module 06 Contract (Minimal)
 
-- Canonical root is `06.01` at `/modules/the-descent/`.
-- Section Map is `06.02` at `/modules/the-descent/section-map/`.
-- `06.02` runtime is data-driven (`STATIONS`, `TRACKS`, `ARTIFACTS`) and the anchor mode toggle must remain mouse + keyboard accessible (Enter/Space on toggleable rows).
+- Canonical root is local section `01` at `/modules/the-descent/`.
+- Section Map is local section `02` at `/modules/the-descent/section-map/`.
+- Section `02` runtime is data-driven (`STATIONS`, `TRACKS`, `ARTIFACTS`) and the anchor mode toggle must remain mouse + keyboard accessible (Enter/Space on toggleable rows).
 
 ## Built With
 
@@ -157,11 +157,11 @@ git commit --allow-empty -m "Force GitHub Pages redeploy" && git push origin mai
 
 ## Module Scaffolding
 
-- Canonical pattern: `xx.01` is the module root (`/modules/<slug>/`), not a nested subpage.
+- Canonical pattern: local section `01` is the module root (`/modules/<slug>/`), not a nested subpage.
 - Create a new module landing page scaffold:
-  - `node scripts/new-module.js --number 06 --slug decision-theater --title "Decision Theater"`
+  - `node scripts/new-module.js --slug decision-theater --title "Decision Theater"`
 - The scaffold writes `modules/<slug>/index.html` with:
-  - root-level `xx.01` active sub-nav (`href="./"`)
+  - root-level `01` active sub-nav (`href="./"`)
   - module back-arrow link to `/modules/`
 
 ## Themes

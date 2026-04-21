@@ -11,12 +11,11 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     var DEFAULT_MODULE_MENU_ITEMS = [
-      { number: '01', title: 'Emergence Primer', slug: 'emergence-primer', path: 'emergence-primer/' },
-      { number: '02', title: 'Diagnostics', slug: 'maturity', path: 'maturity/', status: 'coming-soon' },
-      { number: '03', title: 'Garbage Can Model', slug: 'garbage-can', path: 'garbage-can/' },
-      { number: '04', title: 'Management Mix', slug: 'mix-mapper', path: 'mix-mapper/' },
-      { number: '05', title: 'CV & Skills', slug: 'experience-skill-graph', path: 'experience-skill-graph/' },
-      { number: '06', title: 'The Descent', slug: 'the-descent', path: 'the-descent/' }
+      { title: 'Emergence Primer', slug: 'emergence-primer', path: 'emergence-primer/' },
+      { title: 'Organisational Diagnostic', slug: 'maturity', path: 'maturity/', status: 'coming-soon' },
+      { title: 'The Garbage Can Model', slug: 'garbage-can', path: 'garbage-can/' },
+      { title: 'Management Mix', slug: 'mix-mapper', path: 'mix-mapper/' },
+      { title: 'The Descent', slug: 'the-descent', path: 'the-descent/' }
     ];
     var NAV_SWATCH_ALLOWLIST = [
       'white',
@@ -67,7 +66,6 @@
       var source = fromWindow || DEFAULT_MODULE_MENU_ITEMS;
       return source.map(function (item) {
         return {
-          number: (item && item.number) || '',
           title: (item && item.title) || '',
           slug: (item && item.slug) || '',
           path: (item && item.path) || '',
@@ -93,6 +91,73 @@
       });
       if (!aboutNavLink && navCandidates.length) aboutNavLink = navCandidates[0];
       return (aboutNavLink && aboutNavLink.getAttribute('href')) || './';
+    }
+
+    function currentPathname() {
+      if (!window || !window.location || typeof window.location.pathname !== 'string') return '';
+      return normalizePathname(window.location.pathname);
+    }
+
+    function shouldAutoExpandModulesForViewport() {
+      return false;
+    }
+
+    function isNotesPath(pathname) {
+      return pathname === '/notes/' || pathname.indexOf('/notes/') === 0;
+    }
+
+    function isCvPath(pathname) {
+      return pathname === '/cv/' || pathname.indexOf('/modules/experience-skill-graph/cv/') === 0;
+    }
+
+    function isExperiencePath(pathname) {
+      if (pathname === '/skills/') return true;
+      if (pathname.indexOf('/modules/experience-skill-graph/') !== 0) return false;
+      return pathname.indexOf('/modules/experience-skill-graph/cv/') !== 0;
+    }
+
+    function isModulesPath(pathname) {
+      if (pathname === '/modules/' || pathname === '/modules') return true;
+      if (pathname.indexOf('/modules/') !== 0) return false;
+      return pathname.indexOf('/modules/experience-skill-graph/') !== 0;
+    }
+
+    function createPrimaryNavLink(config) {
+      var node = document.createElement('a');
+      node.className = 'nav-link nav-link--editorial' + (config.active ? ' nav-link--active' : '');
+      node.href = config.href;
+      node.textContent = config.label;
+      if (config.active) node.setAttribute('aria-current', 'page');
+      if (config.role) node.setAttribute('data-nav-role', config.role);
+      return node;
+    }
+
+    function normalizePrimaryNavLinks(rootPrefix) {
+      if (
+        !navLinks ||
+        typeof navLinks.textContent !== 'string' ||
+        typeof navLinks.appendChild !== 'function' ||
+        !document ||
+        typeof document.createElement !== 'function'
+      ) {
+        return;
+      }
+
+      var pathname = currentPathname();
+      var notesHref = joinHref(rootPrefix, 'notes/');
+      var cvHref = joinHref(rootPrefix, 'modules/experience-skill-graph/cv/');
+      var experienceHref = joinHref(rootPrefix, 'modules/experience-skill-graph/');
+      var modulesHref = joinHref(rootPrefix, 'modules/');
+
+      navLinks.textContent = '';
+      [
+        { label: 'Notes', href: notesHref, active: isNotesPath(pathname) },
+        { label: 'CV', href: cvHref, active: isCvPath(pathname) },
+        { label: 'Experience', href: experienceHref, active: isExperiencePath(pathname) },
+        { label: 'Modules', href: modulesHref, active: isModulesPath(pathname), role: 'modules' }
+      ].forEach(function (item) {
+        navLinks.appendChild(createPrimaryNavLink(item));
+      });
     }
 
     function ensureFooterActions() {
@@ -147,7 +212,7 @@
       modulesSubmenu.hidden = !open;
       modulesToggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
       modulesToggleButton.setAttribute('aria-label', open ? 'Collapse modules list' : 'Expand modules list');
-      modulesToggleButton.textContent = open ? '-' : '+';
+      modulesToggleButton.setAttribute('title', open ? 'Collapse modules list' : 'Expand modules list');
       if (open) modulesToggleButton.classList.add('is-expanded');
       else modulesToggleButton.classList.remove('is-expanded');
     }
@@ -170,34 +235,33 @@
       var modulesLink = null;
       candidates.forEach(function (link) {
         if (modulesLink) return;
+        var role = (link.getAttribute('data-nav-role') || '').toLowerCase();
+        if (role === 'modules') {
+          modulesLink = link;
+          return;
+        }
         var text = (link.textContent || '').trim().toLowerCase();
         var href = (link.getAttribute('href') || '').toLowerCase();
-        if (text === 'modules' || href === './' || href.indexOf('modules/') !== -1) {
-          if (text === 'modules' || href.indexOf('modules/') !== -1) {
-            modulesLink = link;
-          }
-        }
+        if (text === 'modules' || href === './') modulesLink = link;
       });
 
       if (!modulesLink || !modulesLink.parentNode) return;
 
       var modulesHref = modulesLink.getAttribute('href') || joinHref(rootPrefix, 'modules/');
-      modulesAutoExpand =
-        modulesLink.classList.contains('nav-link--active') ||
-        modulesLink.getAttribute('aria-current') === 'page';
-
-      var modulesLabel = (modulesLink.textContent || '').trim() || 'Modules';
-      var modulesLinkClass = (modulesLink.className || 'nav-link').trim();
-      if (!modulesLinkClass) modulesLinkClass = 'nav-link';
-      var modulesAriaCurrent = modulesLink.getAttribute('aria-current');
+      modulesAutoExpand = shouldAutoExpandModulesForViewport();
 
       modulesHead = document.createElement('div');
       modulesHead.className = 'nav-modules-head';
 
       modulesToggleButton = document.createElement('button');
       modulesToggleButton.type = 'button';
-      modulesToggleButton.className = 'nav-modules-toggle';
-      modulesToggleButton.textContent = '+';
+      modulesToggleButton.className = 'nav-link nav-link--editorial nav-modules-toggle nav-modules-toggle--bento';
+      modulesToggleButton.title = 'Modules';
+      modulesToggleButton.textContent = '';
+      var modulesToggleLabel = document.createElement('span');
+      modulesToggleLabel.className = 'visually-hidden';
+      modulesToggleLabel.textContent = 'Modules';
+      modulesToggleButton.appendChild(modulesToggleLabel);
       modulesToggleButton.setAttribute('aria-expanded', modulesAutoExpand ? 'true' : 'false');
       modulesToggleButton.setAttribute('aria-label', modulesAutoExpand ? 'Collapse modules list' : 'Expand modules list');
 
@@ -206,12 +270,6 @@
       modulesSubmenu.id = 'primary-nav-modules-submenu';
       modulesSubmenu.hidden = !modulesAutoExpand;
       modulesToggleButton.setAttribute('aria-controls', modulesSubmenu.id);
-
-      var modulesLandingLink = document.createElement('a');
-      modulesLandingLink.className = modulesLinkClass + ' nav-modules-link';
-      modulesLandingLink.href = modulesHref;
-      modulesLandingLink.textContent = modulesLabel;
-      if (modulesAriaCurrent) modulesLandingLink.setAttribute('aria-current', modulesAriaCurrent);
 
       var currentPath = '';
       if (window && window.location && typeof window.location.pathname === 'string') {
@@ -227,7 +285,7 @@
       }
 
       function createSubEntry(entry, isActive) {
-        var label = (entry.number ? entry.number + ' ' : '') + entry.title;
+        var label = entry.title;
         var isComingSoon = entry.status === 'coming-soon';
         var node = isComingSoon ? document.createElement('span') : document.createElement('a');
         node.className =
@@ -252,7 +310,6 @@
 
       var entries = getModuleMenuItems().map(function (item) {
         return {
-          number: item.number,
           title: item.title,
           slug: item.slug,
           status: item.status,
@@ -260,12 +317,14 @@
         };
       });
 
+      modulesSubmenu.appendChild(
+        createSubEntry({ title: 'All modules', slug: '', status: '', href: modulesHref }, isEntryActive(''))
+      );
       entries.forEach(function (entry) {
         modulesSubmenu.appendChild(createSubEntry(entry, isEntryActive(entry.slug)));
       });
 
       modulesHead.appendChild(modulesToggleButton);
-      modulesHead.appendChild(modulesLandingLink);
       modulesLink.parentNode.replaceChild(modulesHead, modulesLink);
       modulesHead.insertAdjacentElement('afterend', modulesSubmenu);
       positionModulesSubmenu();
@@ -277,7 +336,9 @@
       });
     }
 
-    initModulesBentoSection(detectRootPrefix());
+    var rootPrefix = detectRootPrefix();
+    normalizePrimaryNavLinks(rootPrefix);
+    initModulesBentoSection(rootPrefix);
 
     function isOpen() {
       return navLinks.classList.contains('is-open');
@@ -341,19 +402,31 @@
 
     if (window && typeof window.addEventListener === 'function') {
       window.addEventListener('resize', function () {
+        var nextAutoExpand = shouldAutoExpandModulesForViewport();
+        if (nextAutoExpand !== modulesAutoExpand) {
+          modulesAutoExpand = nextAutoExpand;
+        }
+        if (modulesAutoExpand) setModulesExpanded(true);
         positionModulesSubmenu();
       });
     }
 
     document.addEventListener('pointerdown', function (event) {
-      if (!isOpen()) return;
       var target = event.target;
+      var isModulesSubmenuOpen = modulesSubmenu && !modulesSubmenu.hidden;
+      if (isModulesSubmenuOpen) {
+        var inModulesHead = modulesHead && modulesHead.contains(target);
+        var inModulesSubmenu = modulesSubmenu && modulesSubmenu.contains(target);
+        if (!inModulesHead && !inModulesSubmenu) setModulesExpanded(false);
+      }
+      if (!isOpen()) return;
       if (navLinks.contains(target) || navToggle.contains(target)) return;
       closeMenu();
     });
 
     document.addEventListener('keydown', function (event) {
       if (event.key !== 'Escape') return;
+      if (modulesSubmenu && !modulesSubmenu.hidden) setModulesExpanded(false);
       closeMenu();
     });
 

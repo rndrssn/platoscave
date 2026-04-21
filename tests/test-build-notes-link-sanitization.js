@@ -29,6 +29,17 @@ function testRenderInlineHrefOutput() {
   const blocked = renderInline('[x](javascript:alert(1))');
   assert(/href="#"/.test(blocked), 'Expected blocked href to render as #');
   assert(!/javascript:/i.test(blocked), 'Expected blocked scheme to be removed from output');
+
+  const amp = renderInline('[q](https://a.com?x=1&y=2)');
+  assert(
+    /href="https:\/\/a\.com\?x=1&amp;y=2"/.test(amp),
+    'Expected & in href to be single-escaped'
+  );
+  assert(!/&amp;amp;/.test(amp), 'Expected no double-escape of & in href');
+
+  const labelWithEntities = renderInline('[a & b](https://example.com)');
+  assert(/>a &amp; b</.test(labelWithEntities), 'Expected label & to be escaped once');
+  assert(!/&amp;amp;/.test(labelWithEntities), 'Expected no double-escape of & in label');
 }
 
 function run() {

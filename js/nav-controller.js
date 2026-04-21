@@ -220,6 +220,14 @@
     function positionModulesSubmenu() {
       if (!modulesToggleButton || !modulesSubmenu || !navLinks) return;
       var anchorLeft = modulesToggleButton.offsetLeft + 6;
+      if (
+        typeof modulesToggleButton.getBoundingClientRect === 'function' &&
+        typeof navLinks.getBoundingClientRect === 'function'
+      ) {
+        var toggleRect = modulesToggleButton.getBoundingClientRect();
+        var navRect = navLinks.getBoundingClientRect();
+        anchorLeft = (toggleRect.left - navRect.left) + toggleRect.width;
+      }
       modulesSubmenu.style.setProperty('--modules-submenu-left', String(anchorLeft) + 'px');
     }
 
@@ -298,6 +306,7 @@
           node.href = entry.href;
         }
         node.textContent = label;
+
         if (isComingSoon) {
           var state = document.createElement('span');
           state.className = 'nav-sublink-state';

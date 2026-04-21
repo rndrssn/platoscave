@@ -992,6 +992,40 @@
     });
   }
 
+  var lifePanel = document.getElementById('ep-life-panel');
+  var jumpAnchors = document.querySelectorAll('.ep-jump');
+
+  function spotlightPanel() {
+    if (!lifePanel) return;
+    lifePanel.classList.remove('is-spotlight');
+    // Force reflow so the animation can re-trigger on repeated clicks.
+    void lifePanel.offsetWidth;
+    lifePanel.classList.add('is-spotlight');
+  }
+
+  if (lifePanel) {
+    lifePanel.addEventListener('animationend', function (event) {
+      if (event.animationName === 'ep-panel-spotlight') {
+        lifePanel.classList.remove('is-spotlight');
+      }
+    });
+  }
+
+  jumpAnchors.forEach(function (anchor) {
+    anchor.addEventListener('click', function () {
+      var seedKey = anchor.getAttribute('data-ep-jump-seed');
+      if (seedKey) {
+        var target = document.querySelector('.ep-seed-btn[data-ep-seed="' + seedKey + '"]');
+        if (target) target.click();
+      }
+      if (anchor.hasAttribute('data-ep-jump-patterns') && patternToggleButton && patternPanel) {
+        var isExpanded = patternToggleButton.getAttribute('aria-expanded') === 'true';
+        if (!isExpanded) setPatternPanelOpen(true);
+      }
+      spotlightPanel();
+    });
+  });
+
   renderSeedPreviews();
   renderCanonicalPatternPreviews();
   setActiveSeed(resolveInitialSeed());

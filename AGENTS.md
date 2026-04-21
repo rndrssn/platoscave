@@ -113,14 +113,14 @@ Includes navigation link checks and notes build checks.
 
 ## Module IA Contract
 
-- Live module root is canonical xx.01 at /modules/slug/
+- Live module root is canonical local section `01` at /modules/<slug>/
 - Root module page must have:
   - `class="module-back-link"` pointing to `../`
   - `class="module-sub-nav"`
-  - Exactly one active link: class module-sub-nav-link--active, href="./", aria-current="page", section number xx.01
+  - Exactly one active link: class module-sub-nav-link--active, href="./", aria-current="page", section number `01`
 - Never use root hard redirect (meta refresh) for live module roots
 - Legacy nested paths may redirect **to** root, never the reverse
-- New module scaffold: `node scripts/new-module.js` with --number, --slug, --title flags
+- New module scaffold: `node scripts/new-module.js` with --slug and --title flags
 
 Tests enforcing this contract:
 - `tests/test-module-landing-pattern-contract.js`
@@ -145,9 +145,9 @@ Tests enforcing this contract:
 - Assess path fixes problemInflow to 'moderate' — survey does not capture inflow timing. Explorer exposes all four parameters. See `docs/10-guides/GUIDE-architecture.md`.
 - Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both set by gc-pressure-narrative.js and gc-diagnosis.js before page wiring runs.
 - Use simResult.meta.problems (not a hardcoded constant) when computing problem proportions.
-- Module 06 root is canonical section 06.01 at `modules/the-descent/`; Section Map is section 06.02 at `modules/the-descent/section-map/`.
+- Module 06 root is canonical local section `01` at `modules/the-descent/`; Section Map is local section `02` at `modules/the-descent/section-map/`.
 - Section Map anchor switch behavior is part of the feature contract: activating the shadow anchor row toggles mode and must stay keyboard-accessible (Enter/Space).
-- Module 04 root is canonical 04.01 at `modules/mix-mapper/`, titled "Epistemic Bets" under "Management Mix".
+- Module 04 root is canonical local section `01` at `modules/mix-mapper/`, titled "Epistemic Bets" under "Management Mix".
 - Mix Mapper SVG colors: never use color-mix(…, transparent) via D3 .attr() — broken on iOS WebKit. Use D3 .style() for all visual properties (fill, stroke, fill-opacity, stroke-opacity) on SVG elements.
 - Mix Mapper SVG text: dominant-baseline and text-anchor must be CSS properties on the label class in `css/pages/mix-mapper.css`, not SVG presentation attributes.
 - buildColors() reads --viz-* token tier (--viz-ink-faint, --viz-ink-ghost, --viz-sage, --viz-rust, etc.). Do not revert to --ink-* UI tokens.

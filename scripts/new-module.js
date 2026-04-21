@@ -8,12 +8,12 @@ function printUsage() {
   console.log(
     [
       'Usage:',
-      '  node scripts/new-module.js --number 06 --slug decision-theater --title "Decision Theater" [--section "Overview"] [--description "..."] [--dry-run]',
+      '  node scripts/new-module.js --slug decision-theater --title "Decision Theater" [--section "Overview"] [--description "..."] [--dry-run]',
       '',
-      'Creates /modules/<slug>/index.html using the canonical xx.01 landing pattern:',
-      '- xx.01 lives at /modules/<slug>/ (root)',
+      'Creates /modules/<slug>/index.html using the canonical local section 01 landing pattern:',
+      '- section 01 lives at /modules/<slug>/ (root)',
       '- module back-link points to /modules/',
-      '- active local sub-nav link is xx.01 with href="./"',
+      '- active local sub-nav link is 01 with href="./"',
     ].join('\n')
   );
 }
@@ -48,12 +48,11 @@ function escapeHtml(value) {
 }
 
 function renderModuleLandingHtml(config) {
-  const moduleNumber = escapeHtml(config.number);
   const moduleTitle = escapeHtml(config.title);
   const sectionTitle = escapeHtml(config.section || 'Overview');
   const description = escapeHtml(
     config.description ||
-      ('Module ' + config.number + ': ' + config.title + ' (draft).')
+      ('Module: ' + config.title + ' (draft).')
   );
 
   return [
@@ -63,7 +62,7 @@ function renderModuleLandingHtml(config) {
     '  <meta charset="UTF-8" />',
     '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />',
     '  <meta name="description" content="' + description + '" />',
-    '  <title>' + moduleNumber + '.01 · ' + sectionTitle + ' · ' + moduleTitle + ' · To the Bedrock</title>',
+    '  <title>' + sectionTitle + ' · ' + moduleTitle + ' · To the Bedrock</title>',
     '  <script src="../../theme.config.js"></script>',
     '  <script src="../../js/theme-bootstrap.js"></script>',
     '  <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />',
@@ -96,10 +95,10 @@ function renderModuleLandingHtml(config) {
     '  <main id="main-content" class="main--narrow">',
     '    <div class="module-page">',
     '      <a class="module-back-link" href="../" aria-label="Back to Modules"></a>',
-    '      <a class="module-header-number module-context-number module-context-link" href="./">' + moduleNumber + ' &middot; ' + moduleTitle + '</a>',
+    '      <a class="module-header-number module-context-number module-context-link" href="./">' + moduleTitle + '</a>',
     '',
     '      <nav class="module-sub-nav" aria-label="Module sections">',
-    '        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">' + moduleNumber + '.01</span> ' + sectionTitle + '</a>',
+    '        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01</span> ' + sectionTitle + '</a>',
     '      </nav>',
     '',
     '      <header class="module-header">',
@@ -110,7 +109,7 @@ function renderModuleLandingHtml(config) {
     '      <article class="module-essay">',
     '        <section class="essay-section">',
     '          <h2 class="essay-heading">Draft</h2>',
-    '          <p class="essay-body">Build out this section. Keep xx.01 canonical at this root path.</p>',
+    '          <p class="essay-body">Build out this section. Keep section 01 canonical at this root path.</p>',
     '        </section>',
     '      </article>',
     '',
@@ -142,13 +141,9 @@ function main() {
     return;
   }
 
-  const number = String(args.number || '').trim();
   const slug = String(args.slug || '').trim();
   const title = String(args.title || '').trim();
 
-  if (!/^\d{2}$/.test(number)) {
-    throw new Error('Expected --number as two digits, for example 06');
-  }
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
     throw new Error('Expected --slug in kebab-case, for example decision-theater');
   }
@@ -165,7 +160,6 @@ function main() {
   }
 
   const html = renderModuleLandingHtml({
-    number,
     slug,
     title,
     section: args.section,

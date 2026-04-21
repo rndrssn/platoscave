@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Module 01.02: GANTT meets Game of Life as a planning-versus-emergence simulation." />
-  <title>01.02 · GANTT meets Game of Life · Emergence Primer · To the Bedrock</title>
+  <meta name="description" content="GANTT meets Game of Life as a planning-versus-emergence simulation within the Emergence Primer." />
+  <title>GANTT meets Game of Life · Emergence Primer · To the Bedrock</title>
   <script src="../../../theme.config.js"></script>
   <script src="../../../js/theme-bootstrap.js"></script>
   <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
@@ -37,12 +37,12 @@
   <main id="main-content" class="main--narrow">
     <div class="module-page emergence-primer-page">
       <a class="module-back-link" href="../../" aria-label="Back to Modules"></a>
-      <a class="module-header-number module-context-number module-context-link" href="../">01 &middot; Emergence Primer</a>
+      <a class="module-header-number module-context-number module-context-link" href="../">Emergence Primer</a>
 
       <nav class="module-sub-nav" aria-label="Module sections">
-        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01.01</span> Conway's Game of Life</a>
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Conway's Game of Life</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01.02</span> GANTT meets Game of Life</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">02</span> GANTT meets Game of Life</a>
       </nav>
 
       <header class="module-header">
@@ -50,19 +50,22 @@
         <p class="module-header-body">
           This simulation is an abstract comparison between two management logics. The Gantt scaffold represents a Tayloristic, plan-first model with linear phases and fixed dependencies. The Game of Life layer represents local interaction and feedback. As feedback accumulates, parts of the plan can hold while other parts are rewritten.
         </p>
+        <p class="module-header-cue">
+          <a class="ep-jump ep-jump--hero" href="#ep-life-panel" data-ep-jump-hero>Try the simulation below &darr;</a>
+        </p>
       </header>
 
       <article class="module-essay">
         <section class="essay-section">
           <h2 class="essay-heading">What This Is Saying</h2>
           <p class="essay-body">
-            In hard predictive project models, weak signals are often treated as noise until late, and plans are managed as if the system were mostly closed. That can work for complicated work, where cause and effect can be analysed and stabilised. Complex product work is different: open, coupled, and continuously perturbed by users, markets, operations, and adjacent teams.
+            In hard predictive project models, weak signals are often treated as noise until late, and plans are managed as if the system were mostly closed. That can work for complicated work, where cause and effect can be analysed and stabilised. Complex product work is different: open, coupled, and continuously perturbed by users, markets, operations, and adjacent teams &mdash; <a class="ep-jump" href="#ep-life-panel" data-ep-jump-seed="r-pentomino">see it unfold on R-pentomino &darr;</a>.
           </p>
           <p class="essay-body">
-            Planning still matters. The failure mode is treating first assumptions as fixed. Once work meets reality, feedback loops can amplify and reshape outcomes faster than static phase logic can adapt. For any chosen seed, this simulation is deterministic: the same initial state yields the same trajectory. This is a playful abstraction of that shift.
+            Planning still matters. The failure mode is treating first assumptions as fixed. Once work meets reality, feedback loops can amplify and reshape outcomes faster than static phase logic can adapt &mdash; <a class="ep-jump" href="#ep-life-panel" data-ep-jump-patterns>see the motifs that emerge &darr;</a>. For any chosen seed, this simulation is deterministic: the same initial state yields the same trajectory. This is a playful abstraction of that shift.
           </p>
 
-          <div class="ep-life-panel">
+          <div class="ep-life-panel" id="ep-life-panel" tabindex="-1">
             <div class="ep-life-toolbar ep-life-toolbar--inline" role="group" aria-label="Gantt Game of Life controls">
               <span class="can-controls ep-life-controls" role="group" aria-label="Simulation controls">
                 <button class="can-media-btn can-media-btn--play" id="ep-life-start" aria-label="Start simulation" title="Start simulation" aria-pressed="false" type="button"><span class="can-media-glyph can-media-glyph--play" aria-hidden="true"></span></button>
@@ -85,7 +88,7 @@
               </button>
             </div>
 
-            <p class="ep-life-mode-note">Press play above to start. Select a new seed to see how it impacts pattern emergence (selecting a seed stops and resets the simulation). Simulation is fully deterministic.</p>
+            <p class="ep-life-mode-note">Press play to start. Selecting a seed stops and resets the simulation. The simulation is deterministic.</p>
 
             <div class="ep-life-stage">
               <canvas id="ep-life-canvas" class="ep-life-canvas ep-life-canvas--cells" data-life-kind="gantt" width="960" height="600" role="img" aria-label="Gantt and Conway simulation grid at 192 by 120 cells"></canvas>

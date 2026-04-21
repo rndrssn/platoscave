@@ -1,22 +1,39 @@
 /* ─── Nav — mobile base ──────────────────────────────────── */
+/* Alignment knobs: tune the left edge of the title + link row together via
+ * --nav-inset, then fine-tune the link row alone via --nav-links-offset
+ * (positive shifts right, negative shifts left) to account for font
+ * side-bearing differences between the italic serif title and the mono
+ * link text. Override per breakpoint on .site-header. */
+.site-header {
+  display: contents;
+  --nav-inset: 2rem;
+  --nav-links-offset: 0rem;
+}
+
 .main-nav {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
   z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
-  height: 4rem;
+  justify-content: flex-start;
+  padding: 0 var(--nav-inset);
+  min-height: 2.25rem;
   background: var(--nav-surface);
   border-bottom: 3px solid var(--nav-surface-border);
   -webkit-backdrop-filter: var(--nav-surface-filter);
   backdrop-filter: var(--nav-surface-filter);
 }
 
+.main-nav > .nav-links {
+  margin-left: var(--nav-links-offset);
+}
+
 .nav-title {
+  display: block;
+  padding: 0.2rem var(--nav-inset) 0.05rem;
   font-family: var(--serif-alt);
   font-weight: 300;
   font-style: italic;
@@ -24,6 +41,9 @@
   color: var(--ink);
   letter-spacing: 0.01em;
   text-decoration: none;
+  background: var(--nav-surface);
+  -webkit-backdrop-filter: var(--nav-surface-filter);
+  backdrop-filter: var(--nav-surface-filter);
 }
 
 .nav-links {
@@ -155,12 +175,12 @@
 
 .nav-link::before {
   content: "";
-  width: 0.24rem;
-  height: 0.24rem;
+  width: 0;
+  height: 0;
   border-radius: 999px;
   background: transparent;
   display: inline-block;
-  margin-right: 0.3rem;
+  margin-right: 0;
   flex: 0 0 auto;
 }
 
@@ -385,19 +405,24 @@
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: flex-start;
     gap: 0;
     position: static;
-    width: auto;
+    width: 100%;
     min-width: 0;
     max-width: none;
-    margin-left: auto;
+    margin-left: var(--nav-links-offset);
     padding: 0;
     background: transparent;
     border: none;
     box-shadow: none;
     transform: none;
     animation: none;
+  }
+
+  .js-enabled .nav-links .nav-modules-head,
+  .js-enabled .nav-links.is-open .nav-modules-head {
+    margin-left: auto;
   }
 
   .js-enabled .nav-links .nav-link,
@@ -456,9 +481,8 @@
 
   .js-enabled .nav-links .nav-modules-head::before,
   .js-enabled .nav-links.is-open .nav-modules-head::before {
-    content: '/';
-    color: color-mix(in srgb, var(--viz-rust, var(--rust)) 55%, var(--paper) 45%);
-    margin: 0 0.8rem;
+    content: '';
+    margin: 0;
   }
 
   .js-enabled .nav-links .nav-modules-toggle,
@@ -764,8 +788,9 @@
 }
 
 @media (max-width: 899px) {
-  .main-nav {
-    padding: 0 0.9rem;
+  .site-header {
+    --nav-inset: 0.9rem;
+    --nav-links-offset: 0rem;
   }
 
   .nav-title {
@@ -782,13 +807,13 @@
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: flex-start;
     gap: 0;
     position: static;
-    width: auto;
+    width: 100%;
     min-width: 0;
     max-width: none;
-    margin-left: auto;
+    margin-left: var(--nav-links-offset);
     padding: 0;
     background: transparent;
     border: none;
@@ -798,6 +823,11 @@
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     overflow: visible;
+  }
+
+  .js-enabled .nav-links .nav-modules-head,
+  .js-enabled .nav-links.is-open .nav-modules-head {
+    margin-left: auto;
   }
 
   .js-enabled .nav-links .nav-link,
@@ -860,9 +890,8 @@
 
   .js-enabled .nav-links .nav-modules-head::before,
   .js-enabled .nav-links.is-open .nav-modules-head::before {
-    content: '/';
-    color: color-mix(in srgb, var(--viz-rust, var(--rust)) 55%, var(--paper) 45%);
-    margin: 0 0.24rem;
+    content: '';
+    margin: 0;
   }
 
   .js-enabled .nav-links .nav-modules-toggle,
@@ -1853,7 +1882,7 @@ main.main--narrow + footer {
 
 /* ─── Tablet — min-width: 640px ──────────────────────────── */
 @media (min-width: 640px) {
-  .main-nav { padding: 0 3rem; }
+  .main-nav { padding: 0 var(--nav-inset); }
   main   { padding: 0 2.5rem; }
   footer { padding: 2rem 2.5rem; }
 

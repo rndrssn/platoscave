@@ -20,15 +20,17 @@ function navHtml(prefix, active) {
   const notesCurrent = active === 'notes' ? ' aria-current="page"' : '';
   const modulesCurrent = active === 'modules' ? ' aria-current="page"' : '';
 
-  return '  <nav class="main-nav">\n'
+  return '  <header class="site-header">\n'
     + '    <a class="nav-title" href="' + prefix + '">To the Bedrock</a>\n'
+    + '    <nav class="main-nav">\n'
     + '    <div class="nav-links" id="primary-nav">\n'
     + '      <a class="' + homeClass + '" href="' + prefix + '">Home</a>\n'
     + '      <a class="' + notesClass + '" href="' + prefix + 'notes/"' + notesCurrent + '>Notes</a>\n'
     + '      <a class="' + modulesClass + '" href="' + prefix + 'modules/"' + modulesCurrent + '>Modules</a>\n'
     + '    </div>\n'
     + '    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>\n'
-    + '  </nav>';
+    + '    </nav>\n'
+    + '  </header>';
 }
 
 function htmlShell(params) {

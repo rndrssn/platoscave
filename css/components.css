@@ -5,7 +5,7 @@
  * side-bearing differences between the italic serif title and the mono
  * link text. Override per breakpoint on .site-header. */
 .site-header {
-  display: contents;
+  display: block;
   --nav-inset: 2rem;
   --nav-links-offset: 0rem;
   --nav-menu-scale: 1.3;
@@ -17,6 +17,7 @@
 }
 
 .main-nav {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   left: 0;

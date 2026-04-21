@@ -230,6 +230,7 @@ function formatDate(date) {
 
 function renderInline(rawText) {
   const codeSlots = [];
+  const linkSlots = [];
   let text = String(rawText || '');
 
   text = text.replace(/`([^`]+)`/g, (_, code) => {
@@ -238,16 +239,26 @@ function renderInline(rawText) {
     return '@@CODE' + idx + '@@';
   });
 
-  text = escapeHtml(text);
-
+  // Extract links before escapeHtml so hrefs are sanitised and escaped exactly once.
   text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
     const sanitizedHref = sanitizeHref(href);
     const safeHref = escapeAttr(sanitizedHref);
     const externalAttrs = isExternalHref(sanitizedHref)
       ? ' target="_blank" rel="noopener noreferrer"'
       : '';
-    return '<a href="' + safeHref + '"' + externalAttrs + '>' + label + '</a>';
+    const idx = linkSlots.length;
+    linkSlots.push({
+      open: '<a href="' + safeHref + '"' + externalAttrs + '>',
+      close: '</a>'
+    });
+    return '@@LINK' + idx + 'OPEN@@' + label + '@@LINK' + idx + 'CLOSE@@';
   });
+
+  text = escapeHtml(text);
+
+  text = text.replace(/@@LINK(\d+)OPEN@@/g, (_, idx) => linkSlots[Number(idx)].open);
+  text = text.replace(/@@LINK(\d+)CLOSE@@/g, (_, idx) => linkSlots[Number(idx)].close);
+
   text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
 

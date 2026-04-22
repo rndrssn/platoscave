@@ -22,6 +22,27 @@
   --link-inline-visited: #008FCC;
   --link-ui: var(--link-inline);
   --link-ui-hover: var(--link-inline-hover);
+  --link-text-strong: #2A2018;
+  --link-surface-inline: #CFF3FF;
+  --link-surface-inline-hover: #A9E9FF;
+  --link-surface-inline-active: #86DDF8;
+  --link-surface-inline-visited: #E8DBFF;
+  --link-surface-nav: #FFE8BD;
+  --link-surface-nav-hover: #FFD28A;
+  --link-surface-nav-active: #EAB15D;
+  --link-surface-nav-visited: #EADFFF;
+  --link-surface-nav-chip: #F5EAD2;
+  --link-surface-nav-chip-hover: #F0DFBF;
+  --link-surface-nav-chip-active: #E8D1A8;
+  --link-surface-nav-chip-visited: #F3E6CD;
+  --link-surface-cta: #FFD79A;
+  --link-surface-cta-hover: #FFC166;
+  --link-surface-cta-active: #E8A145;
+  --link-surface-cta-visited: #E3D2FF;
+  --link-surface-footer: #FFE177;
+  --link-surface-footer-hover: #FFC84D;
+  --link-surface-footer-active: #E3A72E;
+  --link-surface-footer-visited: #E3D2FF;
   --tag-chip: #FF5F6D;
   --tag-chip-hover: #FF7D89;
 

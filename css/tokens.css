@@ -35,6 +35,10 @@
   --link-surface-nav-chip-hover: #F0DFBF;
   --link-surface-nav-chip-active: #E8D1A8;
   --link-surface-nav-chip-visited: #F3E6CD;
+  --link-surface-context: #E6EBEE;
+  --link-surface-context-hover: #D9E1E7;
+  --link-surface-context-active: #CDD8E0;
+  --link-surface-context-visited: #E0E7ED;
   --link-surface-cta: #FFD79A;
   --link-surface-cta-hover: #FFC166;
   --link-surface-cta-active: #E8A145;

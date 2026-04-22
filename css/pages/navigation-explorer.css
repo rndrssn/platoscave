@@ -254,7 +254,6 @@
 
 .diagnosis-link:hover {
   color: var(--sage-light);
-  text-decoration: underline;
 }
 
 /* ─── Explorer page ──────────────────────────────────── */

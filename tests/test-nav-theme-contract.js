@@ -2,9 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const { readCssWithImports } = require('./helpers/read-css-with-imports.js');
 
 const tokensSource = fs.readFileSync(path.join(__dirname, '..', 'css', 'tokens.css'), 'utf8');
-const componentsSource = fs.readFileSync(path.join(__dirname, '..', 'css', 'components.css'), 'utf8');
+const componentsSource = readCssWithImports(path.join(__dirname, '..', 'css', 'components.css'));
 const coldThemeSource = fs.readFileSync(
   path.join(__dirname, '..', 'css', 'themes', 'decision-collision-cold.css'),
   'utf8'

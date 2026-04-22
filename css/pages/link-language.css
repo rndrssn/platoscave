@@ -1,0 +1,392 @@
+/* Canonical link language layer.
+ * Loaded last from css/pages.css so it wins the cascade without !important.
+ */
+
+/* ─── Shell links: title + primary nav ───────────────────── */
+.nav-title {
+  color: var(--link-text-strong);
+  text-decoration: none;
+  transition: none;
+}
+
+.nav-title:hover,
+.nav-title:focus-visible {
+  color: var(--link-text-strong);
+  box-shadow: inset 0 -0.2rem 0 var(--link-surface-nav-hover);
+}
+
+.nav-title:active {
+  box-shadow: inset 0 -0.2rem 0 var(--link-surface-nav-active);
+}
+
+.nav-link--active::before,
+.js-enabled .nav-links > .nav-link.nav-link--active::before,
+.js-enabled .nav-links.is-open > .nav-link.nav-link--active::before,
+.js-enabled .nav-links .nav-sublink.nav-sublink--active::before,
+.js-enabled .nav-links.is-open .nav-sublink.nav-sublink--active::before {
+  content: none !important;
+  margin-right: 0 !important;
+}
+
+.js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle),
+.js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle) {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip);
+  text-decoration: none;
+  border-radius: 0.14rem;
+  padding: 0.02em 0.14em;
+  display: inline-block;
+  min-height: auto;
+  line-height: 1.1;
+  margin-right: 0.56rem;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: none;
+}
+
+.js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle):hover,
+.js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle):focus-visible,
+.js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle):hover,
+.js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle):focus-visible {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip-hover);
+  text-decoration: none;
+}
+
+.js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle):active,
+.js-enabled .nav-links .nav-link.nav-link--editorial.nav-link--active:not(.nav-modules-toggle),
+.js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle):active,
+.js-enabled .nav-links.is-open .nav-link.nav-link--editorial.nav-link--active:not(.nav-modules-toggle) {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip-active);
+}
+
+.js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle):visited,
+.js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle):visited {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip-visited);
+}
+
+.js-enabled .nav-links > .nav-link.nav-link--editorial:not(.nav-modules-toggle)::after,
+.js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:not(.nav-modules-toggle)::after {
+  content: '';
+  margin: 0;
+}
+
+.js-enabled .nav-links > .nav-link.nav-link--editorial:not(.nav-modules-toggle):last-of-type,
+.js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:not(.nav-modules-toggle):last-of-type {
+  margin-right: 0;
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav);
+  text-decoration: none;
+  border-radius: 0.14rem;
+  padding: 0.07rem 0.28rem;
+  transition: none;
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink:hover,
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink:focus-visible,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:hover,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:focus-visible {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-hover);
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink:active,
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink.nav-sublink--active,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:active,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink.nav-sublink--active {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-active);
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink:visited,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:visited {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-visited);
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink.nav-sublink--coming,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink.nav-sublink--coming {
+  color: var(--ink-ghost);
+  background: transparent;
+}
+
+/* ─── Module breadcrumb + local section links ─────────────── */
+.module-sub-nav .module-sub-nav-link,
+.module-context-link {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip);
+  text-decoration: none;
+  border-radius: 0.14rem;
+  padding: 0.02em 0.16em;
+  transition: none;
+}
+
+.module-sub-nav .module-sub-nav-link:hover,
+.module-sub-nav .module-sub-nav-link:focus-visible,
+.module-context-link:hover,
+.module-context-link:focus-visible {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip-hover);
+  text-decoration: none;
+}
+
+.module-sub-nav .module-sub-nav-link:active,
+.module-sub-nav .module-sub-nav-link.module-sub-nav-link--active,
+.module-context-link:active {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip-active);
+}
+
+.module-sub-nav .module-sub-nav-link:visited,
+.module-context-link:visited {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip-visited);
+}
+
+.module-sub-nav .module-sub-nav-link.module-sub-nav-link--active .module-sub-nav-number,
+.module-sub-nav .module-sub-nav-link:focus-visible .module-sub-nav-number {
+  color: inherit;
+}
+
+/* ─── Content links: prose + CTA ─────────────────────────── */
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a {
+  color: var(--link-text-strong);
+  background: var(--link-surface-inline);
+  text-decoration: none;
+  border-radius: 0.14rem;
+  padding: 0.02em 0.14em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: none;
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a:hover,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a:focus-visible {
+  color: var(--link-text-strong);
+  background: var(--link-surface-inline-hover);
+  text-decoration: none;
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a:active {
+  color: var(--link-text-strong);
+  background: var(--link-surface-inline-active);
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a:visited {
+  color: var(--link-text-strong);
+  background: var(--link-surface-inline-visited);
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='experience-skill-graph/'] {
+  background: var(--link-surface-cta);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='experience-skill-graph/']:hover,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='experience-skill-graph/']:focus-visible {
+  background: var(--link-surface-cta-hover);
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='experience-skill-graph/']:active {
+  background: var(--link-surface-cta-active);
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='experience-skill-graph/']:visited {
+  background: var(--link-surface-cta-visited);
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/'],
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/'] {
+  color: var(--tag-chip);
+  background: transparent;
+  text-decoration: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/']:hover,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/']:hover,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/']:focus-visible,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/']:focus-visible {
+  color: var(--tag-chip-hover);
+  background: transparent;
+}
+
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/']:visited,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/']:visited {
+  color: var(--tag-chip);
+  background: transparent;
+}
+
+/* Taxonomy/modules card entry labels remain card-first, with chip accent */
+.essay-link-label {
+  color: var(--link-text-strong);
+  background: transparent;
+  text-decoration: none;
+  border-radius: 0.14rem;
+  padding: 0.01em 0.12em;
+}
+
+.essay-link:hover .essay-link-label,
+.essay-link:focus-visible .essay-link-label {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip-hover);
+  text-decoration: none;
+}
+
+/* ─── In-page navigation links (Game of Life jumps etc.) ─── */
+.ep-jump {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav);
+  text-decoration: none;
+  border: none;
+  border-radius: 0.14rem;
+  padding: 0.04em 0.16em;
+  transition: none;
+}
+
+.ep-jump:hover,
+.ep-jump:focus-visible {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-hover);
+  text-decoration: none;
+  outline: none;
+}
+
+.ep-jump:active {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-active);
+}
+
+.ep-jump:visited {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-visited);
+}
+
+/* ─── Section/page progression links ──────────────────────── */
+.footer-nav-link,
+.diagnosis-link {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip);
+  text-decoration: none;
+  border-radius: 0.14rem;
+  padding: 0.04em 0.16em;
+  transition: none;
+}
+
+.footer-nav-link:hover,
+.footer-nav-link:focus-visible,
+.diagnosis-link:hover,
+.diagnosis-link:focus-visible {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip-hover);
+  text-decoration: none;
+}
+
+.footer-nav-link:active,
+.diagnosis-link:active {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip-active);
+}
+
+.footer-nav-link:visited,
+.diagnosis-link:visited {
+  color: var(--link-text-strong);
+  background: var(--link-surface-nav-chip-visited);
+}
+
+/* ─── Notes tags + supporting micro-labels ────────────────── */
+.note-index-tags .module-tag,
+.note-page-tags .module-tag {
+  color: var(--tag-chip);
+  background: transparent;
+  text-decoration: none;
+}
+
+.note-index-tags .module-tag:hover,
+.note-index-tags .module-tag:focus-visible,
+.note-page-tags .module-tag:hover,
+.note-page-tags .module-tag:focus-visible {
+  color: var(--tag-chip-hover);
+  background: transparent;
+  text-decoration: none;
+}
+
+.note-index-tags .module-tag:visited,
+.note-page-tags .module-tag:visited {
+  color: var(--tag-chip);
+  background: transparent;
+  text-decoration: none;
+}
+
+.note-index-more {
+  color: var(--ink-faint);
+  text-decoration: none;
+}
+
+.note-index-link:hover .note-index-more,
+.note-index-link:focus-visible .note-index-more {
+  color: var(--ink-mid);
+  text-decoration: none;
+}
+
+/* ─── Footer utility/social links ─────────────────────────── */
+.footer-link {
+  color: var(--ink-faint);
+  background: transparent;
+  text-decoration: none;
+  border-radius: 0;
+  border: 0;
+  padding: 0;
+  transition: none;
+}
+
+.footer-link:hover,
+.footer-link:focus-visible {
+  color: var(--ink-mid);
+  background: transparent;
+}
+
+.footer-link:active {
+  color: var(--ink);
+  background: transparent;
+}
+
+.footer-link:visited {
+  color: var(--ink-faint);
+  background: transparent;
+}
+
+.footer-socials .contact-social-link,
+.footer-socials .footer-social-link,
+.footer-socials .footer-social-link--cv {
+  color: var(--link-ui);
+  text-decoration: none;
+  background: transparent;
+  transition: none;
+}
+
+.footer-socials .contact-social-link:hover,
+.footer-socials .contact-social-link:focus-visible,
+.footer-socials .footer-social-link:hover,
+.footer-socials .footer-social-link:focus-visible,
+.footer-socials .footer-social-link--cv:hover,
+.footer-socials .footer-social-link--cv:focus-visible {
+  color: var(--link-ui-hover);
+  text-decoration: none;
+  background: transparent;
+}
+
+.footer-socials .footer-social-link--cv:active,
+.footer-socials .footer-social-link--cv:visited {
+  color: var(--link-ui);
+  text-decoration: none;
+  background: transparent;
+}

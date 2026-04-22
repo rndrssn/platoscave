@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="CV and force-directed skills graph linking role chronology, domain depth, and leadership/technical skills." />
-  <title>CV &amp; Skills · To the Bedrock</title>
+  <title>Skills Graph · Experience-Skill Graph · To the Bedrock</title>
   <script src="../../theme.config.js"></script>
   <script src="../../js/theme-bootstrap.js"></script>
   <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
@@ -36,26 +36,21 @@
     </nav>
   </header>
 
-  <main id="main-content">
-    <div class="module-page cv-graph-page">
-      <a class="module-back-link" href="../" aria-label="Back to Modules"></a>
-      <a class="module-header-number module-context-number module-context-link" href="./">CV &amp; Skills</a>
-
-      <nav class="module-sub-nav" aria-label="Module sections">
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01</span> Skills Graph</a>
-        <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link" href="cv/"><span class="module-sub-nav-number">02</span> CV</a>
-      </nav>
-
-      <header class="module-header">
-        <div class="cv-header-row">
-          <h1 class="module-header-title">CV &amp; Skills</h1>
+  <main id="main-content" class="main--narrow">
+    <div class="experience-skill-page experience-skill-page--graph cv-graph-page">
+      <header class="experience-skill-masthead">
+        <div class="experience-skill-heading">
+          <h1 class="experience-skill-title">Skills Graph</h1>
+          <p class="experience-skill-subtitle">Product &middot; Technology &middot; Science</p>
         </div>
-        <p class="module-header-body">A force-directed skills graph linked to role history, domains, and leadership/technical depth.</p>
+        <nav class="experience-skill-switch" aria-label="Experience-skill views">
+          <a class="experience-skill-switch-link experience-skill-switch-link--active" href="./" aria-current="page">Skills Graph</a>
+          <a class="experience-skill-switch-link" href="cv/">CV</a>
+        </nav>
       </header>
 
-      <article class="module-essay">
-        <section class="essay-section">
+      <section class="experience-skill-section experience-skill-section--graph experience-skill-graph-stage">
+        <div class="experience-skill-graph-canvas">
           <p class="cv-graph-helper">Hover or tap a node to explore connections. Drag to rearrange.</p>
           <ul class="cv-graph-legend">
             <li>
@@ -77,10 +72,10 @@
           <div class="cv-graph-node-detail" id="cv-graph-node-detail" aria-live="polite"></div>
           <div class="cv-graph-surface" id="cv-graph-surface">
             <svg id="cv-force-graph" class="cv-graph-svg" role="img" aria-label="Force-directed graph of my experience and skills"></svg>
-            <p id="cv-graph-fallback" class="essay-body" hidden>Graph unavailable — try refreshing the page.</p>
+            <p id="cv-graph-fallback" class="experience-skill-body" hidden>Graph unavailable — try refreshing the page.</p>
           </div>
-        </section>
-      </article>
+        </div>
+      </section>
 
     </div>
   </main>

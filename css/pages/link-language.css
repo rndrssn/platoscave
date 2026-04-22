@@ -24,8 +24,8 @@
 .js-enabled .nav-links.is-open > .nav-link.nav-link--active::before,
 .js-enabled .nav-links .nav-sublink.nav-sublink--active::before,
 .js-enabled .nav-links.is-open .nav-sublink.nav-sublink--active::before {
-  content: none !important;
-  margin-right: 0 !important;
+  content: none;
+  margin-right: 0;
 }
 
 .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle),

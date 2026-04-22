@@ -104,6 +104,15 @@
   --card-pad-x:                  1.1rem;
   --card-pad-y:                  1rem;
   --shadow-nav-popover:          0 8px 22px rgba(42, 32, 24, 0.14);
+  --z-doodle-backdrop:           0;
+  --z-doodle-foreground:         1;
+  --z-content-overlay:           2;
+  --z-results-nav:               50;
+  --z-main-nav:                  100;
+  --z-nav-popover:               160;
+  --z-nav-submenu:               170;
+  --z-skip-link:                 1000;
+  --z-tooltip:                   1400;
   --nav-surface:                 color-mix(in srgb, var(--paper) 80%, transparent 20%);
   --nav-surface-border:          #000;
   --nav-surface-filter:          blur(12px) saturate(1.06);
@@ -113,6 +122,13 @@
   --nav-menu-active-surface:     color-mix(in srgb, var(--paper-dark) 80%, var(--paper) 20%);
   --nav-submenu-surface:         color-mix(in srgb, var(--paper-dark) 78%, var(--paper) 22%);
   --nav-submenu-filter:          blur(10px) saturate(1.05);
+  --nav-menu-open-top-offset:    calc(100% - 0.25rem);
+  --nav-submenu-top-desktop:     calc(100% + 0.35rem);
+  --nav-submenu-top-mobile:      calc(100% + 0.24rem);
+  --nav-editorial-shift-y:       -0.24rem;
+  --nav-modules-toggle-shift-y:  -0.3rem;
+  --nav-submenu-max-inline-size: min(22rem, calc(100vw - 1.6rem));
+  --results-nav-top-offset:      4rem;
 
   /* Visualization tokens consumed by gc-viz.js */
   --viz-ink:        var(--ink);

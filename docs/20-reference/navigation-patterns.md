@@ -4,7 +4,7 @@ type: REFERENCE
 title: Frontend Navigation Patterns
 status: ACTIVE
 created: 2026-03-22
-updated: 2026-03-31
+updated: 2026-04-22
 owner: Robert Andersson
 relates_to: [CORE, CORE-quality-gates, REFERENCE-css-architecture]
 tags: [navigation, ia, accessibility, responsive]
@@ -19,13 +19,23 @@ This document defines the canonical link and navigation patterns used across the
 
 ## 1. Global Navigation
 - Scope: all pages.
-- Pattern: `Home`, `Modules`, `Notes`.
+- Pattern at runtime: `Notes`, `CV`, `Experience`, plus a `Modules` launcher trigger.
+- Home path is provided by the title link (`To the Bedrock`).
+- Runtime normalization is handled by `js/nav-controller.js` from fallback HTML links.
 - Active item must include:
   - visual class (`nav-link--active`)
   - semantic state (`aria-current="page"`)
+- Modules launcher contract:
+  - trigger is a button (`.nav-modules-toggle`) with `aria-expanded` + `aria-controls`
+  - submenu uses `.nav-modules-submenu`
+  - submenu includes `All modules` and live module links
+  - `coming-soon` modules are intentionally excluded from the submenu
+- Sticky contract:
+  - only `.main-nav` pins after scrolling past title height (`.main-nav--pinned`)
+  - title row (`.nav-title`) remains in document flow
 - Mobile requirements:
   - target size at least `44x44px`
-  - menu toggle button must meet the same target size
+  - menu toggle buttons (`.nav-mobile-toggle`, `.nav-modules-toggle`) must meet the same target size
 
 ## 2. Module Context + Local Section Navigation
 - Scope: module pages and module sub-pages.
@@ -76,6 +86,7 @@ Exception:
 - `Home` (`/`): identity and orientation.
 - `Modules` (`/modules/`): interactive artifacts (numbered `xx`, `xx.yy`).
 - `Notes` (`/notes/`): text-first narrative context and reflections.
+- `CV` (`/modules/experience-skill-graph/cv/`) and `Experience` (`/modules/experience-skill-graph/`) are top-level utility destinations in primary navigation.
 - `Site Notes` (`/colophon/`): utility/meta page (footer-level destination).
 
 ## 7. QA Checklist
@@ -83,4 +94,5 @@ Exception:
 - No navigation target has a touch area below `44x44px`.
 - Navigation remains usable at `320px` viewport width.
 - Live module root pages keep `xx.01` active at `href="./"` (no root meta refresh).
+- Primary nav sticks correctly as link row only (title must not pin with it).
 - Navigation link test suite passes before deployment.

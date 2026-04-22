@@ -5,7 +5,7 @@
  * side-bearing differences between the italic serif title and the mono
  * link text. Override per breakpoint on .site-header. */
 .site-header {
-  display: block;
+  display: contents;
   --nav-inset: 2rem;
   --nav-links-offset: 0rem;
   --nav-menu-scale: 1.3;
@@ -1333,21 +1333,22 @@
 .cv-chip {
   display: inline-flex;
   align-items: center;
-  padding: 0.14rem 0.34rem 0.13rem 0.34rem;
-  border: 1px solid color-mix(in srgb, var(--gold) 42%, var(--paper) 58%);
-  border-radius: 0.16rem;
-  background: color-mix(in srgb, var(--gold) 18%, var(--paper) 82%);
-  color: color-mix(in srgb, var(--ink) 92%, var(--ink-mid) 8%);
+  padding: 0.15rem 0.36rem 0.14rem 0.36rem;
+  border: 1px dotted color-mix(in srgb, var(--slate) 48%, var(--paper) 52%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--slate) 9%, var(--paper) 91%);
+  color: color-mix(in srgb, var(--ink-mid) 88%, var(--ink) 12%);
   font-family: var(--mono);
-  font-size: 0.5rem;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
-  line-height: 1.15;
-  transition: border-color 0.18s ease, color 0.18s ease;
+  font-size: 0.52rem;
+  letter-spacing: 0.03em;
+  text-transform: none;
+  line-height: 1.2;
+  transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
 }
 
 .cv-chip:hover {
-  border-color: color-mix(in srgb, var(--gold) 56%, var(--paper) 44%);
+  border-color: color-mix(in srgb, var(--slate) 64%, var(--paper) 36%);
+  background: color-mix(in srgb, var(--slate) 14%, var(--paper) 86%);
   color: var(--ink);
 }
 

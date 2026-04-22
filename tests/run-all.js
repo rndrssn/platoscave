@@ -35,6 +35,7 @@ const tests = [
   'test-emergence-primer-jump-anchors-contract.js',
   'test-css-theme-contract.js',
   'test-nav-theme-contract.js',
+  'test-link-language-contract.js',
   'test-navigation-links.js',
   'test-no-cdn-runtime-deps.js',
   'test-security-hardening-contract.js',

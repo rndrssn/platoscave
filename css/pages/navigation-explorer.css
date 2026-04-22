@@ -7,7 +7,7 @@
   padding-top: 0;
   padding-bottom: 0.72rem;
   padding-left: 0.78rem;
-  margin-top: 0.12rem;
+  margin-top: 0.4rem;
   margin-bottom: 1.55rem;
   border-bottom: 0.75px dashed color-mix(in srgb, var(--ink-ghost) 58%, transparent 42%);
   overflow-x: auto;
@@ -99,37 +99,44 @@
 }
 
 .module-context-number {
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
 }
 
 .module-context-link::after {
   content: '';
   position: absolute;
   left: 0.02rem;
-  bottom: -0.3rem;
+  bottom: -0.42rem;
   width: 1px;
-  height: 0.22rem;
+  height: 0.28rem;
   background: color-mix(in srgb, var(--rust) 48%, var(--ink-ghost) 52%);
 }
 
 .module-back-link {
   display: inline-flex;
   align-items: center;
-  gap: 0;
+  gap: 0.32rem;
   margin: 0.08rem 0 0.22rem 0.02rem;
   font-family: var(--mono);
-  font-size: 0;
+  font-size: 0.58rem;
   font-weight: 300;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
-  color: color-mix(in srgb, var(--rust) 78%, var(--ink) 22%);
+  color: color-mix(in srgb, var(--rust) 74%, var(--ink-mid) 26%);
   line-height: 1;
+  white-space: nowrap;
 }
 
 .module-back-link::before {
   content: '\2190';
-  font-size: 1.1rem;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.module-back-link::after {
+  content: 'Modules';
+  font-size: 0.58rem;
   line-height: 1;
 }
 

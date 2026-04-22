@@ -44,6 +44,9 @@ This document defines the canonical link and navigation patterns used across the
   - section links may wrap to additional rows
   - no horizontal-only dependency for discoverability
 
+Exception:
+- `modules/experience-skill-graph/` and `modules/experience-skill-graph/cv/` use a dedicated CV/Skills shell with an internal view switcher (`Skills Graph` ↔ `CV`) and are intentionally outside the standard module breadcrumb/sub-nav contract.
+
 ## 3. Section Footer Navigation
 - Scope: module sub-pages.
 - Pattern: destination-explicit sibling progression.

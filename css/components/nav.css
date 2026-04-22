@@ -6,6 +6,8 @@
  * link text. Override per breakpoint on .site-header. */
 .site-header {
   display: block;
+  position: relative;
+  z-index: var(--z-main-nav);
   --nav-inset: 2rem;
   --nav-links-offset: 0rem;
   --nav-menu-scale: 1.3;
@@ -20,8 +22,10 @@
   position: -webkit-sticky;
   position: sticky;
   top: 0;
+  top: env(safe-area-inset-top, 0px);
   left: 0;
   right: 0;
+  width: 100%;
   z-index: var(--z-main-nav);
   display: flex;
   align-items: center;
@@ -32,6 +36,8 @@
   border-bottom: 3px solid var(--nav-surface-border);
   -webkit-backdrop-filter: var(--nav-surface-filter);
   backdrop-filter: var(--nav-surface-filter);
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .main-nav > .nav-links {

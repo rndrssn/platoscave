@@ -41,6 +41,7 @@ const tests = [
   'test-security-hardening-contract.js',
   'test-build-notes-link-sanitization.js',
   'test-experience-skill-graph-security-contract.js',
+  'test-experience-skill-shell-contract.js',
   'test-innerhtml-sink-contract.js',
   'test-vendor-d3-checksum.js',
   'test-gc-viz-contract.js',

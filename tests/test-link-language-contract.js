@@ -2,9 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const { readCssWithImports } = require('./helpers/read-css-with-imports.js');
 
 const pagesSource = fs.readFileSync(path.join(__dirname, '..', 'css', 'pages.css'), 'utf8');
-const componentsSource = fs.readFileSync(path.join(__dirname, '..', 'css', 'components.css'), 'utf8');
+const componentsSource = readCssWithImports(path.join(__dirname, '..', 'css', 'components.css'));
 const contentCardsSource = fs.readFileSync(path.join(__dirname, '..', 'css', 'pages', 'content-cards.css'), 'utf8');
 const linkLanguageSource = fs.readFileSync(path.join(__dirname, '..', 'css', 'pages', 'link-language.css'), 'utf8');
 

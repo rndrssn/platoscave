@@ -289,7 +289,7 @@
 
 .section-map-tooltip {
   position: absolute;
-  z-index: 1400;
+  z-index: var(--z-tooltip);
   pointer-events: none;
   max-width: 16rem;
   background: var(--paper);

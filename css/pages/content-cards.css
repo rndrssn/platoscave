@@ -44,7 +44,6 @@
 
 .footer-nav-link:hover {
   color: var(--sage-light);
-  text-decoration: underline;
 }
 
 .footer-nav-label-short {

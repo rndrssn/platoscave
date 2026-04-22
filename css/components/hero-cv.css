@@ -207,7 +207,7 @@
   display: inline-flex;
   align-items: center;
   padding: 0.15rem 0.36rem 0.14rem 0.36rem;
-  border: 1px dotted color-mix(in srgb, var(--slate) 48%, var(--paper) 52%);
+  border: 0;
   border-radius: 999px;
   background: color-mix(in srgb, var(--slate) 9%, var(--paper) 91%);
   color: color-mix(in srgb, var(--ink-mid) 88%, var(--ink) 12%);
@@ -216,11 +216,10 @@
   letter-spacing: 0.03em;
   text-transform: none;
   line-height: 1.2;
-  transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+  transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 .cv-chip:hover {
-  border-color: color-mix(in srgb, var(--slate) 64%, var(--paper) 36%);
   background: color-mix(in srgb, var(--slate) 14%, var(--paper) 86%);
   color: var(--ink);
 }
@@ -391,7 +390,8 @@
   }
 }
 
-.cv-graph-page .module-essay .essay-section:first-child {
+.cv-graph-page .module-essay .essay-section:first-child,
+.cv-graph-page .experience-skill-content .experience-skill-section:first-child {
   border-top: none;
   padding-top: 0.75rem;
 }
@@ -477,17 +477,23 @@
 }
 
 @media (max-width: 640px) {
-  .cv-graph-page .module-essay .essay-section:first-child {
+  .cv-graph-page .module-essay .essay-section:first-child,
+  .cv-graph-page .experience-skill-content .experience-skill-section:first-child {
     padding-top: 0.3rem;
   }
 }
 
 @media (max-width: 760px) {
   .cv-graph-surface {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
     overflow: hidden;
   }
 
   .cv-graph-svg {
+    transform: scale(0.8);
+    transform-origin: top center;
     overflow: hidden;
   }
 }

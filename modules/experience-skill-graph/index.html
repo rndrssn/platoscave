@@ -212,6 +212,8 @@
       function render(renderWidth) {
         var width = Math.max(320, renderWidth || surface.clientWidth || 320);
         var mobile = width < 760;
+        var viewportWidth = window.innerWidth || document.documentElement.clientWidth || width;
+        var constrainedMobile = viewportWidth < 760;
         var smallMobile = width < 430;
         var height = mobile
           ? Math.max(560, Math.min(980, Math.floor(width * 1.65)))
@@ -220,10 +222,10 @@
         var labelOffset = 6;
         var prevLayoutWidth = lastLayoutWidth || width;
         var prevLayoutHeight = lastLayoutHeight || height;
-        var minX = 12;
-        var maxX = width - 12;
-        var minY = 12;
-        var maxY = height - 18;
+        var minX = 10;
+        var maxX = width - 10;
+        var minY = 14;
+        var maxY = height - 14;
 
         var svg = d3.select(svgEl);
         svg.selectAll('*').remove();
@@ -250,14 +252,18 @@
           var prev = stateById[n.id];
           if (!prev) return d;
           if (typeof prev.x === 'number' && typeof prev.y === 'number') {
-            d.x = Math.max(minX, Math.min(maxX, (prev.x / Math.max(1, prevLayoutWidth)) * width));
-            d.y = Math.max(minY, Math.min(maxY, (prev.y / Math.max(1, prevLayoutHeight)) * height));
+            var restoredX = (prev.x / Math.max(1, prevLayoutWidth)) * width;
+            var restoredY = (prev.y / Math.max(1, prevLayoutHeight)) * height;
+            d.x = constrainedMobile ? Math.max(minX, Math.min(maxX, restoredX)) : restoredX;
+            d.y = constrainedMobile ? Math.max(minY, Math.min(maxY, restoredY)) : restoredY;
           }
           if (typeof prev.vx === 'number') d.vx = prev.vx;
           if (typeof prev.vy === 'number') d.vy = prev.vy;
           if (typeof prev.fx === 'number' && typeof prev.fy === 'number') {
-            d.fx = Math.max(minX, Math.min(maxX, (prev.fx / Math.max(1, prevLayoutWidth)) * width));
-            d.fy = Math.max(minY, Math.min(maxY, (prev.fy / Math.max(1, prevLayoutHeight)) * height));
+            var restoredFx = (prev.fx / Math.max(1, prevLayoutWidth)) * width;
+            var restoredFy = (prev.fy / Math.max(1, prevLayoutHeight)) * height;
+            d.fx = constrainedMobile ? Math.max(minX, Math.min(maxX, restoredFx)) : restoredFx;
+            d.fy = constrainedMobile ? Math.max(minY, Math.min(maxY, restoredFy)) : restoredFy;
           }
           return d;
         });
@@ -525,10 +531,12 @@
         });
 
         simulation.on('tick', function() {
-          simulation.nodes().forEach(function(d) {
-            d.x = Math.max(minX, Math.min(maxX, d.x));
-            d.y = Math.max(minY, Math.min(maxY, d.y));
-          });
+          if (constrainedMobile) {
+            simulation.nodes().forEach(function(d) {
+              d.x = Math.max(minX, Math.min(maxX, d.x));
+              d.y = Math.max(minY, Math.min(maxY, d.y));
+            });
+          }
           link
             .attr('x1', function(d) { return d.source.x; })
             .attr('y1', function(d) { return d.source.y; })

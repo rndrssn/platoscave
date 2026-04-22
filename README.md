@@ -34,6 +34,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ### Also on site
 
 - **CV & Skills** — force-directed skills graph plus CV. Reachable via the footer and the shortcut URLs `/skills/` → `/modules/experience-skill-graph/` and `/cv/` → `/modules/experience-skill-graph/cv/`.
+  - Uses a dedicated CV/Skills shell with a local view switcher (`Skills Graph` ↔ `CV`) rather than the standard module breadcrumb/sub-nav pattern.
 
 ### Module 06 Contract (Minimal)
 

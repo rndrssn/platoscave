@@ -482,11 +482,22 @@
   }
 }
 
+@media (max-width: 760px) {
+  .cv-graph-surface {
+    overflow: hidden;
+  }
+
+  .cv-graph-svg {
+    overflow: hidden;
+  }
+}
+
 .cv-graph-svg {
   display: block;
   width: 100%;
   height: auto;
   background: transparent;
+  overflow: visible;
 }
 
 .cv-graph-link {
@@ -641,4 +652,3 @@
     animation: none;
   }
 }
-

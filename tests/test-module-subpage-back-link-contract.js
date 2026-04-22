@@ -9,7 +9,6 @@ const SUBPAGE_PATHS = [
   'modules/garbage-can/can-explainer/index.html',
   'modules/garbage-can/explorer/index.html',
   'modules/garbage-can/assess/index.html',
-  'modules/experience-skill-graph/cv/index.html',
 ];
 
 function assert(condition, message) {

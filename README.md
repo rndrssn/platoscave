@@ -13,6 +13,13 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - **Notes** (`/notes/`) — narrative context, stories, and reflections (text-first)
 - **Site Notes** (`/colophon/`) — utility/meta information
 
+## Navigation Shell
+
+- Site title (`To the Bedrock`) links to `/`.
+- Global link row is normalized by `js/nav-controller.js` to: `Notes`, `CV`, `Experience`, and a `Modules` trigger.
+- `Modules` opens a contextual submenu (`All modules` + live modules only). Entries marked `coming-soon` are intentionally hidden from this launcher.
+- Sticky behavior: only the link row (`.main-nav`) pins on scroll (`.main-nav--pinned`); the title row remains in normal flow.
+
 ## Modules
 
 - **Emergence Primer** — Local rules yielding global patterns.

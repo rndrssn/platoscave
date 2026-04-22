@@ -19,12 +19,7 @@
 }
 
 .main-nav {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  top: env(safe-area-inset-top, 0px);
-  left: 0;
-  right: 0;
+  position: relative;
   width: 100%;
   z-index: var(--z-main-nav);
   display: flex;
@@ -38,6 +33,18 @@
   backdrop-filter: var(--nav-surface-filter);
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
+}
+
+.site-header.nav-main-pinned {
+  padding-bottom: var(--nav-bar-min-height);
+}
+
+.main-nav.main-nav--pinned {
+  position: fixed;
+  top: 0;
+  top: env(safe-area-inset-top, 0px);
+  left: 0;
+  right: 0;
 }
 
 .main-nav > .nav-links {
@@ -1121,4 +1128,17 @@
 .js-enabled .nav-links.is-open .nav-modules-toggle--bento[aria-expanded='true']::before,
 .js-enabled .nav-links.is-open .nav-modules-toggle--bento.is-expanded::before {
   transform: rotate(45deg);
+}
+
+/* Floating modules links: no popover chrome */
+.js-enabled .nav-links .nav-modules-submenu,
+.js-enabled .nav-links.is-open .nav-modules-submenu {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  padding: 0;
+  padding-inline: 0;
 }

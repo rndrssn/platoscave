@@ -19,27 +19,27 @@
   display: inline-flex;
   align-items: center;
   gap: 0;
-  margin-top: 0.72rem;
+  margin-top: 0.82rem;
   margin-bottom: 0.16rem;
-  padding: 0.08rem;
+  padding: 0.12rem;
   border: 0;
-  border-radius: 0.22rem;
-  background: color-mix(in srgb, var(--paper) 88%, var(--paper-dark) 12%);
+  border-radius: 0.36rem;
+  background: color-mix(in srgb, var(--paper) 82%, var(--gold) 18%);
 }
 
 .experience-skill-switch-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 1.44rem;
-  padding: 0.1rem 0.44rem;
+  min-height: 1.72rem;
+  padding: 0.16rem 0.64rem;
   border: 0;
-  border-radius: 0.14rem;
+  border-radius: 0.24rem;
   font-family: var(--serif-alt);
   font-style: italic;
-  font-size: 0.64rem;
-  font-weight: 300;
-  letter-spacing: 0.01em;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.015em;
   text-transform: none;
   text-decoration: none;
   color: color-mix(in srgb, var(--ink-mid) 90%, var(--ink-faint) 10%);
@@ -49,13 +49,14 @@
 .experience-skill-switch-link:hover,
 .experience-skill-switch-link:focus-visible {
   color: var(--ink);
-  background: color-mix(in srgb, var(--gold) 7%, var(--paper) 93%);
+  background: color-mix(in srgb, var(--gold) 16%, var(--paper) 84%);
   outline: none;
 }
 
 .experience-skill-switch-link--active {
   color: var(--ink);
-  background: color-mix(in srgb, var(--gold) 14%, var(--paper) 86%);
+  background: color-mix(in srgb, var(--gold) 28%, var(--paper) 72%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 62%, var(--ink) 38%);
 }
 
 .experience-skill-title {
@@ -91,6 +92,18 @@
   padding-top: 0.65rem;
 }
 
+.experience-skill-section--graph {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-left: clamp(1rem, 3vw, 2.4rem);
+  padding-right: clamp(1rem, 3vw, 2.4rem);
+}
+
+.experience-skill-graph-canvas {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
 .experience-skill-section-title {
   margin: 0 0 1.2rem;
   font-family: var(--serif-alt);
@@ -124,9 +137,9 @@
   }
 
   .experience-skill-switch-link {
-    min-height: 1.36rem;
-    padding: 0.1rem 0.34rem;
-    font-size: 0.58rem;
+    min-height: 1.56rem;
+    padding: 0.14rem 0.44rem;
+    font-size: 0.64rem;
   }
 
   .experience-skill-subtitle {
@@ -140,5 +153,10 @@
 
   .experience-skill-section:first-child {
     padding-top: 0.48rem;
+  }
+
+  .experience-skill-section--graph {
+    padding-left: 0.9rem;
+    padding-right: 0.9rem;
   }
 }

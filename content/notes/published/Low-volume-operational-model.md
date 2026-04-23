@@ -3,7 +3,7 @@ title: Low-volume-operational-model
 slug: lowvolumehighsoftware
 date: 2026-03-24
 status: published
-summary: nothing
+summary:You cannot deliver a low-volume high-software product using an operational model designed to deliver a high-volume high-software product. The two cases have fundamentally different economics, and each requires a different way of organising and measuring the development activity.
 tags: 
 - product-management
 related_modules: []

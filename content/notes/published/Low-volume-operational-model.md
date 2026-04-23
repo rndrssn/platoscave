@@ -3,7 +3,7 @@ title: Low-volume-operational-model
 slug: lowvolumehighsoftware
 date: 2026-03-24
 status: published
-summary: You cannot deliver a low-volume high-software content product using an operational model designed to deliver a high-volume high-software product. The two cases have fundamentally different economics, and each requires a different way of organising and measuring the development activity.
+summary: You cannot deliver a low-volume high-software content product using an operational model designed to deliver a high-volume high-software content product. The two cases have fundamentally different economics, and each requires a different way of organising and measuring the development activity.
 tags: 
 - product-management
 related_modules: []
@@ -12,7 +12,7 @@ related_modules: []
 
 ## Core claim
 
-You cannot deliver an LVHSC product using an operational model designed to deliver a high-volume high-software product. The two cases have fundamentally different economics, and each requires a different way of organising and measuring the development activity.
+You cannot deliver an LVHSC product using an operational model designed to deliver a high-volume high-software content product. The two cases have fundamentally different economics, and each requires a different way of organising and measuring the development activity.
 
 The mistake most enterprises make is to inherit the operational model of high-volume software organisations — the hyperscalers, the mass consumer platforms, the B2B SaaS at scale — and apply it to low-volume product contexts where its economic assumptions don't hold. The result is a fixed-cost structure that never amortises, teams that are measured on the wrong things, and a permanent gap between the cost of the organisation and the value it produces.
 
@@ -121,7 +121,7 @@ The software analogue has the same two-lever structure as high-volume manufactur
 - The **structural-cost lever** in software is the architecture of the system and the rent-vs-compose-vs-build choices that determine what capability the organisation owns versus rents. These are decisions made upstream and hard to reverse; they define what the product *is* and what fixed-cost commitments the organisation is carrying from then on.
 - The **operational-cost lever** in software is the team topology and ways of working — how coordination, handoffs, and the act of producing increments are organised. These costs accumulate during the development activity itself.
 
-High-volume high-software operations pull both levers in a specific direction. On the structural side, they invest in owned internal platforms and tooling — design systems, developer platforms, observability stacks, data platforms, feature-flag services — because these fixed-cost investments amortise across the many feature teams consuming them. On the operational side, they organise around deep role and team specialisation — separate functions for discovery, design, engineering, QA, SRE, data, security, enablement, product ops — because each function is fully loaded by the volume of work, and the coordination cost between them amortises across enough output to be worth paying.
+High-volume high-software content operations pull both levers in a specific direction. On the structural side, they invest in owned internal platforms and tooling — design systems, developer platforms, observability stacks, data platforms, feature-flag services — because these fixed-cost investments amortise across the many feature teams consuming them. On the operational side, they organise around deep role and team specialisation — separate functions for discovery, design, engineering, QA, SRE, data, security, enablement, product ops — because each function is fully loaded by the volume of work, and the coordination cost between them amortises across enough output to be worth paying.
 
 Both moves are rational at high volume for the same underlying reason: a fixed-cost investment (an owned platform, a specialist team) pays back across many downstream increments, the same way a production line pays back across many units. This logic holds whether the organisation is large or small; a small team producing a high rate of meaningful change can and often does invest in owned tooling and genuine specialisation, because the volume justifies it even at low headcount.
 
@@ -271,7 +271,7 @@ A practical evidence check is to baseline, over the prior 12 months, at least fo
 
 Putting the two levers and the measurement dimension together:
 
-**High-volume high-software operational model:**
+**High-volume high-software content operational model:**
 - Optimises for low **marginal cost per increment of functionality**.
 - *Structural-cost lever*: heavy investment in owned internal platforms and tooling that amortise across many feature teams. Bias toward building bespoke where owning the capability crosses the break-even point against per-unit rent premiums.
 - *Operational-cost lever*: deep role and team specialisation, with each specialist function fully loaded by the volume of work and coordination cost amortising across large output.

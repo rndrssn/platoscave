@@ -59,7 +59,8 @@
     "label": "product management",
     "slug": "product-management",
     "notes": [
-      "pm-complexity"
+      "pm-complexity",
+      "lowvolumehighsoftware"
     ],
     "modules": []
   },

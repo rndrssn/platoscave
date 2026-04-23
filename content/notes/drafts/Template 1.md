@@ -1,14 +1,13 @@
 ---
 title: template
 slug: template
-date: 2026-03-24
+date: 2026-03-30
 status: published
-summary: nothing
+summary:
 tags:
-  - test
+  - the-mix
 related_modules: []
 ---
-## title
+## Title
 
-- Basics.
 

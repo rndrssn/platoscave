@@ -34,6 +34,27 @@
     "relatedModules": []
   },
   {
+    "title": "Low-volume-High-software content development",
+    "slug": "lvhscd",
+    "summary": "nothing",
+    "date": "2026-03-24",
+    "tags": [],
+    "relatedModules": []
+  },
+  {
+    "title": "Low-volume-operational-model",
+    "slug": "lowvolumehighsoftware",
+    "summary": "nothing",
+    "date": "2026-03-24",
+    "tags": [
+      {
+        "label": "product management",
+        "slug": "product-management"
+      }
+    ],
+    "relatedModules": []
+  },
+  {
     "title": "What works and what doesn't work",
     "slug": "what-works-and-what-doesnt-work",
     "summary": "A first field note on how traditionally managed organisations view epistemological access to outcome causes and effects.",

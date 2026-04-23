@@ -34,6 +34,17 @@ function expectBuildFail(noteFileName, noteBody, expectedPattern) {
   }
 }
 
+function expectBuildPass(noteFileName, noteBody) {
+  const tempFile = writeTempNote(noteFileName, noteBody);
+  try {
+    const result = runBuild();
+    const output = ((result.stdout || '') + '\n' + (result.stderr || '')).trim();
+    assert.strictEqual(result.status, 0, 'build-notes.js should pass for valid note fixture\nOutput:\n' + output);
+  } finally {
+    if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
+  }
+}
+
 function run() {
   const stamp = Date.now();
 
@@ -90,7 +101,7 @@ function run() {
     /invalid status/i
   );
 
-  expectBuildFail(
+  expectBuildPass(
     `__tmp_missing_tags_${stamp}.md`,
     [
       '---',
@@ -103,8 +114,7 @@ function run() {
       '',
       'Body',
       '',
-    ].join('\n'),
-    /missing tags array/i
+    ].join('\n')
   );
 
   const recovery = runBuild();

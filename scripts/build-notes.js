@@ -187,10 +187,12 @@ function humanizeTagLabel(label) {
 }
 
 function normalizeTags(tagsValue) {
-  if (!Array.isArray(tagsValue)) return [];
+  const input = Array.isArray(tagsValue)
+    ? tagsValue
+    : (tagsValue === undefined || tagsValue === null || String(tagsValue).trim() === '' ? [] : [tagsValue]);
   const seen = new Set();
   const tags = [];
-  for (const raw of tagsValue) {
+  for (const raw of input) {
     const source = String(raw || '').trim();
     if (!source) continue;
     const slug = slugify(source);
@@ -468,21 +470,12 @@ function collectNotes() {
       process.exit(1);
     }
 
-    if (!Array.isArray(fm.tags) || fm.tags.length === 0) {
-      console.error('FAIL: missing tags array in', filePath);
-      process.exit(1);
-    }
-
     const dateObj = parseDate(dateRaw);
     if (!dateObj) {
       console.error('FAIL: invalid date in', filePath);
       process.exit(1);
     }
-    const tags = normalizeTags(fm.tags || []);
-    if (!tags.length) {
-      console.error('FAIL: tags must contain at least one valid tag in', filePath);
-      process.exit(1);
-    }
+    const tags = normalizeTags(fm.tags);
     const summary = String(fm.summary || '').trim();
     const fallbackSummary = extractBodyPreview(parsed.body, 4);
     const relatedModules = Array.isArray(fm.related_modules) ? fm.related_modules.map((v) => String(v).trim()).filter(Boolean) : [];

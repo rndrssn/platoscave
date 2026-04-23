@@ -30,7 +30,7 @@ Your note content here.
 Rules:
 - `slug` must be unique.
 - `date` format is `YYYY-MM-DD`.
-- `tags` must be a non-empty list of strings.
+- `tags` is optional. When provided, use a list of strings.
 - `summary` is optional.
 - `status` must be one of: `published`, `draft`, `unpublished`.
 
@@ -96,7 +96,7 @@ scripts/publish-note.sh -m "Publish note: <slug>" --only <slug>
 Example:
 
 ```bash
-scripts/publish-note.sh -m "Publish note: what-works-and-what-doesnt-work"
+scripts/publish-note.sh -m "Publish note: what-works-and-what-doesnt-work" --only what-works-and-what-doesnt-work
 ```
 
 Optional quicker mode (notes-focused checks):
@@ -121,6 +121,7 @@ Notes:
 - This is optional and separate from `build-notes.js`.
 - The polish step is constrained to spelling/punctuation/obvious grammar fixes.
 - Default model is `gpt-5-mini` (override with `NOTES_POLISH_MODEL`).
+- `-m "Publish note: <slug>"` sets the commit message only; it does not scope build validation to that slug.
 
 Safety guard for accidental published-note commits:
 
@@ -130,6 +131,8 @@ scripts/publish-note.sh -m "Publish note: <slug>" --quick --only <slug>
 
 - `--only` blocks the publish if any changed file under `content/notes/published/`
   is outside the allowed slug list.
+- `--only` does **not** limit `node scripts/build-notes.js` to one slug; build still validates all files in `content/notes/published/` with `status: published`.
+- If any published note has invalid frontmatter (for example missing `status` or invalid `date`), publish fails before commit/release.
 - You can pass multiple slugs:
 
 ```bash
@@ -148,7 +151,7 @@ Editing an already published note is supported:
 The script also enforces a clean staged index before it runs, to avoid committing unrelated pre-staged files.
 
 What it does:
-- builds notes (`node scripts/build-notes.js`)
+- builds notes (`node scripts/build-notes.js`) and validates all published note sources
 - runs tests (full suite by default, quick subset with `--quick`)
 - commits note artifacts
 - pushes `sandbox`

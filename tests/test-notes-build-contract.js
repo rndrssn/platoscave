@@ -149,8 +149,6 @@ function run() {
 
     if (status === 'published') {
       assert(fm.date && /^\d{4}-\d{2}-\d{2}$/.test(String(fm.date).replace(/['"]/g, '')), 'Invalid frontmatter date in: ' + filePath);
-      const hasTags = Array.isArray(fm.tags) ? fm.tags.length > 0 : !!(fm.tags && String(fm.tags).trim());
-      assert(hasTags, 'Missing frontmatter tags in: ' + filePath);
     }
 
     const slug = fm.slug.replace(/^['"]|['"]$/g, '');

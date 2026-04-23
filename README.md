@@ -66,8 +66,8 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - `node scripts/build-notes.js`
 - One-command publish flow from `sandbox`:
   - `scripts/publish-note.sh -m "Publish note: <slug>" --only <slug>`
-  - optional quick mode: `scripts/publish-note.sh -m "Publish note: <slug>" --quick --only <slug>`
-  - optional LLM polish: `OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --quick --polish <slug> --only <slug>`
+  - optional full-suite mode: `scripts/publish-note.sh -m "Publish note: <slug>" --only <slug> --full-suite`
+  - optional LLM polish: `OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --polish <slug> --only <slug>`
 - Generated output:
   - `notes/index.html`
   - `notes/<slug>/index.html`

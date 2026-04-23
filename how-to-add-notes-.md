@@ -99,16 +99,16 @@ Example:
 scripts/publish-note.sh -m "Publish note: what-works-and-what-doesnt-work" --only what-works-and-what-doesnt-work
 ```
 
-Optional quicker mode (notes-focused checks):
+Optional full-suite mode (runs `node tests/run-all.js` before release):
 
 ```bash
-scripts/publish-note.sh -m "Publish note: <slug>" --quick --only <slug>
+scripts/publish-note.sh -m "Publish note: <slug>" --only <slug> --full-suite
 ```
 
 Optional spelling/punctuation polish (LLM) before build/publish:
 
 ```bash
-OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --quick --polish <slug> --only <slug>
+OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --polish <slug> --only <slug>
 ```
 
 You can also run polish directly:
@@ -122,11 +122,13 @@ Notes:
 - The polish step is constrained to spelling/punctuation/obvious grammar fixes.
 - Default model is `gpt-5-mini` (override with `NOTES_POLISH_MODEL`).
 - `-m "Publish note: <slug>"` sets the commit message only; it does not scope build validation to that slug.
+- `--only` is required and keeps publish focused on the target note slug(s).
+- Default behavior is note-focused validation. Use `--full-suite` when you explicitly want full repository tests.
 
 Safety guard for accidental published-note commits:
 
 ```bash
-scripts/publish-note.sh -m "Publish note: <slug>" --quick --only <slug>
+scripts/publish-note.sh -m "Publish note: <slug>" --only <slug>
 ```
 
 - `--only` blocks the publish if any changed file under `content/notes/published/`
@@ -136,13 +138,13 @@ scripts/publish-note.sh -m "Publish note: <slug>" --quick --only <slug>
 - You can pass multiple slugs:
 
 ```bash
-scripts/publish-note.sh -m "Publish notes" --quick --only slug-a --only slug-b
+scripts/publish-note.sh -m "Publish notes" --only slug-a --only slug-b
 ```
 
 or:
 
 ```bash
-scripts/publish-note.sh -m "Publish notes" --quick --only slug-a,slug-b
+scripts/publish-note.sh -m "Publish notes" --only slug-a,slug-b
 ```
 
 Editing an already published note is supported:
@@ -151,8 +153,10 @@ Editing an already published note is supported:
 The script also enforces a clean staged index before it runs, to avoid committing unrelated pre-staged files.
 
 What it does:
-- builds notes (`node scripts/build-notes.js`) and validates all published note sources
-- runs tests (full suite by default, quick subset with `--quick`)
+- builds notes (`node scripts/build-notes.js`) and validates published note sources
+- validates target note slugs passed via `--only` against generated output
+- runs note-focused checks by default (`tests/test-notes-build-contract.js`)
+- runs full suite only when `--full-suite` is passed
 - commits note artifacts
 - pushes `sandbox`
 - merges and pushes into `develop` and `main`

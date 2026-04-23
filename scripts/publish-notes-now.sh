@@ -4,7 +4,7 @@ set -euo pipefail
 # One-command note publish from sandbox:
 # - Detect changed notes under content/notes/published
 # - Extract slugs from frontmatter
-# - Run publish-note.sh in quick mode with --only guards
+# - Run publish-note.sh in note-focused mode with --only guards
 #
 # Usage:
 #   scripts/publish-notes-now.sh
@@ -75,7 +75,7 @@ commit_msg="Publish notes: $(IFS=', '; echo "${UNIQ_SLUGS[*]}")"
 echo "Detected slugs: ${UNIQ_SLUGS[*]}"
 echo "Commit message: $commit_msg"
 
-cmd=("scripts/publish-note.sh" "-m" "$commit_msg" "--quick")
+cmd=("scripts/publish-note.sh" "-m" "$commit_msg")
 for slug in "${UNIQ_SLUGS[@]}"; do
   cmd+=("--only" "$slug")
 done

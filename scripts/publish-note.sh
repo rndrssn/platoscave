@@ -3,22 +3,21 @@ set -euo pipefail
 
 # Publish note workflow from sandbox:
 # 1) Build notes
-# 2) Run tests (full suite by default, quick subset optional)
+# 2) Validate targeted notes (and optionally run full test suite)
 # 3) Commit generated notes artifacts
 # 4) Push sandbox and merge into develop + main
 #
 # Usage:
-#   scripts/publish-note.sh -m "Publish note: <slug>"
-#   scripts/publish-note.sh -m "Publish note: <slug>" --quick
-#   scripts/publish-note.sh -m "Publish note: <slug>" --polish <slug-or-path>
 #   scripts/publish-note.sh -m "Publish note: <slug>" --only <slug>
+#   scripts/publish-note.sh -m "Publish note: <slug>" --only <slug> --full-suite
+#   scripts/publish-note.sh -m "Publish note: <slug>" --polish <slug-or-path> --only <slug>
 #   scripts/publish-note.sh -m "Publish notes" --only <slug-a>,<slug-b>
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 COMMIT_MSG=""
-QUICK_MODE="false"
+RUN_FULL_SUITE="false"
 POLISH_TARGET=""
 ONLY_SPECS=()
 
@@ -50,6 +49,114 @@ extract_slug_from_note_file() {
     | xargs
 }
 
+extract_status_from_note_file() {
+  local note_path="$1"
+  local note_content=""
+
+  if [[ -f "$note_path" ]]; then
+    note_content="$(cat "$note_path")"
+  else
+    note_content="$(git show "HEAD:$note_path" 2>/dev/null || true)"
+  fi
+
+  if [[ -z "$note_content" ]]; then
+    printf ''
+    return 0
+  fi
+
+  printf '%s' "$note_content" \
+    | awk -F': ' '/^status:[[:space:]]*/{print $2; exit}' \
+    | tr -d '"' \
+    | xargs
+}
+
+find_note_path_by_slug() {
+  local target_slug="$1"
+  local file_path=""
+  local note_slug=""
+
+  while IFS= read -r file_path; do
+    note_slug="$(extract_slug_from_note_file "$file_path")"
+    [[ -z "$note_slug" ]] && continue
+    note_slug="$(slugify "$note_slug")"
+    if [[ "$note_slug" == "$target_slug" ]]; then
+      printf '%s' "$file_path"
+      return 0
+    fi
+  done < <(find content/notes/published -type f -name '*.md' | sort)
+
+  return 1
+}
+
+note_index_contains_slug() {
+  local target_slug="$1"
+  node -e "
+    const fs = require('fs');
+    const target = process.argv[1];
+    const notes = JSON.parse(fs.readFileSync('data/notes-index.json', 'utf8'));
+    process.exit(notes.some((note) => note.slug === target) ? 0 : 1);
+  " "$target_slug" >/dev/null 2>&1
+}
+
+parse_allowed_note_slugs() {
+  local spec=""
+  local raw=""
+  local slug=""
+  ALLOWED_NOTE_SLUGS=""
+
+  for spec in "${ONLY_SPECS[@]}"; do
+    IFS=',' read -r -a parts <<< "$spec"
+    for raw in "${parts[@]}"; do
+      slug="$(slugify "$raw")"
+      if [[ -z "$slug" ]]; then
+        echo "Invalid --only value: '$raw'" >&2
+        exit 1
+      fi
+      ALLOWED_NOTE_SLUGS="${ALLOWED_NOTE_SLUGS}
+${slug}"
+    done
+  done
+}
+
+validate_allowed_note_outputs() {
+  local allowed_slug=""
+  local note_path=""
+  local note_status=""
+  local note_status_normalized=""
+
+  while IFS= read -r allowed_slug; do
+    [[ -z "$allowed_slug" ]] && continue
+    note_path="$(find_note_path_by_slug "$allowed_slug" || true)"
+    if [[ -z "$note_path" ]]; then
+      echo "Validation failed: no note source found for slug '$allowed_slug' under content/notes/published/." >&2
+      exit 1
+    fi
+
+    note_status="$(extract_status_from_note_file "$note_path")"
+    note_status_normalized="$(printf '%s' "$note_status" | tr '[:upper:]' '[:lower:]' | xargs)"
+
+    if [[ "$note_status_normalized" == "published" ]]; then
+      if [[ ! -f "notes/$allowed_slug/index.html" ]]; then
+        echo "Validation failed: expected generated page notes/$allowed_slug/index.html for published note '$allowed_slug'." >&2
+        exit 1
+      fi
+      if ! note_index_contains_slug "$allowed_slug"; then
+        echo "Validation failed: published note '$allowed_slug' is missing from data/notes-index.json." >&2
+        exit 1
+      fi
+    else
+      if [[ -f "notes/$allowed_slug/index.html" ]]; then
+        echo "Validation failed: found notes/$allowed_slug/index.html but note status is '$note_status_normalized'." >&2
+        exit 1
+      fi
+      if note_index_contains_slug "$allowed_slug"; then
+        echo "Validation failed: note '$allowed_slug' appears in data/notes-index.json with status '$note_status_normalized'." >&2
+        exit 1
+      fi
+    fi
+  done < <(printf '%s\n' "$ALLOWED_NOTE_SLUGS" | sed '/^$/d' | sort -u)
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -m|--message)
@@ -57,7 +164,12 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     --quick)
-      QUICK_MODE="true"
+      # Backward-compatible alias for note-focused validation (now the default).
+      RUN_FULL_SUITE="false"
+      shift
+      ;;
+    --full|--full-suite)
+      RUN_FULL_SUITE="true"
       shift
       ;;
     --polish)
@@ -92,6 +204,12 @@ if [[ -z "$COMMIT_MSG" ]]; then
   exit 1
 fi
 
+if [[ ${#ONLY_SPECS[@]} -eq 0 ]]; then
+  echo "--only is required (single slug or comma-separated slugs)." >&2
+  echo "Example: scripts/publish-note.sh -m \"Publish note: lowvolumehighsoftware\" --only lowvolumehighsoftware" >&2
+  exit 1
+fi
+
 CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 if [[ "$CURRENT_BRANCH" != "sandbox" ]]; then
   echo "This script must be run from branch 'sandbox'. Current branch: $CURRENT_BRANCH" >&2
@@ -102,6 +220,8 @@ if ! git diff --cached --quiet; then
   echo "Index is not clean. Please commit or unstage existing staged changes before running publish-note." >&2
   exit 1
 fi
+
+parse_allowed_note_slugs
 
 sync_target_branch() {
   local target="$1"
@@ -136,84 +256,64 @@ fi
 echo "==> Building notes"
 node scripts/build-notes.js
 
-if [[ ${#ONLY_SPECS[@]} -gt 0 ]]; then
-  echo "==> Enforcing --only note source guard"
-  ALLOWED_NOTE_SLUGS=""
+echo "==> Enforcing --only note source guard"
+CHANGED_NOTE_PATHS="$(
+  {
+    git diff --name-only -- content/notes/published
+    git diff --name-only --cached -- content/notes/published
+    git ls-files --others --exclude-standard -- content/notes/published
+  } | sed '/^$/d' | sort -u
+)"
 
-  for spec in "${ONLY_SPECS[@]}"; do
-    IFS=',' read -r -a parts <<< "$spec"
-    for raw in "${parts[@]}"; do
-      slug="$(slugify "$raw")"
-      if [[ -z "$slug" ]]; then
-        echo "Invalid --only value: '$raw'" >&2
-        exit 1
-      fi
-      ALLOWED_NOTE_SLUGS="${ALLOWED_NOTE_SLUGS}
-${slug}"
-    done
-  done
-
-  CHANGED_NOTE_PATHS="$(
-    {
-      git diff --name-only -- content/notes/published
-      git diff --name-only --cached -- content/notes/published
-      git ls-files --others --exclude-standard -- content/notes/published
-    } | sed '/^$/d' | sort -u
-  )"
-
-  if [[ -n "$CHANGED_NOTE_PATHS" ]]; then
-    VIOLATIONS=""
-    while IFS= read -r notePath; do
-      [[ -z "$notePath" ]] && continue
-      noteSlug="$(extract_slug_from_note_file "$notePath")"
-      if [[ -z "$noteSlug" ]]; then
-        VIOLATIONS="${VIOLATIONS}
-${notePath} (missing slug)"
-        continue
-      fi
-      noteSlug="$(slugify "$noteSlug")"
-      if ! printf '%s\n' "$ALLOWED_NOTE_SLUGS" | sed '/^$/d' | grep -Fxq "$noteSlug"; then
-        VIOLATIONS="${VIOLATIONS}
-${notePath} (slug: ${noteSlug})"
-      fi
-    done <<< "$CHANGED_NOTE_PATHS"
-
-    if [[ -n "$VIOLATIONS" ]]; then
-      echo "Blocked by --only guard. Unexpected changed published note files:" >&2
-      printf '%s\n' "$VIOLATIONS" | sed '/^$/d' >&2
-      echo "Allowed slugs by --only:" >&2
-      printf '%s\n' "$ALLOWED_NOTE_SLUGS" | sed '/^$/d' >&2
-      echo "If intentional, pass additional --only values (repeatable or comma-separated)." >&2
-      exit 1
-    fi
-  fi
-fi
-
-if [[ "$QUICK_MODE" == "true" ]]; then
-  echo "==> Running quick checks"
-  node tests/test-notes-build-contract.js
-  node tests/test-notes-build-negative.js
-  node tests/test-navigation-links.js
-else
-  echo "==> Running full test suite"
-  node tests/run-all.js
-fi
-
-echo "==> Staging note publish artifacts"
-if [[ ${#ONLY_SPECS[@]} -gt 0 ]]; then
-  git add notes tags data
+if [[ -n "$CHANGED_NOTE_PATHS" ]]; then
+  VIOLATIONS=""
   while IFS= read -r notePath; do
     [[ -z "$notePath" ]] && continue
     noteSlug="$(extract_slug_from_note_file "$notePath")"
-    [[ -z "$noteSlug" ]] && continue
+    if [[ -z "$noteSlug" ]]; then
+      VIOLATIONS="${VIOLATIONS}
+${notePath} (missing slug)"
+      continue
+    fi
     noteSlug="$(slugify "$noteSlug")"
-    if printf '%s\n' "$ALLOWED_NOTE_SLUGS" | sed '/^$/d' | grep -Fxq "$noteSlug"; then
-      git add -- "$notePath" 2>/dev/null || true
+    if ! printf '%s\n' "$ALLOWED_NOTE_SLUGS" | sed '/^$/d' | grep -Fxq "$noteSlug"; then
+      VIOLATIONS="${VIOLATIONS}
+${notePath} (slug: ${noteSlug})"
     fi
   done <<< "$CHANGED_NOTE_PATHS"
-else
-  git add content/notes/published notes tags data
+
+  if [[ -n "$VIOLATIONS" ]]; then
+    echo "Blocked by --only guard. Unexpected changed published note files:" >&2
+    printf '%s\n' "$VIOLATIONS" | sed '/^$/d' >&2
+    echo "Allowed slugs by --only:" >&2
+    printf '%s\n' "$ALLOWED_NOTE_SLUGS" | sed '/^$/d' >&2
+    echo "If intentional, pass additional --only values (repeatable or comma-separated)." >&2
+    exit 1
+  fi
 fi
+
+echo "==> Validating target note outputs"
+validate_allowed_note_outputs
+
+if [[ "$RUN_FULL_SUITE" == "true" ]]; then
+  echo "==> Running full test suite"
+  node tests/run-all.js
+else
+  echo "==> Running note-focused checks"
+  node tests/test-notes-build-contract.js
+fi
+
+echo "==> Staging note publish artifacts"
+git add notes tags data
+while IFS= read -r notePath; do
+  [[ -z "$notePath" ]] && continue
+  noteSlug="$(extract_slug_from_note_file "$notePath")"
+  [[ -z "$noteSlug" ]] && continue
+  noteSlug="$(slugify "$noteSlug")"
+  if printf '%s\n' "$ALLOWED_NOTE_SLUGS" | sed '/^$/d' | grep -Fxq "$noteSlug"; then
+    git add -- "$notePath" 2>/dev/null || true
+  fi
+done <<< "$CHANGED_NOTE_PATHS"
 
 if git diff --cached --quiet; then
   echo "No staged changes to commit for note publish." >&2

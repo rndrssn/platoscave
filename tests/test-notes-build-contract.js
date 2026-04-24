@@ -7,9 +7,12 @@ const { spawnSync } = require('child_process');
 
 const ROOT = path.join(__dirname, '..');
 const PUBLISHED_DIR = path.join(ROOT, 'content', 'notes', 'published');
+const PUBLISHED_ARTICLES_DIR = path.join(ROOT, 'content', 'articles', 'published');
 const NOTES_INDEX_JSON = path.join(ROOT, 'data', 'notes-index.json');
+const ARTICLES_INDEX_JSON = path.join(ROOT, 'data', 'articles-index.json');
 const TAGS_INDEX_JSON = path.join(ROOT, 'data', 'tags-index.json');
 const NOTES_INDEX_HTML = path.join(ROOT, 'notes', 'index.html');
+const ARTICLES_INDEX_HTML = path.join(ROOT, 'articles', 'index.html');
 const TAGS_INDEX_HTML = path.join(ROOT, 'tags', 'index.html');
 const NOTE_STATUSES = new Set(['published', 'draft', 'unpublished']);
 
@@ -133,8 +136,10 @@ function run() {
   runBuild();
 
   assert(fs.existsSync(NOTES_INDEX_JSON), 'Missing generated data file: data/notes-index.json');
+  assert(fs.existsSync(ARTICLES_INDEX_JSON), 'Missing generated data file: data/articles-index.json');
   assert(fs.existsSync(TAGS_INDEX_JSON), 'Missing generated data file: data/tags-index.json');
   assert(fs.existsSync(NOTES_INDEX_HTML), 'Missing generated notes index: notes/index.html');
+  assert(fs.existsSync(ARTICLES_INDEX_HTML), 'Missing generated articles index: articles/index.html');
   assert(fs.existsSync(TAGS_INDEX_HTML), 'Missing generated tags index: tags/index.html');
 
   const mdFiles = listMarkdownFiles(PUBLISHED_DIR);
@@ -162,19 +167,50 @@ function run() {
   });
 
   const publishedRows = frontmatterRows.filter((row) => row.status === 'published');
+  const articleFrontmatterRows = listMarkdownFiles(PUBLISHED_ARTICLES_DIR).map((filePath) => {
+    const raw = fs.readFileSync(filePath, 'utf8');
+    const fm = parseFrontmatter(raw, filePath);
+    assert(fm.title && fm.title.trim(), 'Missing article frontmatter title in: ' + filePath);
+    assert(fm.slug && fm.slug.trim(), 'Missing article frontmatter slug in: ' + filePath);
+    assert(fm.status && fm.status.trim(), 'Missing article frontmatter status in: ' + filePath);
+    const status = String(fm.status).replace(/^['"]|['"]$/g, '').toLowerCase();
+    assert(NOTE_STATUSES.has(status), 'Invalid article frontmatter status in: ' + filePath);
+
+    if (status === 'published') {
+      assert(fm.date && /^\d{4}-\d{2}-\d{2}$/.test(String(fm.date).replace(/['"]/g, '')), 'Invalid article frontmatter date in: ' + filePath);
+    }
+
+    const slug = fm.slug.replace(/^['"]|['"]$/g, '');
+    assert(slug === slugify(slug), 'Article slug must be lowercase/kebab-case in: ' + filePath);
+
+    return {
+      filePath,
+      slug,
+      status: status,
+    };
+  });
+  const publishedArticles = articleFrontmatterRows.filter((row) => row.status === 'published');
   const slugSet = new Set();
   for (const row of publishedRows) {
     assert(!slugSet.has(row.slug), 'Duplicate published slug: ' + row.slug);
     slugSet.add(row.slug);
   }
+  for (const row of publishedArticles) {
+    assert(!slugSet.has(row.slug), 'Duplicate published slug across notes/articles: ' + row.slug);
+    slugSet.add(row.slug);
+  }
 
   const notesIndex = JSON.parse(fs.readFileSync(NOTES_INDEX_JSON, 'utf8'));
+  const articlesIndex = JSON.parse(fs.readFileSync(ARTICLES_INDEX_JSON, 'utf8'));
   const tagsIndex = JSON.parse(fs.readFileSync(TAGS_INDEX_JSON, 'utf8'));
   const notesIndexHtml = fs.readFileSync(NOTES_INDEX_HTML, 'utf8');
+  const articlesIndexHtml = fs.readFileSync(ARTICLES_INDEX_HTML, 'utf8');
 
   assert(Array.isArray(notesIndex), 'notes-index.json must contain an array');
+  assert(Array.isArray(articlesIndex), 'articles-index.json must contain an array');
   assert(Array.isArray(tagsIndex), 'tags-index.json must contain an array');
   assert.strictEqual(notesIndex.length, publishedRows.length, 'notes-index count must match published markdown count');
+  assert.strictEqual(articlesIndex.length, publishedArticles.length, 'articles-index count must match published markdown count');
 
   for (const note of notesIndex) {
     assert(note.title, 'notes-index entry missing title');
@@ -184,6 +220,38 @@ function run() {
     assert(Array.isArray(note.tags), 'notes-index entry missing tags array');
     assert(Array.isArray(note.relatedModules), 'notes-index entry missing relatedModules array');
     assert(fs.existsSync(path.join(ROOT, 'notes', note.slug, 'index.html')), 'Missing generated note page for slug: ' + note.slug);
+  }
+
+  for (const article of articlesIndex) {
+    assert(article.title, 'articles-index entry missing title');
+    assert(article.slug, 'articles-index entry missing slug');
+    assert(typeof article.summary === 'string', 'articles-index entry summary must be a string');
+    assert(article.date, 'articles-index entry missing date');
+    assert(Array.isArray(article.tags), 'articles-index entry missing tags array');
+    assert(Array.isArray(article.relatedModules), 'articles-index entry missing relatedModules array');
+    assert(fs.existsSync(path.join(ROOT, 'articles', article.slug, 'index.html')), 'Missing generated article page for slug: ' + article.slug);
+  }
+
+  const publishedArticlesWithoutSummary = listMarkdownFiles(PUBLISHED_ARTICLES_DIR)
+    .map((filePath) => {
+      const raw = fs.readFileSync(filePath, 'utf8');
+      const fm = parseFrontmatter(raw, filePath);
+      return {
+        slug: String(fm.slug || '').replace(/^['"]|['"]$/g, ''),
+        status: String(fm.status || '').replace(/^['"]|['"]$/g, '').toLowerCase(),
+        hasSummary: !!String(fm.summary || '').trim(),
+      };
+    })
+    .filter((article) => article.status === 'published' && !article.hasSummary);
+
+  for (const article of publishedArticlesWithoutSummary) {
+    const entry = articlesIndex.find((item) => item.slug === article.slug);
+    assert(entry, 'articles-index must contain published article slug: ' + article.slug);
+    assert(entry.summary && entry.summary.trim(), 'articles-index fallback summary must be non-empty for slug: ' + article.slug);
+
+    const escapedSlug = article.slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const cardPattern = new RegExp('<a class="note-index-link" href="./' + escapedSlug + '/">[\\s\\S]*?<span class="note-index-more">\\.\\.\\.more</span>');
+    assert(cardPattern.test(articlesIndexHtml), 'articles index html must render ...more fallback affordance for slug: ' + article.slug);
   }
 
   const publishedNotesWithoutSummary = listMarkdownFiles(PUBLISHED_DIR)
@@ -212,6 +280,7 @@ function run() {
     assert(tag.label, 'tags-index entry missing label');
     assert(tag.slug, 'tags-index entry missing slug');
     assert(Array.isArray(tag.notes), 'tags-index entry missing notes array');
+    assert(Array.isArray(tag.articles), 'tags-index entry missing articles array');
     assert(Array.isArray(tag.modules), 'tags-index entry missing modules array');
     assert(fs.existsSync(path.join(ROOT, 'tags', tag.slug, 'index.html')), 'Missing generated tag page for slug: ' + tag.slug);
   }

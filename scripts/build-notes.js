@@ -6,13 +6,16 @@ const path = require('path');
 const { htmlShell, navHtml } = require('./lib/page-shell');
 
 const ROOT = path.resolve(__dirname, '..');
-const CONTENT_ROOT = path.join(ROOT, 'content', 'notes');
-const PUBLISHED_DIR = path.join(CONTENT_ROOT, 'published');
+const NOTES_CONTENT_ROOT = path.join(ROOT, 'content', 'notes');
+const ARTICLES_CONTENT_ROOT = path.join(ROOT, 'content', 'articles');
+const PUBLISHED_NOTES_DIR = path.join(NOTES_CONTENT_ROOT, 'published');
+const PUBLISHED_ARTICLES_DIR = path.join(ARTICLES_CONTENT_ROOT, 'published');
 const OUTPUT_NOTES_DIR = path.join(ROOT, 'notes');
+const OUTPUT_ARTICLES_DIR = path.join(ROOT, 'articles');
 const OUTPUT_TAGS_DIR = path.join(ROOT, 'tags');
 const DATA_DIR = path.join(ROOT, 'data');
 const MODULES_META_PATH = path.join(ROOT, 'content', 'meta', 'modules.json');
-const NOTE_STATUSES = new Set(['published', 'draft', 'unpublished']);
+const CONTENT_STATUSES = new Set(['published', 'draft', 'unpublished']);
 
 function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
@@ -416,9 +419,9 @@ function readModulesMeta() {
   }
 }
 
-function collectNotes() {
-  const files = listMarkdownFiles(PUBLISHED_DIR);
-  const notes = [];
+function collectPublishedContent(publishedDir) {
+  const files = listMarkdownFiles(publishedDir);
+  const entries = [];
   const slugSet = new Set();
 
   for (const filePath of files) {
@@ -431,7 +434,7 @@ function collectNotes() {
       console.error('FAIL: missing status in', filePath);
       process.exit(1);
     }
-    if (!NOTE_STATUSES.has(status)) {
+    if (!CONTENT_STATUSES.has(status)) {
       console.error('FAIL: invalid status in', filePath, '- expected one of published|draft|unpublished');
       process.exit(1);
     }
@@ -480,7 +483,7 @@ function collectNotes() {
     const fallbackSummary = extractBodyPreview(parsed.body, 4);
     const relatedModules = Array.isArray(fm.related_modules) ? fm.related_modules.map((v) => String(v).trim()).filter(Boolean) : [];
 
-    notes.push({
+    entries.push({
       sourcePath: filePath,
       title,
       slug,
@@ -497,14 +500,31 @@ function collectNotes() {
     });
   }
 
-  notes.sort((a, b) => {
+  entries.sort((a, b) => {
     const aT = a.dateObj ? a.dateObj.getTime() : 0;
     const bT = b.dateObj ? b.dateObj.getTime() : 0;
     if (aT !== bT) return bT - aT;
     return a.title.localeCompare(b.title);
   });
 
-  return notes;
+  return entries;
+}
+
+function collectNotes() {
+  return collectPublishedContent(PUBLISHED_NOTES_DIR);
+}
+
+function collectArticles() {
+  return collectPublishedContent(PUBLISHED_ARTICLES_DIR);
+}
+
+function assertNoCrossCollectionSlugCollision(notes, articles) {
+  const noteSlugs = new Set(notes.map((note) => note.slug));
+  for (const article of articles) {
+    if (!noteSlugs.has(article.slug)) continue;
+    console.error('FAIL: duplicate slug across collections', article.slug);
+    process.exit(1);
+  }
 }
 
 function writeNotePage(note) {
@@ -585,7 +605,7 @@ function writeNotesIndex(notes) {
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">Notes</h1>\n'
     + '        <p class="module-header-body">\n'
-    + '          My notes are stories and reflections about the way we organise work, the way we do that work, related feedback loops, and the emergent phenomena that lead to tensions, fragility, and unexpected behaviors in organisations and technologies. Some notes become future <a href="../modules/">modules</a>. This is not a chronological blog feed; it is a field-notes layer connected to the interactive work.\n'
+    + '          My notes are stories and reflections about the way we organise work, the way we do that work, related feedback loops, and the emergent phenomena that lead to tensions, fragility, and unexpected behaviors in organisations and technologies. Some notes become future <a href="../modules/">modules</a>. Longer essays live in <a href="../articles/">articles</a>. This is not a chronological blog feed; it is a field-notes layer connected to the interactive work.\n'
     + '        </p>\n'
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'
@@ -612,7 +632,112 @@ function writeNotesIndex(notes) {
   writeFile(path.join(OUTPUT_NOTES_DIR, 'index.html'), html);
 }
 
-function writeTagPage(tag, notes, modules) {
+function writeArticlePage(article) {
+  const prefix = '../../';
+  const tagsHtml = renderTagLinks(article.tags, prefix);
+  const summaryHtml = article.summary
+    ? '<p class="module-header-body">' + escapeHtml(article.summary) + '</p>'
+    : '';
+
+  const body = '    <div class="module-page">\n'
+    + '      <header class="module-header">\n'
+    + '        <h1 class="module-header-title">' + escapeHtml(article.title) + '</h1>\n'
+    + summaryHtml + '\n'
+    + '        <p class="positioning-caption">Published ' + escapeHtml(article.dateIso) + '</p>\n'
+    + (tagsHtml ? ('        ' + tagsHtml + '\n') : '')
+    + '      </header>\n\n'
+    + '      <article class="module-essay note-content">\n'
+    + '        <section class="essay-section">\n'
+    + article.htmlBody.split('\n').map((line) => '          ' + line).join('\n') + '\n'
+    + '        </section>\n'
+    + '      </article>\n\n'
+    + '      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">\n'
+    + '        <a class="footer-nav-link" href="../" aria-label="Back to Articles">\n'
+    + '          <span class="footer-nav-label-full">&larr; Back to Articles</span>\n'
+    + '          <span class="footer-nav-label-short">&larr; Articles</span>\n'
+    + '        </a>\n'
+    + '        <span></span>\n'
+    + '      </nav>\n'
+    + '    </div>';
+
+  const html = htmlShell({
+    title: article.title + ' · Articles · To the Bedrock',
+    description: article.summary || ('Article: ' + article.title),
+    prefix,
+    nav: navHtml(prefix, 'notes'),
+    main: body
+  });
+
+  const outDir = path.join(OUTPUT_ARTICLES_DIR, article.slug);
+  ensureDir(outDir);
+  writeFile(path.join(outDir, 'index.html'), html);
+}
+
+function writeArticlesIndex(articles) {
+  const prefix = '../';
+  const listHtml = articles.length
+    ? ('<div id="articles-list" class="essay-links essay-links--notes">\n'
+      + articles.map((article) => {
+        const searchText = [
+          article.title,
+          article.cardSummary || '',
+          article.dateIso,
+          article.tags.map((tag) => tag.label).join(' ')
+        ].join(' ').toLowerCase();
+        const tagsLine = article.tags.length
+          ? article.tags.map((tag) => '<a href="../tags/' + tag.slug + '/" class="module-tag">#' + escapeHtml(tag.label) + '</a>').join('')
+          : '<span class="module-tag">#untagged</span>';
+        return '          <article class="note-index-card article-index-card" data-article-search="' + escapeAttr(searchText) + '">\n'
+          + '            <a class="note-index-link" href="./' + article.slug + '/">\n'
+          + '              <span class="note-index-head">\n'
+          + '                <span class="note-index-title">' + escapeHtml(article.title) + '</span>\n'
+          + '                <span class="note-index-date">Published ' + escapeHtml(article.dateIso) + '</span>\n'
+          + '              </span>\n'
+          + (article.cardSummary
+            ? (article.usesFallbackSummary
+              ? ('              <span class="note-index-summary note-index-summary--fallback">' + escapeHtml(article.cardSummary) + '</span>\n')
+              : ('              <span class="note-index-summary">' + escapeHtml(article.cardSummary) + '</span>\n'))
+              + '              <span class="note-index-more">...more</span>\n'
+            : '')
+          + '            </a>\n'
+          + '            <div class="module-tags note-index-tags">' + tagsLine + '</div>\n'
+          + '          </article>';
+      }).join('\n')
+      + '\n        </div>')
+    : '<p class="essay-body">No published articles yet.</p>';
+
+  const body = '    <div class="module-page">\n'
+    + '      <header class="module-header">\n'
+    + '        <h1 class="module-header-title">Articles</h1>\n'
+    + '        <p class="module-header-body">\n'
+    + '          Long-form writing. Structured arguments, frameworks, and deeper analysis that goes beyond field notes.\n'
+    + '        </p>\n'
+    + '      </header>\n\n'
+    + '      <article class="module-essay">\n'
+    + '        <section class="essay-section">\n'
+    + '          <div class="note-search" role="search" aria-label="Search articles">\n'
+    + '            <label class="visually-hidden" for="articles-search-input">Search articles</label>\n'
+    + '            <span class="note-search-icon" aria-hidden="true"></span>\n'
+    + '            <input id="articles-search-input" class="note-search-input" type="search" placeholder="Search articles" autocomplete="off" />\n'
+    + '          </div>\n'
+    + '          ' + listHtml + '\n'
+    + '        </section>\n'
+    + '      </article>\n'
+    + '    </div>';
+
+  const html = htmlShell({
+    title: 'Articles · To the Bedrock',
+    description: 'Long-form articles in To the Bedrock.',
+    prefix,
+    nav: navHtml(prefix, 'notes'),
+    main: body,
+    extraScripts: [prefix + 'js/articles-search.js']
+  });
+
+  writeFile(path.join(OUTPUT_ARTICLES_DIR, 'index.html'), html);
+}
+
+function writeTagPage(tag, notes, articles, modules) {
   const prefix = '../../';
 
   const noteItems = notes.length
@@ -640,15 +765,30 @@ function writeTagPage(tag, notes, modules) {
       + '\n        </div>'
     : '<p class="essay-body">No modules mapped to this tag yet.</p>';
 
+  const articleItems = articles.length
+    ? '<div class="essay-links">\n'
+      + articles.map((article) => '          <a class="essay-link" href="../../articles/' + article.slug + '/">\n'
+          + '            <span class="essay-link-label">' + escapeHtml(article.title) + '</span>\n'
+          + (article.summary
+            ? ('            <span class="essay-link-desc">' + escapeHtml(article.summary) + '</span>\n')
+            : '')
+          + '          </a>').join('\n')
+      + '\n        </div>'
+    : '<p class="essay-body">No articles yet for this tag.</p>';
+
   const body = '    <div class="module-page">\n'
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">Tag: ' + escapeHtml(tag.label) + '</h1>\n'
-    + '        <p class="module-header-body">Related notes and modules for this theme.</p>\n'
+    + '        <p class="module-header-body">Related notes, articles, and modules for this theme.</p>\n'
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'
     + '        <section class="essay-section">\n'
     + '          <h2 class="essay-heading">Notes</h2>\n'
     + '          ' + noteItems + '\n'
+    + '        </section>\n'
+    + '        <section class="essay-section">\n'
+    + '          <h2 class="essay-heading">Articles</h2>\n'
+    + '          ' + articleItems + '\n'
     + '        </section>\n'
     + '        <section class="essay-section">\n'
     + '          <h2 class="essay-heading">Modules</h2>\n'
@@ -660,9 +800,9 @@ function writeTagPage(tag, notes, modules) {
     + '          <span class="footer-nav-label-full">&larr; Back to Tags</span>\n'
     + '          <span class="footer-nav-label-short">&larr; Tags</span>\n'
     + '        </a>\n'
-    + '        <a class="footer-nav-link" href="../../notes/" aria-label="Back to Notes">\n'
-    + '          <span class="footer-nav-label-full">Back to Notes &rarr;</span>\n'
-    + '          <span class="footer-nav-label-short">Notes &rarr;</span>\n'
+    + '        <a class="footer-nav-link" href="../../articles/" aria-label="Back to Articles">\n'
+    + '          <span class="footer-nav-label-full">Back to Articles &rarr;</span>\n'
+    + '          <span class="footer-nav-label-short">Articles &rarr;</span>\n'
     + '        </a>\n'
     + '      </nav>\n'
     + '    </div>';
@@ -686,7 +826,13 @@ function writeTagsIndex(tagsWithCounts) {
     ? ('<div class="essay-links">\n'
       + tagsWithCounts.map((tag) => '          <a class="essay-link" href="./' + tag.slug + '/">\n'
         + '            <span class="essay-link-label">#' + escapeHtml(tag.label) + '</span>\n'
-        + '            <span class="essay-link-desc">' + escapeHtml(formatCount(tag.noteCount, 'note', 'notes') + ' · ' + formatCount(tag.moduleCount, 'module', 'modules')) + '</span>\n'
+        + '            <span class="essay-link-desc">' + escapeHtml(
+          formatCount(tag.noteCount, 'note', 'notes')
+          + ' · '
+          + formatCount(tag.articleCount, 'article', 'articles')
+          + ' · '
+          + formatCount(tag.moduleCount, 'module', 'modules')
+        ) + '</span>\n'
         + '          </a>').join('\n')
       + '\n        </div>')
     : '<p class="essay-body">No tags yet.</p>';
@@ -694,7 +840,7 @@ function writeTagsIndex(tagsWithCounts) {
   const body = '    <div class="module-page">\n'
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">Tags</h1>\n'
-    + '        <p class="module-header-body">Browse themes across notes and mapped modules.</p>\n'
+    + '        <p class="module-header-body">Browse themes across notes, articles, and mapped modules.</p>\n'
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'
     + '        <section class="essay-section">\n'
@@ -706,7 +852,7 @@ function writeTagsIndex(tagsWithCounts) {
 
   const html = htmlShell({
     title: 'Tags · To the Bedrock',
-    description: 'Tag index across notes and modules.',
+    description: 'Tag index across notes, articles, and modules.',
     prefix,
     nav: navHtml(prefix, 'notes'),
     main: body
@@ -731,40 +877,58 @@ function cleanGeneratedDirs(baseDir, keepFiles) {
 }
 
 function build() {
-  ensureDir(PUBLISHED_DIR);
+  ensureDir(PUBLISHED_NOTES_DIR);
+  ensureDir(PUBLISHED_ARTICLES_DIR);
   ensureDir(OUTPUT_NOTES_DIR);
+  ensureDir(OUTPUT_ARTICLES_DIR);
   ensureDir(OUTPUT_TAGS_DIR);
   ensureDir(DATA_DIR);
 
   const notes = collectNotes();
+  const articles = collectArticles();
+  assertNoCrossCollectionSlugCollision(notes, articles);
   const modules = readModulesMeta();
   const modulesById = new Map(modules.map((mod) => [mod.id, mod]));
 
   for (const note of notes) {
     note.relatedModules = resolveRelatedModules(note.relatedModules, modulesById);
   }
+  for (const article of articles) {
+    article.relatedModules = resolveRelatedModules(article.relatedModules, modulesById);
+  }
 
   cleanGeneratedDirs(OUTPUT_NOTES_DIR, new Set(['index.html']));
+  cleanGeneratedDirs(OUTPUT_ARTICLES_DIR, new Set(['index.html']));
   cleanGeneratedDirs(OUTPUT_TAGS_DIR, new Set(['index.html']));
 
   for (const note of notes) {
     writeNotePage(note);
   }
+  for (const article of articles) {
+    writeArticlePage(article);
+  }
 
   writeNotesIndex(notes);
+  writeArticlesIndex(articles);
 
   const tagsMap = new Map();
 
   for (const note of notes) {
     for (const tag of note.tags) {
-      if (!tagsMap.has(tag.slug)) tagsMap.set(tag.slug, { label: tag.label, slug: tag.slug, notes: [], modules: [] });
+      if (!tagsMap.has(tag.slug)) tagsMap.set(tag.slug, { label: tag.label, slug: tag.slug, notes: [], articles: [], modules: [] });
       tagsMap.get(tag.slug).notes.push(note);
+    }
+  }
+  for (const article of articles) {
+    for (const tag of article.tags) {
+      if (!tagsMap.has(tag.slug)) tagsMap.set(tag.slug, { label: tag.label, slug: tag.slug, notes: [], articles: [], modules: [] });
+      tagsMap.get(tag.slug).articles.push(article);
     }
   }
 
   for (const mod of modules) {
     for (const tag of mod.tags) {
-      if (!tagsMap.has(tag.slug)) tagsMap.set(tag.slug, { label: tag.label, slug: tag.slug, notes: [], modules: [] });
+      if (!tagsMap.has(tag.slug)) tagsMap.set(tag.slug, { label: tag.label, slug: tag.slug, notes: [], articles: [], modules: [] });
       tagsMap.get(tag.slug).modules.push(mod);
     }
   }
@@ -772,13 +936,14 @@ function build() {
   const tags = Array.from(tagsMap.values()).sort((a, b) => a.label.localeCompare(b.label));
 
   for (const tag of tags) {
-    writeTagPage(tag, tag.notes, tag.modules);
+    writeTagPage(tag, tag.notes, tag.articles, tag.modules);
   }
 
   writeTagsIndex(tags.map((tag) => ({
     label: tag.label,
     slug: tag.slug,
     noteCount: tag.notes.length,
+    articleCount: tag.articles.length,
     moduleCount: tag.modules.length
   })));
 
@@ -791,15 +956,26 @@ function build() {
     relatedModules: note.relatedModules
   })), null, 2) + '\n');
 
+  writeFile(path.join(DATA_DIR, 'articles-index.json'), JSON.stringify(articles.map((article) => ({
+    title: article.title,
+    slug: article.slug,
+    summary: article.cardSummary,
+    date: article.dateIso,
+    tags: article.tags,
+    relatedModules: article.relatedModules
+  })), null, 2) + '\n');
+
   writeFile(path.join(DATA_DIR, 'tags-index.json'), JSON.stringify(tags.map((tag) => ({
     label: tag.label,
     slug: tag.slug,
     notes: tag.notes.map((note) => note.slug),
+    articles: tag.articles.map((article) => article.slug),
     modules: tag.modules.map((mod) => mod.id)
   })), null, 2) + '\n');
 
-  console.log('PASS: built notes and tags');
+  console.log('PASS: built notes, articles, and tags');
   console.log('Generated notes:', notes.length);
+  console.log('Generated articles:', articles.length);
   console.log('Generated tags:', tags.length);
 }
 

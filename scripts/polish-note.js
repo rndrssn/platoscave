@@ -2,16 +2,18 @@
 'use strict';
 
 /**
- * Optional note-polish step (spelling + punctuation only).
+ * Optional writing-polish step (spelling + punctuation only).
  *
  * Usage:
  *   node scripts/polish-note.js --slug long-tails
+ *   node scripts/polish-note.js --collection articles --slug lowvolumehighsoftware
  *   node scripts/polish-note.js --file content/notes/published/long-tails.md
  *   node scripts/polish-note.js --slug long-tails --dry-run
  *
  * Env:
  *   OPENAI_API_KEY        required
- *   NOTES_POLISH_MODEL    optional (default: gpt-5-mini)
+ *   WRITING_POLISH_MODEL  optional (default: gpt-5-mini)
+ *   NOTES_POLISH_MODEL    optional legacy alias
  *   OPENAI_API_BASE       optional (default: https://api.openai.com/v1)
  */
 
@@ -19,10 +21,15 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const PUBLISHED_DIR = path.join(ROOT, 'content', 'notes', 'published');
+const PUBLISHED_DIRS = {
+  notes: path.join(ROOT, 'content', 'notes', 'published'),
+  articles: path.join(ROOT, 'content', 'articles', 'published'),
+};
+const COLLECTION_NAMES = Object.keys(PUBLISHED_DIRS);
 
 function parseArgs(argv) {
   const out = {
+    collection: '',
     slug: '',
     file: '',
     dryRun: false,
@@ -32,6 +39,11 @@ function parseArgs(argv) {
     const arg = argv[i];
     if (arg === '--slug') {
       out.slug = String(argv[i + 1] || '').trim();
+      i += 1;
+      continue;
+    }
+    if (arg === '--collection') {
+      out.collection = String(argv[i + 1] || '').trim().toLowerCase();
       i += 1;
       continue;
     }
@@ -54,6 +66,9 @@ function parseArgs(argv) {
   if (!out.slug && !out.file) {
     throw new Error('Missing target. Use --slug <slug> or --file <path>.');
   }
+  if (out.collection && COLLECTION_NAMES.indexOf(out.collection) === -1) {
+    throw new Error('Invalid --collection value. Expected one of: ' + COLLECTION_NAMES.join(', '));
+  }
 
   return out;
 }
@@ -62,6 +77,7 @@ function printHelp() {
   process.stdout.write(
     'Usage:\n'
     + '  node scripts/polish-note.js --slug <slug>\n'
+    + '  node scripts/polish-note.js --collection <notes|articles> --slug <slug>\n'
     + '  node scripts/polish-note.js --file <path>\n'
     + '  node scripts/polish-note.js --slug <slug> --dry-run\n'
   );
@@ -114,23 +130,55 @@ function resolveTargetFile(opts) {
   if (opts.file) {
     const abs = path.isAbsolute(opts.file) ? opts.file : path.join(ROOT, opts.file);
     if (!fs.existsSync(abs)) throw new Error('File not found: ' + abs);
-    return abs;
+    return { filePath: abs, collection: '' };
   }
 
-  const slug = slugify(opts.slug);
-  const direct = path.join(PUBLISHED_DIR, slug + '.md');
-  if (fs.existsSync(direct)) return direct;
-
-  const files = listMarkdownFiles(PUBLISHED_DIR);
-  for (const filePath of files) {
-    const raw = fs.readFileSync(filePath, 'utf8');
-    const parts = splitFrontmatter(raw);
-    if (!parts.hasFrontmatter) continue;
-    const fm = parseSimpleFrontmatter(parts.frontmatter);
-    if (slugify(fm.slug || '') === slug) return filePath;
+  var collectionFromSlug = '';
+  var rawSlug = String(opts.slug || '').trim();
+  if (!opts.collection && rawSlug.indexOf(':') !== -1) {
+    var parts = rawSlug.split(':');
+    var maybeCollection = String(parts[0] || '').trim().toLowerCase();
+    if (COLLECTION_NAMES.indexOf(maybeCollection) !== -1) {
+      collectionFromSlug = maybeCollection;
+      rawSlug = parts.slice(1).join(':');
+    }
   }
 
-  throw new Error('Could not resolve note for slug: ' + opts.slug);
+  const targetCollection = opts.collection || collectionFromSlug;
+  const slug = slugify(rawSlug);
+  if (!slug) throw new Error('Invalid slug target.');
+
+  const collectionsToScan = targetCollection ? [targetCollection] : COLLECTION_NAMES.slice();
+  const matches = [];
+
+  for (const collection of collectionsToScan) {
+    const publishedDir = PUBLISHED_DIRS[collection];
+    const direct = path.join(publishedDir, slug + '.md');
+    if (fs.existsSync(direct)) {
+      matches.push({ filePath: direct, collection });
+      continue;
+    }
+
+    const files = listMarkdownFiles(publishedDir);
+    for (const filePath of files) {
+      const raw = fs.readFileSync(filePath, 'utf8');
+      const parts = splitFrontmatter(raw);
+      if (!parts.hasFrontmatter) continue;
+      const fm = parseSimpleFrontmatter(parts.frontmatter);
+      if (slugify(fm.slug || '') === slug) matches.push({ filePath, collection });
+    }
+  }
+
+  if (!matches.length) {
+    throw new Error('Could not resolve writing for slug: ' + opts.slug);
+  }
+  if (matches.length > 1 && !targetCollection) {
+    throw new Error(
+      'Slug is ambiguous across collections. Use --collection <notes|articles> for: ' + opts.slug
+    );
+  }
+
+  return matches[0];
 }
 
 function extractOutputText(responseJson) {
@@ -158,10 +206,10 @@ function extractOutputText(responseJson) {
 async function requestPolish(bodyMarkdown, meta) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    throw new Error('OPENAI_API_KEY is required for note polish.');
+    throw new Error('OPENAI_API_KEY is required for writing polish.');
   }
 
-  const model = process.env.NOTES_POLISH_MODEL || 'gpt-5-mini';
+  const model = process.env.WRITING_POLISH_MODEL || process.env.NOTES_POLISH_MODEL || 'gpt-5-mini';
   const apiBase = process.env.OPENAI_API_BASE || 'https://api.openai.com/v1';
   const endpoint = apiBase.replace(/\/+$/, '') + '/responses';
 
@@ -175,7 +223,8 @@ async function requestPolish(bodyMarkdown, meta) {
   ].join(' ');
 
   const input = [
-    'NOTE META:',
+    'WRITING META:',
+    'collection: ' + (meta.collection || ''),
     'title: ' + (meta.title || ''),
     'slug: ' + (meta.slug || ''),
     '',
@@ -216,7 +265,8 @@ function normalizeNewlines(text) {
 
 async function main() {
   const opts = parseArgs(process.argv.slice(2));
-  const filePath = resolveTargetFile(opts);
+  const resolved = resolveTargetFile(opts);
+  const filePath = resolved.filePath;
   const raw = fs.readFileSync(filePath, 'utf8');
   const parts = splitFrontmatter(raw);
   if (!parts.hasFrontmatter) {
@@ -224,6 +274,7 @@ async function main() {
   }
 
   const meta = parseSimpleFrontmatter(parts.frontmatter);
+  if (!meta.collection) meta.collection = resolved.collection;
   const originalBody = normalizeNewlines(parts.body).trimEnd() + '\n';
   const correctedBody = normalizeNewlines(await requestPolish(originalBody, meta)).trimEnd() + '\n';
 
@@ -240,11 +291,10 @@ async function main() {
 
   const rebuilt = '---\n' + parts.frontmatter.trimEnd() + '\n---\n\n' + correctedBody;
   fs.writeFileSync(filePath, rebuilt, 'utf8');
-  process.stdout.write('Updated note: ' + path.relative(ROOT, filePath) + '\n');
+  process.stdout.write('Updated writing: ' + path.relative(ROOT, filePath) + '\n');
 }
 
 main().catch((err) => {
   process.stderr.write('ERROR: ' + err.message + '\n');
   process.exit(1);
 });
-

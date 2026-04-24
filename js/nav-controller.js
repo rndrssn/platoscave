@@ -106,14 +106,13 @@
       return pathname === '/notes/' || pathname.indexOf('/notes/') === 0;
     }
 
-    function isCvPath(pathname) {
-      return pathname === '/cv/' || pathname.indexOf('/modules/experience-skill-graph/cv/') === 0;
+    function isArticlesPath(pathname) {
+      return pathname === '/articles/' || pathname.indexOf('/articles/') === 0;
     }
 
-    function isExperiencePath(pathname) {
-      if (pathname === '/skills/') return true;
-      if (pathname.indexOf('/modules/experience-skill-graph/') !== 0) return false;
-      return pathname.indexOf('/modules/experience-skill-graph/cv/') !== 0;
+    function isMyExperiencePath(pathname) {
+      if (pathname === '/skills/' || pathname === '/cv/') return true;
+      return pathname.indexOf('/modules/experience-skill-graph/') === 0;
     }
 
     function isModulesPath(pathname) {
@@ -145,15 +144,15 @@
 
       var pathname = currentPathname();
       var notesHref = joinHref(rootPrefix, 'notes/');
-      var cvHref = joinHref(rootPrefix, 'modules/experience-skill-graph/cv/');
-      var experienceHref = joinHref(rootPrefix, 'modules/experience-skill-graph/');
+      var articlesHref = joinHref(rootPrefix, 'articles/');
+      var myExperienceHref = joinHref(rootPrefix, 'skills/');
       var modulesHref = joinHref(rootPrefix, 'modules/');
 
       navLinks.textContent = '';
       [
         { label: 'Notes', href: notesHref, active: isNotesPath(pathname) },
-        { label: 'CV', href: cvHref, active: isCvPath(pathname) },
-        { label: 'Experience', href: experienceHref, active: isExperiencePath(pathname) },
+        { label: 'Articles', href: articlesHref, active: isArticlesPath(pathname) },
+        { label: 'My Experience', href: myExperienceHref, active: isMyExperiencePath(pathname) },
         { label: 'Modules', href: modulesHref, active: isModulesPath(pathname), role: 'modules' }
       ].forEach(function (item) {
         navLinks.appendChild(createPrimaryNavLink(item));

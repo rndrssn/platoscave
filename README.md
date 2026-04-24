@@ -11,6 +11,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - **Home** (`/`) — identity and orientation
 - **Modules** (`/modules/`) — interactive artifacts with local section numbering inside each module
 - **Notes** (`/notes/`) — narrative context, stories, and reflections (text-first)
+- **Articles** (`/articles/`) — long-form essays and argument-driven writing
 - **Site Notes** (`/colophon/`) — utility/meta information
 
 ## Navigation Shell
@@ -71,8 +72,19 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - Generated output:
   - `notes/index.html`
   - `notes/<slug>/index.html`
+  - `articles/index.html`
+  - `articles/<slug>/index.html`
   - `tags/index.html`
   - `tags/<tag>/index.html`
+
+## Articles CMS (Markdown + Obsidian)
+
+- Markdown source lives in `content/articles/published/` (and optional drafts in `content/articles/drafts/`)
+- Articles use the same frontmatter schema as notes (`title`, `slug`, `date`, `tags`, `status`; `summary` optional)
+  - `status` must be one of: `published`, `draft`, `unpublished`
+  - only `published` articles are rendered to `/articles`
+- Build notes, articles, and tags pages together:
+  - `node scripts/build-notes.js`
 
 ## Experience-Skill Graph CMS (Markdown + Obsidian)
 

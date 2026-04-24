@@ -8,6 +8,7 @@ const { spawnSync } = require('child_process');
 const ROOT = path.join(__dirname, '..');
 const BUILD_SCRIPT = path.join(ROOT, 'scripts', 'build-notes.js');
 const PUBLISHED_DIR = path.join(ROOT, 'content', 'notes', 'published');
+const PUBLISHED_ARTICLES_DIR = path.join(ROOT, 'content', 'articles', 'published');
 
 function runBuild() {
   return spawnSync(process.execPath, [BUILD_SCRIPT], {
@@ -18,6 +19,13 @@ function runBuild() {
 
 function writeTempNote(name, body) {
   const file = path.join(PUBLISHED_DIR, name);
+  fs.writeFileSync(file, body, 'utf8');
+  return file;
+}
+
+function writeTempArticle(name, body) {
+  fs.mkdirSync(PUBLISHED_ARTICLES_DIR, { recursive: true });
+  const file = path.join(PUBLISHED_ARTICLES_DIR, name);
   fs.writeFileSync(file, body, 'utf8');
   return file;
 }
@@ -40,6 +48,18 @@ function expectBuildPass(noteFileName, noteBody) {
     const result = runBuild();
     const output = ((result.stdout || '') + '\n' + (result.stderr || '')).trim();
     assert.strictEqual(result.status, 0, 'build-notes.js should pass for valid note fixture\nOutput:\n' + output);
+  } finally {
+    if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
+  }
+}
+
+function expectBuildFailForArticle(articleFileName, articleBody, expectedPattern) {
+  const tempFile = writeTempArticle(articleFileName, articleBody);
+  try {
+    const result = runBuild();
+    const output = ((result.stdout || '') + '\n' + (result.stderr || '')).trim();
+    assert.notStrictEqual(result.status, 0, 'build-notes.js should fail for invalid article fixture');
+    assert(expectedPattern.test(output), 'Expected build failure output to match ' + expectedPattern + '\nOutput:\n' + output);
   } finally {
     if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
   }
@@ -115,6 +135,24 @@ function run() {
       'Body',
       '',
     ].join('\n')
+  );
+
+  expectBuildFailForArticle(
+    `__tmp_duplicate_note_article_slug_${stamp}.md`,
+    [
+      '---',
+      'title: "Duplicate note/article slug fixture"',
+      'slug: "what-works-and-what-doesnt-work"',
+      'date: "2026-03-24"',
+      'status: "published"',
+      'summary: "temp article"',
+      'tags: ["temp"]',
+      '---',
+      '',
+      'Body',
+      '',
+    ].join('\n'),
+    /duplicate slug/i
   );
 
   const recovery = runBuild();

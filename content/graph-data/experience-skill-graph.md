@@ -45,4 +45,4 @@ updated: 2026-04-06
 - exp-fugro | Fugro (2015-2021) | 4 | [[skill-subsea]], [[skill-pm]], [[skill-agile]], [[skill-cv]], [[skill-embedded]], [[skill-robotics]], [[skill-strategy]], [[skill-people]], [[skill-product-ops]]
 - exp-aiim | AI in Motion (2021) | 5 | [[skill-pm]], [[skill-agile]], [[skill-cv]], [[skill-ml]], [[skill-embedded]], [[skill-robotics]], [[skill-logistics]], [[skill-people]]
 - exp-ikea | IKEA (2021-2023) | 6 | [[skill-retail]], [[skill-pm]], [[skill-agile]], [[skill-ar]], [[skill-crossfn]], [[skill-strategy]], [[skill-stakeholder]], [[skill-platform]], [[skill-api]]
-- exp-yara | Yara (2023-Present) | 7 | [[skill-agtech]], [[skill-pm]], [[skill-agile]], [[skill-strategy]], [[skill-stakeholder]], [[skill-people]], [[skill-crossfn]], [[skill-platform]], [[skill-api]], [[skill-product-ops]]
+- exp-current-agtech | AgTech Leadership (2023-Present) | 7 | [[skill-agtech]], [[skill-pm]], [[skill-agile]], [[skill-strategy]], [[skill-stakeholder]], [[skill-people]], [[skill-crossfn]], [[skill-platform]], [[skill-api]], [[skill-product-ops]]

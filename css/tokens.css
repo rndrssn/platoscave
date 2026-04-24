@@ -49,6 +49,14 @@
   --link-surface-footer-visited: #E3D2FF;
   --tag-chip: #FF5F6D;
   --tag-chip-hover: #FF7D89;
+  --experience-switch-surface: #ffd83e;
+  --experience-switch-shadow: #141414;
+  --experience-switch-ink: #151515;
+  --experience-switch-hover-surface: #fff2b0;
+  --experience-switch-active-surface: #ffffff;
+  --experience-switch-active-ring: #141414;
+  --experience-switch-focus-inner: color-mix(in srgb, #ffffff 74%, transparent 26%);
+  --experience-switch-focus-outer: color-mix(in srgb, #141414 66%, transparent 34%);
 
   --serif:       'EB Garamond', Georgia, serif;
   --serif-alt:   'Cormorant Garamond', Georgia, serif;

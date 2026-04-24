@@ -18,6 +18,7 @@
 // window.PLATOSCAVE_THEME = 'new-yorker';
 // window.PLATOSCAVE_THEME = 'emergent-systems';
 // window.PLATOSCAVE_THEME = 'decision-collision';
+// window.PLATOSCAVE_THEME = 'decision-collision-cold';
 // window.PLATOSCAVE_THEME = 'decision-collision-cold-contrast';
 // window.PLATOSCAVE_THEME = 'brutalist-max';
 // window.PLATOSCAVE_THEME = 'neon-bowie';
@@ -25,10 +26,11 @@
 // window.PLATOSCAVE_THEME = 'laser-bauhaus';
 // window.PLATOSCAVE_THEME = 'chrome-glam';
 // window.PLATOSCAVE_THEME = 'minimalist-brutalist';
+// window.PLATOSCAVE_THEME = 'neon-brutalist-extreme';
+// window.PLATOSCAVE_THEME = 'neon-brutalist-daylight';
 
 /* Active */
 window.PLATOSCAVE_THEME = 'decision-collision-cold';
-
 /* Optional nav recolor swatch (decision-collision-cold) */
 // window.PLATOSCAVE_NAV_SWATCH = ''; // default nav tokens
 window.PLATOSCAVE_NAV_SWATCH = 'white';

@@ -90,31 +90,31 @@ After merge to the deployed branch, the note is live at:
 From `sandbox`, use:
 
 ```bash
-scripts/publish-note.sh -m "Publish note: <slug>" --only <slug>
+scripts/publish-note.sh -m "Publish writing: notes:<slug>" --only notes:<slug>
 ```
 
 Example:
 
 ```bash
-scripts/publish-note.sh -m "Publish note: what-works-and-what-doesnt-work" --only what-works-and-what-doesnt-work
+scripts/publish-note.sh -m "Publish writing: notes:what-works-and-what-doesnt-work" --only notes:what-works-and-what-doesnt-work
 ```
 
 Optional full-suite mode (runs `node tests/run-all.js` before release):
 
 ```bash
-scripts/publish-note.sh -m "Publish note: <slug>" --only <slug> --full-suite
+scripts/publish-note.sh -m "Publish writing: notes:<slug>" --only notes:<slug> --full-suite
 ```
 
 Optional spelling/punctuation polish (LLM) before build/publish:
 
 ```bash
-OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --polish <slug> --only <slug>
+OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish writing: notes:<slug>" --polish notes:<slug> --only notes:<slug>
 ```
 
 You can also run polish directly:
 
 ```bash
-OPENAI_API_KEY=... node scripts/polish-note.js --slug <slug>
+OPENAI_API_KEY=... node scripts/polish-note.js --collection notes --slug <slug>
 ```
 
 Notes:
@@ -122,39 +122,39 @@ Notes:
 - The polish step is constrained to spelling/punctuation/obvious grammar fixes.
 - Default model is `gpt-5-mini` (override with `NOTES_POLISH_MODEL`).
 - `-m "Publish note: <slug>"` sets the commit message only; it does not scope build validation to that slug.
-- `--only` is required and keeps publish focused on the target note slug(s).
+- `--only` is required and keeps publish focused on the target writing slug(s).
 - Default behavior is note-focused validation. Use `--full-suite` when you explicitly want full repository tests.
 
 Safety guard for accidental published-note commits:
 
 ```bash
-scripts/publish-note.sh -m "Publish note: <slug>" --only <slug>
+scripts/publish-note.sh -m "Publish writing: notes:<slug>" --only notes:<slug>
 ```
 
 - `--only` blocks the publish if any changed file under `content/notes/published/`
   is outside the allowed slug list.
-- `--only` does **not** limit `node scripts/build-notes.js` to one slug; build still validates all files in `content/notes/published/` with `status: published`.
+- `--only` does **not** limit `node scripts/build-notes.js` to one slug; build still validates all published writing files.
 - If any published note has invalid frontmatter (for example missing `status` or invalid `date`), publish fails before commit/release.
 - You can pass multiple slugs:
 
 ```bash
-scripts/publish-note.sh -m "Publish notes" --only slug-a --only slug-b
+scripts/publish-note.sh -m "Publish writing" --only notes:slug-a --only notes:slug-b
 ```
 
 or:
 
 ```bash
-scripts/publish-note.sh -m "Publish notes" --only slug-a,slug-b
+scripts/publish-note.sh -m "Publish writing" --only notes:slug-a,notes:slug-b
 ```
 
 Editing an already published note is supported:
-- just pass that note slug with `--only`.
+- just pass that note slug with `--only notes:<slug>`.
 
 The script also enforces a clean staged index before it runs, to avoid committing unrelated pre-staged files.
 
 What it does:
 - builds notes (`node scripts/build-notes.js`) and validates published note sources
-- validates target note slugs passed via `--only` against generated output
+- validates target writing slugs passed via `--only` against generated output
 - runs note-focused checks by default (`tests/test-notes-build-contract.js`)
 - runs full suite only when `--full-suite` is passed
 - commits note artifacts
@@ -166,7 +166,7 @@ What it does:
 Create:
 - add a new markdown file in `content/notes/published/`
 - set `status: "published"`
-- run publish with `--only <slug>`
+- run publish with `--only notes:<slug>`
 
 Read:
 - generated output is `/notes/<slug>/`
@@ -175,11 +175,11 @@ Read:
 Update:
 - edit the existing markdown file for that slug
 - keep same `slug`
-- republish with `--only <slug>`
+- republish with `--only notes:<slug>`
 
 Unpublish:
 - set `status: "unpublished"` (or `draft`)
-- republish with `--only <slug>`
+- republish with `--only notes:<slug>`
 - note is removed from generated notes/tag pages but source remains in repo
 ## 6) How to update tags
 

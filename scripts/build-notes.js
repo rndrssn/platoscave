@@ -527,77 +527,104 @@ function assertNoCrossCollectionSlugCollision(notes, articles) {
   }
 }
 
-function writeNotePage(note) {
+function renderWritingIndexCard(entry, options) {
+  const searchText = [
+    entry.title,
+    entry.cardSummary || '',
+    entry.dateIso,
+    entry.tags.map((tag) => tag.label).join(' ')
+  ].join(' ').toLowerCase();
+  const tagsLine = entry.tags.length
+    ? entry.tags.map((tag) => '<a href="../tags/' + tag.slug + '/" class="module-tag">#' + escapeHtml(tag.label) + '</a>').join('')
+    : '<span class="module-tag">#untagged</span>';
+  const cardClasses = ['note-index-card'];
+
+  if (options.cardClassName) cardClasses.push(options.cardClassName);
+
+  return '          <article class="' + cardClasses.join(' ') + '" ' + options.searchAttrName + '="' + escapeAttr(searchText) + '">\n'
+    + '            <a class="note-index-link" href="./' + entry.slug + '/">\n'
+    + '              <span class="note-index-head">\n'
+    + '                <span class="note-index-title">' + escapeHtml(entry.title) + '</span>\n'
+    + '                <span class="note-index-date">Published ' + escapeHtml(entry.dateIso) + '</span>\n'
+    + '              </span>\n'
+    + (entry.cardSummary
+      ? (entry.usesFallbackSummary
+        ? ('              <span class="note-index-summary note-index-summary--fallback">' + escapeHtml(entry.cardSummary) + '</span>\n')
+        : ('              <span class="note-index-summary">' + escapeHtml(entry.cardSummary) + '</span>\n'))
+        + '              <span class="note-index-more">...more</span>\n'
+      : '')
+    + '            </a>\n'
+    + '            <div class="module-tags note-index-tags">' + tagsLine + '</div>\n'
+    + '          </article>';
+}
+
+function writeWritingPage(entry, options) {
   const prefix = '../../';
-  const tagsHtml = renderTagLinks(note.tags, prefix);
-  const summaryHtml = note.summary
-    ? '<p class="module-header-body">' + escapeHtml(note.summary) + '</p>'
+  const tagsHtml = renderTagLinks(entry.tags, prefix);
+  const summaryHtml = entry.summary
+    ? '<p class="module-header-body">' + escapeHtml(entry.summary) + '</p>'
     : '';
 
   const body = '    <div class="module-page">\n'
     + '      <header class="module-header">\n'
-    + '        <h1 class="module-header-title">' + escapeHtml(note.title) + '</h1>\n'
+    + '        <h1 class="module-header-title">' + escapeHtml(entry.title) + '</h1>\n'
     + summaryHtml + '\n'
-    + '        <p class="positioning-caption">Published ' + escapeHtml(note.dateIso) + '</p>\n'
+    + '        <p class="positioning-caption">Published ' + escapeHtml(entry.dateIso) + '</p>\n'
     + (tagsHtml ? ('        ' + tagsHtml + '\n') : '')
     + '      </header>\n\n'
     + '      <article class="module-essay note-content">\n'
     + '        <section class="essay-section">\n'
-    + note.htmlBody.split('\n').map((line) => '          ' + line).join('\n') + '\n'
+    + entry.htmlBody.split('\n').map((line) => '          ' + line).join('\n') + '\n'
     + '        </section>\n'
     + '      </article>\n\n'
     + '      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">\n'
-    + '        <a class="footer-nav-link" href="../" aria-label="Back to Notes">\n'
-    + '          <span class="footer-nav-label-full">&larr; Back to Notes</span>\n'
-    + '          <span class="footer-nav-label-short">&larr; Notes</span>\n'
+    + '        <a class="footer-nav-link" href="../" aria-label="' + escapeAttr(options.backLabelAria) + '">\n'
+    + '          <span class="footer-nav-label-full">' + options.backLabelFull + '</span>\n'
+    + '          <span class="footer-nav-label-short">' + options.backLabelShort + '</span>\n'
     + '        </a>\n'
-    + '        <span></span>\n'
+    + (options.secondaryFooterLink
+      ? ('        <a class="footer-nav-link" href="' + options.secondaryFooterLink.href + '" aria-label="' + escapeAttr(options.secondaryFooterLink.ariaLabel) + '">\n'
+        + '          <span class="footer-nav-label-full">' + options.secondaryFooterLink.labelFull + '</span>\n'
+        + '          <span class="footer-nav-label-short">' + options.secondaryFooterLink.labelShort + '</span>\n'
+        + '        </a>\n')
+      : '        <span></span>\n')
     + '      </nav>\n'
     + '    </div>';
 
   const html = htmlShell({
-    title: note.title + ' · Notes · To the Bedrock',
-    description: note.summary || ('Note: ' + note.title),
+    title: entry.title + ' · ' + options.collectionTitle + ' · To the Bedrock',
+    description: entry.summary || (options.itemLabel + ': ' + entry.title),
     prefix,
-    nav: navHtml(prefix, 'notes'),
+    nav: navHtml(prefix, options.navActive),
     main: body
   });
 
-  const outDir = path.join(OUTPUT_NOTES_DIR, note.slug);
+  const outDir = path.join(options.outputDir, entry.slug);
   ensureDir(outDir);
   writeFile(path.join(outDir, 'index.html'), html);
+}
+
+function writeNotePage(note) {
+  writeWritingPage(note, {
+    collectionTitle: 'Notes',
+    itemLabel: 'Note',
+    navActive: 'notes',
+    outputDir: OUTPUT_NOTES_DIR,
+    backLabelAria: 'Back to Notes',
+    backLabelFull: '&larr; Back to Notes',
+    backLabelShort: '&larr; Notes',
+    secondaryFooterLink: null
+  });
 }
 
 function writeNotesIndex(notes) {
   const prefix = '../';
   const listHtml = notes.length
     ? ('<div id="notes-list" class="essay-links essay-links--notes">\n'
-      + notes.map((note) => {
-        const searchText = [
-          note.title,
-          note.cardSummary || '',
-          note.dateIso,
-          note.tags.map((tag) => tag.label).join(' ')
-        ].join(' ').toLowerCase();
-        const tagsLine = note.tags.length
-          ? note.tags.map((tag) => '<a href="../tags/' + tag.slug + '/" class="module-tag">#' + escapeHtml(tag.label) + '</a>').join('')
-          : '<span class="module-tag">#untagged</span>';
-        return '          <article class="note-index-card" data-note-search="' + escapeAttr(searchText) + '">\n'
-          + '            <a class="note-index-link" href="./' + note.slug + '/">\n'
-          + '              <span class="note-index-head">\n'
-          + '                <span class="note-index-title">' + escapeHtml(note.title) + '</span>\n'
-          + '                <span class="note-index-date">Published ' + escapeHtml(note.dateIso) + '</span>\n'
-          + '              </span>\n'
-          + (note.cardSummary
-            ? (note.usesFallbackSummary
-              ? ('              <span class="note-index-summary note-index-summary--fallback">' + escapeHtml(note.cardSummary) + '</span>\n')
-              : ('              <span class="note-index-summary">' + escapeHtml(note.cardSummary) + '</span>\n'))
-              + '              <span class="note-index-more">...more</span>\n'
-            : '')
-          + '            </a>\n'
-          + '            <div class="module-tags note-index-tags">' + tagsLine + '</div>\n'
-          + '          </article>';
-      }).join('\n')
+      + notes.map((note) => renderWritingIndexCard(note, {
+        searchAttrName: 'data-note-search',
+        cardClassName: ''
+      })).join('\n')
       + '\n        </div>')
     : '<p class="essay-body">No published notes yet.</p>';
 
@@ -633,76 +660,31 @@ function writeNotesIndex(notes) {
 }
 
 function writeArticlePage(article) {
-  const prefix = '../../';
-  const tagsHtml = renderTagLinks(article.tags, prefix);
-  const summaryHtml = article.summary
-    ? '<p class="module-header-body">' + escapeHtml(article.summary) + '</p>'
-    : '';
-
-  const body = '    <div class="module-page">\n'
-    + '      <header class="module-header">\n'
-    + '        <h1 class="module-header-title">' + escapeHtml(article.title) + '</h1>\n'
-    + summaryHtml + '\n'
-    + '        <p class="positioning-caption">Published ' + escapeHtml(article.dateIso) + '</p>\n'
-    + (tagsHtml ? ('        ' + tagsHtml + '\n') : '')
-    + '      </header>\n\n'
-    + '      <article class="module-essay note-content">\n'
-    + '        <section class="essay-section">\n'
-    + article.htmlBody.split('\n').map((line) => '          ' + line).join('\n') + '\n'
-    + '        </section>\n'
-    + '      </article>\n\n'
-    + '      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">\n'
-    + '        <a class="footer-nav-link" href="../" aria-label="Back to Articles">\n'
-    + '          <span class="footer-nav-label-full">&larr; Back to Articles</span>\n'
-    + '          <span class="footer-nav-label-short">&larr; Articles</span>\n'
-    + '        </a>\n'
-    + '        <span></span>\n'
-    + '      </nav>\n'
-    + '    </div>';
-
-  const html = htmlShell({
-    title: article.title + ' · Articles · To the Bedrock',
-    description: article.summary || ('Article: ' + article.title),
-    prefix,
-    nav: navHtml(prefix, 'notes'),
-    main: body
+  writeWritingPage(article, {
+    collectionTitle: 'Articles',
+    itemLabel: 'Article',
+    navActive: 'articles',
+    outputDir: OUTPUT_ARTICLES_DIR,
+    backLabelAria: 'Back to Articles',
+    backLabelFull: '&larr; Back to Articles',
+    backLabelShort: '&larr; Articles',
+    secondaryFooterLink: {
+      href: '../../notes/',
+      ariaLabel: 'Back to Notes',
+      labelFull: 'Back to Notes &rarr;',
+      labelShort: 'Notes &rarr;'
+    }
   });
-
-  const outDir = path.join(OUTPUT_ARTICLES_DIR, article.slug);
-  ensureDir(outDir);
-  writeFile(path.join(outDir, 'index.html'), html);
 }
 
 function writeArticlesIndex(articles) {
   const prefix = '../';
   const listHtml = articles.length
     ? ('<div id="articles-list" class="essay-links essay-links--notes">\n'
-      + articles.map((article) => {
-        const searchText = [
-          article.title,
-          article.cardSummary || '',
-          article.dateIso,
-          article.tags.map((tag) => tag.label).join(' ')
-        ].join(' ').toLowerCase();
-        const tagsLine = article.tags.length
-          ? article.tags.map((tag) => '<a href="../tags/' + tag.slug + '/" class="module-tag">#' + escapeHtml(tag.label) + '</a>').join('')
-          : '<span class="module-tag">#untagged</span>';
-        return '          <article class="note-index-card article-index-card" data-article-search="' + escapeAttr(searchText) + '">\n'
-          + '            <a class="note-index-link" href="./' + article.slug + '/">\n'
-          + '              <span class="note-index-head">\n'
-          + '                <span class="note-index-title">' + escapeHtml(article.title) + '</span>\n'
-          + '                <span class="note-index-date">Published ' + escapeHtml(article.dateIso) + '</span>\n'
-          + '              </span>\n'
-          + (article.cardSummary
-            ? (article.usesFallbackSummary
-              ? ('              <span class="note-index-summary note-index-summary--fallback">' + escapeHtml(article.cardSummary) + '</span>\n')
-              : ('              <span class="note-index-summary">' + escapeHtml(article.cardSummary) + '</span>\n'))
-              + '              <span class="note-index-more">...more</span>\n'
-            : '')
-          + '            </a>\n'
-          + '            <div class="module-tags note-index-tags">' + tagsLine + '</div>\n'
-          + '          </article>';
-      }).join('\n')
+      + articles.map((article) => renderWritingIndexCard(article, {
+        searchAttrName: 'data-article-search',
+        cardClassName: 'article-index-card'
+      })).join('\n')
       + '\n        </div>')
     : '<p class="essay-body">No published articles yet.</p>';
 
@@ -710,7 +692,7 @@ function writeArticlesIndex(articles) {
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">Articles</h1>\n'
     + '        <p class="module-header-body">\n'
-    + '          Long-form writing. Structured arguments, frameworks, and deeper analysis that goes beyond field notes.\n'
+    + '          Long-form writing. Structured arguments, frameworks, and deeper analysis that goes beyond field notes. Shorter writing lives in <a href="../notes/">Notes</a>.\n'
     + '        </p>\n'
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'
@@ -729,7 +711,7 @@ function writeArticlesIndex(articles) {
     title: 'Articles · To the Bedrock',
     description: 'Long-form articles in To the Bedrock.',
     prefix,
-    nav: navHtml(prefix, 'notes'),
+    nav: navHtml(prefix, 'articles'),
     main: body,
     extraScripts: [prefix + 'js/articles-search.js']
   });

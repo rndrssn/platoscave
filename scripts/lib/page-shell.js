@@ -17,7 +17,9 @@ function navHtml(prefix, active) {
   const homeClass = active === 'home' ? 'nav-link nav-link--active' : 'nav-link';
   const modulesClass = active === 'modules' ? 'nav-link nav-link--active' : 'nav-link';
   const notesClass = active === 'notes' ? 'nav-link nav-link--active' : 'nav-link';
+  const articlesClass = active === 'articles' ? 'nav-link nav-link--active' : 'nav-link';
   const notesCurrent = active === 'notes' ? ' aria-current="page"' : '';
+  const articlesCurrent = active === 'articles' ? ' aria-current="page"' : '';
   const modulesCurrent = active === 'modules' ? ' aria-current="page"' : '';
 
   return '  <header class="site-header">\n'
@@ -26,6 +28,7 @@ function navHtml(prefix, active) {
     + '    <div class="nav-links" id="primary-nav">\n'
     + '      <a class="' + homeClass + '" href="' + prefix + '">Home</a>\n'
     + '      <a class="' + notesClass + '" href="' + prefix + 'notes/"' + notesCurrent + '>Notes</a>\n'
+    + '      <a class="' + articlesClass + '" href="' + prefix + 'articles/"' + articlesCurrent + '>Articles</a>\n'
     + '      <a class="' + modulesClass + '" href="' + prefix + 'modules/"' + modulesCurrent + '>Modules</a>\n'
     + '    </div>\n'
     + '    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>\n'

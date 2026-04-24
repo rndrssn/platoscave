@@ -1,0 +1,155 @@
+html[data-theme='neon-brutalist-daylight'] {
+  --paper:       #fff6d9;
+  --paper-dark:  #ffefc4;
+  --paper-deep:  #ffe39a;
+
+  --ink:         #151515;
+  --ink-mid:     #2a2a2a;
+  --ink-faint:   #4d4d4d;
+  --ink-ghost:   #787878;
+
+  --rust:        #ff1ea8;
+  --rust-light:  #ff66c9;
+  --sage:        #005bff;
+  --sage-light:  #3d82ff;
+  --ochre:       #00d46a;
+  --gold:        #ffe316;
+  --slate:       #16234c;
+  --slate-light: #31478f;
+
+  --link-inline: var(--sage);
+  --link-inline-hover: var(--sage-light);
+  --link-inline-visited: #1c46ba;
+  --link-ui: var(--rust);
+  --link-ui-hover: var(--rust-light);
+  --tag-chip: var(--rust);
+  --tag-chip-hover: var(--rust-light);
+
+  --experience-switch-surface: #00ecff;
+  --experience-switch-shadow: #151515;
+  --experience-switch-ink: #111111;
+  --experience-switch-hover-surface: #76f4ff;
+  --experience-switch-active-surface: #fff53f;
+  --experience-switch-active-ring: #151515;
+  --experience-switch-focus-inner: color-mix(in srgb, #ffffff 66%, transparent 34%);
+  --experience-switch-focus-outer: color-mix(in srgb, var(--rust) 66%, transparent 34%);
+
+  --serif:       'Space Mono', 'Courier New', monospace;
+  --serif-alt:   'Bebas Neue', Impact, sans-serif;
+  --mono:        'Space Mono', 'Courier New', monospace;
+
+  --card-surface: color-mix(in srgb, var(--paper-dark) 90%, white 10%);
+  --card-border-color: #111111;
+  --card-border-width: 3px;
+  --card-accent-color: var(--sage);
+  --card-accent-width: 10px;
+  --card-shadow-hover:
+    10px 10px 0 rgba(21, 21, 21, 0.34),
+    -2px -2px 0 rgba(255, 30, 168, 0.35);
+  --shadow-nav-popover:
+    8px 8px 0 rgba(21, 21, 21, 0.3),
+    -2px -2px 0 rgba(0, 91, 255, 0.26);
+
+  --nav-surface:             color-mix(in srgb, #fffbe8 84%, transparent 16%);
+  --nav-surface-border:      #000;
+  --nav-surface-filter:      blur(12px) saturate(1.08);
+  --nav-menu-surface:        color-mix(in srgb, #fff5d1 84%, var(--paper-dark) 16%);
+  --nav-menu-border:         color-mix(in srgb, var(--sage) 46%, transparent 54%);
+  --nav-menu-filter:         blur(12px) saturate(1.08);
+  --nav-menu-active-surface: color-mix(in srgb, var(--gold) 34%, white 66%);
+  --nav-submenu-surface:     color-mix(in srgb, #fff1cb 82%, var(--paper-dark) 18%);
+  --nav-submenu-filter:      blur(10px) saturate(1.05);
+
+  --viz-ink:         var(--ink);
+  --viz-ink-mid:     var(--ink-mid);
+  --viz-ink-faint:   var(--ink-faint);
+  --viz-ink-ghost:   var(--ink-ghost);
+  --viz-rust:        var(--rust);
+  --viz-rust-light:  var(--rust-light);
+  --viz-ochre:       var(--ochre);
+  --viz-gold:        var(--gold);
+  --viz-slate:       var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:        var(--sage);
+  --viz-sage-light:  var(--sage-light);
+}
+
+[data-theme='neon-brutalist-daylight'] body {
+  background:
+    linear-gradient(160deg, rgba(255, 30, 168, 0.2) 0 12%, transparent 12% 100%),
+    linear-gradient(32deg, rgba(0, 91, 255, 0.2) 0 12%, transparent 12% 100%),
+    linear-gradient(96deg, rgba(0, 212, 106, 0.18) 0 6%, transparent 6% 100%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(21, 21, 21, 0.1) 0 2px,
+      transparent 2px 18px
+    ),
+    var(--paper);
+}
+
+[data-theme='neon-brutalist-daylight'] :is(
+  .nav-title,
+  .hero-title,
+  .module-header-title,
+  .module-title,
+  .diagnosis-title
+) {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  color: var(--ink);
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-shadow:
+    2px 2px 0 rgba(0, 91, 255, 0.22),
+    -2px -2px 0 rgba(255, 30, 168, 0.26);
+}
+
+[data-theme='neon-brutalist-daylight'] :is(
+  .module-entry,
+  .sim-summary-card,
+  .q-card,
+  .field-notes-card,
+  .essay-link
+) {
+  border: 3px solid #111111;
+  border-top: 10px solid var(--rust);
+  border-left: 12px solid var(--sage);
+  border-radius: 0;
+  box-shadow:
+    10px 10px 0 rgba(21, 21, 21, 0.24),
+    -2px -2px 0 rgba(255, 30, 168, 0.28);
+}
+
+[data-theme='neon-brutalist-daylight'] :is(.module-sub-nav, .results-nav, .module-footer-nav) {
+  border-top: 4px solid #111111;
+  border-bottom: 4px solid #111111;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 91, 255, 0.18) 0 10%,
+      transparent 10% 90%,
+      rgba(255, 30, 168, 0.18) 90% 100%
+    ),
+    color-mix(in srgb, var(--paper-dark) 90%, white 10%);
+}
+
+[data-theme='neon-brutalist-daylight'] :is(
+  .module-sub-nav-link,
+  .diagnosis-link,
+  .footer-nav-link,
+  .contact-social-link
+) {
+  color: var(--ink);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+
+[data-theme='neon-brutalist-daylight'] :is(
+  .module-sub-nav-link--active,
+  .results-nav-link--active,
+  .nav-link--active
+) {
+  color: var(--rust);
+}

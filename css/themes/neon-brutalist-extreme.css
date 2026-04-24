@@ -1,0 +1,179 @@
+html[data-theme='neon-brutalist-extreme'] {
+  --paper:       #09020f;
+  --paper-dark:  #150522;
+  --paper-deep:  #210a32;
+
+  --ink:         #f6ff3d;
+  --ink-mid:     #d9ff5b;
+  --ink-faint:   #afff82;
+  --ink-ghost:   #7fbe71;
+
+  --rust:        #ff2fd7;
+  --rust-light:  #ff73ea;
+  --sage:        #00f0ff;
+  --sage-light:  #70f7ff;
+  --ochre:       #00ff61;
+  --gold:        #f6ff3d;
+  --slate:       #2b0d47;
+  --slate-light: #4a1f71;
+
+  --link-inline: var(--sage);
+  --link-inline-hover: var(--sage-light);
+  --link-inline-visited: #8fd9ff;
+  --link-ui: var(--rust);
+  --link-ui-hover: var(--rust-light);
+  --tag-chip: var(--ochre);
+  --tag-chip-hover: #70ff9e;
+  --experience-switch-surface: #f6ff3d;
+  --experience-switch-shadow: #000000;
+  --experience-switch-ink: #170329;
+  --experience-switch-hover-surface: #ddff66;
+  --experience-switch-active-surface: #ffffff;
+  --experience-switch-active-ring: #000000;
+  --experience-switch-focus-inner: color-mix(in srgb, var(--sage-light) 56%, transparent 44%);
+  --experience-switch-focus-outer: color-mix(in srgb, var(--rust) 66%, transparent 34%);
+
+  --serif:       'Space Mono', 'Courier New', monospace;
+  --serif-alt:   'Bebas Neue', Impact, sans-serif;
+  --mono:        'Space Mono', 'Courier New', monospace;
+
+  --card-surface: color-mix(in srgb, var(--paper-dark) 86%, black 14%);
+  --card-border-color: #000;
+  --card-border-width: 3px;
+  --card-accent-color: var(--sage);
+  --card-accent-width: 10px;
+  --card-shadow-hover:
+    10px 10px 0 rgba(0, 0, 0, 0.6),
+    -2px -2px 0 rgba(255, 47, 215, 0.42);
+  --shadow-nav-popover:
+    10px 10px 0 rgba(0, 0, 0, 0.6),
+    -2px -2px 0 rgba(0, 240, 255, 0.35);
+
+  --nav-surface:             color-mix(in srgb, #0d0319 84%, transparent 16%);
+  --nav-surface-border:      #000;
+  --nav-surface-filter:      blur(14px) saturate(1.16);
+  --nav-menu-surface:        color-mix(in srgb, #120425 84%, var(--paper-dark) 16%);
+  --nav-menu-border:         color-mix(in srgb, var(--sage-light) 54%, transparent 46%);
+  --nav-menu-filter:         blur(14px) saturate(1.16);
+  --nav-menu-active-surface: color-mix(in srgb, var(--rust) 26%, #170329 74%);
+  --nav-submenu-surface:     color-mix(in srgb, #110320 82%, var(--paper-dark) 18%);
+  --nav-submenu-filter:      blur(12px) saturate(1.12);
+
+  --viz-ink:         var(--ink);
+  --viz-ink-mid:     var(--ink-mid);
+  --viz-ink-faint:   var(--ink-faint);
+  --viz-ink-ghost:   var(--ink-ghost);
+  --viz-rust:        var(--rust);
+  --viz-rust-light:  var(--rust-light);
+  --viz-ochre:       var(--ochre);
+  --viz-gold:        var(--gold);
+  --viz-slate:       var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:        var(--sage);
+  --viz-sage-light:  var(--sage-light);
+}
+
+[data-theme='neon-brutalist-extreme'] body {
+  background:
+    linear-gradient(160deg, rgba(255, 47, 215, 0.22) 0 13%, transparent 13% 100%),
+    linear-gradient(30deg, rgba(0, 240, 255, 0.18) 0 16%, transparent 16% 100%),
+    linear-gradient(92deg, rgba(0, 255, 97, 0.2) 0 6%, transparent 6% 100%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(246, 255, 61, 0.16) 0 2px,
+      transparent 2px 16px
+    ),
+    var(--paper);
+}
+
+[data-theme='neon-brutalist-extreme'] :is(
+  .nav-title,
+  .hero-title,
+  .module-header-title,
+  .module-title,
+  .diagnosis-title
+) {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  color: var(--ink);
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-shadow:
+    2px 2px 0 rgba(255, 47, 215, 0.5),
+    -2px -2px 0 rgba(0, 240, 255, 0.42);
+}
+
+[data-theme='neon-brutalist-extreme'] :is(
+  .hero-body,
+  .module-header-body,
+  .diagnosis-body,
+  .essay-body,
+  .field-notes-body
+) {
+  color: #f4f9c6;
+}
+
+[data-theme='neon-brutalist-extreme'] :is(
+  .module-entry,
+  .sim-summary-card,
+  .q-card,
+  .field-notes-card,
+  .essay-link
+) {
+  border: 3px solid #000;
+  border-top: 10px solid var(--rust);
+  border-left: 12px solid var(--sage);
+  border-radius: 0;
+  box-shadow:
+    11px 11px 0 rgba(0, 0, 0, 0.56),
+    -3px -3px 0 rgba(0, 240, 255, 0.34);
+}
+
+[data-theme='neon-brutalist-extreme'] :is(.module-sub-nav, .results-nav, .module-footer-nav) {
+  border-top: 4px solid #000;
+  border-bottom: 4px solid #000;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 47, 215, 0.22) 0 12%,
+      transparent 12% 88%,
+      rgba(0, 240, 255, 0.2) 88% 100%
+    ),
+    color-mix(in srgb, var(--paper-dark) 90%, black 10%);
+}
+
+[data-theme='neon-brutalist-extreme'] :is(
+  .module-sub-nav-link,
+  .diagnosis-link,
+  .footer-nav-link,
+  .contact-social-link
+) {
+  color: var(--ink);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+
+[data-theme='neon-brutalist-extreme'] :is(
+  .module-sub-nav-link--active,
+  .results-nav-link--active,
+  .nav-link--active
+) {
+  color: var(--rust-light);
+}
+
+[data-theme='neon-brutalist-extreme'] .status-live {
+  color: var(--ochre);
+  font-weight: 700;
+}
+
+[data-theme='neon-brutalist-extreme'] .status-coming {
+  color: var(--rust-light);
+  font-weight: 700;
+}
+
+[data-theme='neon-brutalist-extreme'] :is(a, button, .module-sub-nav-link):focus-visible {
+  outline: 3px solid var(--sage);
+  outline-offset: 2px;
+}

@@ -17,7 +17,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ## Navigation Shell
 
 - Site title (`To the Bedrock`) links to `/`.
-- Global link row is normalized by `js/nav-controller.js` to: `Notes`, `CV`, `Experience`, and a `Modules` trigger.
+- Global link row is normalized by `js/nav-controller.js` to: `Notes`, `Articles`, `My Experience`, and a `Modules` trigger.
 - `Modules` opens a contextual submenu (`All modules` + live modules only). Entries marked `coming-soon` are intentionally hidden from this launcher.
 - Sticky behavior: only the link row (`.main-nav`) pins on scroll (`.main-nav--pinned`); the title row remains in normal flow.
 
@@ -66,9 +66,10 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - Build notes + tags pages:
   - `node scripts/build-notes.js`
 - One-command publish flow from `sandbox`:
-  - `scripts/publish-note.sh -m "Publish note: <slug>" --only <slug>`
-  - optional full-suite mode: `scripts/publish-note.sh -m "Publish note: <slug>" --only <slug> --full-suite`
-  - optional LLM polish: `OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --polish <slug> --only <slug>`
+  - note: `scripts/publish-note.sh -m "Publish writing: notes:<slug>" --only notes:<slug>`
+  - article: `scripts/publish-note.sh -m "Publish writing: articles:<slug>" --only articles:<slug>`
+  - optional full-suite mode: `scripts/publish-note.sh -m "Publish writing: <target>" --only <target> --full-suite`
+  - optional LLM polish: `OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish writing: <target>" --polish <target> --only <target>`
 - Generated output:
   - `notes/index.html`
   - `notes/<slug>/index.html`

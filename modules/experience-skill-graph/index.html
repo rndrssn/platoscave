@@ -74,6 +74,15 @@
             <svg id="cv-force-graph" class="cv-graph-svg" role="img" aria-label="Force-directed graph of my experience and skills"></svg>
             <p id="cv-graph-fallback" class="experience-skill-body" hidden>Graph unavailable — try refreshing the page.</p>
           </div>
+          <section class="cv-graph-mini-game" id="cv-graph-mini-game" aria-label="Mini game">
+            <p class="cv-graph-mini-game-title">Find the most connected node</p>
+            <div class="cv-graph-mini-game-row">
+              <button class="cv-graph-mini-game-btn" id="cv-graph-game-start" type="button">Start game</button>
+              <span class="cv-graph-mini-game-timer" id="cv-graph-game-timer">30s</span>
+            </div>
+            <p class="cv-graph-mini-game-hint" id="cv-graph-game-hint">Timed hints appear.</p>
+            <p class="cv-graph-mini-game-status" id="cv-graph-game-status" aria-live="polite">Start, then pick one node.</p>
+          </section>
         </div>
       </section>
 
@@ -92,7 +101,17 @@
       var svgEl = document.getElementById('cv-force-graph');
       var fallback = document.getElementById('cv-graph-fallback');
       var nodeDetailEl = document.getElementById('cv-graph-node-detail');
+      var miniGameRoot = document.getElementById('cv-graph-mini-game');
+      var miniGameStartBtn = document.getElementById('cv-graph-game-start');
+      var miniGameTimerEl = document.getElementById('cv-graph-game-timer');
+      var miniGameHintEl = document.getElementById('cv-graph-game-hint');
+      var miniGameStatusEl = document.getElementById('cv-graph-game-status');
       if (!surface || !svgEl) return;
+
+      // Fast rollback switch: set to false to disable mini-game without removing markup.
+      var MINI_GAME_ENABLED = true;
+      var MINI_GAME_ROUND_SECONDS = 30;
+      var MINI_GAME_HINT_SCHEDULE_SECONDS = [8, 16, 24];
 
       var activeDetailNode = null;
       var DETAIL_TYPE_CLASS_BY_TYPE = {
@@ -172,6 +191,7 @@
       var lastRenderWidth = 0;
       var lastLayoutWidth = 0;
       var lastLayoutHeight = 0;
+      var detachMiniGameHandlers = null;
 
       function radiusByType(type) {
         if (type === 'category') return 10.5;
@@ -205,6 +225,10 @@
       }
 
       function render(renderWidth) {
+        if (typeof detachMiniGameHandlers === 'function') {
+          detachMiniGameHandlers();
+          detachMiniGameHandlers = null;
+        }
         var width = Math.max(320, renderWidth || surface.clientWidth || 320);
         var mobile = width < 760;
         var viewportWidth = window.innerWidth || document.documentElement.clientWidth || width;
@@ -390,12 +414,225 @@
 
         var activeLegendType = null;
         var legendItems = Array.from(document.querySelectorAll('.cv-graph-legend [data-legend-type]'));
+        var nodeById = Object.create(null);
+        simulation.nodes().forEach(function(n) {
+          nodeById[n.id] = n;
+        });
+
+        var miniGameState = {
+          enabled: MINI_GAME_ENABLED && !!miniGameRoot && !!miniGameStartBtn && !!miniGameTimerEl && !!miniGameHintEl && !!miniGameStatusEl,
+          active: false,
+          resolved: false,
+          answerIds: [],
+          topRankedIds: [],
+          degreeById: Object.create(null),
+          topDegree: 0,
+          candidateHintIds: new Set(),
+          hintTimeoutIds: [],
+          timerIntervalId: null,
+          endsAtMs: 0,
+          onStartClick: null
+        };
+
+        if (miniGameRoot && !miniGameState.enabled) {
+          miniGameRoot.hidden = true;
+        }
+
+        function clearMiniGameTimers() {
+          if (miniGameState.timerIntervalId) {
+            clearInterval(miniGameState.timerIntervalId);
+            miniGameState.timerIntervalId = null;
+          }
+          miniGameState.hintTimeoutIds.forEach(function(timeoutId) {
+            clearTimeout(timeoutId);
+          });
+          miniGameState.hintTimeoutIds = [];
+        }
+
+        function setMiniGameTimer(seconds) {
+          if (!miniGameTimerEl) return;
+          var safeSeconds = Math.max(0, Math.ceil(seconds || 0));
+          miniGameTimerEl.textContent = safeSeconds + 's';
+        }
+
+        function setMiniGameHint(text) {
+          if (miniGameHintEl) miniGameHintEl.textContent = text;
+        }
+
+        function setMiniGameStatus(text) {
+          if (miniGameStatusEl) miniGameStatusEl.textContent = text;
+        }
+
+        function applyMiniGameCandidateHighlight() {
+          var hasCandidates = miniGameState.active && !miniGameState.resolved && miniGameState.candidateHintIds.size > 0;
+          node.classed('is-mini-game-candidate', function(n) {
+            return hasCandidates && miniGameState.candidateHintIds.has(n.id);
+          });
+          label.classed('is-mini-game-candidate', function(n) {
+            return hasCandidates && miniGameState.candidateHintIds.has(n.id);
+          });
+        }
+
+        function computeMiniGameConnectivity() {
+          var degreeById = Object.create(null);
+          simulation.nodes().forEach(function(n) {
+            degreeById[n.id] = 0;
+          });
+          simulation.force('link').links().forEach(function(l) {
+            var s = l.source.id;
+            var t = l.target.id;
+            if (typeof degreeById[s] === 'number') degreeById[s] += 1;
+            if (typeof degreeById[t] === 'number') degreeById[t] += 1;
+          });
+
+          var rankedIds = Object.keys(degreeById).sort(function(a, b) {
+            var degreeDelta = degreeById[b] - degreeById[a];
+            if (degreeDelta !== 0) return degreeDelta;
+            var aLabel = nodeById[a] ? nodeById[a].label : a;
+            var bLabel = nodeById[b] ? nodeById[b].label : b;
+            return aLabel.localeCompare(bLabel);
+          });
+
+          var topDegree = rankedIds.length ? degreeById[rankedIds[0]] : 0;
+          var answerIds = rankedIds.filter(function(id) {
+            return degreeById[id] === topDegree;
+          });
+
+          miniGameState.degreeById = degreeById;
+          miniGameState.topRankedIds = rankedIds;
+          miniGameState.topDegree = topDegree;
+          miniGameState.answerIds = answerIds;
+        }
+
+        function answerLabelList() {
+          return miniGameState.answerIds.map(function(id) {
+            return nodeById[id] ? nodeById[id].label : id;
+          });
+        }
+
+        function endMiniGame(message, wonRound) {
+          miniGameState.active = false;
+          miniGameState.resolved = true;
+          clearMiniGameTimers();
+          miniGameState.candidateHintIds = new Set();
+          applyMiniGameCandidateHighlight();
+          if (miniGameStartBtn) {
+            miniGameStartBtn.disabled = false;
+            miniGameStartBtn.textContent = 'Play again';
+          }
+          setMiniGameStatus(message);
+          if (!wonRound) {
+            var answers = answerLabelList();
+            var answerText = answers.length > 1 ? answers.join(' / ') : (answers[0] || 'n/a');
+            setMiniGameHint('Answer: ' + answerText + ' (degree ' + miniGameState.topDegree + ')');
+          }
+        }
+
+        function applyMiniGameHint(hintNumber) {
+          if (!miniGameState.active || miniGameState.resolved) return;
+          if (hintNumber === 1) {
+            var typeNames = Array.from(new Set(miniGameState.answerIds.map(function(id) {
+              var n = nodeById[id];
+              return n ? n.type : '';
+            }).filter(Boolean)));
+            var prettyType = typeNames.length ? typeNames.join(' / ') : 'node';
+            setMiniGameHint('Hint 1/3: type = ' + prettyType + '.');
+            return;
+          }
+          if (hintNumber === 2) {
+            setMiniGameHint('Hint 2/3: top degree = ' + miniGameState.topDegree + '.');
+            return;
+          }
+          if (hintNumber === 3) {
+            miniGameState.candidateHintIds = new Set(miniGameState.topRankedIds.slice(0, 3));
+            applyMiniGameCandidateHighlight();
+            setMiniGameHint('Hint 3/3: top 3 now pulse.');
+          }
+        }
+
+        function scheduleMiniGameHints() {
+          miniGameState.hintTimeoutIds = MINI_GAME_HINT_SCHEDULE_SECONDS.map(function(secondMark, index) {
+            return setTimeout(function() {
+              applyMiniGameHint(index + 1);
+            }, secondMark * 1000);
+          });
+        }
+
+        function startMiniGame() {
+          if (!miniGameState.enabled) return;
+          miniGameState.active = true;
+          miniGameState.resolved = false;
+          miniGameState.candidateHintIds = new Set();
+          applyMiniGameCandidateHighlight();
+          clearMiniGameTimers();
+          computeMiniGameConnectivity();
+          miniGameState.endsAtMs = Date.now() + (MINI_GAME_ROUND_SECONDS * 1000);
+
+          setMiniGameTimer(MINI_GAME_ROUND_SECONDS);
+          setMiniGameHint('Timed hints appear.');
+          setMiniGameStatus('Round live: pick one node.');
+          if (miniGameStartBtn) {
+            miniGameStartBtn.disabled = true;
+            miniGameStartBtn.textContent = 'Round live';
+          }
+
+          miniGameState.timerIntervalId = setInterval(function() {
+            var remaining = Math.max(0, (miniGameState.endsAtMs - Date.now()) / 1000);
+            setMiniGameTimer(remaining);
+            if (remaining <= 0) {
+              endMiniGame('Time up.', false);
+            }
+          }, 200);
+
+          scheduleMiniGameHints();
+        }
+
+        function handleMiniGameGuess(guessNode) {
+          if (!miniGameState.active || miniGameState.resolved || !guessNode) return;
+          var won = miniGameState.answerIds.indexOf(guessNode.id) !== -1;
+          if (won) {
+            var tie = miniGameState.answerIds.length > 1;
+            endMiniGame(tie ? 'Correct. One top node found.' : 'Correct.', true);
+            setMiniGameHint('Top degree: ' + miniGameState.topDegree + ' connections.');
+            return;
+          }
+          var best = answerLabelList();
+          var bestText = best.length > 1 ? best.join(' / ') : (best[0] || 'n/a');
+          endMiniGame('Not this one.', false);
+          setMiniGameStatus('Not this one. Top: ' + bestText + '.');
+        }
+
+        function wireMiniGameControls() {
+          if (!miniGameState.enabled) return;
+          setMiniGameTimer(MINI_GAME_ROUND_SECONDS);
+          setMiniGameHint('Timed hints appear.');
+          setMiniGameStatus('Start, then pick one node.');
+          if (miniGameStartBtn) {
+            miniGameStartBtn.disabled = false;
+            miniGameStartBtn.textContent = 'Start game';
+            miniGameState.onStartClick = function() {
+              startMiniGame();
+            };
+            miniGameStartBtn.addEventListener('click', miniGameState.onStartClick);
+          }
+          detachMiniGameHandlers = function() {
+            clearMiniGameTimers();
+            miniGameState.active = false;
+            miniGameState.resolved = true;
+            miniGameState.candidateHintIds = new Set();
+            applyMiniGameCandidateHighlight();
+            if (miniGameStartBtn && miniGameState.onStartClick) {
+              miniGameStartBtn.removeEventListener('click', miniGameState.onStartClick);
+            }
+          };
+        }
 
         function clearHighlights() {
           node.classed('is-dim', false).classed('is-related', false).classed('is-skill-legend-focus', false);
           label.classed('is-dim', false).classed('is-related', false).classed('is-active', false);
           link.classed('is-dim', false).classed('is-related', false);
           hideNodeDetail(true);
+          applyMiniGameCandidateHighlight();
         }
 
         function applyNodeFocus(d) {
@@ -452,6 +689,7 @@
               var connectsPrimaryToRelated = (primary.has(s) && related.has(t)) || (primary.has(t) && related.has(s));
               return !touchesPrimary && !connectsPrimaryToRelated;
             });
+          applyMiniGameCandidateHighlight();
         }
 
         function setLegendActive(type) {
@@ -468,6 +706,7 @@
           }
           applyNodeFocus(d);
           showNodeDetail(d, true);
+          handleMiniGameGuess(d);
         }
 
         if (!isCoarsePointer) {
@@ -524,6 +763,8 @@
             }
           });
         });
+
+        wireMiniGameControls();
 
         simulation.on('tick', function() {
           if (constrainedMobile) {

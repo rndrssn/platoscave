@@ -23,6 +23,8 @@
     'laser-bauhaus',
     'chrome-glam',
     'minimalist-brutalist',
+    'neon-brutalist-extreme',
+    'neon-brutalist-daylight',
   ];
   var THEME_ALIASES = {
     'collision-decision-cold': 'decision-collision-cold',

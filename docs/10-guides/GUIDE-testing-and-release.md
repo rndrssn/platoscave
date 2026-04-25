@@ -4,7 +4,7 @@ type: GUIDE
 title: Testing and Release Guide
 status: ACTIVE
 created: 2026-03-19
-updated: 2026-03-30
+updated: 2026-04-25
 owner: Robert Andersson
 relates_to: [CORE-quality-gates, GUIDE-getting-started]
 tags: [testing, release]
@@ -23,28 +23,34 @@ token_cost_estimate: low
 Nav theming guardrails included in `run-all`:
 - `tests/test-nav-theme-contract.js` ensures nav surfaces stay token-driven and prevents direct `.main-nav` theme overrides for the active theme.
 
-## Notes-only release path
+## Writing release path
 
-When the change is only note content/tag generation, run from `sandbox`:
+When the change is only notes/articles/tag generation, run from `sandbox`:
 
 ```bash
-scripts/publish-note.sh -m "Publish note: <slug>" --only <slug>
+scripts/publish-note.sh -m "Publish writing: notes:<slug>" --only notes:<slug>
 ```
 
-Optional quick mode (notes-focused checks):
+For articles:
 
 ```bash
-scripts/publish-note.sh -m "Publish note: <slug>" --quick --only <slug>
+scripts/publish-note.sh -m "Publish writing: articles:<slug>" --only articles:<slug>
+```
+
+Optional quick mode (writing-focused checks):
+
+```bash
+scripts/publish-note.sh -m "Publish writing: notes:<slug>" --quick --only notes:<slug>
 ```
 
 Optional spelling/punctuation polish before publish:
 
 ```bash
-OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish note: <slug>" --quick --polish <slug> --only <slug>
+OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish writing: notes:<slug>" --quick --polish notes:<slug> --only notes:<slug>
 ```
 
 Status-driven lifecycle in frontmatter:
-- `published`: rendered to notes/tags output.
+- `published`: rendered to notes/articles output (and included in tags when tagged).
 - `draft`: excluded from generated output.
 - `unpublished`: excluded from generated output (intentional takedown).
 

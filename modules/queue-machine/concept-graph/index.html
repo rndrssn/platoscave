@@ -62,11 +62,16 @@
 
       <section class="queue-machine-concept queue-machine-concept--full" aria-label="Concept map">
         <div class="queue-machine-concept-canvas">
-          <p class="queue-machine-concept-helper">Hover or tap a node to follow connections. Drag to rearrange.</p>
+          <p class="queue-machine-concept-helper">Hover or tap a node to enter focus mode. Drag to rearrange.</p>
           <ul class="queue-machine-concept-legend" aria-label="Concept categories">
             <li>
               <button class="queue-machine-concept-legend-btn" type="button" data-legend-group="concept" aria-pressed="false">
-                <span class="queue-machine-concept-swatch queue-machine-concept-swatch--concept"></span>Concept
+                <span class="queue-machine-concept-swatch queue-machine-concept-swatch--concept"></span>Theory
+              </button>
+            </li>
+            <li>
+              <button class="queue-machine-concept-legend-btn" type="button" data-legend-group="assumption" aria-pressed="false">
+                <span class="queue-machine-concept-swatch queue-machine-concept-swatch--assumption"></span>Assumption
               </button>
             </li>
             <li>
@@ -80,9 +85,13 @@
               </button>
             </li>
           </ul>
+          <p class="queue-machine-concept-edge-legend">
+            <span class="queue-machine-concept-edge-key" aria-hidden="true"></span>
+            Dashed lines mark assumptions contradicted by a theory or surprise.
+          </p>
           <p class="queue-machine-concept-detail" data-concept-detail aria-live="polite"></p>
           <div class="queue-machine-concept-surface">
-            <svg class="queue-machine-concept-graph" data-concept-graph role="img" aria-label="Force-directed graph of queueing theory, complexity, agile practice, observations, intuitions, and surprises"></svg>
+            <svg class="queue-machine-concept-graph" data-concept-graph role="img" aria-label="Force-directed graph of queueing theory, complexity, agile practice, observations, management assumptions, and surprises"></svg>
             <p class="queue-machine-concept-fallback" data-concept-graph-fallback hidden>Graph unavailable &mdash; try refreshing the page.</p>
           </div>
         </div>

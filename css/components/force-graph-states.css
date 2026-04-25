@@ -2,7 +2,18 @@
 /* Applied alongside each graph's bespoke node/link/label classes. */
 
 .force-graph-node {
-  stroke-width: 1.2;
+  stroke-width: var(--force-graph-node-stroke-width, 1.2);
+}
+
+.force-graph-label {
+  fill: var(--force-graph-label-fill, var(--ink-mid));
+  font-family: var(--force-graph-label-font-family, var(--mono));
+  font-size: var(--force-graph-label-size, 10px);
+  letter-spacing: var(--force-graph-label-letter-spacing, 0);
+  text-anchor: middle;
+  dominant-baseline: alphabetic;
+  opacity: var(--force-graph-label-opacity, 0.84);
+  pointer-events: none;
 }
 
 .force-graph-node.is-dim,

@@ -329,14 +329,14 @@
           .selectAll('line')
           .data(simulation.force('link').links())
           .join('line')
-          .attr('class', 'cv-graph-link');
+          .attr('class', 'force-graph-link cv-graph-link');
 
         var node = plot.append('g')
           .attr('class', 'cv-graph-nodes')
           .selectAll('circle')
           .data(simulation.nodes())
           .join('circle')
-          .attr('class', function(d) { return 'cv-graph-node cv-graph-node--' + d.type; })
+          .attr('class', function(d) { return 'force-graph-node cv-graph-node cv-graph-node--' + d.type; })
           .attr('r', function(d) { return radiusByType(d.type); });
 
         var hitArea = null;
@@ -403,7 +403,7 @@
           .selectAll('text')
           .data(simulation.nodes())
           .join('text')
-          .attr('class', 'cv-graph-label')
+          .attr('class', 'force-graph-label cv-graph-label')
           .attr('dy', 0)
           .attr('text-anchor', 'middle')
           .style('font-size', labelFont + 'px')

@@ -50,29 +50,40 @@
       <header class="module-header">
         <h1 class="module-header-title">Utilization Trap</h1>
         <p class="module-header-body">
-          The system is only 72% utilized. It still starts drowning. That is the surprise: average capacity can be enough
-          on paper while bursty arrivals and uneven work create queues in reality.
+          The team is not overloaded on average. It is only using about 72% of its capacity. Then the work arrives in
+          lumps, some items turn out larger than expected, and the queue appears anyway.
         </p>
         <p class="module-header-body">
-          Utilization measures average load. Queues are born in the moments where arrivals exceed what the constraint can
-          absorb. The excess does not disappear; it becomes tomorrow's backlog.
+          That is the utilization trap: averages make the system look safe, while the lived experience is waiting,
+          interruptions, stale work, and tomorrow's backlog.
         </p>
       </header>
 
       <section class="queue-machine-primer" aria-labelledby="queue-primer-heading">
         <div>
-          <h2 id="queue-primer-heading" class="queue-machine-kicker">The hook: averages lie</h2>
+          <h2 id="queue-primer-heading" class="queue-machine-kicker">Watch this first</h2>
           <p>
-            The default scenario keeps average demand below capacity: <var>&lambda;</var> is 0.72 and <var>&mu;</var> is
-            1.00, so <var>&rho;</var> is 72%. The CV sliders are high on purpose. They make the work arrive and complete
-            unevenly, which changes waiting and backlog without changing utilization.
+            Start with the default settings. The average work coming in is below the average capacity available. Now look
+            at the red bars: those are moments where the day asks for more than the system can absorb. The excess does not
+            vanish. It rolls forward into the backlog chart.
           </p>
         </div>
         <ul class="queue-machine-mini-legend" aria-label="Compact variable legend">
-          <li><strong>Utilization</strong><span>average load; steady at 72% in the opening case</span></li>
-          <li><strong>Variability</strong><span>burstiness; the thing that makes the bars spike</span></li>
-          <li><strong>Backlog</strong><span>overflow that carries forward instead of vanishing</span></li>
+          <li><strong>Average load</strong><span>how busy the system looks on paper</span></li>
+          <li><strong>Burstiness</strong><span>how unevenly work arrives or changes size</span></li>
+          <li><strong>Backlog</strong><span>overflow carried into the next moment</span></li>
         </ul>
+      </section>
+
+      <section class="queue-machine-story" aria-label="Utilization trap narrative">
+        <p>
+          The surprise is not that overloaded systems queue. Of course they do. The surprise is that a system can have
+          enough average capacity and still feel overloaded because work does not arrive as an average.
+        </p>
+        <p>
+          Read the charts before the math. Green bars fit inside available capacity. Red bars spill over. The second chart
+          shows the spillover accumulating. Only after that do the symbols get names.
+        </p>
       </section>
 
       <section class="queue-machine-lab" aria-label="Queue and utilization demonstration">
@@ -85,24 +96,24 @@
 
         <form class="queue-machine-controls" data-queue-controls>
           <div class="queue-machine-control">
-            <label for="queue-arrival-rate">Arrival rate, lambda</label>
+            <label for="queue-arrival-rate">Average work arriving</label>
             <input id="queue-arrival-rate" type="range" min="0.10" max="0.98" step="0.01" value="0.72" />
             <span><span data-output="arrival-rate">0.72</span> items / time unit</span>
           </div>
           <div class="queue-machine-control">
-            <label for="queue-service-rate">Service rate, mu</label>
+            <label for="queue-service-rate">Average capacity available</label>
             <input id="queue-service-rate" type="range" min="0.50" max="1.20" step="0.01" value="1.00" />
             <span><span data-output="service-rate">1.00</span> items / time unit</span>
           </div>
           <div class="queue-machine-control">
-            <label for="queue-arrival-variability">Arrival variability, C<sub>a</sub></label>
+            <label for="queue-arrival-variability">Burstiness of incoming work</label>
             <input id="queue-arrival-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.65" />
-            <span>CV <span data-output="arrival-cv">1.65</span></span>
+            <span>unevenness <span data-output="arrival-cv">1.65</span></span>
           </div>
           <div class="queue-machine-control">
-            <label for="queue-service-variability">Service variability, C<sub>s</sub></label>
+            <label for="queue-service-variability">Unevenness of work size</label>
             <input id="queue-service-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.80" />
-            <span>CV <span data-output="service-cv">1.80</span></span>
+            <span>unevenness <span data-output="service-cv">1.80</span></span>
           </div>
         </form>
 
@@ -128,33 +139,42 @@
 
         <dl class="queue-machine-readout">
           <div>
-            <dt>Utilization, rho</dt>
+            <dt>Average load</dt>
             <dd data-output="utilization">72.0%</dd>
           </div>
           <div>
-            <dt>M/M/1 lead time, W</dt>
+            <dt>Simple queue lead time</dt>
             <dd><span data-output="mm1-lead-time">3.57</span> time units</dd>
           </div>
           <div>
-            <dt>Kingman queue wait, Wq</dt>
+            <dt>Queue wait with burstiness</dt>
             <dd><span data-output="kingman-wait">7.67</span> time units</dd>
           </div>
           <div>
-            <dt>Kingman lead time, W</dt>
+            <dt>Total lead time with burstiness</dt>
             <dd><span data-output="kingman-lead-time">8.67</span> time units</dd>
           </div>
           <div>
-            <dt>Little's Law WIP, L</dt>
+            <dt>Average WIP implied</dt>
             <dd><span data-output="little-law-wip">6.24</span> items</dd>
           </div>
           <div>
-            <dt>Variability factor</dt>
+            <dt>Burstiness multiplier</dt>
             <dd><span data-output="variability-factor">2.98</span></dd>
           </div>
         </dl>
       </section>
 
       <article class="module-essay queue-machine-theory">
+        <section class="essay-section">
+          <h2 class="essay-heading">Now give the story names</h2>
+          <p class="essay-body">
+            The controls above avoid notation on purpose. The math vocabulary is useful once the mechanism is visible:
+            average work arriving is usually written as <var>&lambda;</var>, average capacity as <var>&mu;</var>,
+            utilization as <var>&rho;</var>, lead time as <var>W</var>, and work in process as <var>L</var>.
+          </p>
+        </section>
+
         <section class="essay-section">
           <h2 class="essay-heading">Theoretical frame</h2>
           <p class="essay-body">

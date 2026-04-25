@@ -55,15 +55,6 @@ html[data-theme='decision-collision-cold'] {
   --viz-sage-light: var(--sage-light);
 }
 
-html[data-theme='decision-collision-cold'][data-nav-swatch='oxblood-glass'] {
-  --nav-surface:                 color-mix(in srgb, color-mix(in srgb, var(--rust) 52%, var(--ink) 48%) 80%, transparent 20%);
-  --nav-surface-border:          #000;
-  --nav-menu-surface:            color-mix(in srgb, color-mix(in srgb, var(--rust) 56%, var(--ink) 44%) 82%, var(--paper) 18%);
-  --nav-menu-border:             color-mix(in srgb, var(--gold) 58%, transparent 42%);
-  --nav-menu-active-surface:     color-mix(in srgb, var(--gold) 42%, var(--paper-dark) 58%);
-  --nav-submenu-surface:         color-mix(in srgb, color-mix(in srgb, var(--rust-light) 44%, var(--ink) 56%) 80%, var(--paper) 20%);
-}
-
 html[data-theme='decision-collision-cold'][data-nav-swatch='white'] {
   --nav-surface:                 color-mix(in srgb, white 80%, transparent 20%);
   --nav-surface-border:          #000;
@@ -71,33 +62,6 @@ html[data-theme='decision-collision-cold'][data-nav-swatch='white'] {
   --nav-menu-border:             color-mix(in srgb, white 50%, var(--ink) 50%);
   --nav-menu-active-surface:     color-mix(in srgb, white 76%, var(--paper-dark) 24%);
   --nav-submenu-surface:         color-mix(in srgb, white 78%, var(--paper-dark) 22%);
-}
-
-html[data-theme='decision-collision-cold'][data-nav-swatch='slate-signal'] {
-  --nav-surface:                 color-mix(in srgb, color-mix(in srgb, var(--slate) 58%, var(--ink) 42%) 80%, transparent 20%);
-  --nav-surface-border:          #000;
-  --nav-menu-surface:            color-mix(in srgb, color-mix(in srgb, var(--slate) 66%, var(--ink) 34%) 82%, var(--paper) 18%);
-  --nav-menu-border:             color-mix(in srgb, var(--sage-light) 62%, transparent 38%);
-  --nav-menu-active-surface:     color-mix(in srgb, var(--sage-light) 46%, var(--paper-dark) 54%);
-  --nav-submenu-surface:         color-mix(in srgb, color-mix(in srgb, var(--slate-light) 52%, var(--ink) 48%) 80%, var(--paper) 20%);
-}
-
-html[data-theme='decision-collision-cold'][data-nav-swatch='midnight-ink'] {
-  --nav-surface:                 color-mix(in srgb, color-mix(in srgb, var(--ink) 74%, var(--slate) 26%) 80%, transparent 20%);
-  --nav-surface-border:          #000;
-  --nav-menu-surface:            color-mix(in srgb, color-mix(in srgb, var(--ink) 82%, var(--slate) 18%) 84%, var(--paper) 16%);
-  --nav-menu-border:             color-mix(in srgb, var(--rust-light) 62%, transparent 38%);
-  --nav-menu-active-surface:     color-mix(in srgb, var(--rust-light) 44%, var(--paper-dark) 56%);
-  --nav-submenu-surface:         color-mix(in srgb, color-mix(in srgb, var(--ink-mid) 62%, var(--slate) 38%) 82%, var(--paper) 18%);
-}
-
-html[data-theme='decision-collision-cold'][data-nav-swatch='rust-ember'] {
-  --nav-surface:                 color-mix(in srgb, color-mix(in srgb, var(--rust-light) 58%, var(--rust) 42%) 80%, transparent 20%);
-  --nav-surface-border:          #000;
-  --nav-menu-surface:            color-mix(in srgb, color-mix(in srgb, var(--rust-light) 64%, var(--rust) 36%) 82%, var(--paper) 18%);
-  --nav-menu-border:             color-mix(in srgb, var(--sage-light) 58%, transparent 42%);
-  --nav-menu-active-surface:     color-mix(in srgb, var(--sage-light) 42%, var(--paper-dark) 58%);
-  --nav-submenu-surface:         color-mix(in srgb, color-mix(in srgb, var(--rust-light) 48%, var(--rust) 52%) 80%, var(--paper) 20%);
 }
 
 [data-theme='decision-collision-cold'] body {

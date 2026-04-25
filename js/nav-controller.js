@@ -19,10 +19,6 @@
     ];
     var NAV_SWATCH_ALLOWLIST = [
       'white',
-      'oxblood-glass',
-      'slate-signal',
-      'midnight-ink',
-      'rust-ember',
     ];
 
     function applyConfiguredNavSwatch() {

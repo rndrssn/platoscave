@@ -1,0 +1,363 @@
+.queue-machine-page {
+  --queue-line: var(--ink-ghost);
+  --queue-soft: color-mix(in srgb, var(--paper) 74%, var(--ink) 26%);
+  --queue-flow: var(--sage);
+  --queue-strained: var(--rust);
+  --queue-critical: var(--accent, var(--rust));
+}
+
+.queue-machine-lab {
+  border-top: 1px solid var(--ink-ghost);
+  border-bottom: 1px solid var(--ink-ghost);
+  padding: 2rem 0;
+  margin: 2rem 0 4rem;
+}
+
+.queue-machine-controls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.queue-machine-control {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.queue-machine-control label,
+.queue-machine-control span,
+.queue-machine-readout dt,
+.queue-machine-readout dd,
+.queue-machine-status,
+.queue-machine-station {
+  font-family: var(--mono);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.queue-machine-control label,
+.queue-machine-readout dt {
+  color: var(--ink-faint);
+  font-size: 0.68rem;
+}
+
+.queue-machine-control span,
+.queue-machine-readout dd,
+.queue-machine-status {
+  color: var(--ink-mid);
+  font-size: 0.75rem;
+}
+
+.queue-machine-control input[type="range"] {
+  accent-color: var(--ink-mid);
+  inline-size: 100%;
+}
+
+.queue-machine-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(7rem, 9rem);
+  gap: 1rem;
+  align-items: stretch;
+  margin-bottom: 1.5rem;
+}
+
+.queue-machine-track {
+  min-height: 8.5rem;
+  border: 1px solid var(--queue-line);
+  display: flex;
+  align-content: flex-end;
+  align-items: flex-end;
+  flex-wrap: wrap-reverse;
+  gap: 0.4rem;
+  padding: 0.8rem;
+  background:
+    linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), var(--queue-line) calc(100% - 1px)),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--ink) 7%, transparent) 0 1px, transparent 1px 2rem);
+}
+
+.queue-machine-dot {
+  display: block;
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  border: 1px solid var(--ink-mid);
+  background: var(--paper);
+}
+
+.queue-machine-dot--overflow {
+  background: var(--queue-critical);
+  border-color: var(--queue-critical);
+}
+
+.queue-machine-track[data-load="strained"] .queue-machine-dot {
+  border-color: var(--queue-strained);
+}
+
+.queue-machine-track[data-load="critical"] .queue-machine-dot {
+  border-color: var(--queue-critical);
+}
+
+.queue-machine-station {
+  min-height: 8.5rem;
+  border: 1px solid var(--ink-mid);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  text-align: center;
+  color: var(--ink);
+  font-size: 0.72rem;
+  background: var(--paper);
+}
+
+.queue-machine-station[data-load="flowing"] {
+  box-shadow: inset 0 -0.45rem 0 var(--queue-flow);
+}
+
+.queue-machine-station[data-load="strained"] {
+  box-shadow: inset 0 -1.35rem 0 var(--queue-strained);
+}
+
+.queue-machine-station[data-load="critical"] {
+  box-shadow: inset 0 -2.6rem 0 var(--queue-critical);
+}
+
+.queue-machine-status {
+  grid-column: 1 / -1;
+  min-height: 2.2rem;
+  line-height: 1.55;
+}
+
+.queue-machine-readout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--ink-ghost);
+  border-left: 1px solid var(--ink-ghost);
+}
+
+.queue-machine-readout div {
+  border-right: 1px solid var(--ink-ghost);
+  border-bottom: 1px solid var(--ink-ghost);
+  padding: 0.85rem;
+}
+
+.queue-machine-readout dt {
+  margin-bottom: 0.55rem;
+}
+
+.queue-machine-readout dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.queue-machine-theory {
+  margin-top: 3rem;
+}
+
+.queue-machine-table-wrap {
+  inline-size: 100%;
+  margin: 2rem 0;
+  overflow-x: auto;
+  border-top: 1px solid var(--ink-ghost);
+  border-left: 1px solid var(--ink-ghost);
+}
+
+.queue-machine-variable-table {
+  inline-size: 100%;
+  min-inline-size: 52rem;
+  border-collapse: collapse;
+}
+
+.queue-machine-variable-table th,
+.queue-machine-variable-table td {
+  border-right: 1px solid var(--ink-ghost);
+  border-bottom: 1px solid var(--ink-ghost);
+  padding: 0.85rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.queue-machine-variable-table th {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.queue-machine-variable-table td {
+  color: var(--ink-mid);
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.queue-machine-variable-table var {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-style: italic;
+  text-transform: none;
+}
+
+.queue-machine-equation {
+  margin: 1.5rem 0 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--ink-ghost);
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+.queue-machine-equation math {
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  margin-bottom: 0.9rem;
+}
+
+.queue-machine-equation figcaption {
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.queue-machine-equation var {
+  font-family: var(--serif);
+  font-style: italic;
+  text-transform: none;
+}
+
+.queue-machine-animation {
+  border-top: 1px solid var(--ink-ghost);
+  border-bottom: 1px solid var(--ink-ghost);
+  padding: 2rem 0;
+  margin: 2rem 0 4rem;
+}
+
+.queue-machine-animation-stage {
+  position: relative;
+  min-height: 19rem;
+  border: 1px solid var(--ink-ghost);
+  background:
+    linear-gradient(90deg, transparent 0 32%, color-mix(in srgb, var(--ink) 12%, transparent) 32% calc(32% + 1px), transparent calc(32% + 1px)),
+    linear-gradient(90deg, transparent 0 64%, color-mix(in srgb, var(--ink) 12%, transparent) 64% calc(64% + 1px), transparent calc(64% + 1px));
+  overflow: hidden;
+}
+
+.queue-machine-animation-lane {
+  position: absolute;
+  inset-inline: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-height: 4.5rem;
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+.queue-machine-animation-lane--flow {
+  inset-block-start: 0;
+}
+
+.queue-machine-animation-lane--jam {
+  inset-block-start: 8rem;
+}
+
+.queue-machine-animation-cell {
+  display: grid;
+  place-items: end start;
+  padding: 0.65rem;
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.queue-machine-animation-item {
+  position: absolute;
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+  border: 1px solid var(--ink-mid);
+  background: var(--paper);
+  transform: translate(-50%, -50%);
+}
+
+.queue-machine-animation-item--flow {
+  animation: queue-flow 7.2s linear infinite;
+}
+
+.queue-machine-animation-item--jam {
+  animation: queue-jam 7.2s linear infinite;
+}
+
+.queue-machine-animation-item:nth-of-type(2) { animation-delay: -1.2s; }
+.queue-machine-animation-item:nth-of-type(3) { animation-delay: -2.4s; }
+.queue-machine-animation-item:nth-of-type(4) { animation-delay: -3.6s; }
+.queue-machine-animation-item:nth-of-type(5) { animation-delay: -4.8s; }
+.queue-machine-animation-item:nth-of-type(6) { animation-delay: -6s; }
+
+.queue-machine-animation-caption {
+  margin-top: 1rem;
+  color: var(--ink-mid);
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+}
+
+@keyframes queue-flow {
+  0% { inset-inline-start: 5%; inset-block-start: 3.2rem; opacity: 0; }
+  8% { opacity: 1; }
+  35% { inset-inline-start: 35%; inset-block-start: 3.2rem; }
+  66% { inset-inline-start: 66%; inset-block-start: 3.2rem; }
+  92% { opacity: 1; }
+  100% { inset-inline-start: 96%; inset-block-start: 3.2rem; opacity: 0; }
+}
+
+@keyframes queue-jam {
+  0% { inset-inline-start: 5%; inset-block-start: 11.2rem; opacity: 0; }
+  8% { opacity: 1; }
+  35% { inset-inline-start: 30%; inset-block-start: 11.2rem; }
+  66% { inset-inline-start: 43%; inset-block-start: 11.2rem; }
+  92% { opacity: 1; }
+  100% { inset-inline-start: 52%; inset-block-start: 11.2rem; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .queue-machine-animation-item {
+    animation: none;
+  }
+}
+
+@media (min-width: 760px) {
+  .queue-machine-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .queue-machine-readout {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .queue-machine-stage {
+    grid-template-columns: 1fr;
+  }
+
+  .queue-machine-readout {
+    grid-template-columns: 1fr;
+  }
+
+  .queue-machine-animation-stage {
+    min-height: 17rem;
+  }
+
+  .queue-machine-equation math {
+    font-size: 1.05rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+}

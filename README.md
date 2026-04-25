@@ -35,6 +35,9 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - **05 Assess** (`/modules/garbage-can/assess/`)
 - **Management Mix** — Where traditional control and adaptive learning coexist. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
   - **01 Epistemic Bets** (`/modules/mix-mapper/`)
+- **The Queue Machine** — Why high utilization creates queues, delay, and amplified variability.
+  - **01 Utilization Trap** (`/modules/queue-machine/`)
+  - **02 Flow Animation** (`/modules/queue-machine/animation/`)
 - **The Descent** — From open problem to verifiable criterion. The sections of a brief as stations of a descent. Paired narratively with Module 04 (same epistemic bet, at unit scale).
   - **01 The Descent** (`/modules/the-descent/`)
   - **02 Section Map** (`/modules/the-descent/section-map/`)

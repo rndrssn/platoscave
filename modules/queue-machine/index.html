@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive module explaining Little's Law, utilization, variability amplification, and Theory of Constraints in product development flow." />
+  <title>Utilization Trap · The Queue Machine · To the Bedrock</title>
+  <script src="../../theme.config.js"></script>
+  <script src="../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../css/fonts.css" />
+  <link rel="stylesheet" href="../../css/tokens.css" />
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="../../css/layout.css" />
+  <link rel="stylesheet" href="../../css/components.css" />
+  <link rel="stylesheet" href="../../css/utilities.css" />
+  <link rel="stylesheet" href="../../css/themes.css" />
+  <link rel="stylesheet" href="../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../">To the Bedrock</a>
+    <nav class="main-nav">
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../">Home</a>
+      <a class="nav-link" href="../../notes/">Notes</a>
+      <a class="nav-link nav-link--active" href="../../modules/" aria-current="page">Modules</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page queue-machine-page">
+      <a class="module-back-link" href="../" aria-label="Back to Modules"></a>
+      <a class="module-header-number module-context-number module-context-link" href="./">The Queue Machine</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01</span> Utilization Trap</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="animation/"><span class="module-sub-nav-number">02</span> Flow Animation</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Utilization Trap</h1>
+        <p class="module-header-body">
+          High individual utilization looks efficient locally. In a variable flow system it can make the whole system slower:
+          queues build, lead time stretches, and the constraint becomes harder to see.
+        </p>
+        <p class="module-header-body">
+          This draft module connects three lenses: Little's Law for flow accounting, queueing theory for non-linear delay,
+          and Theory of Constraints for where management attention belongs.
+        </p>
+      </header>
+
+      <section class="queue-machine-lab" aria-label="Queue and utilization demonstration">
+        <form class="queue-machine-controls" data-queue-controls>
+          <div class="queue-machine-control">
+            <label for="queue-arrival-rate">Arrival rate, lambda</label>
+            <input id="queue-arrival-rate" type="range" min="0.10" max="0.98" step="0.01" value="0.72" />
+            <span><span data-output="arrival-rate">0.72</span> items / time unit</span>
+          </div>
+          <div class="queue-machine-control">
+            <label for="queue-service-rate">Service rate, mu</label>
+            <input id="queue-service-rate" type="range" min="0.50" max="1.20" step="0.01" value="1.00" />
+            <span><span data-output="service-rate">1.00</span> items / time unit</span>
+          </div>
+          <div class="queue-machine-control">
+            <label for="queue-arrival-variability">Arrival variability, C<sub>a</sub></label>
+            <input id="queue-arrival-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.00" />
+            <span>CV <span data-output="arrival-cv">1.00</span></span>
+          </div>
+          <div class="queue-machine-control">
+            <label for="queue-service-variability">Service variability, C<sub>s</sub></label>
+            <input id="queue-service-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.00" />
+            <span>CV <span data-output="service-cv">1.00</span></span>
+          </div>
+        </form>
+
+        <div class="queue-machine-stage" aria-label="Queue visual">
+          <div class="queue-machine-track" data-queue-track aria-hidden="true"></div>
+          <div class="queue-machine-station" data-queue-station aria-hidden="true">
+            <span>Constraint</span>
+          </div>
+          <p class="queue-machine-status" data-queue-status aria-live="polite"></p>
+        </div>
+
+        <dl class="queue-machine-readout">
+          <div>
+            <dt>Utilization, rho</dt>
+            <dd data-output="utilization">72.0%</dd>
+          </div>
+          <div>
+            <dt>M/M/1 system time, W</dt>
+            <dd><span data-output="mm1-lead-time">3.57</span></dd>
+          </div>
+          <div>
+            <dt>Kingman queue wait, Wq</dt>
+            <dd><span data-output="kingman-wait">2.57</span></dd>
+          </div>
+          <div>
+            <dt>Kingman system time, W</dt>
+            <dd><span data-output="kingman-lead-time">3.57</span></dd>
+          </div>
+          <div>
+            <dt>Little's Law WIP, L</dt>
+            <dd><span data-output="little-law-wip">2.57</span></dd>
+          </div>
+          <div>
+            <dt>Variability factor</dt>
+            <dd><span data-output="variability-factor">1.00</span></dd>
+          </div>
+        </dl>
+      </section>
+
+      <article class="module-essay queue-machine-theory">
+        <section class="essay-section">
+          <h2 class="essay-heading">Theoretical frame</h2>
+          <p class="essay-body">
+            Little's Law is the flow identity. In any stable system observed over a meaningful interval, average work in the
+            system equals average throughput multiplied by average time in the system.
+          </p>
+
+          <figure class="queue-machine-equation">
+            <math display="block" aria-label="L equals lambda times W">
+              <mi>L</mi><mo>=</mo><mi>&lambda;</mi><mi>W</mi>
+            </math>
+            <figcaption>
+              <var>L</var> is average work in system, <var>lambda</var> is average arrival or throughput rate,
+              and <var>W</var> is average time in system.
+            </figcaption>
+          </figure>
+
+          <p class="essay-body">
+            Little's Law does not say why waiting happens. It says the quantities must balance. If throughput is capped and
+            WIP rises, lead time rises with it.
+          </p>
+
+          <div class="queue-machine-table-wrap" role="region" aria-label="Queueing variables translated to high-software-content work">
+            <table class="queue-machine-variable-table">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Mathematical meaning</th>
+                  <th scope="col">In high-software-content work</th>
+                  <th scope="col">Order-of-magnitude notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row"><var>L</var></th>
+                  <td>Average number of items in the system.</td>
+                  <td>Work in process: ideas, features, fixes, approvals, reviews, blocked work, and partially done delivery items.</td>
+                  <td>Can be counted in cards, tickets, decisions, or value-stream items. The unit must stay consistent.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><var>&lambda;</var></th>
+                  <td>Average arrival rate, equal to throughput rate in a stable system.</td>
+                  <td>Rate at which work enters the system, or rate at which value-bearing work exits once the system is stable.</td>
+                  <td>Usually measured per week or month. If arrivals exceed sustainable throughput, the system is not stable.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><var>W</var></th>
+                  <td>Average time an item spends in the system.</td>
+                  <td>Lead time from accepted work to delivered or validated outcome.</td>
+                  <td>Often days to months. Use percentiles alongside averages because product work is skewed.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><var>&mu;</var></th>
+                  <td>Average service rate of the constrained server.</td>
+                  <td>Rate at which the constrained team, role, approval, environment, or decision point can complete work.</td>
+                  <td>Can move when the constraint moves. In TOC terms the constraint may be policy, market, architecture, or authority, not only a person.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><var>&rho;</var></th>
+                  <td>Utilization, <var>&lambda; / &mu;</var>.</td>
+                  <td>How close the constrained part of the system is to saturation.</td>
+                  <td>Near 1.0 the waiting-time curve becomes steep. High utilization is especially dangerous when arrivals and service are variable.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><var>C<sub>a</sub></var></th>
+                  <td>Coefficient of variation of arrivals.</td>
+                  <td>Unevenness in demand: batching, urgent requests, quarterly planning waves, incidents, stakeholder interrupts.</td>
+                  <td>Can be below 1 for smoothed intake, around 1 for random arrivals, and above 1 when work arrives in bursts.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><var>C<sub>s</sub></var></th>
+                  <td>Coefficient of variation of service times.</td>
+                  <td>Unevenness in work size and effort: discovery uncertainty, rework, reviews, integration, compliance, hidden dependencies.</td>
+                  <td>Often above 1 in high-software-content work because item size is fat-tailed and unknown work is common.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><var>E[S]</var></th>
+                  <td>Expected service time.</td>
+                  <td>Average active processing time at the constraint, excluding waiting elsewhere.</td>
+                  <td>Must not be confused with lead time. Most elapsed time in overloaded systems is waiting, not service.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="essay-section">
+          <h2 class="essay-heading">Why high utilization bites</h2>
+          <p class="essay-body">
+            The simplest queueing model is M/M/1: one server, random arrivals, random service times, and a stable arrival
+            rate below service capacity. It is not a model of all product development. It is a deliberately small model
+            that exposes the non-linearity.
+          </p>
+
+          <figure class="queue-machine-equation">
+            <math display="block" aria-label="rho equals lambda divided by mu">
+              <mi>&rho;</mi><mo>=</mo><mfrac><mi>&lambda;</mi><mi>&mu;</mi></mfrac>
+            </math>
+            <figcaption>
+              <var>rho</var> is utilization, <var>lambda</var> is arrival rate, and <var>mu</var> is service rate.
+            </figcaption>
+          </figure>
+
+          <figure class="queue-machine-equation">
+            <math display="block" aria-label="W equals one divided by mu minus lambda">
+              <mi>W</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mi>&mu;</mi><mo>-</mo><mi>&lambda;</mi></mrow></mfrac>
+            </math>
+            <figcaption>
+              In M/M/1, average system time grows without bound as <var>lambda</var> approaches <var>mu</var>.
+            </figcaption>
+          </figure>
+
+          <p class="essay-body">
+            This is the Reinertsen point made visible: high utilization of individual resources in a non-linear system
+            does not merely remove slack. It creates queue buildup and amplifies variation.
+          </p>
+        </section>
+
+        <section class="essay-section">
+          <h2 class="essay-heading">Where variability enters</h2>
+          <p class="essay-body">
+            Product development work is rarely M/M/1. Arrivals are uneven, task sizes differ, rework appears, reviews block,
+            and priorities change. Kingman's approximation for a G/G/1 queue separates the utilization effect from the
+            variability effect.
+          </p>
+
+          <figure class="queue-machine-equation">
+            <math display="block" aria-label="W q is approximately rho over one minus rho times C a squared plus C s squared over two times expected service time">
+              <msub><mi>W</mi><mi>q</mi></msub><mo>&approx;</mo>
+              <mfrac><mi>&rho;</mi><mrow><mn>1</mn><mo>-</mo><mi>&rho;</mi></mrow></mfrac>
+              <mo>&times;</mo>
+              <mfrac>
+                <mrow><msubsup><mi>C</mi><mi>a</mi><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>C</mi><mi>s</mi><mn>2</mn></msubsup></mrow>
+                <mn>2</mn>
+              </mfrac>
+              <mo>&times;</mo><mi>E</mi><mo>[</mo><mi>S</mi><mo>]</mo>
+            </math>
+            <figcaption>
+              <var>Wq</var> is average waiting time in queue, <var>Ca</var> and <var>Cs</var> are coefficients of variation
+              for arrivals and service, and <var>E[S]</var> is average service time.
+            </figcaption>
+          </figure>
+
+          <p class="essay-body">
+            The important part is the product of two forces: <var>rho / (1 - rho)</var> and
+            <var>(Ca^2 + Cs^2) / 2</var>. Variability hurts at any utilization, but near saturation the system has no room
+            to absorb it.
+          </p>
+        </section>
+
+        <section class="essay-section">
+          <h2 class="essay-heading">Connection to Theory of Constraints</h2>
+          <p class="essay-body">
+            Theory of Constraints does not rest on Little's Law. It starts from a different claim: system throughput is
+            governed by the constraint. In TOC, throughput is not generic activity. It is the rate at which the system
+            generates value, traditionally money through sales.
+          </p>
+          <p class="essay-body">
+            Little's Law and queueing theory are complementary to TOC. They explain what happens when work is released
+            faster than the constrained system can convert it into value: WIP rises, lead time rises, and variability is
+            amplified. TOC supplies the management rule: identify the constraint, exploit it, subordinate other work to it,
+            elevate it when needed, and repeat when the constraint moves.
+          </p>
+          <p class="essay-body">
+            The module's claim is therefore narrow: the goal is not to keep every person busy. The goal is to keep valuable
+            work flowing through the constraint at a sustainable pace.
+          </p>
+        </section>
+      </article>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../" aria-label="Back to Modules">
+          <span class="footer-nav-label-full">&larr; Back to Modules</span>
+          <span class="footer-nav-label-short">&larr; Modules</span>
+        </a>
+        <a class="footer-nav-link" href="animation/" aria-label="Next: Flow Animation">
+          <span class="footer-nav-label-full">Next: Flow Animation &rarr;</span>
+          <span class="footer-nav-label-short">Next &rarr;</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../js/nav-controller.js"></script>
+  <script src="./queue-machine-model.js"></script>
+  <script src="./queue-machine.js"></script>
+</body>
+</html>

@@ -98,10 +98,78 @@
     };
   }
 
+  function variabilityWave(index, length, variability) {
+    var phase = (Math.PI * 2 * index) / length;
+    var fastPhase = (Math.PI * 10 * index) / length;
+    var burstPulse = Math.pow(Math.max(0, Math.sin(phase - 0.8)), 2.6);
+    var wave = (Math.sin(phase) * 0.55) + (Math.sin(fastPhase + 1.2) * 0.22) + (burstPulse * 1.25);
+    return Math.max(0.05, 1 + (variability * wave));
+  }
+
+  function normalizeSeries(rawValues, targetMean) {
+    var total = rawValues.reduce(function sum(acc, value) {
+      return acc + value;
+    }, 0);
+    var average = total / rawValues.length;
+    if (average <= 0) return rawValues.map(function fallback() { return targetMean; });
+    return rawValues.map(function scale(value) {
+      return (value / average) * targetMean;
+    });
+  }
+
+  function buildTimeline(input) {
+    var buckets = Math.max(8, Math.min(48, Math.round(finiteNumber(input && input.buckets, 24))));
+    var arrivalRate = finiteNumber(input && input.arrivalRate, 0);
+    var serviceRate = finiteNumber(input && input.serviceRate, 1);
+    var arrivalCv = clamp(finiteNumber(input && input.arrivalCv, 1), 0, 3);
+    var serviceCv = clamp(finiteNumber(input && input.serviceCv, 1), 0, 3);
+    var arrivalVariability = Math.max(0, arrivalCv - 0.2);
+    var serviceVariability = Math.max(0, serviceCv - 0.2) * 0.28;
+    var rawArrivals = [];
+    var rawCapacity = [];
+    var backlog = 0;
+    var totalBacklog = 0;
+    var maxBacklog = 0;
+
+    for (var i = 0; i < buckets; i += 1) {
+      rawArrivals.push(arrivalRate * variabilityWave(i, buckets, arrivalVariability));
+      rawCapacity.push(serviceRate / variabilityWave(i + 5, buckets, serviceVariability));
+    }
+
+    var arrivals = normalizeSeries(rawArrivals, arrivalRate);
+    var capacity = normalizeSeries(rawCapacity, serviceRate);
+    var points = arrivals.map(function point(arrivalsValue, index) {
+      var serviceCapacity = capacity[index];
+      var beforeService = backlog + arrivalsValue;
+      var served = Math.min(beforeService, serviceCapacity);
+      backlog = Math.max(0, beforeService - served);
+      totalBacklog += backlog;
+      maxBacklog = Math.max(maxBacklog, backlog);
+      return {
+        bucket: index + 1,
+        arrivals: arrivalsValue,
+        capacity: serviceCapacity,
+        served: served,
+        backlog: backlog
+      };
+    });
+
+    return {
+      buckets: buckets,
+      arrivalRate: arrivalRate,
+      serviceRate: serviceRate,
+      utilization: serviceRate > 0 ? arrivalRate / serviceRate : Infinity,
+      averageBacklog: totalBacklog / buckets,
+      maxBacklog: maxBacklog,
+      points: points
+    };
+  }
+
   var api = {
     calculateLittleLaw: calculateLittleLaw,
     calculateMM1: calculateMM1,
-    calculateKingman: calculateKingman
+    calculateKingman: calculateKingman,
+    buildTimeline: buildTimeline
   };
 
   if (typeof module !== 'undefined' && module.exports) {

@@ -4,7 +4,7 @@ type: GUIDE
 title: Information Architecture Review Playbook
 status: ACTIVE
 created: 2026-04-19
-updated: 2026-04-19
+updated: 2026-04-25
 owner: Robert Andersson
 relates_to: [GUIDE-llm-review-playbooks-index, CORE-quality-gates, REFERENCE-navigation-patterns, REFERENCE-content-taxonomy]
 tags: [llm, review, playbook, ia, navigation, taxonomy]
@@ -21,7 +21,7 @@ Site and module structure clarity: labels, hierarchy, wayfinding, and path predi
 
 ## Check
 
-- Module numbering and hierarchy consistency (`xx`, `xx.yy`).
+- Module numbering and hierarchy consistency (local section numbering like `01`, `02` within each module).
 - Canonical path rules (root section at `/modules/<slug>/`, no reverse redirects).
 - Navigation label clarity (global nav, module context line, local section nav, footer progression).
 - Path discoverability across entry points (`README.md`, modules index, nav controller, module pages).

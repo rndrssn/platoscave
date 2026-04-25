@@ -41,7 +41,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 ### Also on site
 
-- **CV & Skills** — force-directed skills graph plus CV. Reachable via the footer and the shortcut URLs `/skills/` → `/modules/experience-skill-graph/` and `/cv/` → `/modules/experience-skill-graph/cv/`.
+- **My Experience (Skills + CV)** — force-directed skills graph plus CV. Reachable via the footer and the shortcut URLs `/skills/` → `/modules/experience-skill-graph/` and `/cv/` → `/modules/experience-skill-graph/cv/`.
   - Uses a dedicated CV/Skills shell with a local view switcher (`Skills Graph` ↔ `CV`) rather than the standard module breadcrumb/sub-nav pattern.
 
 ### Module 06 Contract (Minimal)
@@ -57,17 +57,16 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - Hosted on GitHub Pages
 - Notes content is authored in Markdown and compiled to static pages with `node scripts/build-notes.js`
 
-## Notes CMS (Markdown + Obsidian)
+## Writing CMS (Markdown + Obsidian)
 
 - Markdown source lives in `content/notes/published/` (and optional drafts in `content/notes/drafts/`)
 - Each note uses YAML frontmatter (`title`, `slug`, `date`, `tags`, `status`; `summary` optional)
   - `status` must be one of: `published`, `draft`, `unpublished`
   - only `published` notes are rendered to `/notes` and `/tags`
-- Build notes + tags pages:
+- Build notes, articles, and tags pages:
   - `node scripts/build-notes.js`
 - One-command publish flow from `sandbox`:
   - note: `scripts/publish-note.sh -m "Publish writing: notes:<slug>" --only notes:<slug>`
-  - article: `scripts/publish-note.sh -m "Publish writing: articles:<slug>" --only articles:<slug>`
   - optional full-suite mode: `scripts/publish-note.sh -m "Publish writing: <target>" --only <target> --full-suite`
   - optional LLM polish: `OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish writing: <target>" --polish <target> --only <target>`
 - Generated output:
@@ -78,14 +77,14 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - `tags/index.html`
   - `tags/<tag>/index.html`
 
-## Articles CMS (Markdown + Obsidian)
+## Articles in Writing CMS
 
 - Markdown source lives in `content/articles/published/` (and optional drafts in `content/articles/drafts/`)
 - Articles use the same frontmatter schema as notes (`title`, `slug`, `date`, `tags`, `status`; `summary` optional)
   - `status` must be one of: `published`, `draft`, `unpublished`
   - only `published` articles are rendered to `/articles`
-- Build notes, articles, and tags pages together:
-  - `node scripts/build-notes.js`
+- Publish one article:
+  - `scripts/publish-note.sh -m "Publish writing: articles:<slug>" --only articles:<slug>`
 
 ## Experience-Skill Graph CMS (Markdown + Obsidian)
 

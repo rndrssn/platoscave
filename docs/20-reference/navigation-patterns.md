@@ -4,7 +4,7 @@ type: REFERENCE
 title: Frontend Navigation Patterns
 status: ACTIVE
 created: 2026-03-22
-updated: 2026-04-22
+updated: 2026-04-25
 owner: Robert Andersson
 relates_to: [CORE, CORE-quality-gates, REFERENCE-css-architecture]
 tags: [navigation, ia, accessibility, responsive]
@@ -19,7 +19,7 @@ This document defines the canonical link and navigation patterns used across the
 
 ## 1. Global Navigation
 - Scope: all pages.
-- Pattern at runtime: `Notes`, `CV`, `Experience`, plus a `Modules` launcher trigger.
+- Pattern at runtime: `Notes`, `Articles`, `My Experience`, plus a `Modules` launcher trigger.
 - Home path is provided by the title link (`To the Bedrock`).
 - Runtime normalization is handled by `js/nav-controller.js` from fallback HTML links.
 - Active item must include:
@@ -40,12 +40,12 @@ This document defines the canonical link and navigation patterns used across the
 ## 2. Module Context + Local Section Navigation
 - Scope: module pages and module sub-pages.
 - Pattern:
-  - parent context line (for example `03 · The Garbage Can Model`)
-  - local section nav (for example `03.01`, `03.02`, `03.03`, `03.04`, `03.05`)
+  - parent context line (module title and context)
+  - local section nav (for example `01`, `02`, `03`)
 - Canonical root rule:
-  - `xx.01` must live at module root: `/modules/<slug>/`
+  - local section `01` must live at module root: `/modules/<slug>/`
   - active root section link must be `href="./"` with `aria-current="page"`
-  - do not make `/modules/<slug>/` a hard redirect to a nested `xx.01` page
+  - do not make `/modules/<slug>/` a hard redirect to a nested section page
 - Markup:
   - parent context link uses `.module-context-link`
   - section nav uses `.module-sub-nav`
@@ -84,15 +84,16 @@ Exception:
 
 ## 6. Site Structure Semantics
 - `Home` (`/`): identity and orientation.
-- `Modules` (`/modules/`): interactive artifacts (numbered `xx`, `xx.yy`).
+- `Modules` (`/modules/`): interactive artifacts with local section numbering inside each module (`01`, `02`, ...).
 - `Notes` (`/notes/`): text-first narrative context and reflections.
-- `CV` (`/modules/experience-skill-graph/cv/`) and `Experience` (`/modules/experience-skill-graph/`) are top-level utility destinations in primary navigation.
+- `Articles` (`/articles/`): long-form essays and argument-driven writing.
+- `My Experience` (`/skills/` -> `/modules/experience-skill-graph/`): top-level utility destination in primary navigation with internal view switcher (`Skills Graph` <-> `CV`).
 - `Site Notes` (`/colophon/`): utility/meta page (footer-level destination).
 
 ## 7. QA Checklist
 - All active navigation elements expose `aria-current="page"`.
 - No navigation target has a touch area below `44x44px`.
 - Navigation remains usable at `320px` viewport width.
-- Live module root pages keep `xx.01` active at `href="./"` (no root meta refresh).
+- Live module root pages keep local section `01` active at `href="./"` (no root meta refresh).
 - Primary nav sticks correctly as link row only (title must not pin with it).
 - Navigation link test suite passes before deployment.

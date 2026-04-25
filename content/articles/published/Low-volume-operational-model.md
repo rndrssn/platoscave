@@ -1,5 +1,5 @@
 ---
-title: Operating model forLow-Volume High-Software-Content Products
+title: Operating model for low-Volume High-Software-Content Products
 slug: lowvolumehighsoftware
 date: 2026-03-24
 status: published

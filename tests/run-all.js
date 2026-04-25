@@ -17,6 +17,7 @@ const tests = [
   'test-gc-pressure-narrative.js',
   'test-theme-bootstrap.js',
   'test-theme-config-contract.js',
+  'test-queue-machine-model.js',
   'test-mix-mapper-assumptions-contract.js',
   'test-mix-mapper-mode-motion-contract.js',
   'test-mix-mapper-link-narratives-contract.js',

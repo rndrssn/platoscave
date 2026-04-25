@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Animated visual argument showing how high utilization turns variability into queue buildup." />
+  <title>Flow Animation · The Queue Machine · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../../css/fonts.css" />
+  <link rel="stylesheet" href="../../../css/tokens.css" />
+  <link rel="stylesheet" href="../../../css/base.css" />
+  <link rel="stylesheet" href="../../../css/layout.css" />
+  <link rel="stylesheet" href="../../../css/components.css" />
+  <link rel="stylesheet" href="../../../css/utilities.css" />
+  <link rel="stylesheet" href="../../../css/themes.css" />
+  <link rel="stylesheet" href="../../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../../">To the Bedrock</a>
+    <nav class="main-nav">
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../../">Home</a>
+      <a class="nav-link" href="../../../notes/">Notes</a>
+      <a class="nav-link nav-link--active" href="../../../modules/" aria-current="page">Modules</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page queue-machine-page">
+      <a class="module-back-link" href="../../" aria-label="Back to Modules"></a>
+      <a class="module-header-number module-context-number module-context-link" href="../">The Queue Machine</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Utilization Trap</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">02</span> Flow Animation</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Flow Animation</h1>
+        <p class="module-header-body">
+          The first row has slack. Work can arrive unevenly and still move through the constraint.
+          The second row runs close to saturation. The same unevenness becomes a queue.
+        </p>
+      </header>
+
+      <section class="queue-machine-animation" aria-label="Animated comparison of flow and queue buildup">
+        <div class="queue-machine-animation-stage">
+          <div class="queue-machine-animation-lane queue-machine-animation-lane--flow" aria-hidden="true">
+            <span class="queue-machine-animation-cell">Ready</span>
+            <span class="queue-machine-animation-cell">Constraint with slack</span>
+            <span class="queue-machine-animation-cell">Done</span>
+          </div>
+          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
+          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
+          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
+          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
+          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
+          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
+
+          <div class="queue-machine-animation-lane queue-machine-animation-lane--jam" aria-hidden="true">
+            <span class="queue-machine-animation-cell">Ready</span>
+            <span class="queue-machine-animation-cell">Constraint saturated</span>
+            <span class="queue-machine-animation-cell">Done</span>
+          </div>
+          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
+          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
+          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
+          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
+          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
+          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
+        </div>
+        <p class="queue-machine-animation-caption">
+          This is deliberately schematic. The point is not the exact animation timing; it is the visual argument.
+          When utilization is moderate, variability is absorbed. Near saturation, variability has nowhere to go except into waiting.
+        </p>
+      </section>
+
+      <article class="module-essay">
+        <section class="essay-section">
+          <h2 class="essay-heading">What page 02 should become</h2>
+          <p class="essay-body">
+            The full version should become a step-through animation: release work, watch it meet a constraint, then switch
+            from local utilization metrics to flow metrics. The contrast should be visible before it is explained.
+          </p>
+          <p class="essay-body">
+            A Theory of Constraints layer can then mark the constraint, add a buffer, and show why subordinating release
+            to the constraint improves flow even when some non-constraint resources look less busy.
+          </p>
+        </section>
+      </article>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../" aria-label="Previous: Utilization Trap">
+          <span class="footer-nav-label-full">&larr; Previous: Utilization Trap</span>
+          <span class="footer-nav-label-short">&larr; Previous</span>
+        </a>
+        <span></span>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../../js/nav-controller.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive concept map showing how queueing theory, Theory of Constraints, complexity science, and modern agile practices connect in software-development flow." />
+  <title>Concept Map · The Queue Machine · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../../css/fonts.css" />
+  <link rel="stylesheet" href="../../../css/tokens.css" />
+  <link rel="stylesheet" href="../../../css/base.css" />
+  <link rel="stylesheet" href="../../../css/layout.css" />
+  <link rel="stylesheet" href="../../../css/components.css" />
+  <link rel="stylesheet" href="../../../css/utilities.css" />
+  <link rel="stylesheet" href="../../../css/themes.css" />
+  <link rel="stylesheet" href="../../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../../">To the Bedrock</a>
+    <nav class="main-nav">
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../../">Home</a>
+      <a class="nav-link" href="../../../notes/">Notes</a>
+      <a class="nav-link nav-link--active" href="../../../modules/" aria-current="page">Modules</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page queue-machine-page">
+      <a class="module-back-link" href="../../" aria-label="Back to Modules"></a>
+      <a class="module-header-number module-context-number module-context-link" href="../">The Queue Machine</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Utilization Trap</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../animation/"><span class="module-sub-nav-number">02</span> Flow Animation</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">03</span> Concept Map</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Concept Map</h1>
+        <p class="module-header-body">
+          Software-development flow sits at the intersection of three traditions: <strong>queueing theory</strong> for the
+          mathematics of waiting, <strong>complexity science</strong> for why local optimization breaks in non-linear
+          systems, and <strong>modern agile management</strong> for the working practices that fall out of those constraints.
+          The map shows how the concepts connect, the observations they predict, and the counter-intuitive results that
+          fall out.
+        </p>
+      </header>
+
+      <section class="queue-machine-concept queue-machine-concept--full" aria-label="Concept map">
+        <div class="queue-machine-concept-canvas">
+          <p class="queue-machine-concept-helper">Hover or tap a node to follow connections. Drag to rearrange.</p>
+          <ul class="queue-machine-concept-legend" aria-label="Concept categories">
+            <li>
+              <button class="queue-machine-concept-legend-btn" type="button" data-legend-group="concept" aria-pressed="false">
+                <span class="queue-machine-concept-swatch queue-machine-concept-swatch--concept"></span>Concept
+              </button>
+            </li>
+            <li>
+              <button class="queue-machine-concept-legend-btn" type="button" data-legend-group="observation" aria-pressed="false">
+                <span class="queue-machine-concept-swatch queue-machine-concept-swatch--observation"></span>Observation
+              </button>
+            </li>
+            <li>
+              <button class="queue-machine-concept-legend-btn" type="button" data-legend-group="surprise" aria-pressed="false">
+                <span class="queue-machine-concept-swatch queue-machine-concept-swatch--surprise"></span>Surprise
+              </button>
+            </li>
+          </ul>
+          <p class="queue-machine-concept-detail" data-concept-detail aria-live="polite"></p>
+          <div class="queue-machine-concept-surface">
+            <svg class="queue-machine-concept-graph" data-concept-graph role="img" aria-label="Force-directed graph of queueing theory, complexity, agile practice, observations, intuitions, and surprises"></svg>
+            <p class="queue-machine-concept-fallback" data-concept-graph-fallback hidden>Graph unavailable &mdash; try refreshing the page.</p>
+          </div>
+        </div>
+      </section>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../animation/" aria-label="Previous: Flow Animation">
+          <span class="footer-nav-label-full">&larr; Previous: Flow Animation</span>
+          <span class="footer-nav-label-short">&larr; Previous</span>
+        </a>
+        <a class="footer-nav-link" href="../" aria-label="Module home">
+          <span class="footer-nav-label-full">Module home &rarr;</span>
+          <span class="footer-nav-label-short">Home &rarr;</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../../js/nav-controller.js"></script>
+  <script src="../../../assets/vendor/d3.v7.min.js"></script>
+  <script src="./concept-graph.js"></script>
+</body>
+</html>

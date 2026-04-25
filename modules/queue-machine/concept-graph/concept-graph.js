@@ -13,23 +13,18 @@
 
   var nodes = [
     { id: 'little', label: "Little's Law", short: "Little's Law", group: 'concept', note: 'Average WIP, throughput, and lead time must balance in a stable flow system.' },
-    { id: 'lambda', label: 'Throughput / λ', short: 'Throughput', group: 'concept' },
+    { id: 'throughput', label: 'Throughput / λ', short: 'Throughput', group: 'concept' },
     { id: 'wip', label: 'WIP / L', short: 'WIP', group: 'concept' },
-    { id: 'leadTime', label: 'Lead time / W', short: 'Lead time', group: 'concept' },
-    { id: 'waitTime', label: 'Queue waiting / Wq', short: 'Waiting', group: 'concept' },
-    { id: 'serviceRate', label: 'Service rate / μ', short: 'Service rate', group: 'concept' },
-    { id: 'serviceTime', label: 'Service time / E[S]', short: 'Service time', group: 'concept' },
+    { id: 'leadTime', label: 'Waiting / lead time', short: 'Waiting', group: 'concept' },
+    { id: 'capacity', label: 'Service capacity / μ', short: 'Capacity', group: 'concept' },
     { id: 'kingman', label: "Kingman's approximation", short: "Kingman", group: 'concept', note: 'Waiting grows from utilization pressure multiplied by arrival and service-time variability.' },
     { id: 'rho', label: 'Utilization ρ', short: 'Utilization ρ', group: 'concept' },
     { id: 'ca', label: 'Arrival variability Ca', short: 'Arrival var.', group: 'concept' },
     { id: 'cs', label: 'Service-time variability Cs', short: 'Service var.', group: 'concept' },
-    { id: 'mm1', label: 'M/M/1 baseline', short: 'M/M/1', group: 'concept' },
     { id: 'toc', label: 'Theory of Constraints', short: 'TOC', group: 'concept', note: 'Throughput is governed by the constraint, not by universal local busyness.' },
     { id: 'constraint', label: 'System constraint', short: 'Constraint', group: 'concept' },
-    { id: 'subordinate', label: 'Subordinate to constraint', short: 'Subordinate', group: 'concept' },
-    { id: 'buffer', label: 'Protective buffer', short: 'Buffer', group: 'concept' },
-    { id: 'nonlinearQueue', label: 'Queueing non-linearity', short: 'Queue curve', group: 'concept' },
-    { id: 'nonlinearOrg', label: 'Organizational non-linearity', short: 'Org non-linearity', group: 'concept' },
+    { id: 'protectConstraint', label: 'Protect the constraint', short: 'Protect constraint', group: 'concept' },
+    { id: 'nonlinear', label: 'Non-linear system effects', short: 'Non-linearity', group: 'concept' },
     { id: 'cynefin', label: 'Cynefin: complex domain', short: 'Cynefin', group: 'concept', note: 'A sense-making frame: in complex domains, cause and effect are only coherent in retrospect.' },
     { id: 'probeSense', label: 'Probe-sense-respond', short: 'Probe-sense', group: 'concept' },
     { id: 'localglobal', label: 'Local ≠ global optima', short: 'Local ≠ global', group: 'concept' },
@@ -40,9 +35,8 @@
     { id: 'empirical', label: 'Empirical process control', short: 'Empirical', group: 'concept' },
     { id: 'costOfDelay', label: 'Cost of Delay', short: 'Cost of Delay', group: 'concept' },
 
-    { id: 'prReview', label: 'PR review queues', short: 'PR queues', group: 'observation' },
-    { id: 'quarterly', label: 'Quarterly demand spikes', short: 'Quarterly spikes', group: 'observation' },
-    { id: 'sprintDisrupt', label: 'Sprint disruption', short: 'Sprint disruption', group: 'observation' },
+    { id: 'reviewQueues', label: 'Review queues', short: 'Review queues', group: 'observation' },
+    { id: 'demandSpikes', label: 'Demand spikes', short: 'Demand spikes', group: 'observation' },
     { id: 'incidentRework', label: 'Incident-driven rework', short: 'Incident rework', group: 'observation' },
     { id: 'longLivedBranches', label: 'Long-lived branches', short: 'Long branches', group: 'observation' },
     { id: 'contextSwitch', label: 'Context-switching tax', short: 'Context switch', group: 'observation' },
@@ -52,75 +46,67 @@
     { id: 'highUtil', label: '"Higher utilization = better"', short: 'High util = better', group: 'assumption' },
     { id: 'bigBatches', label: '"Bigger batches = more efficient"', short: 'Big batches', group: 'assumption' },
     { id: 'morePlanning', label: '"More planning = more predictable"', short: 'More planning', group: 'assumption' },
-    { id: 'startEverything', label: '"Start everything early"', short: 'Start early', group: 'assumption' },
-    { id: 'fullHandoffs', label: '"Fully load every handoff"', short: 'Load handoffs', group: 'assumption' },
+    { id: 'pushEverything', label: '"Push everything in early"', short: 'Push early', group: 'assumption' },
     { id: 'individualTargets', label: '"Optimize individual targets"', short: 'Individual targets', group: 'assumption' },
 
-    { id: 'sBelow100', label: 'Queues appear below 100% load', short: 'Queues <100%', group: 'surprise', note: 'Average spare capacity can still hide local overload when arrivals and service vary.' },
-    { id: 'sSlack', label: 'Idle capacity can be productive', short: 'Useful slack', group: 'surprise' },
+    { id: 'sBelow100', label: 'Queues appear below 100% average load', short: 'Queues <100%', group: 'surprise', note: 'Average spare capacity can still hide local overload when arrivals and service vary.' },
+    { id: 'sSlack', label: 'Slack protects flow', short: 'Slack protects flow', group: 'surprise' },
     { id: 'sStartLess', label: 'Starting less can finish more', short: 'Start less', group: 'surprise' },
-    { id: 'sVarDom', label: 'Variability dominates near ρ→1', short: 'Variability dominates', group: 'surprise' },
-    { id: 'sLocalLoss', label: 'Local efficiency reduces global flow', short: 'Local hurts global', group: 'surprise' },
-    { id: 'sNonConstraint', label: 'A faster non-constraint may not help', short: 'Non-constraint trap', group: 'surprise' },
+    { id: 'sVarDom', label: 'Variability is amplified near ρ→1', short: 'Variability amplifies', group: 'surprise' },
+    { id: 'sLocalLoss', label: 'Local efficiency can reduce global flow', short: 'Local can hurt', group: 'surprise' },
+    { id: 'sNonConstraint', label: 'A faster non-constraint may not improve throughput', short: 'Non-constraint trap', group: 'surprise' },
     { id: 'sBatchCost', label: 'Big batches hide risk until late', short: 'Batch risk', group: 'surprise' },
-    { id: 'sUrgency', label: 'Urgency creates more waiting', short: 'Urgency waits', group: 'surprise' },
-    { id: 'sConstraintMoves', label: 'The constraint moves', short: 'Constraint moves', group: 'surprise' },
-    { id: 'sFeedback', label: 'Fast feedback beats correct prediction', short: 'Feedback beats prediction', group: 'surprise' }
+    { id: 'sUrgency', label: 'Expedites create hidden waiting', short: 'Expedites wait', group: 'surprise' },
+    { id: 'sFeedback', label: 'Fast feedback beats brittle prediction', short: 'Feedback beats prediction', group: 'surprise' }
   ];
 
   var links = [
-    { source: 'little', target: 'lambda', kind: 'defines' },
+    { source: 'little', target: 'throughput', kind: 'defines' },
     { source: 'little', target: 'wip', kind: 'defines' },
     { source: 'little', target: 'leadTime', kind: 'defines' },
     { source: 'little', target: 'pull', kind: 'explains' },
     { source: 'wip', target: 'leadTime', kind: 'amplifies' },
     { source: 'wip', target: 'flowEff', kind: 'explains' },
     { source: 'leadTime', target: 'costOfDelay', kind: 'amplifies' },
-    { source: 'waitTime', target: 'leadTime', kind: 'amplifies' },
-    { source: 'serviceRate', target: 'rho', kind: 'defines' },
-    { source: 'lambda', target: 'rho', kind: 'defines' },
-    { source: 'serviceTime', target: 'serviceRate', kind: 'defines' },
+    { source: 'capacity', target: 'rho', kind: 'defines' },
+    { source: 'throughput', target: 'rho', kind: 'defines' },
 
-    { source: 'mm1', target: 'rho', kind: 'explains' },
-    { source: 'mm1', target: 'kingman', kind: 'baseline' },
     { source: 'rho', target: 'kingman', kind: 'defines' },
     { source: 'ca', target: 'kingman', kind: 'defines' },
     { source: 'cs', target: 'kingman', kind: 'defines' },
-    { source: 'serviceTime', target: 'kingman', kind: 'defines' },
-    { source: 'kingman', target: 'waitTime', kind: 'explains' },
+    { source: 'capacity', target: 'kingman', kind: 'bounds' },
+    { source: 'kingman', target: 'leadTime', kind: 'explains' },
     { source: 'kingman', target: 'sBelow100', kind: 'explains' },
     { source: 'kingman', target: 'sVarDom', kind: 'explains' },
     { source: 'rho', target: 'sVarDom', kind: 'amplifies' },
+    { source: 'wip', target: 'sStartLess', kind: 'explains' },
     { source: 'ca', target: 'sBelow100', kind: 'amplifies' },
     { source: 'cs', target: 'sBelow100', kind: 'amplifies' },
     { source: 'ca', target: 'sSlack', kind: 'explains' },
     { source: 'cs', target: 'sSlack', kind: 'explains' },
-    { source: 'nonlinearQueue', target: 'kingman', kind: 'explains' },
-    { source: 'nonlinearQueue', target: 'sVarDom', kind: 'explains' },
-    { source: 'nonlinearQueue', target: 'sBelow100', kind: 'explains' },
+    { source: 'nonlinear', target: 'kingman', kind: 'explains' },
+    { source: 'nonlinear', target: 'localglobal', kind: 'explains' },
+    { source: 'nonlinear', target: 'sVarDom', kind: 'explains' },
+    { source: 'nonlinear', target: 'sBelow100', kind: 'explains' },
 
     { source: 'cynefin', target: 'probeSense', kind: 'recommends' },
     { source: 'probeSense', target: 'empirical', kind: 'aligns' },
     { source: 'empirical', target: 'feedback', kind: 'uses' },
     { source: 'feedback', target: 'batches', kind: 'explains' },
     { source: 'feedback', target: 'sFeedback', kind: 'explains' },
-    { source: 'nonlinearOrg', target: 'cynefin', kind: 'explains' },
-    { source: 'nonlinearOrg', target: 'localglobal', kind: 'explains' },
-    { source: 'nonlinearOrg', target: 'sLocalLoss', kind: 'explains' },
     { source: 'feedback', target: 'ca', kind: 'modulates' },
     { source: 'feedback', target: 'incidentRework', kind: 'example' },
 
     { source: 'toc', target: 'constraint', kind: 'defines' },
-    { source: 'constraint', target: 'lambda', kind: 'bounds' },
-    { source: 'constraint', target: 'serviceRate', kind: 'bounds' },
+    { source: 'constraint', target: 'throughput', kind: 'bounds' },
+    { source: 'constraint', target: 'capacity', kind: 'bounds' },
     { source: 'toc', target: 'localglobal', kind: 'explains' },
-    { source: 'toc', target: 'subordinate', kind: 'recommends' },
-    { source: 'subordinate', target: 'pull', kind: 'aligns' },
-    { source: 'subordinate', target: 'sLocalLoss', kind: 'explains' },
-    { source: 'buffer', target: 'constraint', kind: 'protects' },
-    { source: 'buffer', target: 'sSlack', kind: 'explains' },
+    { source: 'localglobal', target: 'sLocalLoss', kind: 'explains' },
+    { source: 'toc', target: 'protectConstraint', kind: 'recommends' },
+    { source: 'protectConstraint', target: 'pull', kind: 'aligns' },
+    { source: 'protectConstraint', target: 'sSlack', kind: 'explains' },
+    { source: 'protectConstraint', target: 'sLocalLoss', kind: 'explains' },
     { source: 'constraint', target: 'sNonConstraint', kind: 'explains' },
-    { source: 'constraint', target: 'sConstraintMoves', kind: 'explains' },
 
     { source: 'pull', target: 'sSlack', kind: 'explains' },
     { source: 'pull', target: 'sStartLess', kind: 'explains' },
@@ -134,28 +120,26 @@
     { source: 'costOfDelay', target: 'flowEff', kind: 'explains' },
     { source: 'costOfDelay', target: 'sUrgency', kind: 'explains' },
 
-    { source: 'prReview', target: 'cs', kind: 'example' },
-    { source: 'prReview', target: 'waitTime', kind: 'example' },
-    { source: 'quarterly', target: 'ca', kind: 'example' },
-    { source: 'quarterly', target: 'sBelow100', kind: 'example' },
-    { source: 'sprintDisrupt', target: 'ca', kind: 'example' },
-    { source: 'sprintDisrupt', target: 'pull', kind: 'mitigates' },
+    { source: 'reviewQueues', target: 'cs', kind: 'example' },
+    { source: 'reviewQueues', target: 'leadTime', kind: 'example' },
+    { source: 'demandSpikes', target: 'ca', kind: 'example' },
+    { source: 'demandSpikes', target: 'sBelow100', kind: 'example' },
     { source: 'incidentRework', target: 'cs', kind: 'example' },
     { source: 'incidentRework', target: 'sUrgency', kind: 'example' },
     { source: 'longLivedBranches', target: 'batches', kind: 'example' },
     { source: 'longLivedBranches', target: 'cs', kind: 'amplifies' },
     { source: 'longLivedBranches', target: 'feedback', kind: 'delays' },
     { source: 'longLivedBranches', target: 'sBatchCost', kind: 'example' },
-    { source: 'contextSwitch', target: 'waitTime', kind: 'amplifies' },
+    { source: 'contextSwitch', target: 'leadTime', kind: 'amplifies' },
     { source: 'contextSwitch', target: 'flowEff', kind: 'reduces' },
     { source: 'contextSwitch', target: 'pull', kind: 'mitigates' },
     { source: 'contextSwitch', target: 'cs', kind: 'amplifies' },
 
     { source: 'idleWaste', target: 'sSlack', kind: 'contradicts' },
-    { source: 'idleWaste', target: 'buffer', kind: 'contradicts' },
+    { source: 'idleWaste', target: 'protectConstraint', kind: 'contradicts' },
     { source: 'addPeople', target: 'sNonConstraint', kind: 'contradicts' },
     { source: 'addPeople', target: 'constraint', kind: 'contradicts' },
-    { source: 'addPeople', target: 'nonlinearOrg', kind: 'contradicts' },
+    { source: 'addPeople', target: 'nonlinear', kind: 'contradicts' },
     { source: 'highUtil', target: 'sBelow100', kind: 'contradicts' },
     { source: 'highUtil', target: 'sVarDom', kind: 'contradicts' },
     { source: 'highUtil', target: 'sSlack', kind: 'contradicts' },
@@ -165,10 +149,10 @@
     { source: 'morePlanning', target: 'probeSense', kind: 'contradicts' },
     { source: 'morePlanning', target: 'empirical', kind: 'contradicts' },
     { source: 'morePlanning', target: 'sFeedback', kind: 'contradicts' },
-    { source: 'startEverything', target: 'sStartLess', kind: 'contradicts' },
-    { source: 'startEverything', target: 'wip', kind: 'amplifies' },
-    { source: 'fullHandoffs', target: 'pull', kind: 'contradicts' },
-    { source: 'fullHandoffs', target: 'waitTime', kind: 'amplifies' },
+    { source: 'pushEverything', target: 'sStartLess', kind: 'contradicts' },
+    { source: 'pushEverything', target: 'wip', kind: 'amplifies' },
+    { source: 'pushEverything', target: 'pull', kind: 'contradicts' },
+    { source: 'pushEverything', target: 'leadTime', kind: 'amplifies' },
     { source: 'individualTargets', target: 'localglobal', kind: 'contradicts' },
     { source: 'individualTargets', target: 'sLocalLoss', kind: 'contradicts' }
   ];
@@ -191,12 +175,6 @@
     label.textContent = d.label;
     detailEl.appendChild(swatch);
     detailEl.appendChild(label);
-    if (d.note) {
-      var note = document.createElement('span');
-      note.className = 'queue-machine-concept-detail-note';
-      note.textContent = d.note;
-      detailEl.appendChild(note);
-    }
     detailEl.classList.add('is-visible');
   }
 
@@ -209,24 +187,24 @@
   }
 
   function radiusByGroup(group) {
-    if (group === 'surprise') return 9;
-    if (group === 'assumption') return 6.8;
-    if (group === 'concept') return 7;
-    return 6.4;
+    if (group === 'surprise') return 7.4;
+    if (group === 'assumption') return 5.4;
+    if (group === 'concept') return 5;
+    return 5.2;
   }
 
   function targetXByGroup(group, width) {
-    if (group === 'concept') return width * 0.22;
-    if (group === 'assumption') return width * 0.44;
+    if (group === 'concept') return width * 0.28;
+    if (group === 'assumption') return width * 0.43;
     if (group === 'observation') return width * 0.56;
-    return width * 0.78;
+    return width * 0.72;
   }
 
   function targetYByGroup(group, height) {
-    if (group === 'concept') return height * 0.25;
-    if (group === 'assumption') return height * 0.32;
+    if (group === 'concept') return height * 0.32;
+    if (group === 'assumption') return height * 0.38;
     if (group === 'observation') return height * 0.58;
-    return height * 0.48;
+    return height * 0.47;
   }
 
   var simulation = null;
@@ -240,8 +218,8 @@
     var rendered = Math.max(320, width || rect.width || 720);
     var mobile = rendered < 760;
     var height = mobile
-      ? Math.max(720, Math.min(1200, Math.floor(rendered * 2.15)))
-      : Math.max(560, Math.min(820, Math.floor(rendered * 0.68)));
+      ? Math.max(600, Math.min(880, Math.floor(rendered * 1.72)))
+      : Math.max(440, Math.min(620, Math.floor(rendered * 0.52)));
     var minX = 12;
     var maxX = rendered - 12;
     var minY = 16;
@@ -291,19 +269,19 @@
     simulation = d3.forceSimulation(nodeData)
       .force('link', d3.forceLink(links.map(function(l) { return Object.assign({}, l); }))
         .id(function(d) { return d.id; })
-        .distance(mobile ? 78 : 118)
-        .strength(0.38))
-      .force('charge', d3.forceManyBody().strength(mobile ? -250 : -390))
+        .distance(mobile ? 58 : 82)
+        .strength(0.52))
+      .force('charge', d3.forceManyBody().strength(mobile ? -150 : -230))
       .force('center', d3.forceCenter(rendered / 2, height / 2))
       .force('collide', d3.forceCollide().radius(function(d) {
-        return radiusByGroup(d.group) + (mobile ? 11 : 20);
+        return radiusByGroup(d.group) + (mobile ? 8 : 13);
       }))
       .force('x', d3.forceX(function(d) {
         return targetXByGroup(d.group, rendered);
-      }).strength(mobile ? 0.032 : 0.045))
+      }).strength(mobile ? 0.07 : 0.09))
       .force('y', d3.forceY(function(d) {
         return targetYByGroup(d.group, height);
-      }).strength(mobile ? 0.016 : 0.024));
+      }).strength(mobile ? 0.045 : 0.055));
 
     var link = plot.append('g')
       .attr('class', 'queue-machine-concept-links')

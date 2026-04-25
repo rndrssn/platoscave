@@ -50,40 +50,60 @@
       <header class="module-header">
         <h1 class="module-header-title">Flow Animation</h1>
         <p class="module-header-body">
-          The first row has slack. Work can arrive unevenly and still move through the constraint.
-          The second row runs close to saturation. The same unevenness becomes a queue.
+          Inspired by <a href="https://www.youtube.com/watch?v=CostXs2p6r0">Henrik Kniberg's resource utilization trap</a>:
+          when management optimizes for busy people, the work product can move slower. The counter-intuitive move is to
+          tolerate visible slack so value can flow. This version uses the same bursty arrivals and variable task sizes in
+          both lanes; only the work-release policy changes.
         </p>
       </header>
 
-      <section class="queue-machine-animation" aria-label="Animated comparison of flow and queue buildup">
-        <div class="queue-machine-animation-stage">
-          <div class="queue-machine-animation-lane queue-machine-animation-lane--flow" aria-hidden="true">
-            <span class="queue-machine-animation-cell">Ready</span>
-            <span class="queue-machine-animation-cell">Constraint with slack</span>
-            <span class="queue-machine-animation-cell">Done</span>
+      <section class="queue-machine-animation" aria-label="Animated comparison of busy resource optimization and flow optimization">
+        <form class="queue-machine-animation-controls" data-resource-trap-controls aria-label="Resource trap simulation controls">
+          <div class="queue-machine-control">
+            <label for="resource-demand">How much work arrives? (arrival rate)</label>
+            <input id="resource-demand" name="demand" type="range" min="0" max="1" step="0.25" value="1" />
+            <span><span data-output="resource-demand">10</span> items / cycle</span>
           </div>
-          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
-          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
-          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
-          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
-          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
-          <span class="queue-machine-animation-item queue-machine-animation-item--flow" aria-hidden="true"></span>
-
-          <div class="queue-machine-animation-lane queue-machine-animation-lane--jam" aria-hidden="true">
-            <span class="queue-machine-animation-cell">Ready</span>
-            <span class="queue-machine-animation-cell">Constraint saturated</span>
-            <span class="queue-machine-animation-cell">Done</span>
+          <div class="queue-machine-control">
+            <label for="resource-burstiness">How bursty is incoming work? (arrival variability)</label>
+            <input id="resource-burstiness" name="burstiness" type="range" min="0" max="1" step="0.25" value="1" />
+            <span><span data-output="resource-burstiness">high</span> bursts</span>
           </div>
-          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
-          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
-          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
-          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
-          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
-          <span class="queue-machine-animation-item queue-machine-animation-item--jam" aria-hidden="true"></span>
+          <div class="queue-machine-control">
+            <label for="resource-task-variation">How uneven are task sizes? (service-time variability)</label>
+            <input id="resource-task-variation" name="taskVariation" type="range" min="0" max="1" step="0.25" value="1" />
+            <span><span data-output="resource-task-variation">high</span> variation</span>
+          </div>
+          <div class="queue-machine-control">
+            <label for="resource-flow-wip">How much WIP does flow allow? (WIP limit)</label>
+            <input id="resource-flow-wip" name="flowWipLimit" type="range" min="2" max="6" step="1" value="3" />
+            <span><span data-output="resource-flow-wip">3</span> items max</span>
+          </div>
+        </form>
+        <div class="queue-machine-animation-shell">
+          <svg class="queue-machine-flow-showcase" data-resource-trap-viz role="img" aria-label="Animated comparison of busy people versus flowing work"></svg>
+          <div class="queue-machine-animation-scoreboard" aria-label="Animation counters">
+            <div>
+              <span>Busy-looking lane</span>
+              <strong data-output="busy-done">0</strong>
+              <em><span data-output="busy-throughput">0.00</span>/tick throughput · <span data-output="busy-utilization">0%</span> util · <span data-output="busy-wip">0</span> WIP · <span data-output="busy-waiting">0</span> waiting</em>
+            </div>
+            <div>
+              <span>Flow lane</span>
+              <strong data-output="flow-done">0</strong>
+              <em><span data-output="flow-throughput">0.00</span>/tick throughput · <span data-output="flow-utilization">0%</span> util · <span data-output="flow-wip">0</span> WIP · <span data-output="flow-waiting">0</span> waiting</em>
+            </div>
+            <div>
+              <span>Lesson</span>
+              <strong data-output="flow-lesson">Watch the work</strong>
+              <em>not the worker</em>
+            </div>
+          </div>
         </div>
         <p class="queue-machine-animation-caption">
-          This is deliberately schematic. The point is not the exact animation timing; it is the visual argument.
-          When utilization is moderate, variability is absorbed. Near saturation, variability has nowhere to go except into waiting.
+          Same incoming work, same station sequence, different policy. The busy lane releases up to nine items into the
+          system and pays a congestion penalty when queues build. The flow lane limits WIP to three, so it sometimes looks
+          idle while protecting throughput and lead time.
         </p>
       </section>
 
@@ -91,21 +111,21 @@
         <section class="essay-section">
           <h2 class="essay-heading">What the animation shows</h2>
           <p class="essay-body">
-            Both lanes receive uneven work. The upper lane has slack, so the constraint can absorb spacing errors and small
-            surprises. The lower lane is already close to full utilization, so the same irregular arrivals have nowhere to
-            go except into a queue.
+            The upper lane is optimized for resource utilization: incoming work is pushed into the system until the WIP
+            limit is high. Because many items wait at handoffs, each station pays a small congestion and switching penalty.
+            The lower lane is optimized for flow: it uses the same arrivals and task sizes, but releases less work at once.
           </p>
           <p class="essay-body">
-            This is the visual version of the first page: variability is not automatically bad, and utilization is not
-            automatically bad. The dangerous combination is variability plus saturation. A Theory of Constraints response
-            is to protect the constraint with a visible buffer and subordinate release to what the constraint can actually
-            convert into throughput.
+            The point is not that utilization is irrelevant. The point is ordering. First watch the work product: finished
+            value, throughput, waiting, WIP, and lead time. Then use capacity deliberately. If the primary target is making
+            every person look busy, the system can reward motion while punishing flow.
           </p>
           <ol class="queue-machine-step-list">
-            <li><strong>Release:</strong> work enters in uneven spacing rather than a perfect metronome.</li>
-            <li><strong>Constraint:</strong> the middle station sets the practical pace of the system.</li>
-            <li><strong>Buffer:</strong> slack absorbs noise; saturation converts noise into waiting.</li>
-            <li><strong>Flow metric:</strong> the meaningful question is not who looks busy, but how long valuable work waits.</li>
+            <li><strong>Arrivals:</strong> work enters in bursts, so the average arrival rate hides local spikes.</li>
+            <li><strong>Size variation:</strong> each item has different work at stations A, B, and C.</li>
+            <li><strong>Push:</strong> the busy policy allows high WIP, which raises waiting and congestion.</li>
+            <li><strong>Pull:</strong> the flow policy caps WIP, accepting visible slack to reduce handoff queues.</li>
+            <li><strong>Measure:</strong> compare throughput, utilization, WIP, and waiting instead of only who looks busy.</li>
           </ol>
         </section>
       </article>
@@ -125,5 +145,8 @@
   </footer>
 
   <script src="../../../js/nav-controller.js"></script>
+  <script src="../../../assets/vendor/d3.v7.min.js"></script>
+  <script src="./resource-trap-simulation.js"></script>
+  <script src="./resource-trap-animation.js"></script>
 </body>
 </html>

@@ -35,9 +35,11 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - **05 Assess** (`/modules/garbage-can/assess/`)
 - **Management Mix** — Where traditional control and adaptive learning coexist. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
   - **01 Epistemic Bets** (`/modules/mix-mapper/`)
-- **The Queue Machine** — Why high utilization creates queues, delay, and amplified variability.
+- **The Queue Machine** — Queueing theory and the resource-utilization trap, using D3 visuals to show how average load, variability, backlog, and flow interact.
   - **01 Utilization Trap** (`/modules/queue-machine/`)
+    - Narrative-first queueing-theory explainer with arrival/capacity charts, backlog visualization, Little's Law, M/M/1, and Kingman's approximation.
   - **02 Flow Animation** (`/modules/queue-machine/animation/`)
+    - Henrik Kniberg-inspired resource-utilization-trap animation comparing a busy-looking push lane with a flow-optimized lane.
 - **The Descent** — From open problem to verifiable criterion. The sections of a brief as stations of a descent. Paired narratively with Module 04 (same epistemic bet, at unit scale).
   - **01 The Descent** (`/modules/the-descent/`)
   - **02 Section Map** (`/modules/the-descent/section-map/`)
@@ -56,7 +58,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ## Built With
 
 - Plain HTML, CSS, and JavaScript — no framework runtime
-- D3.js (v7) for visualizations
+- D3.js (v7) for visualizations, including queue charts, the Queue Machine resource-utilization animation, graph layouts, and simulation views
 - Hosted on GitHub Pages
 - Notes content is authored in Markdown and compiled to static pages with `node scripts/build-notes.js`
 
@@ -162,7 +164,8 @@ node tests/run-all.js
 The site deploys to GitHub Pages via the `Deploy to GitHub Pages` GitHub Actions workflow ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)). It runs on every push to `main`:
 
 1. `node tests/run-all.js` runs first
-2. On success, the site is uploaded and deployed via `actions/deploy-pages`
+2. On success, the deploy job runs `node scripts/build-notes.js` so Markdown notes/articles are reflected in the Pages artifact
+3. The site is uploaded and deployed via `actions/deploy-pages`
 
 If a deploy needs to be re-run, trigger it manually from the Actions tab (`Run workflow` on the `Deploy to GitHub Pages` workflow), or push an empty commit:
 

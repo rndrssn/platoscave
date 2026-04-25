@@ -1,28 +1,36 @@
 ---
-title: Low-volume-operational-model
+title: The Low-Volume Operating Model for High-Software-Content Products
 slug: lowvolumehighsoftware
 date: 2026-03-24
 status: published
-summary: You cannot deliver a low-volume high-software content product using an operational model designed to deliver a high-volume high-software content product. The two cases have fundamentally different economics, and each requires a different way of organising and measuring the development activity.
+summary: A low-volume high-software-content product cannot be run economically for long on an operating model designed for high-volume software. The fixed costs, team topology, and measurement regime only pay back when there is enough meaningful product change to amortise them.
 tags: 
 - product-management
 related_modules: []
 ---
-## The operational model for low-volume high-software content (LVHSC) products
-
 ## Core claim
 
-You cannot deliver an LVHSC product using an operational model designed to deliver a high-volume high-software content product. The two cases have fundamentally different economics, and each requires a different way of organising and measuring the development activity.
+A low-volume high-software-content product cannot be run economically for long on an operating model designed for high-volume software. The fixed costs, team topology, and measurement regime only pay back when there is enough meaningful product change to amortise them.
 
-The mistake most enterprises make is to inherit the operational model of high-volume software organisations — the hyperscalers, the mass consumer platforms, the B2B SaaS at scale — and apply it to low-volume product contexts where its economic assumptions don't hold. The result is a fixed-cost structure that never amortises, teams that are measured on the wrong things, and a permanent gap between the cost of the organisation and the value it produces.
+By **high-software-content product**, I mean a product whose value, cost base, and adaptability are primarily carried in software. The product may sit inside agriculture, logistics, healthcare, public services, finance, or industrial operations. It may have hardware, services, compliance work, field operations, or human expertise around it. The point is narrower: the part that keeps changing, differentiating, integrating, and accumulating cost is mostly software.
+
+I use **LVHSC** as shorthand for low-volume high-software-content. It is not a market category. It is an operating condition.
+
+The mistake many enterprises make is to inherit the operating model of high-volume software organisations — hyperscalers, mass consumer platforms, B2B SaaS companies at scale — and apply it to low-volume product contexts where the economics do not hold. The result is familiar: a fixed-cost structure that never amortises, teams measured on the wrong things, and a permanent gap between the cost of the organisation and the value it produces.
+
+The mistake is not necessarily having too many people. It is carrying a fixed-cost structure that assumes a volume of meaningful change the product does not actually produce.
 
 ## What "volume" means
 
-The variable that matters operationally here is **the rate of meaningful product change** — the number of distinct, consequential increments the organisation produces per unit of time, set against the fixed-cost commitments it is carrying to produce them. A product that ships a handful of meaningful changes a quarter is low-volume; a product that ships many meaningful changes a week is high-volume.
+Operational volume is not user count, revenue, or engineering headcount. It is **the rate of meaningful product change relative to the fixed commitments required to produce it**.
+
+A product that ships a handful of meaningful changes per quarter is operationally low-volume. A product that ships many meaningful changes per week is operationally high-volume. The diagnostic question is not "how big is this product?" but "how much consequential change does this product produce, and what fixed cost does the organisation carry in order to produce it?"
 
 ### Operational test for "meaningful change"
 
-To keep this argument falsifiable rather than rhetorical, "meaningful change" should be scored against explicit criteria. A practical default: count an increment as meaningful when it satisfies at least two of these four tests:
+Meaningful does not mean large. It means consequential enough that users, operators, risk owners, or the business would notice if it did not happen.
+
+To keep the argument falsifiable rather than rhetorical, count an increment as meaningful when it satisfies at least two of these four tests:
 
 - **User-surface test.** It changes behaviour in a workflow used by a meaningful share of active users, or materially changes a critical workflow for a smaller but strategically important segment.
 - **Outcome test.** It is expected to move a primary product or business metric (conversion, retention, error rate, support burden, regulatory risk) by a non-trivial amount.
@@ -31,7 +39,26 @@ To keep this argument falsifiable rather than rhetorical, "meaningful change" sh
 
 Use a rolling 90-day window and calibrate thresholds per product. A useful starting point: roughly 0-6 meaningful increments per quarter indicates low operational volume, roughly 20+ indicates high operational volume, and the middle range should be treated as context-dependent.
 
-### Volume and user count: a real correlation
+Four quick questions usually reveal the pattern:
+
+- How many meaningful increments did the product deliver in the last 90 days?
+- How much owned platform, infrastructure, specialist-team, and coordination cost supports those increments?
+- How much elapsed time was dependency wait rather than productive work?
+- Which owned capabilities are genuinely differentiating, and which are merely familiar?
+
+## The economic mechanism
+
+The entire argument turns on one mechanism: **fixed cost must amortise across volume**.
+
+The high-volume model earns its keep by spreading fixed costs across many increments. Owned developer platforms, design systems, experimentation infrastructure, SRE functions, data platforms, and specialised teams make sense when many downstream changes consume them. The fixed cost is real, but it is paid back repeatedly.
+
+The low-volume model earns its keep by avoiding fixed costs that cannot pay back. If the rate of meaningful change is low, a dedicated platform team, a bespoke internal toolchain, or a deeply fragmented discovery-to-delivery assembly line does not become cheaper through professionalism. It remains a fixed commitment looking for volume that is not there.
+
+That is why low-volume high-software-content products need a different operating model. They should bias toward rented capability over owned capability, value-stream-aligned teams over fragmented specialist queues, and outcome measurement over throughput as the primary management signal.
+
+## User count and headcount are proxies
+
+### User count: a real correlation
 
 In practice, rate of meaningful change correlates strongly with user base size. That correlation is real and worth naming, because *low-volume* and *high-volume* usually do track with *small user base* and *large user base* respectively. Several mechanisms produce it:
 
@@ -55,7 +82,7 @@ The correlation holds at the population level but breaks in specific product cat
 
 For any product sitting in one of these categories, user count is not a reliable proxy for operational model, and the rate-of-change question has to be asked directly. A large user base on a mature product does not entitle the operation to a high-volume operational model; a small user base on an early-stage product does not forbid one.
 
-### Volume and headcount: not a correlation
+### Headcount: not a correlation
 
 User count correlates with rate of meaningful change. **Total organisational headcount does not.**
 
@@ -65,39 +92,31 @@ A low-volume operational model scales to large enterprises running many value-st
 
 A large enterprise that finds itself operationally low-volume does not necessarily need to be smaller. It needs to be organised differently — on the low-volume operational model, applied at scale across many parallel value-stream-aligned teams.
 
-## Illustrations: what rate-of-change looks like in practice
+## What rate of change looks like in practice
 
-Rate-of-change is a property of how a product is run, not an intrinsic trait of what the product is. Two products in the same category can sit on different sides of this line depending on operational choices by their owners. The categorical patterns below are illustrative, not definitional.
+Rate of change is a property of how a product is run, not an intrinsic trait of the category it sits in. Two products in the same market can sit on different sides of the line because their owners have made different operational choices.
 
 ### High rate of meaningful change
 
 Products in this mode ship substantive, user-visible change on a weekly-to-monthly cadence. Users who step away for six months come back to a product that is recognisably different in ways they have to adapt to.
 
-Examples include rapidly iterating consumer and prosumer productivity tools (Linear, Notion, Figma in most of its history), developer platforms adding meaningful capability continuously (Vercel, Stripe in its first decade, current-generation AI platforms), rapid-iteration consumer media platforms where the recommendation and creator tooling evolve constantly (TikTok, short-form content platforms generally), and high-growth B2B SaaS products during their expansion phase.
+Examples include rapidly iterating consumer and prosumer productivity tools (Linear, Notion, Figma through much of its history), developer platforms adding capability continuously (Vercel, Stripe in its first decade, current-generation AI platforms), rapid-iteration consumer media platforms where recommendation and creator tooling keep shifting, and high-growth B2B SaaS products during expansion.
 
-What these have in common operationally: fixed-cost investments in owned tooling pay back because the iteration rate is high enough to amortise them. Specialist teams are fully loaded because the volume of work in each discipline is genuinely there. Throughput metrics — cycle time, deployment frequency, features shipped — measure something real about the health of the operation.
+Operationally, the pattern is simple: fixed-cost investments in owned tooling pay back because the iteration rate is high enough to amortise them. Specialist teams are fully loaded because the volume of work in each discipline is genuinely there. Throughput metrics — cycle time, deployment frequency, features shipped — say something real about the health of the operation.
 
 ### Low rate of meaningful change
 
 Products in this mode ship modest, incremental change on a quarterly-to-annual cadence. Users experience the product as stable, and stability is often part of the value proposition.
 
-Examples include mature enterprise B2B software at the "trusted system of record" stage (mainstream HR, finance, and ERP suites), specialist agricultural, industrial, and process-industry software (precision agriculture tools, fleet management, utilities software, plant control systems), medical device software and other regulated categories, mature public-sector digital services past the initial build, long-tail vertical SaaS for professional niches (dental practice management, legal practice software, veterinary clinics), large-company internal data platforms and developer platforms past their initial maturation, and mature consumer utilities (calendar apps, mail clients, weather apps past a certain point of refinement).
+Examples include mature enterprise systems of record, specialist agricultural and industrial software, process-industry software, medical device software and other regulated categories, mature public-sector digital services, long-tail vertical SaaS for professional niches, internal data platforms after the initial build, and mature consumer utilities.
 
-What these have in common operationally: fixed-cost investments in owned tooling struggle to amortise because the iteration rate is low. Specialist teams end up under-loaded — the dedicated design-system team is keeping itself busy but not moving the customer-facing needle; the dedicated platform team is producing capability faster than feature teams can absorb it. Throughput metrics tell you the team is *busy*, but the busyness correlates poorly with customer-relevant outcomes.
+Operationally, the pattern flips. Fixed-cost investments in owned tooling struggle to amortise because the iteration rate is low. Specialist teams end up under-loaded: the dedicated design-system team is busy, but not moving the customer-facing needle; the dedicated platform team produces capability faster than value-stream teams can absorb it. Throughput metrics may tell you the organisation is busy while saying little about customer-relevant value.
 
-### The ambiguous middle
+### Mixed-volume products
 
-Some products genuinely sit on the line, and are worth noting, because they show that "rate of meaningful change" is not always a single axis.
+Some products genuinely have two rates of change at once. Mature large-scale consumer platforms can show a low rate of user-facing change and a high rate of internal change: ranking systems, moderation infrastructure, advertising platforms, and trust systems evolve continuously while the product surface feels stable. Games-as-a-service combine high content change with stable core mechanics. Incumbent banking apps combine modest user-facing change with mandatory backend change driven by regulation and integration work.
 
-Mature large-scale consumer platforms (mature social networks, established messaging apps) often show a low rate of user-facing meaningful change combined with a high rate of internal change — ranking systems, moderation infrastructure, advertising platforms evolving continuously while the user-facing product feels stable. Games-as-a-service combine enormous content change rates with stable core mechanics. Incumbent banking apps combine low user-facing change with high backend change driven by regulation and integration work.
-
-These cases decompose into user-facing change rate and internal change rate, which can diverge. For choosing the operational model, the user-facing rate is usually the more important one, because it most directly expresses whether fixed-cost investments amortise against outcomes users can feel.
-
-There are important exceptions where internal change should carry equal or greater weight in the model choice:
-
-- **Reliability-as-value products.** If the product is bought on uptime, latency, safety, or compliance, internal change is part of the delivered value even when UI change is modest.
-- **Regulation-dense domains.** In healthcare, finance, public-sector, and similar environments, backend change can be economically mandatory and should be treated as value-bearing, not overhead.
-- **Platform products.** If external teams or partners consume your APIs/integration surface as the product, internal capability evolution can be the primary economic driver.
+These cases should be decomposed rather than forced into a single label. User-facing change usually matters most for choosing the product operating model, because it expresses whether fixed-cost investments amortise against outcomes users can feel. But internal change should carry equal or greater weight when reliability, latency, safety, compliance, APIs, or partner integrations are themselves the product's value.
 
 ## The physical-product starting point
 
@@ -121,7 +140,7 @@ The software analogue has the same two-lever structure as high-volume manufactur
 - The **structural-cost lever** in software is the architecture of the system and the rent-vs-compose-vs-build choices that determine what capability the organisation owns versus rents. These are decisions made upstream and hard to reverse; they define what the product *is* and what fixed-cost commitments the organisation is carrying from then on.
 - The **operational-cost lever** in software is the team topology and ways of working — how coordination, handoffs, and the act of producing increments are organised. These costs accumulate during the development activity itself.
 
-High-volume high-software content operations pull both levers in a specific direction. On the structural side, they invest in owned internal platforms and tooling — design systems, developer platforms, observability stacks, data platforms, feature-flag services — because these fixed-cost investments amortise across the many feature teams consuming them. On the operational side, they organise around deep role and team specialisation — separate functions for discovery, design, engineering, QA, SRE, data, security, enablement, product ops — because each function is fully loaded by the volume of work, and the coordination cost between them amortises across enough output to be worth paying.
+High-volume high-software-content operations pull both levers in a specific direction. On the structural side, they invest in owned internal platforms and tooling — design systems, developer platforms, observability stacks, data platforms, feature-flag services — because these fixed-cost investments amortise across the many feature teams consuming them. On the operational side, they organise around deep role and team specialisation — separate functions for discovery, design, engineering, QA, SRE, data, security, enablement, product ops — because each function is fully loaded by the volume of work, and the coordination cost between them amortises across enough output to be worth paying.
 
 Both moves are rational at high volume for the same underlying reason: a fixed-cost investment (an owned platform, a specialist team) pays back across many downstream increments, the same way a production line pays back across many units. This logic holds whether the organisation is large or small; a small team producing a high rate of meaningful change can and often does invest in owned tooling and genuine specialisation, because the volume justifies it even at low headcount.
 
@@ -153,7 +172,9 @@ The rule for LVHSC operations is:
 
 > **Bias toward category 2 (rent) over category 3 (compose) over category 1 (build bespoke) for any capability that is not the product's differentiator.**
 
-Put plainly: design fixed cost out by default, and only design it in where differentiation requires it. This is what keeps value-stream-aligned teams viable end to end; if those teams must also own identity, infrastructure, observability, billing, and other non-differentiating capabilities, coordination overhead returns and the topology collapses back into dependency queues.
+Put plainly: design fixed cost out by default, and only design it in where differentiation requires it. This is a default economic bias, not an architectural law; sovereignty, lock-in, latency, safety, and true differentiation can override it, but they should do so explicitly.
+
+This is what keeps value-stream-aligned teams viable end to end. If those teams must also own identity, infrastructure, observability, billing, and other non-differentiating capabilities, coordination overhead returns and the topology collapses back into dependency queues.
 
 The logic is the same whether the enterprise has thirty engineers or three thousand; larger low-volume organisations simply apply it across more value streams in parallel.
 
@@ -231,7 +252,7 @@ Partial adoption can still be a rational transition step and may deliver local g
 
 The measurement dimension is where this becomes actionable, and where the inherited high-volume model often does the most damage.
 
-High-volume operations measure **throughput of increments** — the DORA metrics, features per quarter, cycle time, deployment frequency. This is the right measurement regime when the strategic question is *how do we produce more increments faster* and when the business value scales linearly with the rate of increment production.
+High-volume operations can safely make **throughput of increments** a primary management signal — DORA metrics, features per quarter, cycle time, deployment frequency — because the link between more increments and more value is stronger. Low-volume operations should still watch flow metrics, but should not let them become the definition of success.
 
 Low-volume operations should still measure **time-to-outcome**, but the outcome definition should reflect product phase:
 
@@ -246,7 +267,7 @@ A practical evidence check is to baseline, over the prior 12 months, at least fo
 
 Putting the two levers and the measurement dimension together:
 
-**High-volume high-software content operational model:**
+**High-volume high-software-content operational model:**
 - Optimises for low **marginal cost per increment of functionality**.
 - *Structural-cost lever*: heavy investment in owned internal platforms and tooling that amortise across many feature teams. Bias toward building bespoke where owning the capability crosses the break-even point against per-unit rent premiums.
 - *Operational-cost lever*: deep role and team specialisation, with each specialist function fully loaded by the volume of work and coordination cost amortising across large output.
@@ -262,13 +283,13 @@ Both sides of the contrast are driven by the same underlying logic: the economic
 
 User count correlates with operational volume in most cases and gives a usable first-order signal. But the correlation breaks for mature products, regulated products, infrastructure products, and internal products — exactly the categories established enterprises tend to run — and in those cases the rate-of-change question has to be asked directly. Organisational headcount, by contrast, does not determine operational model at all: a thirty-person team producing rapid iteration sits on the high-volume model, and a thousand-person enterprise producing modest change on each of many products sits on the low-volume model.
 
-## A note on the messy middle
+## The enterprise failure mode
 
-The real world is messier than the clean contrast above. A common, costly failure mode in established enterprises doing digital product work is the **low-volume-in-output, high-in-legacy-structure** organisation. It has inherited or accumulated the fixed-cost structure of a high-volume shop — separate platform teams, owned infrastructure, deep specialisation, DORA-style measurement — but produces the output of a low-volume one. The fixed costs are real and visible. The rate of change to amortise them is not there. The organisation is slow, expensive, and frustrated, and the diagnosis is usually misattributed to execution ("we need to ship faster") when the real issue is structural (the operational model is wrong for the volume).
+The common enterprise failure mode is the **low-volume-in-output, high-in-legacy-structure** organisation. It has inherited or accumulated the fixed-cost structure of a high-volume shop — separate platform teams, owned infrastructure, deep specialisation, DORA-style measurement — but produces the output of a low-volume one. The fixed costs are real and visible. The rate of change to amortise them is not there. The organisation is slow, expensive, and frustrated, and the diagnosis is usually misattributed to execution ("we need to ship faster") when the real issue is structural: the operating model is wrong for the volume.
 
 Two diagnostic errors commonly reinforce this failure mode. The first is reasoning from user count without checking the category: a product with a large user base can still be operationally low-volume if it is mature, regulated, or infrastructural, and using the large user base to justify a high-volume operational model in those cases will produce exactly this trap. The second is reasoning from headcount: a large organisation is often assumed to be high-volume because it has the shape of one, when in fact it is a large low-volume operation that has accumulated a high-volume structure. The corrective in both cases is the same: look at rate of meaningful change relative to fixed-cost commitments, and let that determine the operational model, not the size of the user base or the size of the team.
 
-The corrective action is therefore not to demand more velocity from teams operating inside an unaffordable structure, and not necessarily to reduce headcount. It is to do the fixed-to-variable conversion deliberately on both levers at once: consolidate fragmented teams into value-stream-aligned ones, retire self-hosted infrastructure in favour of managed services, cut the platform investments that aren't paying back, and shift the measurement regime from throughput to outcome. This is hard because the fixed-cost structure usually has defenders whose identities and careers are built inside it. But the alternative is paying the fixed cost forever while producing low-volume output.
+The corrective is not simply more velocity or fewer people. It is to match fixed commitments to operational volume. That means doing the fixed-to-variable conversion deliberately on both levers at once: consolidate fragmented teams into value-stream-aligned ones, retire self-hosted infrastructure in favour of managed services, cut the platform investments that are not paying back, and shift the measurement regime from throughput to outcome. This is hard because the fixed-cost structure usually has defenders whose identities and careers are built inside it. But the alternative is paying the fixed cost forever while producing low-volume output.
 
 ## Caveats
 

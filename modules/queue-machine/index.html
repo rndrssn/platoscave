@@ -50,16 +50,39 @@
       <header class="module-header">
         <h1 class="module-header-title">Utilization Trap</h1>
         <p class="module-header-body">
-          High individual utilization looks efficient locally. In a variable flow system it can make the whole system slower:
-          queues build, lead time stretches, and the constraint becomes harder to see.
+          The system is only 72% utilized. It still starts drowning. That is the surprise: average capacity can be enough
+          on paper while bursty arrivals and uneven work create queues in reality.
         </p>
         <p class="module-header-body">
-          This draft module connects three lenses: Little's Law for flow accounting, queueing theory for non-linear delay,
-          and Theory of Constraints for where management attention belongs.
+          Utilization measures average load. Queues are born in the moments where arrivals exceed what the constraint can
+          absorb. The excess does not disappear; it becomes tomorrow's backlog.
         </p>
       </header>
 
+      <section class="queue-machine-primer" aria-labelledby="queue-primer-heading">
+        <div>
+          <h2 id="queue-primer-heading" class="queue-machine-kicker">The hook: averages lie</h2>
+          <p>
+            The default scenario keeps average demand below capacity: <var>&lambda;</var> is 0.72 and <var>&mu;</var> is
+            1.00, so <var>&rho;</var> is 72%. The CV sliders are high on purpose. They make the work arrive and complete
+            unevenly, which changes waiting and backlog without changing utilization.
+          </p>
+        </div>
+        <ul class="queue-machine-mini-legend" aria-label="Compact variable legend">
+          <li><strong>Utilization</strong><span>average load; steady at 72% in the opening case</span></li>
+          <li><strong>Variability</strong><span>burstiness; the thing that makes the bars spike</span></li>
+          <li><strong>Backlog</strong><span>overflow that carries forward instead of vanishing</span></li>
+        </ul>
+      </section>
+
       <section class="queue-machine-lab" aria-label="Queue and utilization demonstration">
+        <div class="queue-machine-presets" aria-label="Scenario presets">
+          <button type="button" data-queue-preset="breathing">Slack absorbs variation</button>
+          <button type="button" data-queue-preset="strained">Strained but stable</button>
+          <button type="button" data-queue-preset="saturated">Near saturation</button>
+          <button type="button" data-queue-preset="bursty">Bursty product work</button>
+        </div>
+
         <form class="queue-machine-controls" data-queue-controls>
           <div class="queue-machine-control">
             <label for="queue-arrival-rate">Arrival rate, lambda</label>
@@ -73,20 +96,32 @@
           </div>
           <div class="queue-machine-control">
             <label for="queue-arrival-variability">Arrival variability, C<sub>a</sub></label>
-            <input id="queue-arrival-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.00" />
-            <span>CV <span data-output="arrival-cv">1.00</span></span>
+            <input id="queue-arrival-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.65" />
+            <span>CV <span data-output="arrival-cv">1.65</span></span>
           </div>
           <div class="queue-machine-control">
             <label for="queue-service-variability">Service variability, C<sub>s</sub></label>
-            <input id="queue-service-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.00" />
-            <span>CV <span data-output="service-cv">1.00</span></span>
+            <input id="queue-service-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.80" />
+            <span>CV <span data-output="service-cv">1.80</span></span>
           </div>
         </form>
 
         <div class="queue-machine-stage" aria-label="Queue visual">
-          <div class="queue-machine-track" data-queue-track aria-hidden="true"></div>
-          <div class="queue-machine-station" data-queue-station aria-hidden="true">
-            <span>Constraint</span>
+          <div class="queue-machine-chart-panel">
+            <h2 class="queue-machine-chart-title">Arrivals versus capacity</h2>
+            <p class="queue-machine-chart-note">
+              Bars are work arriving per time bucket. The line is service capacity. Red bars are the surprise: local
+              overflow appears even though average utilization is still below 100%.
+            </p>
+            <svg class="queue-machine-chart" data-queue-arrivals-chart role="img" aria-label="Bar chart of arrivals per bucket against capacity"></svg>
+          </div>
+          <div class="queue-machine-chart-panel">
+            <h2 class="queue-machine-chart-title">Backlog created by overflow</h2>
+            <p class="queue-machine-chart-note">
+              Overflow carries forward. The backlog chart is where the trick is exposed: changing CV changes waiting and
+              WIP while the utilization number stays anchored to the same average load.
+            </p>
+            <svg class="queue-machine-chart" data-queue-backlog-chart role="img" aria-label="Bar chart of backlog over time"></svg>
           </div>
           <p class="queue-machine-status" data-queue-status aria-live="polite"></p>
         </div>
@@ -97,24 +132,24 @@
             <dd data-output="utilization">72.0%</dd>
           </div>
           <div>
-            <dt>M/M/1 system time, W</dt>
-            <dd><span data-output="mm1-lead-time">3.57</span></dd>
+            <dt>M/M/1 lead time, W</dt>
+            <dd><span data-output="mm1-lead-time">3.57</span> time units</dd>
           </div>
           <div>
             <dt>Kingman queue wait, Wq</dt>
-            <dd><span data-output="kingman-wait">2.57</span></dd>
+            <dd><span data-output="kingman-wait">7.67</span> time units</dd>
           </div>
           <div>
-            <dt>Kingman system time, W</dt>
-            <dd><span data-output="kingman-lead-time">3.57</span></dd>
+            <dt>Kingman lead time, W</dt>
+            <dd><span data-output="kingman-lead-time">8.67</span> time units</dd>
           </div>
           <div>
             <dt>Little's Law WIP, L</dt>
-            <dd><span data-output="little-law-wip">2.57</span></dd>
+            <dd><span data-output="little-law-wip">6.24</span> items</dd>
           </div>
           <div>
             <dt>Variability factor</dt>
-            <dd><span data-output="variability-factor">1.00</span></dd>
+            <dd><span data-output="variability-factor">2.98</span></dd>
           </div>
         </dl>
       </section>
@@ -142,8 +177,24 @@
             WIP rises, lead time rises with it.
           </p>
 
+          <aside class="queue-machine-assumption-card" aria-label="Model assumptions">
+            <h3>Assumptions</h3>
+            <p>
+              These equations describe stable average behavior, not a promise about any one item. The M/M/1 case assumes
+              one server, random arrivals, random service times, and <var>&lambda; &lt; &mu;</var>. Kingman's G/G/1
+              approximation relaxes the arrival and service distributions but still assumes a stable single constrained
+              service point.
+            </p>
+          </aside>
+
           <div class="queue-machine-table-wrap" role="region" aria-label="Queueing variables translated to high-software-content work">
             <table class="queue-machine-variable-table">
+              <colgroup>
+                <col />
+                <col />
+                <col />
+                <col />
+              </colgroup>
               <thead>
                 <tr>
                   <th scope="col">Variable</th>
@@ -268,6 +319,11 @@
             <var>(Ca^2 + Cs^2) / 2</var>. Variability hurts at any utilization, but near saturation the system has no room
             to absorb it.
           </p>
+          <p class="essay-body">
+            This is why high-software-content work can feel calm on paper and chaotic in practice. The average item may
+            look manageable, while the tails do the damage: an urgent request batch, a hard integration, a slow review, or
+            a dependency that turns one card into six.
+          </p>
         </section>
 
         <section class="essay-section">
@@ -283,9 +339,26 @@
             amplified. TOC supplies the management rule: identify the constraint, exploit it, subordinate other work to it,
             elevate it when needed, and repeat when the constraint moves.
           </p>
+          <aside class="queue-machine-toc-panel" aria-label="Theory of Constraints translation">
+            <h3>TOC translation</h3>
+            <p>
+              TOC does not say the constraint should be idle. It says the constraint should be protected, exploited, and
+              fed deliberately. The trap is different: optimizing every non-constraint resource for busyness releases work
+              faster than the constraint can convert it into throughput.
+            </p>
+          </aside>
           <p class="essay-body">
             The module's claim is therefore narrow: the goal is not to keep every person busy. The goal is to keep valuable
             work flowing through the constraint at a sustainable pace.
+          </p>
+        </section>
+
+        <section class="essay-section">
+          <h2 class="essay-heading">Reading notes</h2>
+          <p class="essay-body">
+            The argument borrows from three adjacent traditions: Little's Law for flow accounting, queueing theory for the
+            utilization and variability curves, and Goldratt/Reinertsen-style flow management for the practical rule of
+            protecting the constraint instead of maximizing local busyness.
           </p>
         </section>
       </article>
@@ -308,6 +381,7 @@
   </footer>
 
   <script src="../../js/nav-controller.js"></script>
+  <script src="../../assets/vendor/d3.v7.min.js"></script>
   <script src="./queue-machine-model.js"></script>
   <script src="./queue-machine.js"></script>
 </body>

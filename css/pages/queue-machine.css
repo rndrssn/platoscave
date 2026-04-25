@@ -594,6 +594,25 @@
   color: color-mix(in srgb, var(--ink-mid) 78%, var(--ink-faint) 22%);
 }
 
+.queue-machine-concept-edge-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.queue-machine-concept-edge-key {
+  inline-size: 1.75rem;
+  block-size: 0;
+  border-block-start: 1px dashed color-mix(in srgb, var(--rust-light) 74%, var(--ink-ghost) 26%);
+  flex-shrink: 0;
+}
+
 .queue-machine-concept-swatch {
   inline-size: 0.55rem;
   block-size: 0.55rem;
@@ -603,6 +622,10 @@
 
 .queue-machine-concept-swatch--concept {
   background: var(--sage-light);
+}
+
+.queue-machine-concept-swatch--assumption {
+  background: var(--ink-faint);
 }
 
 .queue-machine-concept-swatch--observation {
@@ -642,6 +665,10 @@
   background: var(--sage-light);
 }
 
+.queue-machine-concept-detail-swatch--assumption {
+  background: var(--ink-faint);
+}
+
 .queue-machine-concept-detail-swatch--observation {
   background: var(--gold);
 }
@@ -674,6 +701,16 @@
   stroke-opacity: 0.82;
 }
 
+.queue-machine-concept-edge--contradicts {
+  stroke: color-mix(in srgb, var(--rust-light) 74%, var(--ink-ghost) 26%);
+  stroke-dasharray: 3 4;
+}
+
+.queue-machine-concept-edge--amplifies,
+.queue-machine-concept-edge--explains {
+  stroke-opacity: 0.95;
+}
+
 .queue-machine-concept-node {
   cursor: grab;
 }
@@ -685,6 +722,11 @@
   stroke: color-mix(in srgb, var(--sage-light) 78%, var(--paper) 22%);
 }
 
+.queue-machine-concept-node--assumption {
+  fill: var(--ink-faint);
+  stroke: color-mix(in srgb, var(--ink-faint) 78%, var(--paper) 22%);
+}
+
 .queue-machine-concept-node--observation {
   fill: var(--gold);
   stroke: color-mix(in srgb, var(--gold) 78%, var(--paper) 22%);
@@ -693,6 +735,30 @@
 .queue-machine-concept-node--surprise {
   fill: var(--rust-light);
   stroke: color-mix(in srgb, var(--rust-light) 78%, var(--paper) 22%);
+}
+
+.queue-machine-concept-node.is-dim {
+  fill: color-mix(in srgb, var(--paper) 84%, var(--ink-ghost) 16%);
+  stroke: color-mix(in srgb, var(--paper) 78%, var(--ink-ghost) 22%);
+}
+
+.queue-machine-concept-node.is-related {
+  opacity: 0.72;
+}
+
+.queue-machine-concept-node.is-group-focus {
+  opacity: 1;
+  stroke-width: 1.8;
+}
+
+.queue-machine-concept-edge.is-dim {
+  stroke: color-mix(in srgb, var(--paper) 72%, var(--ink-ghost) 28%);
+  stroke-opacity: 0.24;
+}
+
+.queue-machine-concept-edge.is-related {
+  stroke: color-mix(in srgb, var(--paper) 44%, var(--ink-ghost) 56%);
+  stroke-opacity: 0.46;
 }
 
 .queue-machine-concept-hitarea {
@@ -713,6 +779,21 @@
 }
 
 .queue-machine-concept-label.is-active { fill: var(--ink); }
+
+.queue-machine-concept-label.is-dim {
+  fill: color-mix(in srgb, var(--paper) 58%, var(--ink-ghost) 42%);
+}
+
+.queue-machine-concept-label.is-related {
+  fill: var(--ink-mid);
+  opacity: 0.84;
+}
+
+.queue-machine-concept-detail-note {
+  color: var(--ink-faint);
+  letter-spacing: 0;
+  text-transform: none;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .queue-machine-resource-item,

@@ -26,14 +26,19 @@
     { id: 'batches', label: 'Small batches', short: 'Small batches', group: 'concept' },
     { id: 'flowEff', label: 'Flow efficiency', short: 'Flow efficiency', group: 'concept' },
     { id: 'empirical', label: 'Empirical process control', short: 'Empirical', group: 'concept' },
+    { id: 'costOfDelay', label: 'Cost of Delay', short: 'Cost of Delay', group: 'concept' },
 
     { id: 'prReview', label: 'PR review queues', short: 'PR queues', group: 'observation' },
     { id: 'quarterly', label: 'Quarterly demand spikes', short: 'Quarterly spikes', group: 'observation' },
     { id: 'sprintDisrupt', label: 'Sprint disruption', short: 'Sprint disruption', group: 'observation' },
     { id: 'incidentRework', label: 'Incident-driven rework', short: 'Incident rework', group: 'observation' },
+    { id: 'longLivedBranches', label: 'Long-lived branches', short: 'Long branches', group: 'observation' },
+    { id: 'contextSwitch', label: 'Context-switching tax', short: 'Context switch', group: 'observation' },
     { id: 'idleWaste', label: '"Idle people = waste"', short: 'Idle = waste', group: 'observation' },
     { id: 'addPeople', label: '"Add people to go faster"', short: 'Add people', group: 'observation' },
     { id: 'highUtil', label: '"Higher utilization = better"', short: 'High util = better', group: 'observation' },
+    { id: 'bigBatches', label: '"Bigger batches = more efficient"', short: 'Big batches', group: 'observation' },
+    { id: 'morePlanning', label: '"More planning = more predictable"', short: 'More planning', group: 'observation' },
 
     { id: 's72', label: '72% load still queues', short: '72% still queues', group: 'surprise' },
     { id: 'sSlack', label: 'Slack protects flow', short: 'Slack protects flow', group: 'surprise' },
@@ -81,6 +86,12 @@
     { source: 'batches', target: 'sBatchCost' },
     { source: 'empirical', target: 'batches' },
 
+    { source: 'costOfDelay', target: 'batches' },
+    { source: 'costOfDelay', target: 'pull' },
+    { source: 'costOfDelay', target: 'flowEff' },
+    { source: 'costOfDelay', target: 'cv' },
+    { source: 'costOfDelay', target: 'toc' },
+
     { source: 'prReview', target: 'cv' },
     { source: 'prReview', target: 'rho' },
     { source: 'quarterly', target: 'cv' },
@@ -88,22 +99,39 @@
     { source: 'sprintDisrupt', target: 'pull' },
     { source: 'incidentRework', target: 'cv' },
 
+    { source: 'longLivedBranches', target: 'batches' },
+    { source: 'longLivedBranches', target: 'cv' },
+    { source: 'longLivedBranches', target: 'feedback' },
+    { source: 'longLivedBranches', target: 'sBatchCost' },
+
+    { source: 'contextSwitch', target: 'little' },
+    { source: 'contextSwitch', target: 'flowEff' },
+    { source: 'contextSwitch', target: 'pull' },
+    { source: 'contextSwitch', target: 'cv' },
+
     { source: 'idleWaste', target: 'sLocalLoss', kind: 'contradicts' },
     { source: 'idleWaste', target: 'sSlack', kind: 'contradicts' },
     { source: 'addPeople', target: 'nonlinear', kind: 'contradicts' },
-    { source: 'addPeople', target: 'little', kind: 'contradicts' },
+    { source: 'addPeople', target: 'flowEff', kind: 'contradicts' },
     { source: 'addPeople', target: 'toc', kind: 'contradicts' },
     { source: 'addPeople', target: 'cv', kind: 'contradicts' },
     { source: 'addPeople', target: 'sLocalLoss', kind: 'contradicts' },
     { source: 'highUtil', target: 's72', kind: 'contradicts' },
-    { source: 'highUtil', target: 'sVarDom', kind: 'contradicts' }
+    { source: 'highUtil', target: 'sVarDom', kind: 'contradicts' },
+
+    { source: 'bigBatches', target: 'sBatchCost', kind: 'contradicts' },
+    { source: 'bigBatches', target: 'batches', kind: 'contradicts' },
+    { source: 'bigBatches', target: 'costOfDelay', kind: 'contradicts' },
+
+    { source: 'morePlanning', target: 'cynefin', kind: 'contradicts' },
+    { source: 'morePlanning', target: 'empirical', kind: 'contradicts' },
+    { source: 'morePlanning', target: 'nonlinear', kind: 'contradicts' }
   ];
 
-  var linkIndex = new Set();
-  links.forEach(function(l) {
-    linkIndex.add(l.source + '|' + l.target);
-    linkIndex.add(l.target + '|' + l.source);
-  });
+  var fgUtils = window.ForceGraphUtils;
+  var linkIndex = fgUtils ? fgUtils.buildLinkIndex(links) : new Set(links.flatMap(function(l) {
+    return [l.source + '|' + l.target, l.target + '|' + l.source];
+  }));
 
   var detailEl = document.querySelector('[data-concept-detail]');
   var activeDetailNode = null;
@@ -220,7 +248,7 @@
       .selectAll('line')
       .data(simulation.force('link').links())
       .join('line')
-      .attr('class', 'queue-machine-concept-edge');
+      .attr('class', 'force-graph-link queue-machine-concept-edge');
 
     var node = plot.append('g')
       .attr('class', 'queue-machine-concept-nodes')
@@ -228,7 +256,7 @@
       .data(simulation.nodes())
       .join('circle')
       .attr('class', function(d) {
-        return 'queue-machine-concept-node queue-machine-concept-node--' + d.group;
+        return 'force-graph-node queue-machine-concept-node queue-machine-concept-node--' + d.group;
       })
       .attr('r', function(d) { return radiusByGroup(d.group); });
 
@@ -248,120 +276,45 @@
       .selectAll('text')
       .data(simulation.nodes())
       .join('text')
-      .attr('class', 'queue-machine-concept-label')
+      .attr('class', 'force-graph-label queue-machine-concept-label')
       .attr('text-anchor', 'middle')
       .text(function(d) { return mobile ? d.short : d.label; });
 
-    var activeLegendGroup = null;
+    var selections = {
+      node: node,
+      label: label,
+      link: link,
+      linkIndex: linkIndex,
+      simulation: simulation
+    };
     var legendItems = Array.from(document.querySelectorAll('[data-legend-group]'));
 
     function clearHighlights() {
-      node.classed('is-dim', false).classed('is-related', false).classed('is-group-focus', false);
-      label.classed('is-dim', false).classed('is-active', false).classed('is-related', false);
-      link.classed('is-dim', false).classed('is-related', false);
+      if (fgUtils) fgUtils.clearHighlights(selections);
       hideDetail(true);
     }
 
     function applyFocus(d) {
-      node.classed('is-group-focus', false).classed('is-related', false);
-      label.classed('is-related', false);
-      link.classed('is-related', false);
-      node.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
-      label.classed('is-dim', function(n) { return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id); });
-      label.classed('is-active', function(n) { return n.id === d.id || linkIndex.has(d.id + '|' + n.id); });
-      link.classed('is-dim', function(l) { return l.source.id !== d.id && l.target.id !== d.id; });
-      link.classed('is-related', function(l) { return l.source.id === d.id || l.target.id === d.id; });
+      if (fgUtils) fgUtils.applyFocus(selections, d);
     }
 
     function applyLegendFilter(group) {
-      var primary = new Set();
-      var related = new Set();
-
-      simulation.nodes().forEach(function(n) {
-        if (n.group === group) primary.add(n.id);
-      });
-
-      simulation.force('link').links().forEach(function(l) {
-        var s = l.source.id;
-        var t = l.target.id;
-        if (primary.has(s) && !primary.has(t)) related.add(t);
-        if (primary.has(t) && !primary.has(s)) related.add(s);
-      });
-
-      node
-        .classed('is-group-focus', function(n) { return primary.has(n.id); })
-        .classed('is-related', function(n) { return !primary.has(n.id) && related.has(n.id); })
-        .classed('is-dim', function(n) { return !primary.has(n.id) && !related.has(n.id); });
-
-      label
-        .classed('is-active', function(n) { return primary.has(n.id); })
-        .classed('is-related', function(n) { return !primary.has(n.id) && related.has(n.id); })
-        .classed('is-dim', function(n) { return !primary.has(n.id) && !related.has(n.id); });
-
-      link
-        .classed('is-related', function(l) {
-          var s = l.source.id;
-          var t = l.target.id;
-          return (primary.has(s) && related.has(t)) || (primary.has(t) && related.has(s)) || (primary.has(s) && primary.has(t));
-        })
-        .classed('is-dim', function(l) {
-          var s = l.source.id;
-          var t = l.target.id;
-          var touchesPrimary = primary.has(s) || primary.has(t);
-          return !touchesPrimary;
-        });
+      if (!fgUtils) return;
+      fgUtils.applyLegendFilter(selections, function(n) { return n.group === group; }, { includeRelated: false });
     }
 
-    function setLegendActive(group) {
-      activeLegendGroup = group;
-      legendItems.forEach(function(item) {
-        var isActive = !!group && item.getAttribute('data-legend-group') === group;
-        item.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-      });
-    }
+    var legendCtl = fgUtils && fgUtils.wireLegend(legendItems, {
+      onActivate: applyLegendFilter,
+      onClear: clearHighlights,
+      onPin: applyLegendFilter
+    });
 
     function focusAndShow(d) {
-      if (activeLegendGroup) setLegendActive(null);
+      if (legendCtl && legendCtl.isPinned()) legendCtl.release();
       activeDetailNode = d;
       applyFocus(d);
       showDetail(d);
     }
-
-    legendItems.forEach(function(item) {
-      var group = item.getAttribute('data-legend-group');
-      item.addEventListener('mouseenter', function() {
-        if (activeLegendGroup) return;
-        applyLegendFilter(group);
-      });
-      item.addEventListener('mouseleave', function() {
-        if (activeLegendGroup) return;
-        clearHighlights();
-      });
-      item.addEventListener('focus', function() {
-        if (activeLegendGroup) return;
-        applyLegendFilter(group);
-      });
-      item.addEventListener('blur', function() {
-        if (activeLegendGroup) return;
-        clearHighlights();
-      });
-      item.addEventListener('click', function() {
-        if (activeLegendGroup === group) {
-          setLegendActive(null);
-          clearHighlights();
-          return;
-        }
-        setLegendActive(group);
-        applyLegendFilter(group);
-      });
-      item.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-          event.preventDefault();
-          setLegendActive(null);
-          clearHighlights();
-        }
-      });
-    });
 
     var dragBehavior = d3.drag()
       .on('start', function(event, d) {
@@ -398,11 +351,11 @@
     if (!isCoarsePointer) {
       node
         .on('mouseenter', function(_, d) {
-          if (activeDetailNode) return;
+          if (legendCtl && legendCtl.isPinned()) return;
           applyFocus(d);
-          showDetail(d);
         })
         .on('mouseleave', function() {
+          if (legendCtl && legendCtl.isPinned()) return;
           if (activeDetailNode) return;
           clearHighlights();
         });

@@ -1,0 +1,29 @@
+/* Force-graph interaction states (shared across force-directed visualizations) */
+/* Applied alongside each graph's bespoke node/link/label classes. */
+
+.force-graph-node {
+  stroke-width: 1.2;
+}
+
+.force-graph-node.is-dim,
+.force-graph-link.is-dim,
+.force-graph-label.is-dim {
+  opacity: 0.2;
+}
+
+.force-graph-node.is-related,
+.force-graph-link.is-related {
+  opacity: 0.55;
+}
+
+.force-graph-label.is-related {
+  opacity: 0.65;
+}
+
+.force-graph-node.is-group-focus {
+  opacity: 1;
+}
+
+.force-graph-label.is-active {
+  opacity: 1;
+}

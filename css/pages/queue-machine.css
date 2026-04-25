@@ -523,6 +523,8 @@
 
 .queue-machine-concept {
   margin-top: 2rem;
+  --force-graph-label-size: 10px;
+  --force-graph-label-letter-spacing: 0;
 }
 
 .queue-machine-concept--full {
@@ -640,12 +642,12 @@
   display: inline-flex;
   align-items: center;
   gap: 0.32rem;
-  margin: 0.4rem 0 0.4rem;
+  margin: 0.4rem 0 0.1rem;
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.54rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--ink-mid);
+  color: var(--ink-faint);
   min-block-size: 1rem;
   visibility: hidden;
 }
@@ -655,10 +657,11 @@
 }
 
 .queue-machine-concept-detail-swatch {
-  inline-size: 0.4rem;
-  block-size: 0.4rem;
+  inline-size: 0.34rem;
+  block-size: 0.34rem;
   border-radius: 999px;
   flex-shrink: 0;
+  animation: queue-machine-detail-swatch-pulse 1.4s ease-in-out infinite;
 }
 
 .queue-machine-concept-detail-swatch--concept {
@@ -675,6 +678,15 @@
 
 .queue-machine-concept-detail-swatch--surprise {
   background: var(--rust-light);
+}
+
+.queue-machine-concept-detail-label {
+  color: var(--ink-mid);
+}
+
+@keyframes queue-machine-detail-swatch-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.72; }
+  50% { transform: scale(2); opacity: 1; }
 }
 
 .queue-machine-concept-surface {
@@ -743,12 +755,11 @@
 }
 
 .queue-machine-concept-node.is-related {
-  opacity: 0.72;
+  opacity: 0.55;
 }
 
 .queue-machine-concept-node.is-group-focus {
   opacity: 1;
-  stroke-width: 1.8;
 }
 
 .queue-machine-concept-edge.is-dim {
@@ -768,17 +779,13 @@
 }
 
 .queue-machine-concept-label {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.02em;
-  fill: var(--ink-mid);
-  text-anchor: middle;
-  dominant-baseline: alphabetic;
-  opacity: 0.84;
-  pointer-events: none;
+  --force-graph-label-fill: var(--ink-mid);
 }
 
-.queue-machine-concept-label.is-active { fill: var(--ink); }
+.queue-machine-concept-label.is-active {
+  font-weight: 700;
+  fill: var(--ink-mid);
+}
 
 .queue-machine-concept-label.is-dim {
   fill: color-mix(in srgb, var(--paper) 58%, var(--ink-ghost) 42%);

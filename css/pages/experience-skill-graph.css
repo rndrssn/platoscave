@@ -1,14 +1,32 @@
 /* ─── Experience-Skill Graph shell (bespoke, non-module pattern) ───────── */
 .experience-skill-page {
-  padding-top: calc(4rem + 2.2rem);
+  --experience-switch-inline-start: 2rem;
+  padding-top: calc(4rem + 0.45rem);
   padding-bottom: 5rem;
 }
 
 .experience-skill-masthead {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-left: var(--experience-switch-inline-start);
+  padding-right: 1rem;
   margin-bottom: 0.95rem;
-  padding: 0;
   border: none;
   background: transparent;
+}
+
+.experience-skill-identity {
+  margin: 0.46rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
 }
 
 .experience-skill-heading {
@@ -20,8 +38,8 @@
   display: inline-flex;
   align-items: stretch;
   gap: 0;
-  margin-top: 0.9rem;
-  margin-bottom: 0.24rem;
+  margin-top: 0;
+  margin-bottom: 0;
   padding: 0.2rem;
   border: 0;
   border-radius: 0.5rem;
@@ -141,8 +159,19 @@
 
 @media (max-width: 640px) {
   .experience-skill-page {
-    padding-top: calc(4rem + 1.4rem);
+    --experience-switch-inline-start: 0.9rem;
+    padding-top: calc(4rem + 0.32rem);
     padding-bottom: 3.5rem;
+  }
+
+  .experience-skill-masthead {
+    margin-bottom: 0.72rem;
+  }
+
+  .experience-skill-identity {
+    margin-top: 0.34rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.07em;
   }
 
   .experience-skill-heading {
@@ -176,5 +205,11 @@
   .experience-skill-section--graph {
     padding-left: 0.9rem;
     padding-right: 0.9rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 899px) {
+  .experience-skill-page {
+    --experience-switch-inline-start: 0.9rem;
   }
 }

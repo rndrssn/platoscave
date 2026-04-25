@@ -674,18 +674,11 @@
   stroke-opacity: 0.82;
 }
 
-.queue-machine-concept-edge.is-dim { opacity: 0.18; }
-.queue-machine-concept-edge.is-related { opacity: 1; }
-
 .queue-machine-concept-node {
-  stroke-width: 1.2;
   cursor: grab;
 }
 
 .queue-machine-concept-node:active { cursor: grabbing; }
-.queue-machine-concept-node.is-dim { opacity: 0.22; }
-.queue-machine-concept-node.is-related { opacity: 0.7; }
-.queue-machine-concept-node.is-group-focus { opacity: 1; }
 
 .queue-machine-concept-node--concept {
   fill: var(--sage-light);
@@ -719,8 +712,7 @@
   pointer-events: none;
 }
 
-.queue-machine-concept-label.is-dim { opacity: 0.2; }
-.queue-machine-concept-label.is-active { opacity: 1; fill: var(--ink); }
+.queue-machine-concept-label.is-active { fill: var(--ink); }
 
 @media (prefers-reduced-motion: reduce) {
   .queue-machine-resource-item,

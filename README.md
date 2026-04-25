@@ -40,6 +40,8 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
     - Narrative-first queueing-theory explainer with arrival/capacity charts, backlog visualization, Little's Law, M/M/1, and Kingman's approximation.
   - **02 Flow Animation** (`/modules/queue-machine/animation/`)
     - Henrik Kniberg-inspired resource-utilization-trap animation comparing a busy-looking push lane with a flow-optimized lane.
+  - **03 Concept Map** (`/modules/queue-machine/concept-graph/`)
+    - D3 force-directed graph showing how queueing theory, complexity science, and modern agile practice connect; observations they predict; folklore intuitions and the counter-intuitive surprises that contradict them.
 - **The Descent** — From open problem to verifiable criterion. The sections of a brief as stations of a descent. Paired narratively with Module 04 (same epistemic bet, at unit scale).
   - **01 The Descent** (`/modules/the-descent/`)
   - **02 Section Map** (`/modules/the-descent/section-map/`)

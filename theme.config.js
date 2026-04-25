@@ -19,9 +19,6 @@
 // window.PLATOSCAVE_THEME = 'minimalist-brutalist';
 // window.PLATOSCAVE_THEME = 'neon-brutalist-extreme';
 // window.PLATOSCAVE_THEME = 'neon-brutalist-daylight';
-// window.PLATOSCAVE_THEME = 'brutalist-neon-mono';
-// window.PLATOSCAVE_THEME = 'paper-laser-marker';
-// window.PLATOSCAVE_THEME = 'mono-noise-neon-cuts';
 
 /* Active */
 window.PLATOSCAVE_THEME = 'decision-collision-cold';

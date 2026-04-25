@@ -16,9 +16,6 @@
     'minimalist-brutalist',
     'neon-brutalist-extreme',
     'neon-brutalist-daylight',
-    'brutalist-neon-mono',
-    'paper-laser-marker',
-    'mono-noise-neon-cuts',
   ];
   var THEME_ALIASES = {
     'collision-decision-cold': 'decision-collision-cold'

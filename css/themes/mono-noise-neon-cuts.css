@@ -1,0 +1,155 @@
+html[data-theme='mono-noise-neon-cuts'] {
+  --paper:       #111111;
+  --paper-dark:  #1a1a1a;
+  --paper-deep:  #272727;
+
+  --ink:         #f6f6f6;
+  --ink-mid:     #dedede;
+  --ink-faint:   #bdbdbd;
+  --ink-ghost:   #8f8f8f;
+
+  --rust:        #70ff00;
+  --rust-light:  #9dff4d;
+  --sage:        #39d100;
+  --sage-light:  #70ff00;
+  --ochre:       #f6f6f6;
+  --gold:        #d3ffad;
+  --slate:       #2d2d2d;
+  --slate-light: #5d5d5d;
+
+  --link-inline: var(--rust);
+  --link-inline-hover: var(--rust-light);
+  --link-inline-visited: #55b326;
+  --link-ui: var(--ink);
+  --link-ui-hover: var(--rust);
+  --tag-chip: var(--rust);
+  --tag-chip-hover: var(--rust-light);
+
+  --experience-switch-surface: #f6f6f6;
+  --experience-switch-shadow: #070707;
+  --experience-switch-ink: #0f0f0f;
+  --experience-switch-hover-surface: #cbcbcb;
+  --experience-switch-active-surface: var(--rust);
+  --experience-switch-active-ring: #070707;
+  --experience-switch-focus-inner: color-mix(in srgb, var(--rust-light) 56%, transparent 44%);
+  --experience-switch-focus-outer: color-mix(in srgb, #f6f6f6 64%, transparent 36%);
+
+  --serif:       'Space Mono', 'Courier New', monospace;
+  --serif-alt:   'Bebas Neue', Impact, sans-serif;
+  --mono:        'Space Mono', 'Courier New', monospace;
+
+  --card-surface: color-mix(in srgb, var(--paper-dark) 86%, black 14%);
+  --card-border-color: #f6f6f6;
+  --card-border-width: 2px;
+  --card-accent-color: var(--rust);
+  --card-accent-width: 8px;
+  --card-shadow-hover:
+    9px 9px 0 rgba(0, 0, 0, 0.48),
+    -2px -2px 0 rgba(112, 255, 0, 0.28);
+
+  --nav-surface:             color-mix(in srgb, #121212 84%, transparent 16%);
+  --nav-surface-border:      #f6f6f6;
+  --nav-surface-filter:      blur(12px) saturate(1.05);
+  --nav-menu-surface:        color-mix(in srgb, #191919 84%, var(--paper-dark) 16%);
+  --nav-menu-border:         color-mix(in srgb, var(--rust) 44%, transparent 56%);
+  --nav-menu-filter:         blur(12px) saturate(1.05);
+  --nav-menu-active-surface: color-mix(in srgb, var(--rust) 24%, #1f1f1f 76%);
+  --nav-submenu-surface:     color-mix(in srgb, #171717 82%, var(--paper-dark) 18%);
+  --nav-submenu-filter:      blur(11px) saturate(1.04);
+
+  --viz-ink:         var(--ink);
+  --viz-ink-mid:     var(--ink-mid);
+  --viz-ink-faint:   var(--ink-faint);
+  --viz-ink-ghost:   var(--ink-ghost);
+  --viz-rust:        var(--rust);
+  --viz-rust-light:  var(--rust-light);
+  --viz-ochre:       var(--ochre);
+  --viz-gold:        var(--gold);
+  --viz-slate:       var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:        var(--sage);
+  --viz-sage-light:  var(--sage-light);
+}
+
+[data-theme='mono-noise-neon-cuts'] body {
+  background:
+    linear-gradient(156deg, rgba(112, 255, 0, 0.16) 0 4%, transparent 4% 100%),
+    linear-gradient(24deg, rgba(246, 246, 246, 0.12) 0 2%, transparent 2% 100%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 0 1px,
+      transparent 1px 20px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.025) 0 1px,
+      transparent 1px 17px
+    ),
+    var(--paper);
+}
+
+[data-theme='mono-noise-neon-cuts'] :is(
+  .nav-title,
+  .hero-title,
+  .module-header-title,
+  .module-title,
+  .diagnosis-title
+) {
+  color: var(--ink);
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-shadow:
+    2px 2px 0 rgba(112, 255, 0, 0.32),
+    -2px -2px 0 rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='mono-noise-neon-cuts'] :is(
+  .module-entry,
+  .sim-summary-card,
+  .q-card,
+  .field-notes-card,
+  .essay-link
+) {
+  border: 2px solid #f6f6f6;
+  border-top: 9px solid var(--rust);
+  border-left: 8px solid #f6f6f6;
+  border-radius: 0;
+  box-shadow:
+    8px 8px 0 rgba(0, 0, 0, 0.45),
+    -2px -2px 0 rgba(112, 255, 0, 0.24);
+}
+
+[data-theme='mono-noise-neon-cuts'] :is(.module-sub-nav, .results-nav, .module-footer-nav) {
+  border-top: 3px solid #f6f6f6;
+  border-bottom: 3px solid #f6f6f6;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(112, 255, 0, 0.2) 0 8%,
+      transparent 8% 92%,
+      rgba(246, 246, 246, 0.14) 92% 100%
+    ),
+    color-mix(in srgb, var(--paper-dark) 88%, black 12%);
+}
+
+[data-theme='mono-noise-neon-cuts'] :is(
+  .module-sub-nav-link,
+  .diagnosis-link,
+  .footer-nav-link,
+  .contact-social-link
+) {
+  color: var(--ink);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+
+[data-theme='mono-noise-neon-cuts'] :is(
+  .module-sub-nav-link--active,
+  .results-nav-link--active,
+  .nav-link--active
+) {
+  color: var(--rust);
+}

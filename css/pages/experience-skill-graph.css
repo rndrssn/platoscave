@@ -1,7 +1,7 @@
 /* ─── Experience-Skill Graph shell (bespoke, non-module pattern) ───────── */
 .experience-skill-page {
   --experience-switch-inline-start: 2rem;
-  padding-top: calc(4rem + 0.45rem);
+  padding-top: 0.2rem;
   padding-bottom: 5rem;
 }
 
@@ -10,6 +10,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  min-height: 7.2rem;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   padding-left: var(--experience-switch-inline-start);
@@ -38,7 +39,7 @@
   display: inline-flex;
   align-items: stretch;
   gap: 0;
-  margin-top: 0;
+  margin-top: 1.1rem;
   margin-bottom: 0;
   padding: 0.2rem;
   border: 0;
@@ -160,11 +161,12 @@
 @media (max-width: 640px) {
   .experience-skill-page {
     --experience-switch-inline-start: 0.9rem;
-    padding-top: calc(4rem + 0.32rem);
+    padding-top: 0.16rem;
     padding-bottom: 3.5rem;
   }
 
   .experience-skill-masthead {
+    min-height: 6rem;
     margin-bottom: 0.72rem;
   }
 
@@ -179,6 +181,7 @@
   }
 
   .experience-skill-switch {
+    margin-top: 0.84rem;
     padding: 0.22rem;
     min-height: 2.48rem;
   }

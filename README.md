@@ -198,7 +198,7 @@ git commit --allow-empty -m "Force GitHub Pages redeploy" && git push origin mai
 - Theme overrides live in [`css/themes.css`](css/themes.css)
 - Active site-wide theme is set in [`theme.config.js`](theme.config.js)
 - Edit only `window.PLATOSCAVE_THEME = '...'` in `theme.config.js` to switch all pages
-  - Examples: `'default'`, `'decision-collision-cold'`, `'brutalist-neon-mono'`, `'paper-laser-marker'`, `'mono-noise-neon-cuts'`
+  - Examples: `'default'`, `'decision-collision-cold'`, `'neon-brutalist-extreme'`, `'neon-brutalist-daylight'`
 
 ## Documentation
 

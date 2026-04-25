@@ -5,16 +5,7 @@
   var root = document.documentElement;
   var THEME_STYLESHEET_ID = 'platoscave-theme-runtime';
   var AVAILABLE_THEMES = [
-    'high-contrast',
-    'editorial-electric',
-    'editorial-skateboard',
-    'urban-grid',
-    'urban-grid1',
-    'urban-grid2',
-    'urban-grid3',
     'new-yorker',
-    'emergent-systems',
-    'decision-collision',
     'decision-collision-cold',
     'decision-collision-cold-contrast',
     'brutalist-max',
@@ -25,10 +16,12 @@
     'minimalist-brutalist',
     'neon-brutalist-extreme',
     'neon-brutalist-daylight',
+    'brutalist-neon-mono',
+    'paper-laser-marker',
+    'mono-noise-neon-cuts',
   ];
   var THEME_ALIASES = {
-    'collision-decision-cold': 'decision-collision-cold',
-    'collision-decision': 'decision-collision'
+    'collision-decision-cold': 'decision-collision-cold'
   };
 
   function removeThemeStylesheet() {

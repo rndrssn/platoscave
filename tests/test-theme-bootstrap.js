@@ -57,9 +57,9 @@ function testCustomThemeSetsDataTheme() {
 }
 
 function testCustomThemeIsTrimmed() {
-  const result = runWithTheme('  urban-grid2  ');
+  const result = runWithTheme('  neon-brutalist-daylight  ');
   assert(result.setCall !== null, 'Expected setAttribute for trimmed custom theme');
-  assert(result.setCall.value === 'urban-grid2', 'Expected trimmed theme value');
+  assert(result.setCall.value === 'neon-brutalist-daylight', 'Expected trimmed theme value');
 }
 
 function testAliasThemeMapsToCanonicalName() {

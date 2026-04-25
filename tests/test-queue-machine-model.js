@@ -7,6 +7,7 @@ const {
   calculateLittleLaw,
   calculateMM1,
   calculateKingman,
+  buildTimeline,
 } = require(path.join(__dirname, '..', 'modules', 'queue-machine', 'queue-machine-model.js'));
 
 function nearlyEqual(actual, expected, epsilon, label) {
@@ -52,6 +53,33 @@ function run() {
   assert(
     lowerVariability.queueWaitTime < kingman.queueWaitTime,
     'Lower variability should reduce Kingman queue wait at fixed utilization'
+  );
+
+  const smoothTimeline = buildTimeline({
+    arrivalRate: 0.72,
+    serviceRate: 1,
+    arrivalCv: 0.2,
+    serviceCv: 0.2,
+    buckets: 24,
+  });
+  const burstyTimeline = buildTimeline({
+    arrivalRate: 0.72,
+    serviceRate: 1,
+    arrivalCv: 1.8,
+    serviceCv: 1.8,
+    buckets: 24,
+  });
+  assert.strictEqual(smoothTimeline.points.length, 24, 'timeline should honor requested bucket count');
+  nearlyEqual(smoothTimeline.utilization, burstyTimeline.utilization, 1e-12, 'variability should not change utilization');
+  nearlyEqual(
+    smoothTimeline.points.reduce((sum, point) => sum + point.arrivals, 0) / smoothTimeline.points.length,
+    0.72,
+    1e-12,
+    'timeline arrivals should preserve average arrival rate'
+  );
+  assert(
+    burstyTimeline.maxBacklog > smoothTimeline.maxBacklog,
+    'Higher variability should create larger backlog at fixed utilization'
   );
 
   console.log('PASS: tests/test-queue-machine-model.js');

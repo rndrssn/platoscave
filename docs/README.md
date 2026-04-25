@@ -4,9 +4,9 @@ type: GUIDE
 title: Documentation Index
 status: ACTIVE
 created: 2026-03-19
-updated: 2026-03-27
+updated: 2026-04-25
 owner: Robert Andersson
-relates_to: [CORE, CORE-loading-rules, DOC-CONVENTIONS]
+relates_to: [CORE, CORE-loading-rules, GUIDE-doc-conventions]
 tags: [docs, index, retrieval]
 load_when: [always]
 do_not_load_when: []

@@ -44,9 +44,7 @@
       <nav class="module-sub-nav" aria-label="Module sections">
         <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Utilization Trap</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link" href="../animation/"><span class="module-sub-nav-number">02</span> Flow Animation</a>
-        <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">03</span> Concept Map</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">02</span> Concept Map</a>
       </nav>
 
       <header class="module-header">
@@ -55,51 +53,55 @@
           Software-development flow sits at the intersection of three traditions: <strong>queueing theory</strong> for the
           mathematics of waiting, <strong>complexity science</strong> for why local optimization breaks in non-linear
           systems, and <strong>modern agile management</strong> for the working practices that fall out of those constraints.
-          The map shows how the concepts connect, the observations they predict, and the counter-intuitive results that
-          fall out.
+        </p>
+        <p class="module-header-body">
+          The map sorts ideas into four groups: <strong>concepts</strong> (the principles those traditions name),
+          <strong>assumptions</strong> (everyday management folklore the principles contradict),
+          <strong>observations</strong> (what shows up in real teams), and <strong>surprises</strong> (the counter-intuitive
+          results that fall out).
         </p>
       </header>
 
       <section class="queue-machine-concept queue-machine-concept--full" aria-label="Concept map">
         <div class="queue-machine-concept-canvas">
-          <p class="queue-machine-concept-helper">Hover or tap a node to enter focus mode. Drag to rearrange.</p>
-          <ul class="queue-machine-concept-legend" aria-label="Concept categories">
+          <p class="force-graph-helper queue-machine-concept-helper">Hover or tap a node to enter focus mode. Drag to rearrange.</p>
+          <ul class="force-graph-legend queue-machine-concept-legend" aria-label="Concept categories">
             <li>
-              <button class="queue-machine-concept-legend-btn" type="button" data-legend-group="concept" aria-pressed="false">
-                <span class="queue-machine-concept-swatch queue-machine-concept-swatch--concept"></span>Principles
+              <button class="force-graph-legend-btn queue-machine-concept-legend-btn" type="button" data-legend-group="concept" aria-pressed="false">
+                <span class="queue-machine-concept-swatch queue-machine-concept-swatch--concept"></span>Concept
               </button>
             </li>
             <li>
-              <button class="queue-machine-concept-legend-btn" type="button" data-legend-group="assumption" aria-pressed="false">
+              <button class="force-graph-legend-btn queue-machine-concept-legend-btn" type="button" data-legend-group="assumption" aria-pressed="false">
                 <span class="queue-machine-concept-swatch queue-machine-concept-swatch--assumption"></span>Assumption
               </button>
             </li>
             <li>
-              <button class="queue-machine-concept-legend-btn" type="button" data-legend-group="observation" aria-pressed="false">
+              <button class="force-graph-legend-btn queue-machine-concept-legend-btn" type="button" data-legend-group="observation" aria-pressed="false">
                 <span class="queue-machine-concept-swatch queue-machine-concept-swatch--observation"></span>Observation
               </button>
             </li>
             <li>
-              <button class="queue-machine-concept-legend-btn" type="button" data-legend-group="surprise" aria-pressed="false">
+              <button class="force-graph-legend-btn queue-machine-concept-legend-btn" type="button" data-legend-group="surprise" aria-pressed="false">
                 <span class="queue-machine-concept-swatch queue-machine-concept-swatch--surprise"></span>Surprise
               </button>
             </li>
           </ul>
-          <p class="queue-machine-concept-detail" data-concept-detail aria-live="polite"></p>
+          <p class="force-graph-detail queue-machine-concept-detail" data-concept-detail aria-live="polite"></p>
           <p class="queue-machine-concept-edge-legend">
             <span class="queue-machine-concept-edge-key" aria-hidden="true"></span>
             Dashed lines mark assumptions contradicted by a theory or surprise.
           </p>
           <div class="queue-machine-concept-surface">
-            <svg class="queue-machine-concept-graph" data-concept-graph role="img" aria-label="Force-directed graph of queueing theory, complexity, agile practice, observations, management assumptions, and surprises"></svg>
+            <svg class="queue-machine-concept-graph" data-concept-graph role="img" aria-label="Force-directed graph: concepts, assumptions, observations, and surprises connected through queueing theory, complexity, and modern agile practice"></svg>
             <p class="queue-machine-concept-fallback" data-concept-graph-fallback hidden>Graph unavailable &mdash; try refreshing the page.</p>
           </div>
         </div>
       </section>
 
       <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
-        <a class="footer-nav-link" href="../animation/" aria-label="Previous: Flow Animation">
-          <span class="footer-nav-label-full">&larr; Previous: Flow Animation</span>
+        <a class="footer-nav-link" href="../" aria-label="Previous: Utilization Trap">
+          <span class="footer-nav-label-full">&larr; Previous: Utilization Trap</span>
           <span class="footer-nav-label-short">&larr; Previous</span>
         </a>
         <a class="footer-nav-link" href="../" aria-label="Module home">

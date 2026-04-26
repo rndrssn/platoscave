@@ -2,6 +2,7 @@
 @import url('./components/hero-cv.css');
 @import url('./components/footer.css');
 @import url('./components/force-graph-states.css');
+@import url('./components/force-graph-chrome.css');
 
 /* ─── Modules Index — mobile base ────────────────────────── */
 .modules-index {

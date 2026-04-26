@@ -1,0 +1,96 @@
+/* Force-graph chrome (shared across force-directed visualizations) */
+/* Helper microtype, legend, transient detail panel, and pulse keyframe. */
+/* Page-specific files may add bespoke wrappers, but should not redefine these patterns. */
+
+.force-graph-helper {
+  margin: 0 0 0.18rem;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  opacity: 0.9;
+}
+
+.force-graph-legend {
+  margin: 0 0 0.3rem;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.force-graph-legend li {
+  display: inline-flex;
+  align-items: center;
+}
+
+.force-graph-legend-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  border: 0;
+  border-radius: 0;
+  padding: 0.06rem 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.force-graph-legend-btn:hover {
+  color: color-mix(in srgb, var(--ink-mid) 74%, var(--ink-faint) 26%);
+}
+
+.force-graph-legend-btn[aria-pressed='true'] {
+  color: color-mix(in srgb, var(--ink-mid) 78%, var(--ink-faint) 22%);
+}
+
+.force-graph-legend-btn:focus-visible {
+  outline: none;
+  color: color-mix(in srgb, var(--ink-mid) 78%, var(--ink-faint) 22%);
+}
+
+.force-graph-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  margin: 0.4rem 0 0.1rem;
+  font-family: var(--mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  min-block-size: 1rem;
+  visibility: hidden;
+}
+
+.force-graph-detail.is-visible {
+  visibility: visible;
+}
+
+.force-graph-detail-swatch {
+  inline-size: 0.34rem;
+  block-size: 0.34rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+  animation: force-graph-detail-swatch-pulse 1.4s ease-in-out infinite;
+}
+
+.force-graph-detail-label {
+  color: var(--ink-mid);
+}
+
+@keyframes force-graph-detail-swatch-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.72; }
+  50% { transform: scale(2); opacity: 1; }
+}

@@ -70,6 +70,16 @@
           <button type="button" data-queue-preset="strained">Strained but stable</button>
           <button type="button" data-queue-preset="saturated">Near saturation</button>
           <button type="button" data-queue-preset="bursty">Bursty product work</button>
+          <button type="button" class="queue-machine-reshuffle" data-queue-reshuffle aria-label="Reshuffle the variability shape">&#x21BB; Reshuffle</button>
+        </div>
+
+        <div class="queue-machine-style-switcher" role="radiogroup" aria-label="Chart style">
+          <span class="queue-machine-style-switcher-label">Chart style</span>
+          <button type="button" data-chart-style="p1m1" aria-pressed="true">Two-tone bars</button>
+          <button type="button" data-chart-style="p2m1" aria-pressed="false">Single-tone intensity</button>
+          <button type="button" data-chart-style="p3m1" aria-pressed="false">Stacked fit/spill</button>
+          <button type="button" data-chart-style="p4m2" aria-pressed="false">Slate lollipops</button>
+          <button type="button" data-chart-style="p6m1" aria-pressed="false">Outline &rarr; fill</button>
         </div>
 
         <form class="queue-machine-controls" data-queue-controls>
@@ -116,7 +126,7 @@
           <p class="queue-machine-status" data-queue-status aria-live="polite"></p>
         </div>
 
-        <p class="queue-machine-readout-caption">Six values from Little's Law, M/M/1, and Kingman's approximation. All three formulas appear below.</p>
+        <p class="force-graph-helper queue-machine-readout-caption">Six values from Little's Law, M/M/1, and Kingman's approximation. All three formulas appear below.</p>
         <dl class="queue-machine-readout">
           <div>
             <dt>Average load</dt>

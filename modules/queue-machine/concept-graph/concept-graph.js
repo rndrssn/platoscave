@@ -289,7 +289,8 @@
       .data(simulation.force('link').links())
       .join('line')
       .attr('class', function(d) {
-        return 'force-graph-link queue-machine-concept-edge queue-machine-concept-edge--' + (d.kind || 'related');
+        return 'force-graph-link queue-machine-concept-edge'
+          + (d.kind === 'contradicts' ? ' queue-machine-concept-edge--contradicts' : '');
       });
 
     var node = plot.append('g')

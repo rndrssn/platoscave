@@ -98,10 +98,11 @@
     };
   }
 
-  function variabilityWave(index, length, variability) {
-    var phase = (Math.PI * 2 * index) / length;
-    var fastPhase = (Math.PI * 10 * index) / length;
-    var burstPulse = Math.pow(Math.max(0, Math.sin(phase - 0.8)), 2.6);
+  function variabilityWave(index, length, variability, seed) {
+    var s = finiteNumber(seed, 0);
+    var phase = (Math.PI * 2 * index) / length + s;
+    var fastPhase = (Math.PI * 10 * index) / length + (s * 1.7);
+    var burstPulse = Math.pow(Math.max(0, Math.sin(phase - 0.8 + (s * 0.5))), 2.6);
     var wave = (Math.sin(phase) * 0.55) + (Math.sin(fastPhase + 1.2) * 0.22) + (burstPulse * 1.25);
     return Math.max(0.05, 1 + (variability * wave));
   }
@@ -123,6 +124,7 @@
     var serviceRate = finiteNumber(input && input.serviceRate, 1);
     var arrivalCv = clamp(finiteNumber(input && input.arrivalCv, 1), 0, 3);
     var serviceCv = clamp(finiteNumber(input && input.serviceCv, 1), 0, 3);
+    var seed = finiteNumber(input && input.seed, 0);
     var arrivalVariability = Math.max(0, arrivalCv - 0.2);
     var serviceVariability = Math.max(0, serviceCv - 0.2) * 0.28;
     var rawArrivals = [];
@@ -132,8 +134,8 @@
     var maxBacklog = 0;
 
     for (var i = 0; i < buckets; i += 1) {
-      rawArrivals.push(arrivalRate * variabilityWave(i, buckets, arrivalVariability));
-      rawCapacity.push(serviceRate / variabilityWave(i + 5, buckets, serviceVariability));
+      rawArrivals.push(arrivalRate * variabilityWave(i, buckets, arrivalVariability, seed));
+      rawCapacity.push(serviceRate / variabilityWave(i + 5, buckets, serviceVariability, seed * 0.41));
     }
 
     var arrivals = normalizeSeries(rawArrivals, arrivalRate);

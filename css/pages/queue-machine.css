@@ -6,17 +6,6 @@
   --queue-critical: var(--accent, var(--rust));
 }
 
-.queue-machine-primer {
-  display: grid;
-  gap: 1.1rem;
-  margin: 1.75rem 0 2rem;
-  padding: 1.1rem 0;
-  border-top: 2px solid var(--ink-mid);
-  border-bottom: 1px solid var(--ink-ghost);
-}
-
-.queue-machine-kicker,
-.queue-machine-primer p,
 .queue-machine-mini-legend,
 .queue-machine-presets button,
 .queue-machine-assumption-card h3,
@@ -25,7 +14,6 @@
   margin: 0;
 }
 
-.queue-machine-kicker,
 .queue-machine-mini-legend strong,
 .queue-machine-presets button,
 .queue-machine-assumption-card h3,
@@ -37,14 +25,12 @@
   text-transform: uppercase;
 }
 
-.queue-machine-kicker,
 .queue-machine-assumption-card h3,
 .queue-machine-toc-panel h3 {
   color: var(--ink);
   font-size: 0.7rem;
 }
 
-.queue-machine-primer p,
 .queue-machine-assumption-card p,
 .queue-machine-toc-panel p {
   color: var(--ink-mid);
@@ -56,8 +42,9 @@
 
 .queue-machine-mini-legend {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
   gap: 0.5rem;
+  margin-top: 1.4rem;
   list-style: none;
   padding: 0;
 }
@@ -80,25 +67,6 @@
   font-family: var(--serif);
   font-size: 0.9rem;
   line-height: 1.4;
-}
-
-.queue-machine-story {
-  display: grid;
-  gap: 0.85rem;
-  margin: 1rem 0 2rem;
-  padding: 1rem;
-  border: 1px solid var(--ink-mid);
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 38%),
-    color-mix(in srgb, var(--paper) 88%, var(--ink) 12%);
-}
-
-.queue-machine-story p {
-  margin: 0;
-  color: var(--ink);
-  font-family: var(--serif);
-  font-size: clamp(1rem, 2.2vw, 1.22rem);
-  line-height: 1.55;
 }
 
 .queue-machine-lab {
@@ -236,6 +204,27 @@
   line-height: 1.55;
 }
 
+.queue-machine-readout-caption {
+  margin: 1rem 0 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.queue-machine-mapping-list {
+  margin-top: 0.6rem;
+  padding-inline-start: 1.2rem;
+  display: grid;
+  gap: 0.4rem;
+  list-style: disc;
+}
+
+.queue-machine-mapping-list li {
+  line-height: 1.55;
+}
+
 .queue-machine-readout {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -368,121 +357,6 @@
   border-left-color: var(--queue-flow);
 }
 
-.queue-machine-animation {
-  padding: 2rem 0;
-  margin: 2rem 0 4rem;
-}
-
-.queue-machine-animation-controls {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-}
-
-.queue-machine-flow-showcase {
-  display: block;
-  inline-size: 100%;
-  block-size: 30rem;
-}
-
-.queue-machine-animation-scoreboard {
-  display: grid;
-  grid-template-columns: 1fr;
-}
-
-.queue-machine-animation-scoreboard div {
-  display: grid;
-  gap: 0.2rem;
-  padding: 0.8rem 0;
-}
-
-.queue-machine-animation-scoreboard div:last-child {
-  border-bottom: 0;
-}
-
-.queue-machine-animation-scoreboard span,
-.queue-machine-animation-scoreboard em,
-.queue-machine-resource-title,
-.queue-machine-resource-subtitle,
-.queue-machine-resource-station-label {
-  font-family: var(--mono);
-  font-weight: 300;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.queue-machine-animation-scoreboard span,
-.queue-machine-animation-scoreboard em,
-.queue-machine-resource-subtitle {
-  color: var(--ink-faint);
-  font-size: 0.62rem;
-}
-
-.queue-machine-animation-scoreboard strong {
-  color: var(--ink);
-  font-family: var(--serif);
-  font-size: clamp(1.4rem, 5vw, 2.4rem);
-  font-weight: 500;
-  line-height: 1;
-}
-
-.queue-machine-animation-scoreboard em {
-  font-style: normal;
-}
-
-.queue-machine-resource-title {
-  font-size: 0.7rem;
-}
-
-.queue-machine-resource-subtitle,
-.queue-machine-resource-station-label {
-  font-size: 0.6rem;
-}
-
-.queue-machine-resource-track {
-  stroke-dasharray: 3 5;
-}
-
-.queue-machine-resource-item {
-  fill-opacity: 0.72;
-  stroke: var(--viz-ink, var(--ink));
-  stroke-width: 1.1;
-}
-
-.queue-machine-resource-station circle {
-  transition: fill 120ms ease, stroke-width 120ms ease;
-}
-
-.queue-machine-resource-station--busy circle {
-  fill: color-mix(in srgb, var(--viz-gold, var(--accent)) 18%, var(--paper) 82%);
-  stroke-width: 2;
-}
-
-.queue-machine-resource-item--busy,
-.queue-machine-finished-pop--busy {
-  fill: var(--viz-rust, var(--queue-critical));
-}
-
-.queue-machine-resource-item--flow,
-.queue-machine-finished-pop--flow {
-  fill: var(--viz-sage, var(--queue-flow));
-}
-
-.queue-machine-finished-pop {
-  fill-opacity: 0.8;
-  stroke: var(--viz-ink, var(--ink));
-  stroke-width: 1;
-}
-
-.queue-machine-animation-caption {
-  margin-top: 1rem;
-  color: var(--ink-mid);
-  font-family: var(--serif);
-  font-size: var(--fs-body);
-  line-height: 1.65;
-}
-
 .queue-machine-step-list {
   display: grid;
   gap: 0.7rem;
@@ -538,64 +412,6 @@
   margin-inline: auto;
 }
 
-.queue-machine-concept-helper {
-  margin: 0 0 0.4rem;
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  opacity: 0.9;
-}
-
-.queue-machine-concept-legend {
-  margin: 0 0 0.3rem;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.queue-machine-concept-legend li {
-  display: inline-flex;
-  align-items: center;
-}
-
-.queue-machine-concept-legend-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.32rem;
-  border: 0;
-  border-radius: 0;
-  padding: 0.06rem 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-  line-height: 1.1;
-  cursor: pointer;
-}
-
-.queue-machine-concept-legend-btn:hover {
-  color: color-mix(in srgb, var(--ink-mid) 74%, var(--ink-faint) 26%);
-}
-
-.queue-machine-concept-legend-btn[aria-pressed='true'] {
-  color: color-mix(in srgb, var(--ink-mid) 78%, var(--ink-faint) 22%);
-}
-
-.queue-machine-concept-legend-btn:focus-visible {
-  outline: none;
-  color: color-mix(in srgb, var(--ink-mid) 78%, var(--ink-faint) 22%);
-}
-
 .queue-machine-concept-edge-legend {
   display: inline-flex;
   align-items: center;
@@ -627,7 +443,7 @@
 }
 
 .queue-machine-concept-swatch--assumption {
-  background: var(--ink-faint);
+  background: var(--slate-light);
 }
 
 .queue-machine-concept-swatch--observation {
@@ -638,38 +454,13 @@
   background: var(--rust-light);
 }
 
-.queue-machine-concept-detail {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.32rem;
-  margin: 0.4rem 0 0.1rem;
-  font-family: var(--mono);
-  font-size: 0.54rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  min-block-size: 1rem;
-  visibility: hidden;
-}
-
-.queue-machine-concept-detail.is-visible {
-  visibility: visible;
-}
-
-.queue-machine-concept-detail-swatch {
-  inline-size: 0.34rem;
-  block-size: 0.34rem;
-  border-radius: 999px;
-  flex-shrink: 0;
-  animation: queue-machine-detail-swatch-pulse 1.4s ease-in-out infinite;
-}
-
+/* Page-specific swatch colours (chrome microtype + animation come from force-graph-chrome.css) */
 .queue-machine-concept-detail-swatch--concept {
   background: var(--sage-light);
 }
 
 .queue-machine-concept-detail-swatch--assumption {
-  background: var(--ink-faint);
+  background: var(--slate-light);
 }
 
 .queue-machine-concept-detail-swatch--observation {
@@ -678,15 +469,6 @@
 
 .queue-machine-concept-detail-swatch--surprise {
   background: var(--rust-light);
-}
-
-.queue-machine-concept-detail-label {
-  color: var(--ink-mid);
-}
-
-@keyframes queue-machine-detail-swatch-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.72; }
-  50% { transform: scale(2); opacity: 1; }
 }
 
 .queue-machine-concept-surface {
@@ -735,8 +517,8 @@
 }
 
 .queue-machine-concept-node--assumption {
-  fill: var(--ink-faint);
-  stroke: color-mix(in srgb, var(--ink-faint) 78%, var(--paper) 22%);
+  fill: var(--slate-light);
+  stroke: color-mix(in srgb, var(--slate-light) 78%, var(--paper) 22%);
 }
 
 .queue-machine-concept-node--observation {
@@ -802,29 +584,12 @@
   text-transform: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .queue-machine-resource-item,
-  .queue-machine-finished-pop,
-  .queue-machine-resource-station circle {
-    transition: none;
-  }
-}
-
 @media (min-width: 760px) {
-  .queue-machine-primer {
-    grid-template-columns: minmax(0, 1.45fr) minmax(16rem, 0.9fr);
-    align-items: start;
-  }
-
   .queue-machine-mini-legend {
     grid-template-columns: 1fr;
   }
 
   .queue-machine-controls {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .queue-machine-animation-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -844,10 +609,6 @@
 
   .queue-machine-chart {
     block-size: 14.5rem;
-  }
-
-  .queue-machine-flow-showcase {
-    block-size: 24rem;
   }
 
   .queue-machine-equation math {

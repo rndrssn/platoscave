@@ -82,7 +82,7 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | Module 06 The Descent | `modules/the-descent/index.html`, `modules/the-descent/section-map/index.html`, `modules/the-descent/section-map/section-map.js`, `css/pages/the-descent.css` |
 | UI, CSS, navigation, IA | `docs/10-guides/GUIDE-architecture.md`, `docs/40-principles/PRINCIPLE-coding-standards.md`, `docs/20-reference/REFERENCE-css-architecture.md`, `docs/20-reference/navigation-patterns.md` |
 | Module 04 Mix Mapper | All files in `modules/mix-mapper/*` + relevant contract tests in `tests/` |
-| Queue Machine module | `modules/queue-machine/index.html`, `modules/queue-machine/queue-machine-model.js`, `modules/queue-machine/queue-machine.js`, `modules/queue-machine/animation/index.html`, `modules/queue-machine/animation/resource-trap-simulation.js`, `modules/queue-machine/animation/resource-trap-animation.js`, `modules/queue-machine/concept-graph/index.html`, `modules/queue-machine/concept-graph/concept-graph.js`, `css/pages/queue-machine.css` |
+| Queue Machine module | `modules/queue-machine/index.html`, `modules/queue-machine/queue-machine-model.js`, `modules/queue-machine/queue-machine.js`, `modules/queue-machine/concept-graph/index.html`, `modules/queue-machine/concept-graph/concept-graph.js`, `css/pages/queue-machine.css` |
 | Force graph (Skills, Concept Map) | `modules/experience-skill-graph/index.html`, `modules/queue-machine/concept-graph/concept-graph.js`, `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
 | Documentation edits | `docs/10-guides/DOC-CONVENTIONS.md` |
 | Semantics and labels | Treat implementation and tests as canonical; align across UI, summaries, legends |
@@ -140,7 +140,7 @@ Tests enforcing this contract:
 | GC page wiring | `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js` |
 | Module 06 runtime | `modules/the-descent/index.html`, `modules/the-descent/section-map/index.html`, `modules/the-descent/section-map/section-map.js`, `css/pages/the-descent.css` |
 | Module 04 runtime | `modules/mix-mapper/mix-mapper-data.js`, `modules/mix-mapper/mix-mapper-semantics.js`, `modules/mix-mapper/mix-mapper-geometry.js`, `modules/mix-mapper/mix-mapper-layout-utils.js`, `modules/mix-mapper/mix-mapper-node-utils.js`, `modules/mix-mapper/mix-mapper-mode-policy.js`, `modules/mix-mapper/mix-mapper-tooltip.js`, `modules/mix-mapper/mix-mapper-interactions.js`, `modules/mix-mapper/mix-mapper-renderer.js`, `modules/mix-mapper/mix-mapper.js` |
-| Queue Machine runtime | `modules/queue-machine/queue-machine-model.js`, `modules/queue-machine/queue-machine.js`, `modules/queue-machine/animation/resource-trap-simulation.js`, `modules/queue-machine/animation/resource-trap-animation.js`, `modules/queue-machine/concept-graph/concept-graph.js` |
+| Queue Machine runtime | `modules/queue-machine/queue-machine-model.js`, `modules/queue-machine/queue-machine.js`, `modules/queue-machine/concept-graph/concept-graph.js` |
 | Force-graph shared layer | `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
 | Tests | `tests/run-all.js` |
 
@@ -155,7 +155,7 @@ Tests enforcing this contract:
 - Mix Mapper SVG colors: never use color-mix(…, transparent) via D3 .attr() — broken on iOS WebKit. Use D3 .style() for all visual properties (fill, stroke, fill-opacity, stroke-opacity) on SVG elements.
 - Mix Mapper SVG text: dominant-baseline and text-anchor must be CSS properties on the label class in `css/pages/mix-mapper.css`, not SVG presentation attributes.
 - buildColors() reads --viz-* token tier (--viz-ink-faint, --viz-ink-ghost, --viz-sage, --viz-rust, etc.). Do not revert to --ink-* UI tokens.
-- Queue Machine module root is canonical local section `01` at `modules/queue-machine/`. Sections: `01` Utilization Trap, `02` Flow Animation (`modules/queue-machine/animation/`), `03` Concept Map (`modules/queue-machine/concept-graph/`).
+- Queue Machine module root is canonical local section `01` at `modules/queue-machine/`. Sections: `01` Utilization Trap, `02` Concept Map (`modules/queue-machine/concept-graph/`).
 - Force-directed graphs (Skills graph, Concept Map) share interaction-state classes (`is-dim`, `is-related`, `is-group-focus`, `is-active`) defined in `css/components/force-graph-states.css`, and shared focus/legend-filter helpers in `js/force-graph-utils.js`. New force graphs must use these classes and helpers; do not redefine equivalent state opacities or duplicate filter logic.
 - Force graphs use the light/pastel palette tier (`--rust-light`, `--gold`, `--sage-light`) for node fills. Do not use saturated `--viz-*` data-viz tokens for force-graph nodes.
 - Force graph viz chrome (legend, helper, detail panel, node labels) uses mono uppercase microtype: var(--mono) at ~0.6rem with letter-spacing 0.05 to 0.06em and text-transform uppercase.

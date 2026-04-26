@@ -104,11 +104,11 @@
     var y = d3Lib.scaleLinear().domain([0, maxY * 1.18]).nice().range([innerHeight, 0]);
     var svg = d3Lib.select(arrivalsChart).attr('viewBox', '0 0 ' + size.width + ' ' + size.height);
     var chart = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-    var ink = cssValue('--ink', '#161616');
-    var inkMid = cssValue('--ink-mid', '#555555');
-    var inkGhost = cssValue('--ink-ghost', '#d8d2c7');
-    var accent = cssValue('--accent', '#b54a2a');
-    var sage = cssValue('--sage', '#6f7f61');
+    var ink = cssValue('--viz-ink', '#161616');
+    var inkFaint = cssValue('--viz-ink-faint', '#555555');
+    var inkGhost = cssValue('--viz-ink-ghost', '#d8d2c7');
+    var rust = cssValue('--viz-rust', '#b54a2a');
+    var sage = cssValue('--viz-sage', '#6f7f61');
 
     chart.append('g')
       .attr('class', 'queue-machine-axis')
@@ -126,7 +126,7 @@
       .attr('y', function barY(point) { return y(point.arrivals); })
       .attr('width', x.bandwidth())
       .attr('height', function barHeight(point) { return innerHeight - y(point.arrivals); })
-      .attr('fill', function fill(point) { return point.arrivals > point.capacity ? accent : sage; });
+      .attr('fill', function fill(point) { return point.arrivals > point.capacity ? rust : sage; });
 
     chart.append('path')
       .datum(points)
@@ -143,7 +143,7 @@
       .attr('x', innerWidth)
       .attr('y', y(timeline.serviceRate))
       .attr('text-anchor', 'end')
-      .attr('fill', inkMid)
+      .attr('fill', inkFaint)
       .text('capacity');
 
     chart.selectAll('.domain').attr('stroke', inkGhost);
@@ -161,8 +161,8 @@
     var y = d3Lib.scaleLinear().domain([0, maxY * 1.18]).nice().range([innerHeight, 0]);
     var svg = d3Lib.select(backlogChart).attr('viewBox', '0 0 ' + size.width + ' ' + size.height);
     var chart = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-    var inkGhost = cssValue('--ink-ghost', '#d8d2c7');
-    var rust = cssValue('--rust', '#b54a2a');
+    var inkGhost = cssValue('--viz-ink-ghost', '#d8d2c7');
+    var rust = cssValue('--viz-rust', '#b54a2a');
 
     chart.append('g')
       .attr('class', 'queue-machine-axis')
@@ -218,16 +218,16 @@
     });
     var utilizationPercent = mm1.utilization * 100;
 
-    setText(outputs.arrivalRate, formatNumber(input.arrivalRate, 2));
-    setText(outputs.serviceRate, formatNumber(input.serviceRate, 2));
-    setText(outputs.arrivalCv, formatNumber(input.arrivalCv, 2));
-    setText(outputs.serviceCv, formatNumber(input.serviceCv, 2));
+    setText(outputs.arrivalRate, formatNumber(input.arrivalRate, 1));
+    setText(outputs.serviceRate, formatNumber(input.serviceRate, 1));
+    setText(outputs.arrivalCv, formatNumber(input.arrivalCv, 1));
+    setText(outputs.serviceCv, formatNumber(input.serviceCv, 1));
     setText(outputs.utilization, formatNumber(utilizationPercent, 1) + '%');
-    setText(outputs.mm1LeadTime, formatNumber(mm1.systemLeadTime, 2));
-    setText(outputs.kingmanWait, formatNumber(kingman.queueWaitTime, 2));
-    setText(outputs.kingmanLeadTime, formatNumber(kingman.systemLeadTime, 2));
-    setText(outputs.littleLawWip, formatNumber(little.workInSystem, 2));
-    setText(outputs.variabilityFactor, formatNumber(kingman.variabilityFactor, 2));
+    setText(outputs.mm1LeadTime, formatNumber(mm1.systemLeadTime, 1));
+    setText(outputs.kingmanWait, formatNumber(kingman.queueWaitTime, 1));
+    setText(outputs.kingmanLeadTime, formatNumber(kingman.systemLeadTime, 1));
+    setText(outputs.littleLawWip, formatNumber(little.workInSystem, 1));
+    setText(outputs.variabilityFactor, formatNumber(kingman.variabilityFactor, 1));
 
     renderArrivalsChart(timeline);
     renderBacklogChart(timeline);

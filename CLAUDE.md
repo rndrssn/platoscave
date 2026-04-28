@@ -156,7 +156,10 @@ Tests enforcing this contract:
 - Mix Mapper SVG text: dominant-baseline and text-anchor must be CSS properties on the label class in `css/pages/mix-mapper.css`, not SVG presentation attributes.
 - buildColors() reads --viz-* token tier (--viz-ink-faint, --viz-ink-ghost, --viz-sage, --viz-rust, etc.). Do not revert to --ink-* UI tokens.
 - Queue Machine module root is canonical local section `01` at `modules/queue-machine/`. Sections: `01` Flow and Waiting, `02` Taxonomy (`modules/queue-machine/taxonomy/`), `03` Explore (`modules/queue-machine/explore/`), `04` Concept Map (`modules/queue-machine/concept-graph/`).
-- Force-directed graphs (Skills graph, Concept Map) share interaction-state classes (`is-dim`, `is-related`, `is-group-focus`, `is-active`) defined in `css/components/force-graph-states.css`, and shared focus/legend-filter helpers in `js/force-graph-utils.js`. New force graphs must use these classes and helpers; do not redefine equivalent state opacities or duplicate filter logic.
+- Queue Machine Explore preset behavior: there is no standalone reshuffle button. Re-clicking the currently active preset reseeds local variability while preserving preset averages.
+- Queue Machine symbol labels use non-division notation for readability: `WIP (L)`, `Lead time (W)`, `Arrival rate (λ)`, `Service capacity (μ)`, `Utilization (ρ)`, `Cₐ`, `Cₛ`.
+- Queue Machine Concept Map semantics: dashed links (`kind: contradicts`) represent explicit contradiction edges from assumptions.
+- Force-directed graphs (Skills graph, Concept Map) share interaction-state classes (`is-dim`, `is-related`, `is-group-focus`, `is-active`) defined in `css/components/force-graph-states.css`, and shared focus/legend-filter helpers in `js/force-graph-utils.js`. New force graphs must use these classes and helpers; page-local visual overrides are allowed when these shared classes remain the source of interaction state.
 - Force graphs use the light/pastel palette tier (`--rust-light`, `--gold`, `--sage-light`) for node fills. Do not use saturated `--viz-*` data-viz tokens for force-graph nodes.
 - Force graph viz chrome (legend, helper, detail panel, node labels) uses mono uppercase microtype: var(--mono) at ~0.6rem with letter-spacing 0.05 to 0.06em and text-transform uppercase.
 

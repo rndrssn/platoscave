@@ -18,7 +18,6 @@
   if (!form || !arrivalInput || !serviceInput || !arrivalVarInput || !serviceVarInput || !arrivalsChart || !backlogChart || !d3Lib) return;
 
   var sessionSeed = Math.random() * Math.PI * 2;
-  var reshuffleButton = document.querySelector('[data-queue-reshuffle]');
   var activePreset = null;
   var resizeTimer = null;
   var PRESET_VALUES = {
@@ -323,18 +322,14 @@
     if (resizeTimer) clearTimeout(resizeTimer);
     resizeTimer = setTimeout(render, 120);
   });
-  if (reshuffleButton) {
-    reshuffleButton.addEventListener('click', function onReshuffle() {
-      sessionSeed = Math.random() * Math.PI * 2;
-      render();
-    });
-  }
-
   presetButtons.forEach(function bindPreset(button) {
     button.addEventListener('click', function onPresetClick() {
       var preset = button.getAttribute('data-queue-preset');
       var values = PRESET_VALUES[preset];
       if (values) {
+        if (preset === activePreset) {
+          sessionSeed = Math.random() * Math.PI * 2;
+        }
         setInputs(values, preset);
       }
     });

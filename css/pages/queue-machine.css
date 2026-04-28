@@ -105,7 +105,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
-  margin-bottom: 1.35rem;
+  margin-bottom: 0.45rem;
 }
 
 /* Segmented preset control */
@@ -165,57 +165,28 @@
   color: var(--ink-mid);
 }
 
-/* Per-preset active fills */
-.queue-machine-preset-group [data-queue-preset="breathing"][aria-pressed="true"] {
-  background: var(--sage);
-  color: var(--paper);
-}
-.queue-machine-preset-group [data-queue-preset="strained"][aria-pressed="true"] {
+/* Unified active preset style */
+.queue-machine-preset-group [data-queue-preset][aria-pressed="true"] {
   background: var(--gold);
   color: var(--ink);
 }
-.queue-machine-preset-group [data-queue-preset="saturated"][aria-pressed="true"] {
-  background: var(--rust);
-  color: var(--paper);
-}
-.queue-machine-preset-group [data-queue-preset="bursty"][aria-pressed="true"] {
-  background: var(--slate);
-  color: var(--paper);
-}
 
-/* Reshuffle stays a standalone ghost pill */
-.queue-machine-presets button:not([data-queue-preset]) {
-  border: 1px solid var(--ink-ghost);
-  border-radius: 999px;
-  padding: 0.42rem 0.85rem;
-  background: transparent;
+.queue-machine-preset-note {
+  margin: 0 0 1rem;
   color: var(--ink-mid);
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  font-weight: 300;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  transition: border-color 140ms ease, color 140ms ease;
-}
-
-.queue-machine-presets button:not([data-queue-preset]):hover,
-.queue-machine-presets button:not([data-queue-preset]):focus-visible {
-  border-color: var(--ink-mid);
-  color: var(--ink);
-  outline: none;
-}
-
-.queue-machine-reshuffle {
-  margin-inline-start: auto;
-  border-style: dashed;
+  font-family: var(--serif);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .queue-machine-controls {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-top: 2.6rem;
+  margin-bottom: 2.6rem;
 }
 
 .queue-machine-control {

@@ -62,7 +62,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ## Built With
 
 - Plain HTML, CSS, and JavaScript — no framework runtime
-- D3.js (v7) for visualizations, including queue charts, the Queue Machine resource-utilization animation, graph layouts, and simulation views
+- D3.js (v7) for visualizations, including queue charts, graph layouts, and simulation views
 - Hosted on GitHub Pages
 - Notes content is authored in Markdown and compiled to static pages with `node scripts/build-notes.js`
 

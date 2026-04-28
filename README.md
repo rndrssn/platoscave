@@ -36,9 +36,13 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - **Management Mix** — Where traditional control and adaptive learning coexist. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
   - **01 Epistemic Bets** (`/modules/mix-mapper/`)
 - **The Queue Machine** — Queueing theory and the resource-utilization trap, using D3 visuals to show how average load, variability, backlog, and flow interact.
-  - **01 Utilization Trap** (`/modules/queue-machine/`)
-    - Narrative-first queueing-theory explainer with arrival/capacity charts, backlog visualization, Little's Law, M/M/1, Kingman's approximation, TOC framing, and the Kniberg push-vs-pull lesson.
-  - **02 Concept Map** (`/modules/queue-machine/concept-graph/`)
+  - **01 Narrative** (`/modules/queue-machine/`)
+    - Plain-language introduction to queueing theory, utilization pressure, variability amplification, Little's Law, and TOC framing.
+  - **02 Taxonomy** (`/modules/queue-machine/taxonomy/`)
+    - Flow-regime taxonomy for diagnosing load pressure, variability profile, release discipline, and constraint behavior.
+  - **03 Explore** (`/modules/queue-machine/explore/`)
+    - Interactive lab with arrival/capacity controls, backlog charts, and live readouts from M/M/1, Kingman's approximation, and Little's Law.
+  - **04 Concept Map** (`/modules/queue-machine/concept-graph/`)
     - D3 force-directed graph showing how queueing theory, complexity science, and modern agile practice connect; observations they predict; folklore intuitions and the counter-intuitive surprises that contradict them.
 - **The Descent** — From open problem to verifiable criterion. The sections of a brief as stations of a descent. Paired narratively with Module 04 (same epistemic bet, at unit scale).
   - **01 The Descent** (`/modules/the-descent/`)

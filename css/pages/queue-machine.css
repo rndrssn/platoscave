@@ -107,77 +107,89 @@
   margin-bottom: 1.35rem;
 }
 
-.queue-machine-presets button {
+/* Segmented preset control */
+.queue-machine-preset-group {
+  display: inline-flex;
+  border: 1px solid var(--ink-ghost);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.queue-machine-preset-group [data-queue-preset] {
+  border: 0;
+  border-right: 1px solid var(--ink-ghost);
+  border-radius: 0;
+  padding: 0.48rem 0.9rem;
+  background: transparent;
+  color: var(--ink-faint);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 120ms ease, color 120ms ease;
+  white-space: nowrap;
+}
+
+.queue-machine-preset-group [data-queue-preset]:last-child {
+  border-right: 0;
+}
+
+.queue-machine-preset-group [data-queue-preset]:focus-visible {
+  outline: 2px solid var(--ink-mid);
+  outline-offset: -2px;
+}
+
+.queue-machine-preset-group [data-queue-preset]:hover {
+  background: color-mix(in srgb, var(--paper) 92%, var(--ink) 8%);
+  color: var(--ink-mid);
+}
+
+/* Per-preset active fills */
+.queue-machine-preset-group [data-queue-preset="breathing"][aria-pressed="true"] {
+  background: var(--sage);
+  color: var(--paper);
+}
+.queue-machine-preset-group [data-queue-preset="strained"][aria-pressed="true"] {
+  background: var(--gold);
+  color: var(--ink);
+}
+.queue-machine-preset-group [data-queue-preset="saturated"][aria-pressed="true"] {
+  background: var(--rust);
+  color: var(--paper);
+}
+.queue-machine-preset-group [data-queue-preset="bursty"][aria-pressed="true"] {
+  background: var(--slate);
+  color: var(--paper);
+}
+
+/* Reshuffle stays a standalone ghost pill */
+.queue-machine-presets button:not([data-queue-preset]) {
   border: 1px solid var(--ink-ghost);
   border-radius: 999px;
   padding: 0.42rem 0.85rem;
   background: transparent;
   color: var(--ink-mid);
   cursor: pointer;
+  font-family: var(--mono);
   font-size: 0.6rem;
-  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: border-color 140ms ease, color 140ms ease;
 }
 
-.queue-machine-presets button:hover,
-.queue-machine-presets button:focus-visible {
+.queue-machine-presets button:not([data-queue-preset]):hover,
+.queue-machine-presets button:not([data-queue-preset]):focus-visible {
   border-color: var(--ink-mid);
   color: var(--ink);
-  background: color-mix(in srgb, var(--paper) 92%, var(--ink) 8%);
   outline: none;
-}
-
-.queue-machine-presets button[aria-pressed="true"] {
-  border-color: var(--ink-mid);
-  color: var(--ink);
-  background: color-mix(in srgb, var(--paper) 88%, var(--ink) 12%);
-}
-
-/* Per-preset color accents */
-.queue-machine-presets [data-queue-preset="breathing"] {
-  border-color: color-mix(in srgb, var(--sage) 30%, var(--ink-ghost) 70%);
-}
-.queue-machine-presets [data-queue-preset="strained"] {
-  border-color: color-mix(in srgb, var(--gold) 42%, var(--ink-ghost) 58%);
-}
-.queue-machine-presets [data-queue-preset="saturated"] {
-  border-color: color-mix(in srgb, var(--rust) 30%, var(--ink-ghost) 70%);
-}
-.queue-machine-presets [data-queue-preset="bursty"] {
-  border-color: color-mix(in srgb, var(--slate) 30%, var(--ink-ghost) 70%);
-}
-
-.queue-machine-presets [data-queue-preset="breathing"]:hover,
-.queue-machine-presets [data-queue-preset="breathing"]:focus-visible,
-.queue-machine-presets [data-queue-preset="breathing"][aria-pressed="true"] {
-  border-color: var(--sage);
-  color: var(--sage);
-  background: color-mix(in srgb, var(--paper) 90%, var(--sage) 10%);
-}
-.queue-machine-presets [data-queue-preset="strained"]:hover,
-.queue-machine-presets [data-queue-preset="strained"]:focus-visible,
-.queue-machine-presets [data-queue-preset="strained"][aria-pressed="true"] {
-  border-color: var(--gold);
-  color: var(--gold);
-  background: color-mix(in srgb, var(--paper) 90%, var(--gold) 10%);
-}
-.queue-machine-presets [data-queue-preset="saturated"]:hover,
-.queue-machine-presets [data-queue-preset="saturated"]:focus-visible,
-.queue-machine-presets [data-queue-preset="saturated"][aria-pressed="true"] {
-  border-color: var(--rust);
-  color: var(--rust);
-  background: color-mix(in srgb, var(--paper) 90%, var(--rust) 10%);
-}
-.queue-machine-presets [data-queue-preset="bursty"]:hover,
-.queue-machine-presets [data-queue-preset="bursty"]:focus-visible,
-.queue-machine-presets [data-queue-preset="bursty"][aria-pressed="true"] {
-  border-color: var(--slate);
-  color: var(--slate);
-  background: color-mix(in srgb, var(--paper) 90%, var(--slate) 10%);
 }
 
 .queue-machine-reshuffle {
   margin-inline-start: auto;
-  border-style: dashed !important;
+  border-style: dashed;
 }
 
 .queue-machine-controls {
@@ -235,60 +247,48 @@
 }
 
 .queue-machine-control input[type="range"]::-webkit-slider-runnable-track {
-  block-size: 2px;
-  background: linear-gradient(
-    to right,
-    var(--ink-mid) calc(var(--fill-ratio, 0) * 100%),
-    var(--ink-ghost) calc(var(--fill-ratio, 0) * 100%)
-  );
+  block-size: 1px;
+  background: var(--ink-ghost);
   border: 0;
-  border-radius: 999px;
 }
 
 .queue-machine-control input[type="range"]::-moz-range-track {
-  block-size: 2px;
+  block-size: 1px;
   background: var(--ink-ghost);
   border: 0;
-  border-radius: 999px;
-}
-
-.queue-machine-control input[type="range"]::-moz-range-progress {
-  block-size: 2px;
-  background: var(--ink-mid);
-  border-radius: 999px;
 }
 
 .queue-machine-control input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  inline-size: 0.88rem;
-  block-size: 0.88rem;
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
   border-radius: 999px;
-  border: 0;
-  background: var(--ink-mid);
-  margin-top: -0.41rem;
-  transition: background 140ms ease, transform 140ms ease;
+  border: 1.5px solid var(--ink-mid);
+  background: var(--paper);
+  margin-top: -0.4rem;
+  transition: border-color 140ms ease, transform 140ms ease;
 }
 
 .queue-machine-control input[type="range"]::-moz-range-thumb {
-  inline-size: 0.88rem;
-  block-size: 0.88rem;
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
   border-radius: 999px;
-  border: 0;
-  background: var(--ink-mid);
-  transition: background 140ms ease, transform 140ms ease;
+  border: 1.5px solid var(--ink-mid);
+  background: var(--paper);
+  transition: border-color 140ms ease, transform 140ms ease;
 }
 
 .queue-machine-control input[type="range"]:hover::-webkit-slider-thumb,
 .queue-machine-control input[type="range"]:focus-visible::-webkit-slider-thumb {
-  background: var(--ink);
-  transform: scale(1.14);
+  border-color: var(--ink);
+  transform: scale(1.1);
 }
 
 .queue-machine-control input[type="range"]:hover::-moz-range-thumb,
 .queue-machine-control input[type="range"]:focus-visible::-moz-range-thumb {
-  background: var(--ink);
-  transform: scale(1.14);
+  border-color: var(--ink);
+  transform: scale(1.1);
 }
 
 .queue-machine-stage {

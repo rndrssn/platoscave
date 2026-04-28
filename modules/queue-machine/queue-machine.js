@@ -247,15 +247,6 @@
     chart.selectAll('.domain').attr('stroke', inkGhost);
   }
 
-  function updateFillRatios() {
-    [arrivalInput, serviceInput, arrivalVarInput, serviceVarInput].forEach(function(input) {
-      var min = Number(input.min);
-      var max = Number(input.max);
-      var ratio = (max > min) ? (Number(input.value) - min) / (max - min) : 0;
-      input.style.setProperty('--fill-ratio', ratio.toFixed(4));
-    });
-  }
-
   function render() {
     var input = {
       arrivalRate: numberFrom(arrivalInput),
@@ -294,7 +285,6 @@
     renderArrivalsChart(timeline);
     renderBacklogChart(timeline);
     updateStatus(mm1.utilization, mm1.stable, timeline);
-    updateFillRatios();
   }
 
   form.addEventListener('input', function onFormInput() {

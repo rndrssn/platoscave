@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive queueing lab for exploring load, variability, backlog, Little's Law, M/M/1, and Kingman's approximation." />
+  <title>Explore · The Queue Machine · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../../css/fonts.css" />
+  <link rel="stylesheet" href="../../../css/tokens.css" />
+  <link rel="stylesheet" href="../../../css/base.css" />
+  <link rel="stylesheet" href="../../../css/layout.css" />
+  <link rel="stylesheet" href="../../../css/components.css" />
+  <link rel="stylesheet" href="../../../css/utilities.css" />
+  <link rel="stylesheet" href="../../../css/themes.css" />
+  <link rel="stylesheet" href="../../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../../">To the Bedrock</a>
+    <nav class="main-nav">
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../../">Home</a>
+      <a class="nav-link" href="../../../notes/">Notes</a>
+      <a class="nav-link nav-link--active" href="../../../modules/" aria-current="page">Modules</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page queue-machine-page">
+      <a class="module-back-link" href="../../" aria-label="Back to Modules"></a>
+      <a class="module-header-number module-context-number module-context-link" href="../">The Queue Machine</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Narrative</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../taxonomy/"><span class="module-sub-nav-number">02</span> Taxonomy</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">03</span> Explore</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../concept-graph/"><span class="module-sub-nav-number">04</span> Concept Map</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Explore</h1>
+        <p class="module-header-body">
+          This is the queueing lab. Adjust average load and variability, then watch local overflow, backlog, waiting, and
+          implied WIP change together.
+        </p>
+      </header>
+
+      <section class="queue-machine-lab" aria-label="Queue and utilization demonstration">
+        <div class="queue-machine-presets" aria-label="Scenario presets">
+          <button type="button" data-queue-preset="breathing">Slack absorbs variation</button>
+          <button type="button" data-queue-preset="strained">Strained but stable</button>
+          <button type="button" data-queue-preset="saturated">Near saturation</button>
+          <button type="button" data-queue-preset="bursty">Bursty product work</button>
+          <button type="button" class="queue-machine-reshuffle" data-queue-reshuffle aria-label="Reshuffle the variability shape">&#x21BB; Reshuffle</button>
+        </div>
+
+        <form class="queue-machine-controls" data-queue-controls>
+          <div class="queue-machine-control">
+            <label for="queue-arrival-rate">Average work arriving</label>
+            <input id="queue-arrival-rate" type="range" min="0.10" max="0.98" step="0.01" value="0.72" />
+            <span><span data-output="arrival-rate">0.7</span> items / time unit</span>
+          </div>
+          <div class="queue-machine-control">
+            <label for="queue-service-rate">Average capacity available</label>
+            <input id="queue-service-rate" type="range" min="0.50" max="1.20" step="0.01" value="1.00" />
+            <span><span data-output="service-rate">1.0</span> items / time unit</span>
+          </div>
+          <div class="queue-machine-control">
+            <label for="queue-arrival-variability">Burstiness of incoming work</label>
+            <input id="queue-arrival-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.65" />
+            <span>unevenness <span data-output="arrival-cv">1.7</span></span>
+          </div>
+          <div class="queue-machine-control">
+            <label for="queue-service-variability">Unevenness of work size</label>
+            <input id="queue-service-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.80" />
+            <span>unevenness <span data-output="service-cv">1.8</span></span>
+          </div>
+        </form>
+
+        <div class="queue-machine-stage" aria-label="Queue visual">
+          <div class="queue-machine-chart-panel">
+            <h2 class="queue-machine-chart-title">Arrivals versus capacity</h2>
+            <p class="queue-machine-chart-note">
+              Bars are work arriving per time bucket. The line is service capacity. Each gold bar is split into fit and
+              spill, so you can see local overflow without changing the average load.
+            </p>
+            <svg class="queue-machine-chart" data-queue-arrivals-chart role="img" aria-label="Bar chart of arrivals per bucket against capacity"></svg>
+          </div>
+          <div class="queue-machine-chart-panel">
+            <h2 class="queue-machine-chart-title">Backlog created by overflow</h2>
+            <p class="queue-machine-chart-note">
+              Spillover accumulates into waiting work. Raising variability can increase backlog even when utilization
+              remains unchanged.
+            </p>
+            <svg class="queue-machine-chart" data-queue-backlog-chart role="img" aria-label="Bar chart of backlog over time"></svg>
+          </div>
+          <p class="queue-machine-status" data-queue-status aria-live="polite"></p>
+        </div>
+
+        <p class="force-graph-helper queue-machine-readout-caption">The charts show one illustrative sample path with the same averages. The readouts estimate long-run behavior using Little's Law, M/M/1, and Kingman's approximation.</p>
+        <dl class="queue-machine-readout">
+          <div>
+            <dt>Average load</dt>
+            <dd data-output="utilization">72.0%</dd>
+          </div>
+          <div>
+            <dt>M/M/1 total lead time</dt>
+            <dd><span data-output="mm1-lead-time">3.6</span> time units</dd>
+          </div>
+          <div>
+            <dt>Queue wait with burstiness</dt>
+            <dd><span data-output="kingman-wait">7.7</span> time units</dd>
+          </div>
+          <div>
+            <dt>Total lead time with burstiness</dt>
+            <dd><span data-output="kingman-lead-time">8.7</span> time units</dd>
+          </div>
+          <div>
+            <dt>Average WIP implied</dt>
+            <dd><span data-output="little-law-wip">6.2</span> items</dd>
+          </div>
+          <div>
+            <dt>Burstiness multiplier</dt>
+            <dd><span data-output="variability-factor">3.0</span></dd>
+          </div>
+        </dl>
+      </section>
+
+      <article class="module-essay queue-machine-theory">
+        <section class="essay-section">
+          <h2 class="essay-heading">How to read this lab</h2>
+          <ol class="queue-machine-step-list">
+            <li><strong>Set load:</strong> tune arrivals and capacity to place the system in breathing room, strain, or near saturation.</li>
+            <li><strong>Add variation:</strong> raise arrival and service unevenness to see queue sensitivity.</li>
+            <li><strong>Check spill:</strong> watch local overflow create backlog even below 100% average utilization.</li>
+            <li><strong>Read formulas:</strong> compare M/M/1 and Kingman values to see the variability penalty explicitly.</li>
+          </ol>
+          <p class="essay-body">
+            For assumptions, definitions, and model context, read <a href="../">Section 01 &mdash; Narrative</a>.
+          </p>
+        </section>
+      </article>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../taxonomy/" aria-label="Previous: Taxonomy">
+          <span class="footer-nav-label-full">&larr; Previous: Taxonomy</span>
+          <span class="footer-nav-label-short">&larr; Previous</span>
+        </a>
+        <a class="footer-nav-link" href="../concept-graph/" aria-label="Next: Concept Map">
+          <span class="footer-nav-label-full">Next: Concept Map &rarr;</span>
+          <span class="footer-nav-label-short">Next &rarr;</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../../js/nav-controller.js"></script>
+  <script src="../../../assets/vendor/d3.v7.min.js"></script>
+  <script src="../queue-machine-model.js"></script>
+  <script src="../queue-machine.js"></script>
+</body>
+</html>

@@ -215,6 +215,7 @@
 
   var simulation = null;
   var nudgeTimer = null;
+  var activeDragNodeId = null;
   var lastWidth = 0;
   var lastHeight = 0;
   var resizeTimer = null;
@@ -223,6 +224,7 @@
     var rect = svgEl.getBoundingClientRect();
     var rendered = Math.max(320, width || rect.width || 720);
     var mobile = rendered < 760;
+    var constrainedMobile = (window.innerWidth || document.documentElement.clientWidth || rendered) < 760;
     var height = mobile
       ? Math.max(600, Math.min(880, Math.floor(rendered * 1.72)))
       : Math.max(440, Math.min(620, Math.floor(rendered * 0.52)));
@@ -402,9 +404,11 @@
 
     var dragBehavior = d3.drag()
       .on('start', function(event, d) {
-        if (!event.active) simulation.alphaTarget(0.25).restart();
+        focusAndShow(d);
+        if (!event.active) simulation.alphaTarget(0.2).restart();
         d.fx = d.x;
         d.fy = d.y;
+        activeDragNodeId = d.id;
         d.__dragMoved = false;
         d.__dragStartX = event.x;
         d.__dragStartY = event.y;
@@ -422,6 +426,8 @@
         if (!event.active) simulation.alphaTarget(0);
         d.fx = null;
         d.fy = null;
+        activeDragNodeId = null;
+        if (this && typeof this.blur === 'function') this.blur();
         if (d.__dragMoved) {
           clearHighlights();
         } else {

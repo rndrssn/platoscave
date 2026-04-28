@@ -42,7 +42,7 @@
       <a class="module-header-number module-context-number module-context-link" href="../">The Queue Machine</a>
 
       <nav class="module-sub-nav" aria-label="Module sections">
-        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Narrative</a>
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Flow and Waiting</a>
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="../taxonomy/"><span class="module-sub-nav-number">02</span> Taxonomy</a>
         <span class="module-sub-nav-dot">&middot;</span>
@@ -54,17 +54,20 @@
       <header class="module-header">
         <h1 class="module-header-title">Explore</h1>
         <p class="module-header-body">
-          This is the queueing lab. Adjust average load and variability, then watch local overflow, backlog, waiting, and
-          implied WIP change together.
+          An interactive demonstration of queueing behavior. Vary arrival rate, service capacity, and variability
+          coefficients to observe how overflow, backlog, and lead time respond.
         </p>
       </header>
 
       <section class="queue-machine-lab" aria-label="Queue and utilization demonstration">
+        <p class="force-graph-helper queue-machine-lab-helper">Select a scenario preset or adjust the parameters, then observe how the charts and readouts change together.</p>
         <div class="queue-machine-presets" aria-label="Scenario presets">
-          <button type="button" data-queue-preset="breathing">Slack absorbs variation</button>
-          <button type="button" data-queue-preset="strained">Strained but stable</button>
-          <button type="button" data-queue-preset="saturated">Near saturation</button>
-          <button type="button" data-queue-preset="bursty">Bursty product work</button>
+          <div class="queue-machine-preset-group" role="group" aria-label="Scenario presets">
+            <button type="button" data-queue-preset="breathing">Slack absorbs variation</button>
+            <button type="button" data-queue-preset="strained">Strained but stable</button>
+            <button type="button" data-queue-preset="saturated">Near saturation</button>
+            <button type="button" data-queue-preset="bursty">Bursty product work</button>
+          </div>
           <button type="button" class="queue-machine-reshuffle" data-queue-reshuffle aria-label="Reshuffle the variability shape">&#x21BB; Reshuffle</button>
         </div>
 
@@ -95,7 +98,7 @@
           <div class="queue-machine-chart-panel">
             <h2 class="queue-machine-chart-title">Arrivals versus capacity</h2>
             <p class="queue-machine-chart-note">
-              Bars are work arriving per time bucket. The line is service capacity. Each gold bar is split into fit and
+              Bars are work arriving per time bucket. The line is service capacity. Each bar is split into fit and
               spill, so you can see local overflow without changing the average load.
             </p>
             <svg class="queue-machine-chart" data-queue-arrivals-chart role="img" aria-label="Bar chart of arrivals per bucket against capacity"></svg>
@@ -118,23 +121,23 @@
             <dd data-output="utilization">72.0%</dd>
           </div>
           <div>
-            <dt>M/M/1 total lead time</dt>
+            <dt>Lead time (M/M/1, no variability)</dt>
             <dd><span data-output="mm1-lead-time">3.6</span> time units</dd>
           </div>
           <div>
-            <dt>Queue wait with burstiness</dt>
+            <dt>Queue wait (Kingman)</dt>
             <dd><span data-output="kingman-wait">7.7</span> time units</dd>
           </div>
           <div>
-            <dt>Total lead time with burstiness</dt>
+            <dt>Lead time (Kingman)</dt>
             <dd><span data-output="kingman-lead-time">8.7</span> time units</dd>
           </div>
           <div>
-            <dt>Average WIP implied</dt>
+            <dt>Average WIP (Little's Law)</dt>
             <dd><span data-output="little-law-wip">6.2</span> items</dd>
           </div>
           <div>
-            <dt>Burstiness multiplier</dt>
+            <dt>Variability penalty (Kingman)</dt>
             <dd><span data-output="variability-factor">3.0</span></dd>
           </div>
         </dl>
@@ -147,10 +150,10 @@
             <li><strong>Set load:</strong> tune arrivals and capacity to place the system in breathing room, strain, or near saturation.</li>
             <li><strong>Add variation:</strong> raise arrival and service unevenness to see queue sensitivity.</li>
             <li><strong>Check spill:</strong> watch local overflow create backlog even below 100% average utilization.</li>
-            <li><strong>Read formulas:</strong> compare M/M/1 and Kingman values to see the variability penalty explicitly.</li>
+            <li><strong>Compare the readouts:</strong> M/M/1 assumes no variability; Kingman adds the full penalty from both arrival and service unevenness. The gap between the two is the cost of variability at your current load.</li>
           </ol>
           <p class="essay-body">
-            For assumptions, definitions, and model context, read <a href="../">Section 01 &mdash; Narrative</a>.
+            For assumptions, definitions, and model context, read <a href="../">Section 01 &mdash; Flow and Waiting</a>.
           </p>
         </section>
       </article>

@@ -331,6 +331,14 @@
       .attr('text-anchor', 'middle')
       .text(function(d) { return mobile ? d.short : d.label; });
 
+    var dragGlow = plot.append('g')
+      .attr('class', 'queue-machine-concept-drag-glows')
+      .selectAll('circle')
+      .data(simulation.nodes())
+      .join('circle')
+      .attr('class', 'queue-machine-concept-drag-glow')
+      .attr('r', function(d) { return radiusByGroup(d.group) + 5.2; });
+
     var selections = {
       node: node,
       label: label,
@@ -341,52 +349,69 @@
     var legendItems = Array.from(document.querySelectorAll('[data-legend-group]'));
 
     function clearHighlights() {
-      if (fgUtils) fgUtils.clearHighlights(selections);
+      if (fgUtils) {
+        fgUtils.clearHighlights(selections);
+      } else {
+        node.classed('is-dim', false).classed('is-related', false).classed('is-group-focus', false);
+        label.classed('is-dim', false).classed('is-related', false).classed('is-active', false);
+        link.classed('is-dim', false).classed('is-related', false);
+      }
       hideDetail(true);
     }
 
     function applyFocus(d) {
-      if (fgUtils) fgUtils.applyFocus(selections, d);
+      node.classed('is-related', false).classed('is-group-focus', false);
+      label.classed('is-related', false);
+      link.classed('is-related', false);
+
+      node.classed('is-dim', function(n) {
+        return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id);
+      });
+      label.classed('is-dim', function(n) {
+        return n.id !== d.id && !linkIndex.has(d.id + '|' + n.id);
+      }).classed('is-active', function(n) {
+        return n.id === d.id || linkIndex.has(d.id + '|' + n.id);
+      });
+      link.classed('is-dim', function(l) {
+        var s = (typeof l.source === 'object') ? l.source.id : l.source;
+        var t = (typeof l.target === 'object') ? l.target.id : l.target;
+        return s !== d.id && t !== d.id;
+      });
     }
 
     function applyLegendFilter(group) {
+      if (fgUtils) {
+        fgUtils.applyLegendFilter(selections, function(n) { return n.group === group; });
+        return;
+      }
       var primary = new Set();
       var related = new Set();
-
       simulation.nodes().forEach(function(n) {
         if (n.group === group) primary.add(n.id);
       });
-
       simulation.force('link').links().forEach(function(l) {
         var s = (typeof l.source === 'object') ? l.source.id : l.source;
         var t = (typeof l.target === 'object') ? l.target.id : l.target;
         if (primary.has(s) && !primary.has(t)) related.add(t);
         if (primary.has(t) && !primary.has(s)) related.add(s);
       });
-
-      node
-        .classed('is-group-focus', function(n) { return primary.has(n.id); })
+      node.classed('is-group-focus', function(n) { return primary.has(n.id); })
         .classed('is-related', function(n) { return !primary.has(n.id) && related.has(n.id); })
         .classed('is-dim', function(n) { return !primary.has(n.id) && !related.has(n.id); });
-
-      label
-        .classed('is-active', function(n) { return primary.has(n.id); })
+      label.classed('is-active', function(n) { return primary.has(n.id); })
         .classed('is-related', function(n) { return !primary.has(n.id) && related.has(n.id); })
         .classed('is-dim', function(n) { return !primary.has(n.id) && !related.has(n.id); });
-
-      link
-        .classed('is-related', function(l) {
-          var s = (typeof l.source === 'object') ? l.source.id : l.source;
-          var t = (typeof l.target === 'object') ? l.target.id : l.target;
-          return (primary.has(s) && related.has(t)) || (primary.has(t) && related.has(s));
-        })
-        .classed('is-dim', function(l) {
-          var s = (typeof l.source === 'object') ? l.source.id : l.source;
-          var t = (typeof l.target === 'object') ? l.target.id : l.target;
-          var touchesPrimary = primary.has(s) || primary.has(t);
-          var connectsPrimaryToRelated = (primary.has(s) && related.has(t)) || (primary.has(t) && related.has(s));
-          return !touchesPrimary && !connectsPrimaryToRelated;
-        });
+      link.classed('is-related', function(l) {
+        var s = (typeof l.source === 'object') ? l.source.id : l.source;
+        var t = (typeof l.target === 'object') ? l.target.id : l.target;
+        return (primary.has(s) && related.has(t)) || (primary.has(t) && related.has(s));
+      }).classed('is-dim', function(l) {
+        var s = (typeof l.source === 'object') ? l.source.id : l.source;
+        var t = (typeof l.target === 'object') ? l.target.id : l.target;
+        var touchesPrimary = primary.has(s) || primary.has(t);
+        var connectsPrimaryToRelated = (primary.has(s) && related.has(t)) || (primary.has(t) && related.has(s));
+        return !touchesPrimary && !connectsPrimaryToRelated;
+      });
     }
 
     var legendCtl = fgUtils && fgUtils.wireLegend(legendItems, {
@@ -454,6 +479,9 @@
     interactionTarget
       .on('click', function(_, d) {
         focusAndShow(d);
+      })
+      .on('pointerup', function(_, d) {
+        if (!d.__dragMoved) focusAndShow(d);
       });
 
     node
@@ -488,6 +516,11 @@
           .attr('cx', function(d) { return d.x; })
           .attr('cy', function(d) { return d.y; });
       }
+
+      dragGlow
+        .attr('cx', function(d) { return d.x; })
+        .attr('cy', function(d) { return d.y; })
+        .classed('is-active', function(d) { return activeDragNodeId === d.id; });
 
       label
         .attr('x', function(d) { return d.x; })

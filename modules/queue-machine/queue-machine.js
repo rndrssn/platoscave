@@ -21,6 +21,12 @@
   var reshuffleButton = document.querySelector('[data-queue-reshuffle]');
   var activePreset = null;
   var resizeTimer = null;
+  var PRESET_VALUES = {
+    breathing: { arrivalRate: 0.48, serviceRate: 1.00, arrivalCv: 0.70, serviceCv: 0.80 },
+    strained: { arrivalRate: 0.78, serviceRate: 1.00, arrivalCv: 1.00, serviceCv: 1.00 },
+    saturated: { arrivalRate: 0.94, serviceRate: 1.00, arrivalCv: 1.00, serviceCv: 1.00 },
+    bursty: { arrivalRate: 0.72, serviceRate: 1.00, arrivalCv: 1.65, serviceCv: 1.80 }
+  };
 
   var outputs = {
     arrivalRate: document.querySelector('[data-output="arrival-rate"]'),
@@ -84,6 +90,27 @@
     activePreset = preset || null;
     updatePresetButtons(activePreset);
     render();
+  }
+
+  function sameNumber(a, b) {
+    return Math.abs(Number(a) - Number(b)) < 0.000001;
+  }
+
+  function detectPresetFromInputs() {
+    var current = {
+      arrivalRate: numberFrom(arrivalInput),
+      serviceRate: numberFrom(serviceInput),
+      arrivalCv: numberFrom(arrivalVarInput),
+      serviceCv: numberFrom(serviceVarInput)
+    };
+
+    return Object.keys(PRESET_VALUES).find(function(preset) {
+      var values = PRESET_VALUES[preset];
+      return sameNumber(current.arrivalRate, values.arrivalRate)
+        && sameNumber(current.serviceRate, values.serviceRate)
+        && sameNumber(current.arrivalCv, values.arrivalCv)
+        && sameNumber(current.serviceCv, values.serviceCv);
+    }) || null;
   }
 
   function clearSvg(svgEl) {
@@ -306,17 +333,14 @@
   presetButtons.forEach(function bindPreset(button) {
     button.addEventListener('click', function onPresetClick() {
       var preset = button.getAttribute('data-queue-preset');
-      if (preset === 'breathing') {
-        setInputs({ arrivalRate: 0.48, serviceRate: 1.00, arrivalCv: 0.70, serviceCv: 0.80 }, preset);
-      } else if (preset === 'strained') {
-        setInputs({ arrivalRate: 0.78, serviceRate: 1.00, arrivalCv: 1.00, serviceCv: 1.00 }, preset);
-      } else if (preset === 'saturated') {
-        setInputs({ arrivalRate: 0.94, serviceRate: 1.00, arrivalCv: 1.00, serviceCv: 1.00 }, preset);
-      } else if (preset === 'bursty') {
-        setInputs({ arrivalRate: 0.72, serviceRate: 1.00, arrivalCv: 1.65, serviceCv: 1.80 }, preset);
+      var values = PRESET_VALUES[preset];
+      if (values) {
+        setInputs(values, preset);
       }
     });
   });
-  updatePresetButtons(null);
+
+  activePreset = detectPresetFromInputs();
+  updatePresetButtons(activePreset);
   render();
 })();

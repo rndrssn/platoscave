@@ -175,6 +175,12 @@
     label.textContent = d.label;
     detailEl.appendChild(swatch);
     detailEl.appendChild(label);
+    if (d.note) {
+      var note = document.createElement('span');
+      note.className = 'queue-machine-concept-detail-note';
+      note.textContent = d.note;
+      detailEl.appendChild(note);
+    }
     detailEl.classList.add('is-visible');
   }
 
@@ -442,6 +448,17 @@
     interactionTarget
       .on('click', function(_, d) {
         focusAndShow(d);
+      });
+
+    node
+      .attr('tabindex', '0')
+      .attr('role', 'button')
+      .attr('aria-label', function(d) { return d.label + ' (' + d.group + ')'; })
+      .on('keydown', function(event, d) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          focusAndShow(d);
+        }
       });
 
     simulation.on('tick', function() {

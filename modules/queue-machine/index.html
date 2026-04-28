@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Narrative introduction to queueing theory, utilization traps, variability, and flow constraints in product development." />
-  <title>Narrative · The Queue Machine · To the Bedrock</title>
+  <meta name="description" content="Queueing theory applied to product development: how utilization, variability, and Little's Law explain why average load understates waiting." />
+  <title>Flow and Waiting · The Queue Machine · To the Bedrock</title>
   <script src="../../theme.config.js"></script>
   <script src="../../js/theme-bootstrap.js"></script>
   <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
@@ -42,7 +42,7 @@
       <a class="module-header-number module-context-number module-context-link" href="./">The Queue Machine</a>
 
       <nav class="module-sub-nav" aria-label="Module sections">
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01</span> Narrative</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01</span> Flow and Waiting</a>
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="taxonomy/"><span class="module-sub-nav-number">02</span> Taxonomy</a>
         <span class="module-sub-nav-dot">&middot;</span>
@@ -52,22 +52,27 @@
       </nav>
 
       <header class="module-header">
-        <h1 class="module-header-title">Narrative</h1>
+        <h1 class="module-header-title">Flow and Waiting</h1>
         <p class="module-header-body">
-          The dashboard says the team is fine. Average load is only 72%. Capacity still exists on paper.
+          Queueing theory is the formal study of waiting: how demand arrives at a processing step, how capacity at that
+          step determines throughput, and how the relationship between arrival rate and service rate governs the time
+          work spends in the system. Its central result—that waiting grows non-linearly as utilization approaches
+          service capacity—has consequences for any system where variability exists and capacity is shared.
         </p>
         <p class="module-header-body">
-          Then work arrives in lumps. One item turns out larger than estimated. A review waits overnight. An incident
-          steals the person who knew the integration path. Nobody had to cross 100% for the queue to appear.
+          Product development is a queueing system. Features, fixes, reviews, and decisions arrive at constraint steps
+          whose capacity determines flow. Utilization—the ratio of arrival rate to service rate—can appear stable on
+          average while backlog, lead time, and interruption grow disproportionately at the constraint. This divergence
+          between average load and experienced waiting is the utilization trap.
         </p>
         <p class="module-header-body">
-          That is the utilization trap: averages make the system look safe while the lived experience becomes waiting,
-          interruption, stale work, and tomorrow's backlog.
+          This module applies queueing theory to knowledge work. It covers the core quantities, Little's Law, the M/M/1
+          baseline model, Kingman's variability approximation, and the connection to Theory of Constraints.
         </p>
         <ul class="queue-machine-mini-legend" aria-label="Compact variable legend">
-          <li><strong>Average load</strong><span>how busy the system looks on paper</span></li>
-          <li><strong>Burstiness</strong><span>how unevenly work arrives or changes size</span></li>
-          <li><strong>Backlog</strong><span>overflow carried into the next moment</span></li>
+          <li><strong>Average load</strong><span>how busy the system looks on paper; ρ = λ / μ</span></li>
+          <li><strong>Arrival variability</strong><span>unevenness in how work arrives or changes size; Ca or burstiness</span></li>
+          <li><strong>Backlog</strong><span>overflow carried forward when arrivals exceed capacity in a given period</span></li>
         </ul>
       </header>
 
@@ -98,8 +103,8 @@
             <li><strong>Arrival rate</strong> is <var>&lambda;</var>: how fast work enters the system.</li>
             <li><strong>Service rate</strong> is <var>&mu;</var>: how fast the constrained step can finish work.</li>
             <li><strong>Utilization</strong> is <var>&rho;</var> = <var>&lambda; / &mu;</var>: average load at the constraint.</li>
-            <li><strong>Arrival and service variability</strong> are <var>C<sub>a</sub></var> and <var>C<sub>s</sub></var>.</li>
-            <li><strong>Lead time</strong> is <var>W</var>. <strong>WIP</strong> is <var>L</var>.</li>
+            <li><strong>Arrival and service variability</strong> are <var>C<sub>a</sub></var> and <var>C<sub>s</sub></var>: coefficients of variation measuring how unevenly work arrives and how unevenly each item is served.</li>
+            <li><strong>WIP</strong> is <var>L</var>: average items in the system. <strong>Lead time</strong> is <var>W</var>: average time an item spends in the system.</li>
           </ul>
         </section>
 
@@ -234,18 +239,20 @@
         <section class="essay-section">
           <h2 class="essay-heading">Connection to Theory of Constraints</h2>
           <p class="essay-body">
-            Queueing theory explains why systems near saturation need protection from variability. Theory of Constraints
-            turns that into a management question: where is the constraint, and what would protect its flow?
+            Queueing theory describes the waiting mechanism. Theory of Constraints offers the complementary management
+            question: where is the constraint, and what would protect its flow?
           </p>
           <p class="essay-body">
-            TOC starts from a different claim: throughput is governed by the constraint. Queueing and TOC are complementary.
-            Queueing describes the waiting mechanism; TOC guides intervention.
+            TOC's defining claim is that the throughput of any system is governed by its constraint. Subordinating all
+            other decisions to the constraint—protecting its input queue from starvation, preventing non-constraints
+            from overfeeding it—turns a diagnosis of high utilization into a tractable management action. Queueing
+            gives the formula for why things are slow; TOC asks what to change first.
           </p>
           <aside class="queue-machine-toc-panel" aria-label="Theory of Constraints translation">
             <h3>TOC translation</h3>
             <p>
-              The target is not universal busyness. The target is valuable work moving through the constraint at a
-              sustainable pace.
+              Identify the constraint. Exploit it fully. Subordinate all other decisions to it. The target is not
+              universal busyness; it is valuable work moving through the constraint at a sustainable pace.
             </p>
           </aside>
         </section>
@@ -258,11 +265,11 @@
             aggressively, one caps WIP and protects flow.
           </p>
           <ol class="queue-machine-step-list">
-            <li><strong>Arrivals:</strong> work enters in bursts; averages hide spikes.</li>
-            <li><strong>Variation:</strong> each item needs different effort at each stage.</li>
-            <li><strong>Push:</strong> high starts create high WIP and congestion.</li>
-            <li><strong>Pull:</strong> capped WIP accepts local slack to reduce waiting.</li>
-            <li><strong>Measure flow:</strong> compare throughput, waiting, lead time, and WIP.</li>
+            <li><strong>Bursty arrivals:</strong> the same average load produces very different queues depending on whether work arrives steadily or in waves.</li>
+            <li><strong>Variable item sizes:</strong> fat-tailed effort distributions compound the arrival variability penalty at each stage.</li>
+            <li><strong>Push policy:</strong> starting work early to keep everyone visibly busy raises WIP, which raises lead time by Little's Law.</li>
+            <li><strong>Pull policy:</strong> capping WIP and accepting local slack absorbs variation before it becomes persistent backlog.</li>
+            <li><strong>Flow measurement:</strong> throughput, lead time, and WIP as a system—not resource utilization in isolation.</li>
           </ol>
           <p class="essay-body">
             See Kniberg's <a href="https://www.youtube.com/watch?v=CostXs2p6r0">resource utilization trap video</a> for the
@@ -297,16 +304,13 @@
             <li>Goldratt, E. M., &amp; Cox, J. (1984). <em>The Goal: A Process of Ongoing Improvement.</em> North River Press.</li>
             <li>Goldratt, E. M. (1990). <em>What Is This Thing Called Theory of Constraints and How Should It Be Implemented?</em> North River Press.</li>
             <li>Reinertsen, D. G. (2009). <em>The Principles of Product Development Flow: Second Generation Lean Product Development.</em> Celeritas Publishing.</li>
-            <li>Kniberg, H. <em>Resource Utilization Trap</em> [video]. <a href="https://www.youtube.com/watch?v=CostXs2p6r0">youtube.com/watch?v=CostXs2p6r0</a>.</li>
+            <li>Kniberg, H. (c. 2012). <em>Resource Utilization Trap</em> [video]. <a href="https://www.youtube.com/watch?v=CostXs2p6r0">youtube.com/watch?v=CostXs2p6r0</a>.</li>
           </ul>
         </section>
       </article>
 
       <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
-        <a class="footer-nav-link" href="../" aria-label="Back to Modules">
-          <span class="footer-nav-label-full">&larr; Back to Modules</span>
-          <span class="footer-nav-label-short">&larr; Modules</span>
-        </a>
+        <span></span>
         <a class="footer-nav-link" href="taxonomy/" aria-label="Next: Taxonomy">
           <span class="footer-nav-label-full">Next: Taxonomy &rarr;</span>
           <span class="footer-nav-label-short">Next &rarr;</span>

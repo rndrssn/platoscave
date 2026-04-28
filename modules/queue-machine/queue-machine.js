@@ -19,6 +19,8 @@
 
   var sessionSeed = Math.random() * Math.PI * 2;
   var reshuffleButton = document.querySelector('[data-queue-reshuffle]');
+  var activePreset = null;
+  var resizeTimer = null;
 
   var outputs = {
     arrivalRate: document.querySelector('[data-output="arrival-rate"]'),
@@ -68,11 +70,19 @@
     statusText.textContent = 'Breathing room: variability is more likely to be absorbed before it becomes persistent waiting.' + backlogCopy + ' This is what slack is buying.';
   }
 
-  function setInputs(nextValues) {
+  function updatePresetButtons(preset) {
+    presetButtons.forEach(function(btn) {
+      btn.setAttribute('aria-pressed', btn.getAttribute('data-queue-preset') === preset ? 'true' : 'false');
+    });
+  }
+
+  function setInputs(nextValues, preset) {
     arrivalInput.value = String(nextValues.arrivalRate);
     serviceInput.value = String(nextValues.serviceRate);
     arrivalVarInput.value = String(nextValues.arrivalCv);
     serviceVarInput.value = String(nextValues.serviceCv);
+    activePreset = preset || null;
+    updatePresetButtons(activePreset);
     render();
   }
 
@@ -94,7 +104,7 @@
   }
 
   function drawArrivalMarks(chart, points, x, y, innerHeight) {
-    var gold = cssValue('--viz-gold', 'currentColor');
+    var barColor = cssValue('--ink-ghost', '#C8BDA8');
     var bandwidth = x.bandwidth();
     var isOver = function(p) { return p.arrivals > p.capacity; };
 
@@ -108,8 +118,8 @@
       .attr('height', function(p) {
         return innerHeight - Math.max(y(p.arrivals), y(p.capacity));
       })
-      .attr('fill', gold)
-      .attr('fill-opacity', 0.7);
+      .attr('fill', barColor)
+      .attr('fill-opacity', 0.88);
 
     chart.selectAll('.queue-machine-arrival-bar-spill')
       .data(points.filter(isOver))
@@ -119,12 +129,12 @@
       .attr('y', function(p) { return y(p.arrivals); })
       .attr('width', bandwidth)
       .attr('height', function(p) { return y(p.capacity) - y(p.arrivals); })
-      .attr('fill', gold)
-      .attr('fill-opacity', 0.26);
+      .attr('fill', barColor)
+      .attr('fill-opacity', 0.34);
   }
 
   function drawBacklogMarks(chart, points, x, y, innerHeight) {
-    var gold = cssValue('--viz-gold', 'currentColor');
+    var barColor = cssValue('--ink-ghost', '#C8BDA8');
     var bandwidth = x.bandwidth();
 
     chart.selectAll('.queue-machine-backlog-bar')
@@ -135,8 +145,8 @@
       .attr('y', function(p) { return y(p.backlog); })
       .attr('width', bandwidth)
       .attr('height', function(p) { return innerHeight - y(p.backlog); })
-      .attr('fill', gold)
-      .attr('fill-opacity', 0.34);
+      .attr('fill', barColor)
+      .attr('fill-opacity', 0.44);
   }
 
   function renderArrivalsChart(timeline) {
@@ -153,8 +163,9 @@
     var y = d3Lib.scaleLinear().domain([0, maxY * 1.18]).nice().range([innerHeight, 0]);
     var svg = d3Lib.select(arrivalsChart).attr('viewBox', '0 0 ' + size.width + ' ' + size.height);
     var chart = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-    var ink = cssValue('--viz-ink', 'currentColor');
-    var inkGhost = cssValue('--viz-ink-ghost', 'currentColor');
+    var capacityColor = cssValue('--rust', '#8B3A2F');
+    var inkGhost = cssValue('--viz-ink-ghost', '#B0A490');
+    var inkFaint = cssValue('--ink-faint', '#A09580');
 
     chart.append('g')
       .attr('class', 'queue-machine-axis')
@@ -170,8 +181,8 @@
       .datum(points)
       .attr('class', 'queue-machine-capacity-line')
       .attr('fill', 'none')
-      .attr('stroke', ink)
-      .attr('stroke-opacity', 0.76)
+      .attr('stroke', capacityColor)
+      .attr('stroke-opacity', 0.72)
       .attr('stroke-width', 1)
       .attr('stroke-dasharray', '3 4')
       .attr('d', d3Lib.line()
@@ -183,9 +194,18 @@
       .attr('x', innerWidth)
       .attr('y', y(timeline.serviceRate))
       .attr('text-anchor', 'end')
-      .attr('fill', ink)
-      .attr('fill-opacity', 0.84)
+      .attr('fill', capacityColor)
+      .attr('fill-opacity', 0.88)
       .text('capacity');
+
+    chart.append('text')
+      .attr('class', 'queue-machine-chart-label')
+      .attr('transform', 'rotate(-90)')
+      .attr('x', -innerHeight / 2)
+      .attr('y', -margin.left + 14)
+      .attr('text-anchor', 'middle')
+      .attr('fill', inkFaint)
+      .text('items');
 
     chart.selectAll('.domain').attr('stroke', inkGhost);
   }
@@ -202,7 +222,8 @@
     var y = d3Lib.scaleLinear().domain([0, maxY * 1.18]).nice().range([innerHeight, 0]);
     var svg = d3Lib.select(backlogChart).attr('viewBox', '0 0 ' + size.width + ' ' + size.height);
     var chart = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-    var inkGhost = cssValue('--viz-ink-ghost', 'currentColor');
+    var inkGhost = cssValue('--viz-ink-ghost', '#B0A490');
+    var inkFaint = cssValue('--ink-faint', '#A09580');
 
     chart.append('g')
       .attr('class', 'queue-machine-axis')
@@ -214,7 +235,25 @@
 
     drawBacklogMarks(chart, points, x, y, innerHeight);
 
+    chart.append('text')
+      .attr('class', 'queue-machine-chart-label')
+      .attr('transform', 'rotate(-90)')
+      .attr('x', -innerHeight / 2)
+      .attr('y', -margin.left + 14)
+      .attr('text-anchor', 'middle')
+      .attr('fill', inkFaint)
+      .text('items');
+
     chart.selectAll('.domain').attr('stroke', inkGhost);
+  }
+
+  function updateFillRatios() {
+    [arrivalInput, serviceInput, arrivalVarInput, serviceVarInput].forEach(function(input) {
+      var min = Number(input.min);
+      var max = Number(input.max);
+      var ratio = (max > min) ? (Number(input.value) - min) / (max - min) : 0;
+      input.style.setProperty('--fill-ratio', ratio.toFixed(4));
+    });
   }
 
   function render() {
@@ -255,10 +294,18 @@
     renderArrivalsChart(timeline);
     renderBacklogChart(timeline);
     updateStatus(mm1.utilization, mm1.stable, timeline);
+    updateFillRatios();
   }
 
-  form.addEventListener('input', render);
-  window.addEventListener('resize', render);
+  form.addEventListener('input', function onFormInput() {
+    activePreset = null;
+    updatePresetButtons(null);
+    render();
+  });
+  window.addEventListener('resize', function onResize() {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(render, 120);
+  });
   if (reshuffleButton) {
     reshuffleButton.addEventListener('click', function onReshuffle() {
       sessionSeed = Math.random() * Math.PI * 2;
@@ -270,15 +317,16 @@
     button.addEventListener('click', function onPresetClick() {
       var preset = button.getAttribute('data-queue-preset');
       if (preset === 'breathing') {
-        setInputs({ arrivalRate: 0.48, serviceRate: 1.00, arrivalCv: 0.70, serviceCv: 0.80 });
+        setInputs({ arrivalRate: 0.48, serviceRate: 1.00, arrivalCv: 0.70, serviceCv: 0.80 }, preset);
       } else if (preset === 'strained') {
-        setInputs({ arrivalRate: 0.78, serviceRate: 1.00, arrivalCv: 1.00, serviceCv: 1.00 });
+        setInputs({ arrivalRate: 0.78, serviceRate: 1.00, arrivalCv: 1.00, serviceCv: 1.00 }, preset);
       } else if (preset === 'saturated') {
-        setInputs({ arrivalRate: 0.94, serviceRate: 1.00, arrivalCv: 1.00, serviceCv: 1.00 });
+        setInputs({ arrivalRate: 0.94, serviceRate: 1.00, arrivalCv: 1.00, serviceCv: 1.00 }, preset);
       } else if (preset === 'bursty') {
-        setInputs({ arrivalRate: 0.72, serviceRate: 1.00, arrivalCv: 1.65, serviceCv: 1.80 });
+        setInputs({ arrivalRate: 0.72, serviceRate: 1.00, arrivalCv: 1.65, serviceCv: 1.80 }, preset);
       }
     });
   });
+  updatePresetButtons(null);
   render();
 })();

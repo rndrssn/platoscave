@@ -14,6 +14,7 @@
 .queue-machine-page {
   --queue-flow: var(--sage);
   --queue-strained: var(--rust);
+  --queue-bars-color: var(--ink-ghost);
 }
 
 .queue-machine-page var,
@@ -109,7 +110,9 @@
 
 /* Segmented preset control */
 .queue-machine-preset-group {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  inline-size: 100%;
   border: 1px solid var(--ink-ghost);
   border-radius: 3px;
   overflow: hidden;
@@ -119,7 +122,7 @@
   border: 0;
   border-right: 1px solid var(--ink-ghost);
   border-radius: 0;
-  padding: 0.48rem 0.9rem;
+  padding: 0.48rem 0.72rem;
   background: transparent;
   color: var(--ink-faint);
   cursor: pointer;
@@ -129,11 +132,27 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   transition: background 120ms ease, color 120ms ease;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.25;
 }
 
 .queue-machine-preset-group [data-queue-preset]:last-child {
   border-right: 0;
+}
+
+@media (max-width: 760px) {
+  .queue-machine-preset-group {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .queue-machine-preset-group [data-queue-preset]:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .queue-machine-preset-group [data-queue-preset]:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--ink-ghost);
+  }
 }
 
 .queue-machine-preset-group [data-queue-preset]:focus-visible {
@@ -201,7 +220,7 @@
 
 .queue-machine-control {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.35rem;
 }
 
 .queue-machine-control label,
@@ -228,6 +247,21 @@
   font-size: 0.75rem;
 }
 
+.queue-machine-control .queue-machine-control-meta {
+  color: var(--queue-bars-color);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  margin-top: -0.05rem;
+}
+
+.queue-machine-control .queue-machine-control-meta * {
+  color: var(--queue-bars-color);
+}
+
+.queue-machine-control .queue-machine-control-meta [data-output] {
+  color: var(--queue-bars-color);
+}
+
 .queue-machine-control [data-output] {
   color: var(--ink);
 }
@@ -248,13 +282,13 @@
 
 .queue-machine-control input[type="range"]::-webkit-slider-runnable-track {
   block-size: 1px;
-  background: var(--ink-ghost);
+  background: var(--queue-bars-color);
   border: 0;
 }
 
 .queue-machine-control input[type="range"]::-moz-range-track {
   block-size: 1px;
-  background: var(--ink-ghost);
+  background: var(--queue-bars-color);
   border: 0;
 }
 
@@ -264,8 +298,8 @@
   inline-size: 0.85rem;
   block-size: 0.85rem;
   border-radius: 999px;
-  border: 1.5px solid var(--ink-mid);
-  background: var(--paper);
+  border: 1.5px solid var(--queue-bars-color);
+  background: color-mix(in srgb, var(--paper) 84%, var(--queue-bars-color) 16%);
   margin-top: -0.4rem;
   transition: border-color 140ms ease, transform 140ms ease;
 }
@@ -274,20 +308,20 @@
   inline-size: 0.85rem;
   block-size: 0.85rem;
   border-radius: 999px;
-  border: 1.5px solid var(--ink-mid);
-  background: var(--paper);
+  border: 1.5px solid var(--queue-bars-color);
+  background: color-mix(in srgb, var(--paper) 84%, var(--queue-bars-color) 16%);
   transition: border-color 140ms ease, transform 140ms ease;
 }
 
 .queue-machine-control input[type="range"]:hover::-webkit-slider-thumb,
 .queue-machine-control input[type="range"]:focus-visible::-webkit-slider-thumb {
-  border-color: var(--ink);
+  border-color: var(--queue-bars-color);
   transform: scale(1.1);
 }
 
 .queue-machine-control input[type="range"]:hover::-moz-range-thumb,
 .queue-machine-control input[type="range"]:focus-visible::-moz-range-thumb {
-  border-color: var(--ink);
+  border-color: var(--queue-bars-color);
   transform: scale(1.1);
 }
 
@@ -662,6 +696,23 @@
 
 .queue-machine-concept-node:active { cursor: grabbing; }
 
+.queue-machine-concept-node:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  filter: none;
+}
+
+.queue-machine-concept-node:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  filter: none;
+}
+
+.queue-machine-concept-hitarea:focus,
+.queue-machine-concept-hitarea:focus-visible {
+  outline: none !important;
+}
+
 .queue-machine-concept-node--concept {
   fill: var(--sage-light);
   stroke: color-mix(in srgb, var(--sage-light) 78%, var(--paper) 22%);
@@ -685,24 +736,7 @@
 .queue-machine-concept-node.is-dim {
   fill: color-mix(in srgb, var(--paper) 84%, var(--ink-ghost) 16%);
   stroke: color-mix(in srgb, var(--paper) 78%, var(--ink-ghost) 22%);
-}
-
-.queue-machine-concept-node.is-related {
-  opacity: 0.55;
-}
-
-.queue-machine-concept-node.is-group-focus {
-  opacity: 1;
-}
-
-.queue-machine-concept-edge.is-dim {
-  stroke: color-mix(in srgb, var(--paper) 72%, var(--ink-ghost) 28%);
-  stroke-opacity: 0.24;
-}
-
-.queue-machine-concept-edge.is-related {
-  stroke: color-mix(in srgb, var(--paper) 44%, var(--ink-ghost) 56%);
-  stroke-opacity: 0.46;
+  opacity: 0.3;
 }
 
 .queue-machine-concept-hitarea {
@@ -711,8 +745,32 @@
   cursor: grab;
 }
 
+.queue-machine-concept-drag-glow {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink-faint) 32%, transparent 68%);
+  stroke-width: 2.8;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.queue-machine-concept-drag-glow.is-active {
+  opacity: 0.52;
+}
+
 .queue-machine-concept-label {
   --force-graph-label-fill: var(--ink-mid);
+}
+
+.queue-machine-concept-edge.is-dim {
+  stroke: color-mix(in srgb, var(--paper) 72%, var(--ink-ghost) 28%);
+  stroke-opacity: 0.24;
+  opacity: 0.3;
+}
+
+.queue-machine-concept-edge.is-related {
+  stroke: color-mix(in srgb, var(--paper) 44%, var(--ink-ghost) 56%);
+  stroke-opacity: 0.46;
 }
 
 .queue-machine-concept-label.is-active {
@@ -722,6 +780,7 @@
 
 .queue-machine-concept-label.is-dim {
   fill: color-mix(in srgb, var(--paper) 58%, var(--ink-ghost) 42%);
+  opacity: 0.3;
 }
 
 .queue-machine-concept-label.is-related {

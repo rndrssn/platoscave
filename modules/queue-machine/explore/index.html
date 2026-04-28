@@ -63,10 +63,10 @@
         <p class="force-graph-helper queue-machine-lab-helper">Select a scenario preset or adjust the parameters, then observe how the charts and readouts change together.</p>
         <div class="queue-machine-presets" aria-label="Scenario presets">
           <div class="queue-machine-preset-group" role="group" aria-label="Scenario presets">
+            <button type="button" data-queue-preset="bursty">Bursty product work</button>
             <button type="button" data-queue-preset="breathing">Slack absorbs variation</button>
             <button type="button" data-queue-preset="strained">Strained but stable</button>
             <button type="button" data-queue-preset="saturated">Near saturation</button>
-            <button type="button" data-queue-preset="bursty">Bursty product work</button>
           </div>
           <button type="button" class="queue-machine-reshuffle" data-queue-reshuffle aria-label="Reshuffle the variability shape">&#x21BB; Reshuffle</button>
         </div>
@@ -74,23 +74,23 @@
         <form class="queue-machine-controls" data-queue-controls>
           <div class="queue-machine-control">
             <label for="queue-arrival-rate">Average work arriving</label>
+            <span class="queue-machine-control-meta">(<span data-output="arrival-rate">0.7</span> items / time unit)</span>
             <input id="queue-arrival-rate" type="range" min="0.10" max="0.98" step="0.01" value="0.72" />
-            <span><span data-output="arrival-rate">0.7</span> items / time unit</span>
           </div>
           <div class="queue-machine-control">
             <label for="queue-service-rate">Average capacity available</label>
+            <span class="queue-machine-control-meta">(<span data-output="service-rate">1.0</span> items / time unit)</span>
             <input id="queue-service-rate" type="range" min="0.50" max="1.20" step="0.01" value="1.00" />
-            <span><span data-output="service-rate">1.0</span> items / time unit</span>
           </div>
           <div class="queue-machine-control">
             <label for="queue-arrival-variability">Burstiness of incoming work</label>
+            <span class="queue-machine-control-meta">(unevenness <span data-output="arrival-cv">1.7</span>)</span>
             <input id="queue-arrival-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.65" />
-            <span>unevenness <span data-output="arrival-cv">1.7</span></span>
           </div>
           <div class="queue-machine-control">
             <label for="queue-service-variability">Unevenness of work size</label>
+            <span class="queue-machine-control-meta">(unevenness <span data-output="service-cv">1.8</span>)</span>
             <input id="queue-service-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.80" />
-            <span>unevenness <span data-output="service-cv">1.8</span></span>
           </div>
         </form>
 

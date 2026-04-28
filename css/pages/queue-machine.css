@@ -1,5 +1,5 @@
 /* Token tier policy:
-   - Bar charts (in-simulation data viz): --viz-* saturated tier (set in queue-machine.js)
+   - Bar charts (in-simulation data viz): monochrome --viz-gold tier (set in queue-machine.js)
    - Force graph nodes (concept-graph): --rust-light / --gold / --sage-light / --slate-light pastel tier
    - Aside-card accent borders (assumption / TOC panels): --sage / --rust UI tier (chrome accent, not data viz)
    - All chrome microtype: --ink / --ink-mid / --ink-faint UI text tier
@@ -124,49 +124,6 @@
 .queue-machine-reshuffle {
   margin-inline-start: auto;
   border-style: dashed !important;
-}
-
-.queue-machine-style-switcher {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.35rem;
-}
-
-.queue-machine-style-switcher-label {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  margin-inline-end: 0.2rem;
-}
-
-.queue-machine-style-switcher button {
-  font-family: var(--mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  border: 0;
-  border-bottom: 1px dotted var(--ink-ghost);
-  padding: 0.28rem 0.1rem;
-  background: transparent;
-  color: var(--ink-faint);
-  cursor: pointer;
-  transition: color 140ms ease, border-color 140ms ease;
-}
-
-.queue-machine-style-switcher button:hover,
-.queue-machine-style-switcher button:focus-visible {
-  color: var(--ink-mid);
-  border-bottom-color: var(--ink-mid);
-  outline: none;
-}
-
-.queue-machine-style-switcher button[aria-pressed='true'] {
-  color: var(--ink);
-  border-bottom: 1px solid var(--ink);
 }
 
 .queue-machine-controls {

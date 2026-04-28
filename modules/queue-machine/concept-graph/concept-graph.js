@@ -45,11 +45,11 @@
     { id: 'addPeople', label: '"Add people to go faster"', short: 'Add people', group: 'assumption' },
     { id: 'highUtil', label: '"Higher utilization = better"', short: 'High util = better', group: 'assumption' },
     { id: 'bigBatches', label: '"Bigger batches = more efficient"', short: 'Big batches', group: 'assumption' },
-    { id: 'morePlanning', label: '"More planning = more predictable"', short: 'More planning', group: 'assumption' },
+    { id: 'morePlanning', label: '"More upfront planning makes complex work predictable"', short: 'Upfront planning', group: 'assumption' },
     { id: 'pushEverything', label: '"Push everything in early"', short: 'Push early', group: 'assumption' },
     { id: 'individualTargets', label: '"Optimize individual targets"', short: 'Individual targets', group: 'assumption' },
 
-    { id: 'sBelow100', label: 'Queues appear below 100% average load', short: 'Queues <100%', group: 'surprise', note: 'Average spare capacity can still hide local overload when arrivals and service vary.' },
+    { id: 'sBelow100', label: 'Queues can appear below 100% average load', short: 'Queues <100%', group: 'surprise', note: 'Average spare capacity can still hide local overload when arrivals and service vary.' },
     { id: 'sSlack', label: 'Slack protects flow', short: 'Slack protects flow', group: 'surprise' },
     { id: 'sStartLess', label: 'Starting less can finish more', short: 'Start less', group: 'surprise' },
     { id: 'sVarDom', label: 'Variability is amplified near ρ→1', short: 'Variability amplifies', group: 'surprise' },

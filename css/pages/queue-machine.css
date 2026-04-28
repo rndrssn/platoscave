@@ -1,5 +1,6 @@
 /* Token tier policy:
-   - Bar charts (in-simulation data viz): monochrome --viz-gold tier (set in queue-machine.js)
+   - Bar charts (Explore lab): --ink-ghost neutral tier, read directly in queue-machine.js via cssValue('--ink-ghost').
+     Matches section-map readiness bars (--section-map-readiness = var(--ink-ghost)). Opacity varies: fit 0.88, spill 0.34, backlog 0.44.
    - Force graph nodes (concept-graph): --rust-light / --gold / --sage-light / --slate-light pastel tier
    - Aside-card accent borders (assumption / TOC panels): --sage / --rust UI tier (chrome accent, not data viz)
    - All chrome microtype: --ink / --ink-mid / --ink-faint UI text tier
@@ -95,6 +96,10 @@
   margin: 2rem 0 4rem;
 }
 
+.queue-machine-lab-helper {
+  margin: 0 0 1rem;
+}
+
 .queue-machine-presets {
   display: flex;
   flex-wrap: wrap;
@@ -119,6 +124,55 @@
   color: var(--ink);
   background: color-mix(in srgb, var(--paper) 92%, var(--ink) 8%);
   outline: none;
+}
+
+.queue-machine-presets button[aria-pressed="true"] {
+  border-color: var(--ink-mid);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--paper) 88%, var(--ink) 12%);
+}
+
+/* Per-preset color accents */
+.queue-machine-presets [data-queue-preset="breathing"] {
+  border-color: color-mix(in srgb, var(--sage) 30%, var(--ink-ghost) 70%);
+}
+.queue-machine-presets [data-queue-preset="strained"] {
+  border-color: color-mix(in srgb, var(--gold) 42%, var(--ink-ghost) 58%);
+}
+.queue-machine-presets [data-queue-preset="saturated"] {
+  border-color: color-mix(in srgb, var(--rust) 30%, var(--ink-ghost) 70%);
+}
+.queue-machine-presets [data-queue-preset="bursty"] {
+  border-color: color-mix(in srgb, var(--slate) 30%, var(--ink-ghost) 70%);
+}
+
+.queue-machine-presets [data-queue-preset="breathing"]:hover,
+.queue-machine-presets [data-queue-preset="breathing"]:focus-visible,
+.queue-machine-presets [data-queue-preset="breathing"][aria-pressed="true"] {
+  border-color: var(--sage);
+  color: var(--sage);
+  background: color-mix(in srgb, var(--paper) 90%, var(--sage) 10%);
+}
+.queue-machine-presets [data-queue-preset="strained"]:hover,
+.queue-machine-presets [data-queue-preset="strained"]:focus-visible,
+.queue-machine-presets [data-queue-preset="strained"][aria-pressed="true"] {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: color-mix(in srgb, var(--paper) 90%, var(--gold) 10%);
+}
+.queue-machine-presets [data-queue-preset="saturated"]:hover,
+.queue-machine-presets [data-queue-preset="saturated"]:focus-visible,
+.queue-machine-presets [data-queue-preset="saturated"][aria-pressed="true"] {
+  border-color: var(--rust);
+  color: var(--rust);
+  background: color-mix(in srgb, var(--paper) 90%, var(--rust) 10%);
+}
+.queue-machine-presets [data-queue-preset="bursty"]:hover,
+.queue-machine-presets [data-queue-preset="bursty"]:focus-visible,
+.queue-machine-presets [data-queue-preset="bursty"][aria-pressed="true"] {
+  border-color: var(--slate);
+  color: var(--slate);
+  background: color-mix(in srgb, var(--paper) 90%, var(--slate) 10%);
 }
 
 .queue-machine-reshuffle {
@@ -162,6 +216,10 @@
   font-size: 0.75rem;
 }
 
+.queue-machine-control [data-output] {
+  color: var(--ink);
+}
+
 .queue-machine-control input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -177,48 +235,60 @@
 }
 
 .queue-machine-control input[type="range"]::-webkit-slider-runnable-track {
-  block-size: 1px;
-  background: var(--ink-ghost);
+  block-size: 2px;
+  background: linear-gradient(
+    to right,
+    var(--ink-mid) calc(var(--fill-ratio, 0) * 100%),
+    var(--ink-ghost) calc(var(--fill-ratio, 0) * 100%)
+  );
   border: 0;
+  border-radius: 999px;
 }
 
 .queue-machine-control input[type="range"]::-moz-range-track {
-  block-size: 1px;
+  block-size: 2px;
   background: var(--ink-ghost);
   border: 0;
+  border-radius: 999px;
+}
+
+.queue-machine-control input[type="range"]::-moz-range-progress {
+  block-size: 2px;
+  background: var(--ink-mid);
+  border-radius: 999px;
 }
 
 .queue-machine-control input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  inline-size: 0.7rem;
-  block-size: 0.7rem;
+  inline-size: 0.88rem;
+  block-size: 0.88rem;
   border-radius: 999px;
   border: 0;
-  background: var(--ink-faint);
-  margin-top: -0.32rem;
+  background: var(--ink-mid);
+  margin-top: -0.41rem;
   transition: background 140ms ease, transform 140ms ease;
 }
 
 .queue-machine-control input[type="range"]::-moz-range-thumb {
-  inline-size: 0.7rem;
-  block-size: 0.7rem;
+  inline-size: 0.88rem;
+  block-size: 0.88rem;
   border-radius: 999px;
   border: 0;
-  background: var(--ink-faint);
+  background: var(--ink-mid);
   transition: background 140ms ease, transform 140ms ease;
 }
 
 .queue-machine-control input[type="range"]:hover::-webkit-slider-thumb,
 .queue-machine-control input[type="range"]:focus-visible::-webkit-slider-thumb {
-  background: var(--ink-mid);
-  transform: scale(1.18);
+  background: var(--ink);
+  transform: scale(1.14);
 }
 
 .queue-machine-control input[type="range"]:hover::-moz-range-thumb,
 .queue-machine-control input[type="range"]:focus-visible::-moz-range-thumb {
-  background: var(--ink-mid);
-  transform: scale(1.18);
+  background: var(--ink);
+  transform: scale(1.14);
 }
 
 .queue-machine-stage {
@@ -528,6 +598,18 @@
   background: var(--rust-light);
 }
 
+.queue-machine-concept-detail-note {
+  display: block;
+  margin-top: 0.4rem;
+  color: var(--ink-mid);
+  font-family: var(--serif);
+  font-size: 0.82rem;
+  font-style: italic;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-transform: none;
+}
+
 /* Page-specific swatch colours (chrome microtype + animation come from force-graph-chrome.css) */
 .queue-machine-concept-detail-swatch--concept {
   background: var(--sage-light);
@@ -658,6 +740,23 @@
 
   .queue-machine-readout {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* Subgrid: pin chart SVGs to the same row across both columns */
+  .queue-machine-stage {
+    grid-template-rows: auto auto 17rem;
+    align-items: start;
+  }
+
+  .queue-machine-chart-panel {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    gap: 0;
+  }
+
+  .queue-machine-chart {
+    align-self: start;
   }
 }
 

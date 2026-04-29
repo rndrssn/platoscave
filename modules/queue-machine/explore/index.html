@@ -61,7 +61,7 @@
 
       <section class="queue-machine-lab" aria-label="Queue and utilization demonstration">
         <p class="force-graph-helper queue-machine-lab-helper">Select a scenario preset or adjust the parameters, then observe how the charts and readouts change together.</p>
-        <div class="queue-machine-presets" aria-label="Scenario presets">
+        <div class="queue-machine-presets">
           <div class="queue-machine-preset-group" role="group" aria-label="Scenario presets">
             <button type="button" data-queue-preset="bursty">Bursty product work</button>
             <button type="button" data-queue-preset="breathing">Slack absorbs variation</button>
@@ -73,23 +73,23 @@
 
         <form class="queue-machine-controls" data-queue-controls>
           <div class="queue-machine-control">
-            <label for="queue-arrival-rate">Average work arriving</label>
-            <span class="queue-machine-control-meta">(<span data-output="arrival-rate">4.3</span> items / time unit)</span>
+            <label for="queue-arrival-rate">Arrival rate (&lambda;)</label>
+            <span class="queue-machine-control-meta">(&lambda;&thinsp;=&thinsp;<span data-output="arrival-rate">4.3</span> items / time unit)</span>
             <input id="queue-arrival-rate" type="range" min="0.10" max="0.98" step="0.01" value="0.72" />
           </div>
           <div class="queue-machine-control">
-            <label for="queue-service-rate">Average capacity available</label>
-            <span class="queue-machine-control-meta">(<span data-output="service-rate">6.0</span> items / time unit)</span>
+            <label for="queue-service-rate">Service capacity (&mu;)</label>
+            <span class="queue-machine-control-meta">(&mu;&thinsp;=&thinsp;<span data-output="service-rate">6.0</span> items / time unit)</span>
             <input id="queue-service-rate" type="range" min="0.50" max="1.20" step="0.01" value="1.00" />
           </div>
           <div class="queue-machine-control">
-            <label for="queue-arrival-variability">Burstiness of incoming work</label>
-            <span class="queue-machine-control-meta">(unevenness <span data-output="arrival-cv">1.7</span>)</span>
+            <label for="queue-arrival-variability">Arrival variability (C<sub>a</sub>)</label>
+            <span class="queue-machine-control-meta">(C<sub>a</sub>&thinsp;=&thinsp;<span data-output="arrival-cv">1.7</span>)</span>
             <input id="queue-arrival-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.65" />
           </div>
           <div class="queue-machine-control">
-            <label for="queue-service-variability">Unevenness of work size</label>
-            <span class="queue-machine-control-meta">(unevenness <span data-output="service-cv">1.8</span>)</span>
+            <label for="queue-service-variability">Service variability (C<sub>s</sub>)</label>
+            <span class="queue-machine-control-meta">(C<sub>s</sub>&thinsp;=&thinsp;<span data-output="service-cv">1.8</span>)</span>
             <input id="queue-service-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.80" />
           </div>
         </form>
@@ -114,14 +114,15 @@
           <p class="queue-machine-status" data-queue-status aria-live="polite"></p>
         </div>
 
-        <p class="force-graph-helper queue-machine-readout-caption">The charts show one illustrative sample path with the same averages. The readouts estimate long-run behavior using Little's Law, M/M/1, and Kingman's approximation.</p>
-        <dl class="queue-machine-readout">
+        <h2 class="queue-machine-chart-title">Long-run estimates</h2>
+        <p class="force-graph-helper queue-machine-readout-caption">The charts show one illustrative sample path. The readouts estimate long-run behavior: M/M/1 uses exponential distributions (C<sub>a</sub>&thinsp;=&thinsp;C<sub>s</sub>&thinsp;=&thinsp;1); Kingman applies the full variability penalty from your slider values. The gap between them is the cost of variability at this load.</p>
+        <dl class="queue-machine-readout" aria-label="Queue metrics readout">
           <div>
-            <dt>Average load</dt>
+            <dt>Utilization (&rho;)</dt>
             <dd data-output="utilization">72.0%</dd>
           </div>
           <div>
-            <dt>Lead time (M/M/1, no variability)</dt>
+            <dt>Lead time (M/M/1, C<sub>a</sub>&thinsp;=&thinsp;C<sub>s</sub>&thinsp;=&thinsp;1)</dt>
             <dd><span data-output="mm1-lead-time">3.6</span> time units</dd>
           </div>
           <div>
@@ -145,15 +146,16 @@
 
       <article class="module-essay queue-machine-theory">
         <section class="essay-section">
-          <h2 class="essay-heading">How to read this lab</h2>
-          <ol class="queue-machine-step-list">
-            <li><strong>Set load:</strong> tune arrivals and capacity to place the system in breathing room, strain, or near saturation.</li>
-            <li><strong>Add variation:</strong> raise arrival and service unevenness to see queue sensitivity.</li>
-            <li><strong>Check spill:</strong> watch local overflow create backlog even below 100% average utilization.</li>
-            <li><strong>Compare the readouts:</strong> M/M/1 assumes no variability; Kingman adds the full penalty from both arrival and service unevenness. The gap between the two is the cost of variability at your current load.</li>
-          </ol>
+          <h2 class="essay-heading">What to look for</h2>
+          <ul class="queue-machine-step-list">
+            <li><strong>Spill at low average load:</strong> backlog can appear well below 100% utilization when variability is high. The burst trap regime is invisible to averages alone.</li>
+            <li><strong>Non-linearity near saturation:</strong> as ρ approaches 1, small load increases produce disproportionate queue growth. The M/M/1 readout shows this even without extra variability.</li>
+            <li><strong>The Kingman gap:</strong> the difference between M/M/1 lead time and Kingman lead time is the variability penalty. At the same utilization, raising C<sub>a</sub> or C<sub>s</sub> widens this gap without touching ρ.</li>
+            <li><strong>Variability penalty scale:</strong> a penalty of 1.0 means variability doubles queue wait compared to deterministic arrivals. Values above 2 indicate compound variability driving most of the delay.</li>
+          </ul>
           <p class="essay-body">
-            For assumptions, definitions, and model context, read <a href="../">Section 01 &mdash; Flow and Waiting</a>.
+            For definitions of &rho;, <var>C<sub>a</sub></var>, <var>C<sub>s</sub></var>, and the underlying models, read
+            <a href="../">Section 01 &mdash; Flow and Waiting</a>.
           </p>
         </section>
       </article>

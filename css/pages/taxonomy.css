@@ -89,6 +89,17 @@
   border: 1px solid var(--paper-deep);
 }
 
+.taxonomy-regime-dims {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  line-height: 1.4;
+}
+
 /* ─── Organisation type blocks ───────────────────────── */
 .taxonomy-type {
   margin-bottom: 2.5rem;

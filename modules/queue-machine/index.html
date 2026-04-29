@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Queueing theory applied to product development: how utilization, variability, and Little's Law explain why average load understates waiting." />
+  <meta name="description" content="Queueing theory applied to product development: utilization, variability, Little's Law, Kingman's approximation, and Theory of Constraints—why average load understates waiting." />
   <title>Flow and Waiting · The Queue Machine · To the Bedrock</title>
   <script src="../../theme.config.js"></script>
   <script src="../../js/theme-bootstrap.js"></script>
@@ -66,14 +66,12 @@
           between average load and experienced waiting is the utilization trap.
         </p>
         <p class="module-header-body">
-          This module applies queueing theory to knowledge work. It covers the core quantities, Little's Law, the M/M/1
-          baseline model, Kingman's variability approximation, and the connection to Theory of Constraints.
+          This module applies queueing theory to knowledge work. It covers the core quantities,
+          <a class="ep-jump" href="#littles-law">Little's Law</a>,
+          the <a class="ep-jump" href="#mm1">M/M/1 baseline model</a>,
+          <a class="ep-jump" href="#kingman">Kingman's variability approximation</a>,
+          and the <a class="ep-jump" href="#toc">connection to Theory of Constraints</a>.
         </p>
-        <ul class="queue-machine-mini-legend" aria-label="Compact variable legend">
-          <li><strong>Average load</strong><span>how busy the system looks on paper; ρ = λ / μ</span></li>
-          <li><strong>Arrival variability</strong><span>unevenness in how work arrives or changes size; C<sub>a</sub> or burstiness</span></li>
-          <li><strong>Backlog</strong><span>overflow carried forward when arrivals exceed capacity in a given period</span></li>
-        </ul>
       </header>
 
       <article class="module-essay queue-machine-theory">
@@ -100,16 +98,22 @@
         <section class="essay-section">
           <h2 class="essay-heading">Core quantities</h2>
           <ul class="essay-body queue-machine-mapping-list">
-            <li><strong>Arrival rate</strong> is <var>&lambda;</var>: how fast work enters the system.</li>
-            <li><strong>Service rate</strong> is <var>&mu;</var>: how fast the constrained step can finish work.</li>
-            <li><strong>Utilization</strong> is <var>&rho;</var> = <var>&lambda; / &mu;</var>: average load at the constraint.</li>
-            <li><strong>Arrival and service variability</strong> are <var>C<sub>a</sub></var> and <var>C<sub>s</sub></var>: coefficients of variation measuring how unevenly work arrives and how unevenly each item is served.</li>
-            <li><strong>WIP</strong> is <var>L</var>: average items in the system. <strong>Lead time</strong> is <var>W</var>: average time an item spends in the system.</li>
+            <li><strong>Arrival rate (<var>&lambda;</var>)</strong>: how fast work enters the system.</li>
+            <li><strong>Service rate (<var>&mu;</var>)</strong>: how fast the constrained step can finish work.</li>
+            <li><strong>Utilization (<var>&rho;</var>)</strong> = <var>&lambda;</var>&thinsp;/&thinsp;<var>&mu;</var>: average load at the constraint.</li>
+            <li><strong>Variability (<var>C<sub>a</sub></var>, <var>C<sub>s</sub></var>)</strong>: coefficients of variation for arrivals and service times. C&nbsp;=&nbsp;0 is deterministic, C&nbsp;=&nbsp;1 is exponential (Poisson arrivals), C&nbsp;&gt;&nbsp;1 is bursty or fat-tailed. <var>C<sub>a</sub></var> measures arrival unevenness; <var>C<sub>s</sub></var> measures service-time unevenness.</li>
+            <li><strong>WIP (<var>L</var>)</strong>: average number of items in the system at any moment.</li>
+            <li><strong>Lead time (<var>W</var>)</strong>: average time an item spends in the system, from entry to exit.</li>
           </ul>
+          <p class="essay-body">
+            <strong>Worked example:</strong> if &lambda;&nbsp;=&nbsp;4&thinsp;items/hour and &mu;&nbsp;=&nbsp;5&thinsp;items/hour, then
+            &rho;&nbsp;=&nbsp;0.80. Under M/M/1, W&nbsp;=&nbsp;1&thinsp;/&thinsp;(&mu;&nbsp;&minus;&nbsp;&lambda;)&nbsp;=&nbsp;1&thinsp;hour.
+            Little's Law then gives L&nbsp;=&nbsp;&lambda;&thinsp;&times;&thinsp;W&nbsp;=&nbsp;4&thinsp;items in the system on average.
+          </p>
         </section>
 
         <section class="essay-section">
-          <h2 class="essay-heading">Little's Law</h2>
+          <h2 class="essay-heading" id="littles-law">Little's Law</h2>
           <p class="essay-body">
             Little's Law is the accounting identity of flow. If WIP goes up and throughput does not, where does the pain
             go? Into time. In any stable system observed over a meaningful interval, average work in the system equals
@@ -121,7 +125,7 @@
               <mi>L</mi><mo>=</mo><mi>&lambda;</mi><mi>W</mi>
             </math>
             <figcaption>
-              <var>L</var> is average work in system, <var>lambda</var> is average arrival or throughput rate,
+              <var>L</var> is average work in system, <var>&lambda;</var> is average arrival or throughput rate,
               and <var>W</var> is average time in system.
             </figcaption>
           </figure>
@@ -169,7 +173,7 @@
         </section>
 
         <section class="essay-section">
-          <h2 class="essay-heading">Why high utilization bites</h2>
+          <h2 class="essay-heading" id="mm1">Why high utilization bites</h2>
           <p class="essay-body">
             M/M/1 is not a model of software development. It is a stripped-down warning light: one server, random arrivals,
             random service times, and stable arrival rate below service capacity. Even in that small world, waiting does
@@ -182,7 +186,7 @@
               <mi>&rho;</mi><mo>=</mo><mfrac><mi>&lambda;</mi><mi>&mu;</mi></mfrac>
             </math>
             <figcaption>
-              <var>rho</var> is utilization, <var>lambda</var> is arrival rate, and <var>mu</var> is service rate.
+              <var>&rho;</var> is utilization, <var>&lambda;</var> is arrival rate, and <var>&mu;</var> is service rate.
             </figcaption>
           </figure>
 
@@ -191,21 +195,23 @@
               <mi>W</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mi>&mu;</mi><mo>-</mo><mi>&lambda;</mi></mrow></mfrac>
             </math>
             <figcaption>
-              In M/M/1, average system time grows without bound as <var>lambda</var> approaches <var>mu</var>.
+              In M/M/1, average system time grows without bound as <var>&lambda;</var> approaches <var>&mu;</var>.
             </figcaption>
           </figure>
 
           <aside class="queue-machine-assumption-card" aria-label="Model assumptions">
-            <h3>Assumptions</h3>
+            <h3>Model assumptions</h3>
             <p>
-              These equations describe stable average behavior, not a promise about any one item. The M/M/1 case assumes
-              one server, random arrivals, random service times, and <var>&lambda; &lt; &mu;</var>.
+              These equations describe stable average behavior, not a promise about any one item. M/M/1 assumes one server,
+              Poisson arrivals (<var>C<sub>a</sub></var>&nbsp;=&nbsp;1), exponentially distributed service times
+              (<var>C<sub>s</sub></var>&nbsp;=&nbsp;1), and <var>&lambda;&nbsp;&lt;&nbsp;&mu;</var>. Kingman relaxes the
+              distributional constraints and applies to any positive <var>C<sub>a</sub></var> and <var>C<sub>s</sub></var>.
             </p>
           </aside>
         </section>
 
         <section class="essay-section">
-          <h2 class="essay-heading">Where variability enters</h2>
+          <h2 class="essay-heading" id="kingman">Where variability enters</h2>
           <p class="essay-body">
             Kingman is where the warning starts to look like product work. Real teams do not just have average load; they
             have uneven arrivals and uneven item sizes. Rework appears, reviews block, priorities change, and dependencies
@@ -224,20 +230,23 @@
               <mo>&times;</mo><mi>E</mi><mo>[</mo><mi>S</mi><mo>]</mo>
             </math>
             <figcaption>
-              <var>Wq</var> is average waiting time in queue, <var>Ca</var> is interarrival variation,
-              <var>Cs</var> is service-time variation, and <var>E[S]</var> is average service time.
+              <var>W<sub>q</sub></var> is average waiting time in queue, <var>C<sub>a</sub></var> is interarrival
+              variation, <var>C<sub>s</sub></var> is service-time variation, and <var>E[S]</var> is average service time.
             </figcaption>
           </figure>
 
           <p class="essay-body">
-            The important part is the product of two forces: <var>rho / (1 - rho)</var> and
-            <var>(Ca^2 + Cs^2) / 2</var>. Variability hurts at any utilization, but near saturation the system has no room
-            to absorb it.
+            The formula has three multiplicative factors: the utilization term
+            <var>&rho;</var>&thinsp;/&thinsp;(1&nbsp;&minus;&nbsp;<var>&rho;</var>), which grows steeply near saturation;
+            the variability term (<var>C<sub>a</sub></var><sup>2</sup>&thinsp;+&thinsp;<var>C<sub>s</sub></var><sup>2</sup>)&thinsp;/&thinsp;2,
+            which scales with the combined unevenness of arrivals and service; and E[S], the average service time, which sets
+            the baseline wait. Variability amplifies waiting at any utilization, but near saturation there is no slack to
+            absorb it.
           </p>
         </section>
 
         <section class="essay-section">
-          <h2 class="essay-heading">Connection to Theory of Constraints</h2>
+          <h2 class="essay-heading" id="toc">Connection to Theory of Constraints</h2>
           <p class="essay-body">
             Queueing theory describes the waiting mechanism. Theory of Constraints offers the complementary management
             question: where is the constraint, and what would protect its flow?
@@ -248,8 +257,8 @@
             from overfeeding it—turns a diagnosis of high utilization into a tractable management action. Queueing
             gives the formula for why things are slow; TOC asks what to change first.
           </p>
-          <aside class="queue-machine-toc-panel" aria-label="Theory of Constraints translation">
-            <h3>TOC translation</h3>
+          <aside class="queue-machine-toc-panel" aria-label="Theory of Constraints">
+            <h3>Theory of Constraints</h3>
             <p>
               Identify the constraint. Exploit it fully. Subordinate all other decisions to it. The target is not
               universal busyness; it is valuable work moving through the constraint at a sustainable pace.
@@ -282,7 +291,7 @@
           <div class="essay-links">
             <a class="essay-link" href="taxonomy/">
               <span class="essay-link-label">Taxonomy</span>
-              <span class="essay-link-desc">Classify queue and flow regimes by load, variability, and release discipline</span>
+              <span class="essay-link-desc">Classify flow regimes across four dimensions: load, variability, release discipline, and constraint behavior</span>
             </a>
             <a class="essay-link" href="explore/">
               <span class="essay-link-label">Explore</span>
@@ -304,7 +313,7 @@
             <li>Goldratt, E. M., &amp; Cox, J. (1984). <em>The Goal: A Process of Ongoing Improvement.</em> North River Press.</li>
             <li>Goldratt, E. M. (1990). <em>What Is This Thing Called Theory of Constraints and How Should It Be Implemented?</em> North River Press.</li>
             <li>Reinertsen, D. G. (2009). <em>The Principles of Product Development Flow: Second Generation Lean Product Development.</em> Celeritas Publishing.</li>
-            <li>Kniberg, H. (c. 2012). <em>Resource Utilization Trap</em> [video]. <a href="https://www.youtube.com/watch?v=CostXs2p6r0">youtube.com/watch?v=CostXs2p6r0</a>.</li>
+            <li>Kniberg, H. (c. 2012). <em>Resource Utilization Trap</em> [video]. <a href="https://www.youtube.com/watch?v=CostXs2p6r0">Resource Utilization Trap on YouTube</a>.</li>
           </ul>
         </section>
       </article>

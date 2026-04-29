@@ -151,7 +151,7 @@
             <li><strong>Spill at low average load:</strong> backlog can appear well below 100% utilization when variability is high. The burst trap regime is invisible to averages alone.</li>
             <li><strong>Non-linearity near saturation:</strong> as ρ approaches 1, small load increases produce disproportionate queue growth. The M/M/1 readout shows this even without extra variability.</li>
             <li><strong>The Kingman gap:</strong> the difference between M/M/1 lead time and Kingman lead time is the variability penalty. At the same utilization, raising C<sub>a</sub> or C<sub>s</sub> widens this gap without touching ρ.</li>
-            <li><strong>Variability penalty scale:</strong> a penalty of 1.0 means variability doubles queue wait compared to deterministic arrivals. Values above 2 indicate compound variability driving most of the delay.</li>
+            <li><strong>Variability penalty scale:</strong> 1.0 is the M/M/1 baseline (C<sub>a</sub>&thinsp;=&thinsp;C<sub>s</sub>&thinsp;=&thinsp;1). A penalty of 2.0 means Kingman predicts twice the M/M/1 queue wait at the same utilization. Values above 2 are common when both arrival and service variability are elevated.</li>
           </ul>
           <p class="essay-body">
             For definitions of &rho;, <var>C<sub>a</sub></var>, <var>C<sub>s</sub></var>, and the underlying models, read

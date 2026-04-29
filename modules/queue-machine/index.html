@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="../../css/themes.css" />
   <link rel="stylesheet" href="../../css/gc-viz.css" />
   <link rel="stylesheet" href="../../css/pages.css" />
+  <link rel="stylesheet" href="../../assets/vendor/katex/katex.min.css" />
   <link rel="icon" type="image/png" href="../../assets/images/doodles/skate_c.png" />
   <link rel="apple-touch-icon" href="../../assets/images/doodles/skate_c.png" />
 </head>
@@ -120,10 +121,7 @@
             average throughput multiplied by average time in the system.
           </p>
 
-          <figure class="queue-machine-equation">
-            <math display="block" aria-label="L equals lambda times W">
-              <mi>L</mi><mo>=</mo><mi>&lambda;</mi><mi>W</mi>
-            </math>
+          <figure class="queue-machine-equation" data-formula="L = \lambda W">
             <figcaption>
               <var>L</var> is average work in system, <var>&lambda;</var> is average arrival or throughput rate,
               and <var>W</var> is average time in system.
@@ -181,19 +179,13 @@
             service capacity.
           </p>
 
-          <figure class="queue-machine-equation">
-            <math display="block" aria-label="rho equals lambda divided by mu">
-              <mi>&rho;</mi><mo>=</mo><mfrac><mi>&lambda;</mi><mi>&mu;</mi></mfrac>
-            </math>
+          <figure class="queue-machine-equation" data-formula="\rho = \dfrac{\lambda}{\mu}">
             <figcaption>
               <var>&rho;</var> is utilization, <var>&lambda;</var> is arrival rate, and <var>&mu;</var> is service rate.
             </figcaption>
           </figure>
 
-          <figure class="queue-machine-equation">
-            <math display="block" aria-label="W equals one divided by mu minus lambda">
-              <mi>W</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mi>&mu;</mi><mo>-</mo><mi>&lambda;</mi></mrow></mfrac>
-            </math>
+          <figure class="queue-machine-equation" data-formula="W = \dfrac{1}{\mu - \lambda}">
             <figcaption>
               In M/M/1, average system time grows without bound as <var>&lambda;</var> approaches <var>&mu;</var>.
             </figcaption>
@@ -218,17 +210,7 @@
             turn one card into six.
           </p>
 
-          <figure class="queue-machine-equation">
-            <math display="block" aria-label="W q is approximately rho over one minus rho times C a squared plus C s squared over two times expected service time">
-              <msub><mi>W</mi><mi>q</mi></msub><mo>&approx;</mo>
-              <mfrac><mi>&rho;</mi><mrow><mn>1</mn><mo>-</mo><mi>&rho;</mi></mrow></mfrac>
-              <mo>&times;</mo>
-              <mfrac>
-                <mrow><msubsup><mi>C</mi><mi>a</mi><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>C</mi><mi>s</mi><mn>2</mn></msubsup></mrow>
-                <mn>2</mn>
-              </mfrac>
-              <mo>&times;</mo><mi>E</mi><mo>[</mo><mi>S</mi><mo>]</mo>
-            </math>
+          <figure class="queue-machine-equation" data-formula="W_q \approx \dfrac{\rho}{1-\rho} \times \dfrac{C_a^2 + C_s^2}{2} \times E[S]">
             <figcaption>
               <var>W<sub>q</sub></var> is average waiting time in queue, <var>C<sub>a</sub></var> is interarrival
               variation, <var>C<sub>s</sub></var> is service-time variation, and <var>E[S]</var> is average service time.
@@ -333,5 +315,7 @@
   </footer>
 
   <script src="../../js/nav-controller.js"></script>
+  <script src="../../assets/vendor/katex/katex.min.js"></script>
+  <script src="../../js/katex-render.js"></script>
 </body>
 </html>

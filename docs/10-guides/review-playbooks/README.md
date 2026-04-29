@@ -6,7 +6,7 @@ status: ACTIVE
 created: 2026-03-25
 updated: 2026-04-19
 owner: Robert Andersson
-relates_to: [CORE, CORE-quality-gates, GUIDE-contributing, GUIDE-testing-and-release]
+relates_to: [CORE, GUIDE-testing-and-release]
 tags: [llm, review, playbook, quality]
 load_when: [when-running-reviews, when-planning-refactors]
 do_not_load_when: []
@@ -47,12 +47,9 @@ Use these playbooks when an agent is asked to perform a review. They are optimiz
 - `06-ux-review.md`
 - `07-interaction-design-review.md`
 - `08-ui-design-system-review.md`
-- `09-devops-cicd-review.md`
 - `10-security-review.md`
 - `11-performance-review.md`
 - `12-accessibility-review.md`
-- `13-observability-reliability-review.md`
-- `14-api-schema-contract-review.md`
 - `15-release-readiness-review.md`
 - `16-post-merge-validation.md`
 - `17-information-architecture-review.md`

@@ -72,7 +72,6 @@ Three-branch flow: `sandbox` → `develop` → `main`
 1. `README.md`
 2. `docs/00-core/CORE.md`
 3. `docs/00-core/CORE-loading-rules.md`
-4. `docs/00-core/CORE-quality-gates.md`
 
 ### Conditional (load when relevant)
 
@@ -101,7 +100,9 @@ Includes navigation link checks and notes build checks.
 
 **Optional** (auto-skips without Playwright): `node tests/test-browser-smoke-optional.js`
 
-**Semantics/labels changes:** update affected UI copy and tests in the same change. Keep terms consistent across legends, simulation runtime labels, and summary copy.
+**Semantics/copy changes:** keep terms aligned with `docs/20-reference/REFERENCE-gc-model-semantics.md`; update relevant docs in the same change.
+
+**Merge readiness:** tests pass, no docs integrity errors, no known mismatch between code behavior and documented semantics.
 
 ## Change Trigger Matrix
 
@@ -112,6 +113,7 @@ Includes navigation link checks and notes build checks.
 | Module title, section name, or IA label | `modules/index.html`, `js/nav-controller.js`, module page labels, redirect copy |
 | Contributor or release workflow | `README.md` + tracked workflow docs |
 | `CLAUDE.md` | `AGENTS.md` must remain byte-for-byte identical (enforced by `scripts/check-claude-links.js`) |
+| Vendored library version bumped (D3, KaTeX) | `colophon/index.html`, `docs/10-guides/GUIDE-vendor-dependency-review.md` |
 
 ## Module IA Contract
 
@@ -141,6 +143,7 @@ Tests enforcing this contract:
 | Module 06 runtime | `modules/the-descent/index.html`, `modules/the-descent/section-map/index.html`, `modules/the-descent/section-map/section-map.js`, `css/pages/the-descent.css` |
 | Module 04 runtime | `modules/mix-mapper/mix-mapper-data.js`, `modules/mix-mapper/mix-mapper-semantics.js`, `modules/mix-mapper/mix-mapper-geometry.js`, `modules/mix-mapper/mix-mapper-layout-utils.js`, `modules/mix-mapper/mix-mapper-node-utils.js`, `modules/mix-mapper/mix-mapper-mode-policy.js`, `modules/mix-mapper/mix-mapper-tooltip.js`, `modules/mix-mapper/mix-mapper-interactions.js`, `modules/mix-mapper/mix-mapper-renderer.js`, `modules/mix-mapper/mix-mapper.js` |
 | Queue Machine runtime | `modules/queue-machine/index.html`, `modules/queue-machine/taxonomy/index.html`, `modules/queue-machine/explore/index.html`, `modules/queue-machine/queue-machine-model.js`, `modules/queue-machine/queue-machine.js`, `modules/queue-machine/concept-graph/concept-graph.js` |
+| Queue Machine math rendering | `assets/vendor/katex/katex.min.css`, `assets/vendor/katex/katex.min.js`, `js/katex-render.js` |
 | Force-graph shared layer | `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
 | Tests | `tests/run-all.js` |
 
@@ -159,6 +162,7 @@ Tests enforcing this contract:
 - Queue Machine Explore preset behavior: there is no standalone reshuffle button. Re-clicking the currently active preset reseeds local variability while preserving preset averages.
 - Queue Machine symbol labels use non-division notation for readability: `WIP (L)`, `Lead time (W)`, `Arrival rate (λ)`, `Service capacity (μ)`, `Utilization (ρ)`, `Cₐ`, `Cₛ`.
 - Queue Machine Concept Map semantics: dashed links (`kind: contradicts`) represent explicit contradiction edges from assumptions.
+- Queue Machine section 01 (Flow and Waiting) loads KaTeX for math rendering: `assets/vendor/katex/katex.min.css` in the head, then `assets/vendor/katex/katex.min.js` + `js/katex-render.js` at end of body. No CDN fallback by design. Equations use `data-formula` attribute on figure elements with class `queue-machine-equation`.
 - Force-directed graphs (Skills graph, Concept Map) share interaction-state classes (`is-dim`, `is-related`, `is-group-focus`, `is-active`) defined in `css/components/force-graph-states.css`, and shared focus/legend-filter helpers in `js/force-graph-utils.js`. New force graphs must use these classes and helpers; page-local visual overrides are allowed when these shared classes remain the source of interaction state.
 - Force graphs use the light/pastel palette tier (`--rust-light`, `--gold`, `--sage-light`) for node fills. Do not use saturated `--viz-*` data-viz tokens for force-graph nodes.
 - Force graph viz chrome (legend, helper, detail panel, node labels) uses mono uppercase microtype: var(--mono) at ~0.6rem with letter-spacing 0.05 to 0.06em and text-transform uppercase.

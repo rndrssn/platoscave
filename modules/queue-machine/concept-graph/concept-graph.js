@@ -33,6 +33,9 @@
     { id: 'incidentRework', label: 'Incident-driven rework', short: 'Incident rework', group: 'observation' },
     { id: 'longLivedBranches', label: 'Long-lived branches', short: 'Long branches', group: 'observation' },
     { id: 'contextSwitch', label: 'Context-switching tax', short: 'Context switch', group: 'observation' },
+    { id: 'blockedStates', label: 'Frequent blocked/waiting states', short: 'Blocked states', group: 'observation' },
+    { id: 'wipAging', label: 'Aging WIP', short: 'Aging WIP', group: 'observation' },
+    { id: 'expediteRate', label: 'Rising expedite rate', short: 'Expedite rate', group: 'observation' },
 
     { id: 'idleWaste', label: '"Idle people = waste"', short: 'Idle = waste', group: 'assumption' },
     { id: 'addPeople', label: '"Add people to go faster"', short: 'Add people', group: 'assumption' },
@@ -41,6 +44,9 @@
     { id: 'morePlanning', label: '"More upfront planning makes complex work predictable"', short: 'Upfront planning', group: 'assumption' },
     { id: 'pushEverything', label: '"Push everything in early"', short: 'Push early', group: 'assumption' },
     { id: 'individualTargets', label: '"Optimize individual targets"', short: 'Individual targets', group: 'assumption' },
+    { id: 'busyMeansHealthy', label: '"If everyone is busy, flow is healthy"', short: 'Busy = healthy', group: 'assumption' },
+    { id: 'expediteHelpsAll', label: '"Expedites speed up the whole system"', short: 'Expedites help all', group: 'assumption' },
+    { id: 'multitaskUtilization', label: '"Multitasking improves utilization"', short: 'Multitask = better', group: 'assumption' },
 
     { id: 'sBelow100', label: 'Queues can appear below 100% average load', short: 'Queues <100%', group: 'surprise', note: 'Average spare capacity can still hide local overload when arrivals and service vary.' },
     { id: 'sSlack', label: 'Slack protects flow', short: 'Slack protects flow', group: 'surprise' },
@@ -103,6 +109,15 @@
     { source: 'contextSwitch', target: 'leadTime' },
     { source: 'contextSwitch', target: 'pull' },
     { source: 'contextSwitch', target: 'cs' },
+    { source: 'blockedStates', target: 'leadTime' },
+    { source: 'blockedStates', target: 'sBelow100' },
+    { source: 'blockedStates', target: 'pull' },
+    { source: 'wipAging', target: 'wip' },
+    { source: 'wipAging', target: 'leadTime' },
+    { source: 'wipAging', target: 'sStartLess' },
+    { source: 'expediteRate', target: 'sUrgency' },
+    { source: 'expediteRate', target: 'rho' },
+    { source: 'expediteRate', target: 'incidentRework' },
 
     { source: 'idleWaste', target: 'sSlack', kind: 'contradicts' },
     { source: 'idleWaste', target: 'pull', kind: 'contradicts' },
@@ -121,7 +136,13 @@
     { source: 'pushEverything', target: 'pull', kind: 'contradicts' },
     { source: 'pushEverything', target: 'leadTime', kind: 'contradicts' },
     { source: 'individualTargets', target: 'localglobal', kind: 'contradicts' },
-    { source: 'individualTargets', target: 'sLocalLoss', kind: 'contradicts' }
+    { source: 'individualTargets', target: 'sLocalLoss', kind: 'contradicts' },
+    { source: 'busyMeansHealthy', target: 'sLocalLoss', kind: 'contradicts' },
+    { source: 'busyMeansHealthy', target: 'sBelow100', kind: 'contradicts' },
+    { source: 'expediteHelpsAll', target: 'sUrgency', kind: 'contradicts' },
+    { source: 'expediteHelpsAll', target: 'pull', kind: 'contradicts' },
+    { source: 'multitaskUtilization', target: 'contextSwitch', kind: 'contradicts' },
+    { source: 'multitaskUtilization', target: 'sStartLess', kind: 'contradicts' }
   ];
 
   var fgUtils = window.ForceGraphUtils;

@@ -680,7 +680,7 @@
 }
 
 .queue-machine-concept-edge--contradicts {
-  stroke: color-mix(in srgb, var(--rust-light) 74%, var(--ink-ghost) 26%);
+  stroke: color-mix(in srgb, var(--ink-ghost) 80%, transparent 20%);
   stroke-dasharray: 3 4;
 }
 

@@ -187,9 +187,25 @@
 
           <figure class="queue-machine-equation" data-formula="W = \dfrac{1}{\mu - \lambda}">
             <figcaption>
-              In M/M/1, average system time grows without bound as <var>&lambda;</var> approaches <var>&mu;</var>.
+              <var>W</var> is average time in system (lead time), <var>&mu;</var> is service rate, and <var>&lambda;</var>
+              is arrival rate. In M/M/1, <var>W</var> grows without bound as <var>&lambda;</var> approaches <var>&mu;</var>.
             </figcaption>
           </figure>
+
+          <p class="essay-body">
+            The formula looks simple, but it is a hyperbola, not a line. Rewrite the denominator:
+            <var>&mu;</var>&nbsp;&minus;&nbsp;<var>&lambda;</var>&nbsp;=&nbsp;<var>&mu;</var>(1&nbsp;&minus;&nbsp;<var>&rho;</var>),
+            so <var>W</var>&nbsp;=&nbsp;(1/<var>&mu;</var>)&nbsp;&divide;&nbsp;(1&nbsp;&minus;&nbsp;<var>&rho;</var>)&nbsp;&mdash;
+            average service time divided by the spare capacity fraction. When utilization is 50%, spare capacity is 50% and
+            wait equals one service time. At 90%, spare capacity is 10% and wait is ten service times. At 99%, one service
+            time of wait becomes a hundred. The denominator collapsing toward zero is the nonlinear part.
+          </p>
+          <p class="essay-body">
+            The Poisson arrivals and exponential service times are not in the formula because they are used to derive it.
+            Those distributional assumptions make the queueing math tractable (via a birth-death Markov chain), and the
+            result of all that work happens to be a clean rational expression. The distributions are baked in; the formula
+            is the simplified answer.
+          </p>
 
           <aside class="queue-machine-assumption-card" aria-label="Model assumptions">
             <h3>Model assumptions</h3>

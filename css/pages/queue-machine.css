@@ -495,10 +495,10 @@
   border-bottom: 1px solid var(--ink-ghost);
 }
 
-.queue-machine-equation math {
+.queue-machine-equation .katex-display {
   color: var(--ink);
   font-size: 1.35rem;
-  margin-bottom: 0.9rem;
+  margin: 0 0 0.9rem;
 }
 
 .queue-machine-equation figcaption {
@@ -826,7 +826,7 @@
     block-size: 14.5rem;
   }
 
-  .queue-machine-equation math {
+  .queue-machine-equation .katex-display {
     font-size: 1.05rem;
     overflow-x: auto;
     overflow-y: hidden;

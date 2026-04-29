@@ -3,8 +3,10 @@
 (function initConceptGraph() {
   if (!window.d3 || !document || typeof document.querySelector !== 'function') return;
   var svgEl = document.querySelector('[data-concept-graph]');
+  var surface = document.querySelector('.queue-machine-concept-surface');
   var fallback = document.querySelector('[data-concept-graph-fallback]');
   if (!svgEl) return;
+  if (!surface) surface = svgEl.parentElement || svgEl;
   if (!window.d3) {
     if (fallback) fallback.hidden = false;
     return;
@@ -13,30 +15,18 @@
 
   var nodes = [
     { id: 'little', label: "Little's Law", short: "Little's Law", group: 'concept', note: 'Average WIP, throughput, and lead time must balance in a stable flow system.' },
-    { id: 'arrivalRate', label: 'Arrival rate (λ)', short: 'Arrival λ', group: 'concept' },
     { id: 'throughput', label: 'Throughput', short: 'Throughput', group: 'concept' },
     { id: 'wip', label: 'WIP (L)', short: 'WIP (L)', group: 'concept' },
     { id: 'leadTime', label: 'Lead time (W)', short: 'Lead time (W)', group: 'concept' },
-    { id: 'capacity', label: 'Service capacity (μ)', short: 'Capacity (μ)', group: 'concept' },
-    { id: 'stability', label: 'Stability condition (ρ < 1)', short: 'Stable ρ<1', group: 'concept' },
     { id: 'kingman', label: "Kingman's approximation", short: "Kingman", group: 'concept', note: 'Waiting grows from utilization pressure multiplied by arrival and service-time variability.' },
     { id: 'rho', label: 'Utilization (ρ)', short: 'Utilization (ρ)', group: 'concept' },
     { id: 'ca', label: 'Arrival variability (Cₐ)', short: 'Arrival var. (Cₐ)', group: 'concept' },
     { id: 'cs', label: 'Service-time variability (Cₛ)', short: 'Service var. (Cₛ)', group: 'concept' },
     { id: 'toc', label: 'Theory of Constraints', short: 'TOC', group: 'concept', note: 'Throughput is governed by the constraint, not by universal local busyness.' },
     { id: 'constraint', label: 'System constraint', short: 'Constraint', group: 'concept' },
-    { id: 'subordinateRelease', label: 'Subordinate release (DBR)', short: 'Subordinate DBR', group: 'concept' },
-    { id: 'protectConstraint', label: 'Protect the constraint', short: 'Protect constraint', group: 'concept' },
-    { id: 'nonlinear', label: 'Non-linear system effects', short: 'Non-linearity', group: 'concept' },
-    { id: 'cynefin', label: 'Cynefin: complex domain', short: 'Cynefin', group: 'concept', note: 'A sense-making frame: in complex domains, cause and effect are only coherent in retrospect.' },
-    { id: 'probeSense', label: 'Probe-sense-respond', short: 'Probe-sense', group: 'concept' },
     { id: 'localglobal', label: 'Local ≠ global optima', short: 'Local ≠ global', group: 'concept' },
     { id: 'feedback', label: 'Feedback loops', short: 'Feedback loops', group: 'concept' },
     { id: 'pull', label: 'Pull (WIP limit)', short: 'Pull (WIP)', group: 'concept' },
-    { id: 'batches', label: 'Small batches', short: 'Small batches', group: 'concept' },
-    { id: 'flowEff', label: 'Flow efficiency', short: 'Flow efficiency', group: 'concept' },
-    { id: 'empirical', label: 'Empirical process control', short: 'Empirical', group: 'concept' },
-    { id: 'costOfDelay', label: 'Cost of Delay', short: 'Cost of Delay', group: 'concept' },
 
     { id: 'reviewQueues', label: 'Review queues', short: 'Review queues', group: 'observation' },
     { id: 'demandSpikes', label: 'Demand spikes', short: 'Demand spikes', group: 'observation' },
@@ -64,24 +54,14 @@
   ];
 
   var links = [
-    { source: 'little', target: 'arrivalRate' },
     { source: 'little', target: 'throughput' },
     { source: 'little', target: 'wip' },
     { source: 'little', target: 'leadTime' },
     { source: 'little', target: 'pull' },
-    { source: 'stability', target: 'little' },
-    { source: 'stability', target: 'kingman' },
     { source: 'wip', target: 'leadTime' },
-    { source: 'wip', target: 'flowEff' },
-    { source: 'leadTime', target: 'costOfDelay' },
-    { source: 'capacity', target: 'rho' },
-    { source: 'arrivalRate', target: 'rho' },
-    { source: 'rho', target: 'stability' },
-
     { source: 'rho', target: 'kingman' },
     { source: 'ca', target: 'kingman' },
     { source: 'cs', target: 'kingman' },
-    { source: 'capacity', target: 'kingman' },
     { source: 'kingman', target: 'leadTime' },
     { source: 'kingman', target: 'sBelow100' },
     { source: 'kingman', target: 'sVarDom' },
@@ -92,44 +72,24 @@
     { source: 'ca', target: 'sSlack' },
     { source: 'cs', target: 'sSlack' },
     { source: 'rho', target: 'sSlack' },
-    { source: 'nonlinear', target: 'kingman' },
-    { source: 'nonlinear', target: 'localglobal' },
-    { source: 'nonlinear', target: 'sVarDom' },
-    { source: 'nonlinear', target: 'sBelow100' },
 
-    { source: 'cynefin', target: 'probeSense' },
-    { source: 'probeSense', target: 'empirical' },
-    { source: 'empirical', target: 'feedback' },
-    { source: 'batches', target: 'feedback' },
     { source: 'feedback', target: 'sFeedback' },
     { source: 'feedback', target: 'ca' },
     { source: 'feedback', target: 'incidentRework' },
 
     { source: 'toc', target: 'constraint' },
     { source: 'constraint', target: 'throughput' },
-    { source: 'constraint', target: 'capacity' },
     { source: 'toc', target: 'localglobal' },
     { source: 'localglobal', target: 'sLocalLoss' },
-    { source: 'toc', target: 'subordinateRelease' },
-    { source: 'subordinateRelease', target: 'protectConstraint' },
-    { source: 'subordinateRelease', target: 'pull' },
-    { source: 'toc', target: 'protectConstraint' },
-    { source: 'protectConstraint', target: 'pull' },
-    { source: 'protectConstraint', target: 'sSlack' },
-    { source: 'protectConstraint', target: 'sLocalLoss' },
+    { source: 'toc', target: 'pull' },
+    { source: 'constraint', target: 'pull' },
+    { source: 'constraint', target: 'sSlack' },
     { source: 'constraint', target: 'sNonConstraint' },
 
     { source: 'pull', target: 'sSlack' },
     { source: 'pull', target: 'sStartLess' },
     { source: 'pull', target: 'wip' },
-    { source: 'pull', target: 'flowEff' },
-    { source: 'batches', target: 'cs' },
-    { source: 'batches', target: 'sBatchCost' },
-    { source: 'batches', target: 'sFeedback' },
-    { source: 'costOfDelay', target: 'batches' },
-    { source: 'costOfDelay', target: 'pull' },
-    { source: 'costOfDelay', target: 'flowEff' },
-    { source: 'costOfDelay', target: 'sUrgency' },
+    { source: 'rho', target: 'sUrgency' },
 
     { source: 'reviewQueues', target: 'cs' },
     { source: 'reviewQueues', target: 'leadTime' },
@@ -137,28 +97,24 @@
     { source: 'demandSpikes', target: 'sBelow100' },
     { source: 'incidentRework', target: 'cs' },
     { source: 'incidentRework', target: 'sUrgency' },
-    { source: 'longLivedBranches', target: 'batches' },
     { source: 'longLivedBranches', target: 'cs' },
     { source: 'longLivedBranches', target: 'feedback' },
     { source: 'longLivedBranches', target: 'sBatchCost' },
     { source: 'contextSwitch', target: 'leadTime' },
-    { source: 'contextSwitch', target: 'flowEff' },
     { source: 'contextSwitch', target: 'pull' },
     { source: 'contextSwitch', target: 'cs' },
 
     { source: 'idleWaste', target: 'sSlack', kind: 'contradicts' },
-    { source: 'idleWaste', target: 'protectConstraint', kind: 'contradicts' },
+    { source: 'idleWaste', target: 'pull', kind: 'contradicts' },
     { source: 'addPeople', target: 'sNonConstraint', kind: 'contradicts' },
     { source: 'addPeople', target: 'constraint', kind: 'contradicts' },
-    { source: 'addPeople', target: 'nonlinear', kind: 'contradicts' },
+    { source: 'addPeople', target: 'localglobal', kind: 'contradicts' },
     { source: 'highUtil', target: 'sBelow100', kind: 'contradicts' },
     { source: 'highUtil', target: 'sVarDom', kind: 'contradicts' },
     { source: 'highUtil', target: 'sSlack', kind: 'contradicts' },
     { source: 'bigBatches', target: 'sBatchCost', kind: 'contradicts' },
-    { source: 'bigBatches', target: 'batches', kind: 'contradicts' },
-    { source: 'bigBatches', target: 'costOfDelay', kind: 'contradicts' },
-    { source: 'morePlanning', target: 'probeSense', kind: 'contradicts' },
-    { source: 'morePlanning', target: 'empirical', kind: 'contradicts' },
+    { source: 'bigBatches', target: 'feedback', kind: 'contradicts' },
+    { source: 'morePlanning', target: 'feedback', kind: 'contradicts' },
     { source: 'morePlanning', target: 'sFeedback', kind: 'contradicts' },
     { source: 'pushEverything', target: 'sStartLess', kind: 'contradicts' },
     { source: 'pushEverything', target: 'wip', kind: 'contradicts' },
@@ -211,37 +167,40 @@
   }
 
   function targetXByGroup(group, width) {
-    if (group === 'concept') return width * 0.28;
-    if (group === 'assumption') return width * 0.43;
-    if (group === 'observation') return width * 0.56;
-    return width * 0.72;
+    if (group === 'concept') return width * 0.24;
+    if (group === 'assumption') return width * 0.39;
+    if (group === 'observation') return width * 0.52;
+    return width * 0.68;
   }
 
   function targetYByGroup(group, height) {
-    if (group === 'concept') return height * 0.32;
-    if (group === 'assumption') return height * 0.38;
-    if (group === 'observation') return height * 0.58;
-    return height * 0.47;
+    if (group === 'concept') return height * 0.4;
+    if (group === 'assumption') return height * 0.46;
+    if (group === 'observation') return height * 0.64;
+    return height * 0.55;
   }
 
   var simulation = null;
   var nudgeTimer = null;
   var activeDragNodeId = null;
-  var lastWidth = 0;
-  var lastHeight = 0;
+  var lastRenderWidth = 0;
+  var lastLayoutWidth = 0;
+  var lastLayoutHeight = 0;
   var resizeTimer = null;
 
-  function render(width) {
-    var rect = svgEl.getBoundingClientRect();
-    var rendered = Math.max(320, width || rect.width || 720);
+  function render(renderWidth) {
+    var rendered = Math.max(320, renderWidth || surface.clientWidth || 320);
     var mobile = rendered < 760;
-    var constrainedMobile = (window.innerWidth || document.documentElement.clientWidth || rendered) < 760;
+    var viewportWidth = window.innerWidth || document.documentElement.clientWidth || rendered;
+    var constrainedMobile = viewportWidth < 760;
     var height = mobile
-      ? Math.max(600, Math.min(880, Math.floor(rendered * 1.72)))
-      : Math.max(440, Math.min(620, Math.floor(rendered * 0.52)));
-    var minX = 12;
-    var maxX = rendered - 12;
-    var minY = 16;
+      ? Math.max(560, Math.min(980, Math.floor(rendered * 1.65)))
+      : Math.max(500, Math.min(820, Math.floor(rendered * 0.72)));
+    var prevLayoutWidth = lastLayoutWidth || rendered;
+    var prevLayoutHeight = lastLayoutHeight || height;
+    var minX = 10;
+    var maxX = rendered - 10;
+    var minY = 14;
     var maxY = height - 14;
 
     var stateById = Object.create(null);
@@ -257,19 +216,32 @@
     }
     if (nudgeTimer) clearInterval(nudgeTimer);
 
-    var prevWidth = lastWidth || rendered;
-    var prevHeight = lastHeight || height;
-
-    var nodeData = nodes.map(function(n) {
+    var nodeData = nodes.map(function(n, index) {
       var d = Object.assign({}, n);
       var prev = stateById[n.id];
-      if (!prev) return d;
-      if (typeof prev.x === 'number') d.x = (prev.x / Math.max(1, prevWidth)) * rendered;
-      if (typeof prev.y === 'number') d.y = (prev.y / Math.max(1, prevHeight)) * height;
+      if (!prev) {
+        var angle = (index / Math.max(1, nodes.length)) * Math.PI * 2;
+        var radius = mobile ? 26 : 34;
+        var seededX = targetXByGroup(n.group, rendered) + Math.cos(angle) * radius;
+        var seededY = targetYByGroup(n.group, height) + Math.sin(angle) * radius;
+        d.x = constrainedMobile ? Math.max(minX, Math.min(maxX, seededX)) : seededX;
+        d.y = constrainedMobile ? Math.max(minY, Math.min(maxY, seededY)) : seededY;
+        return d;
+      }
+      if (typeof prev.x === 'number' && typeof prev.y === 'number') {
+        var restoredX = (prev.x / Math.max(1, prevLayoutWidth)) * rendered;
+        var restoredY = (prev.y / Math.max(1, prevLayoutHeight)) * height;
+        d.x = constrainedMobile ? Math.max(minX, Math.min(maxX, restoredX)) : restoredX;
+        d.y = constrainedMobile ? Math.max(minY, Math.min(maxY, restoredY)) : restoredY;
+      }
       if (typeof prev.vx === 'number') d.vx = prev.vx;
       if (typeof prev.vy === 'number') d.vy = prev.vy;
-      if (typeof prev.fx === 'number') d.fx = (prev.fx / Math.max(1, prevWidth)) * rendered;
-      if (typeof prev.fy === 'number') d.fy = (prev.fy / Math.max(1, prevHeight)) * height;
+      if (typeof prev.fx === 'number' && typeof prev.fy === 'number') {
+        var restoredFx = (prev.fx / Math.max(1, prevLayoutWidth)) * rendered;
+        var restoredFy = (prev.fy / Math.max(1, prevLayoutHeight)) * height;
+        d.fx = constrainedMobile ? Math.max(minX, Math.min(maxX, restoredFx)) : restoredFx;
+        d.fy = constrainedMobile ? Math.max(minY, Math.min(maxY, restoredFy)) : restoredFy;
+      }
       return d;
     });
 
@@ -288,19 +260,19 @@
     simulation = d3.forceSimulation(nodeData)
       .force('link', d3.forceLink(links.map(function(l) { return Object.assign({}, l); }))
         .id(function(d) { return d.id; })
-        .distance(mobile ? 58 : 82)
-        .strength(0.52))
-      .force('charge', d3.forceManyBody().strength(mobile ? -150 : -230))
+        .distance(mobile ? 64 : 92)
+        .strength(0.46))
+      .force('charge', d3.forceManyBody().strength(mobile ? -190 : -300))
       .force('center', d3.forceCenter(rendered / 2, height / 2))
       .force('collide', d3.forceCollide().radius(function(d) {
-        return radiusByGroup(d.group) + (mobile ? 8 : 13);
+        return radiusByGroup(d.group) + (mobile ? 10 : 16);
       }))
       .force('x', d3.forceX(function(d) {
         return targetXByGroup(d.group, rendered);
-      }).strength(mobile ? 0.07 : 0.09))
+      }).strength(mobile ? 0.052 : 0.068))
       .force('y', d3.forceY(function(d) {
         return targetYByGroup(d.group, height);
-      }).strength(mobile ? 0.045 : 0.055));
+      }).strength(mobile ? 0.036 : 0.045));
 
     var link = plot.append('g')
       .attr('class', 'queue-machine-concept-links')
@@ -358,6 +330,12 @@
       simulation: simulation
     };
     var legendItems = Array.from(document.querySelectorAll('[data-legend-group]'));
+    var LEGEND_PAIR = {
+      assumption: 'surprise',
+      surprise: 'assumption',
+      concept: 'observation',
+      observation: 'concept'
+    };
 
     function clearHighlights() {
       if (fgUtils) {
@@ -391,38 +369,31 @@
     }
 
     function applyLegendFilter(group) {
-      if (fgUtils) {
-        fgUtils.applyLegendFilter(selections, function(n) { return n.group === group; });
-        return;
-      }
-      var primary = new Set();
-      var related = new Set();
+      var paired = LEGEND_PAIR[group] || group;
+      var activeGroups = new Set([group, paired]);
+      var activeNodes = new Set();
+
       simulation.nodes().forEach(function(n) {
-        if (n.group === group) primary.add(n.id);
+        if (activeGroups.has(n.group)) activeNodes.add(n.id);
       });
-      simulation.force('link').links().forEach(function(l) {
-        var s = (typeof l.source === 'object') ? l.source.id : l.source;
-        var t = (typeof l.target === 'object') ? l.target.id : l.target;
-        if (primary.has(s) && !primary.has(t)) related.add(t);
-        if (primary.has(t) && !primary.has(s)) related.add(s);
-      });
-      node.classed('is-group-focus', function(n) { return primary.has(n.id); })
-        .classed('is-related', function(n) { return !primary.has(n.id) && related.has(n.id); })
-        .classed('is-dim', function(n) { return !primary.has(n.id) && !related.has(n.id); });
-      label.classed('is-active', function(n) { return primary.has(n.id); })
-        .classed('is-related', function(n) { return !primary.has(n.id) && related.has(n.id); })
-        .classed('is-dim', function(n) { return !primary.has(n.id) && !related.has(n.id); });
-      link.classed('is-related', function(l) {
-        var s = (typeof l.source === 'object') ? l.source.id : l.source;
-        var t = (typeof l.target === 'object') ? l.target.id : l.target;
-        return (primary.has(s) && related.has(t)) || (primary.has(t) && related.has(s));
-      }).classed('is-dim', function(l) {
-        var s = (typeof l.source === 'object') ? l.source.id : l.source;
-        var t = (typeof l.target === 'object') ? l.target.id : l.target;
-        var touchesPrimary = primary.has(s) || primary.has(t);
-        var connectsPrimaryToRelated = (primary.has(s) && related.has(t)) || (primary.has(t) && related.has(s));
-        return !touchesPrimary && !connectsPrimaryToRelated;
-      });
+
+      node
+        .classed('is-group-focus', function(n) { return activeNodes.has(n.id); })
+        .classed('is-related', false)
+        .classed('is-dim', function(n) { return !activeNodes.has(n.id); });
+
+      label
+        .classed('is-active', function(n) { return activeNodes.has(n.id); })
+        .classed('is-related', false)
+        .classed('is-dim', function(n) { return !activeNodes.has(n.id); });
+
+      link
+        .classed('is-related', false)
+        .classed('is-dim', function(l) {
+          var s = (typeof l.source === 'object') ? l.source.id : l.source;
+          var t = (typeof l.target === 'object') ? l.target.id : l.target;
+          return !(activeNodes.has(s) && activeNodes.has(t));
+        });
     }
 
     var legendCtl = fgUtils && fgUtils.wireLegend(legendItems, {
@@ -507,10 +478,12 @@
       });
 
     simulation.on('tick', function() {
-      simulation.nodes().forEach(function(d) {
-        d.x = Math.max(minX, Math.min(maxX, d.x));
-        d.y = Math.max(minY, Math.min(maxY, d.y));
-      });
+      if (constrainedMobile) {
+        simulation.nodes().forEach(function(d) {
+          d.x = Math.max(minX, Math.min(maxX, d.x));
+          d.y = Math.max(minY, Math.min(maxY, d.y));
+        });
+      }
 
       link
         .attr('x1', function(d) { return d.source.x; })
@@ -538,8 +511,8 @@
         .attr('y', function(d) { return d.y - radiusByGroup(d.group) - 5; });
     });
 
-    lastWidth = rendered;
-    lastHeight = height;
+    lastLayoutWidth = rendered;
+    lastLayoutHeight = height;
 
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) {
@@ -564,16 +537,19 @@
     }, 2400);
   }
 
-  function scheduleRender() {
+  function scheduleRender(force) {
     if (resizeTimer) clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function() {
-      var width = svgEl.clientWidth || svgEl.getBoundingClientRect().width;
-      if (Math.abs(width - lastWidth) < 2) return;
-      render(width);
+      var rawWidth = Math.round(surface.clientWidth || 0);
+      if (!force && rawWidth > 0 && rawWidth < 280) return;
+      var measuredWidth = Math.max(320, rawWidth || lastRenderWidth || 320);
+      if (!force && Math.abs(measuredWidth - lastRenderWidth) < 2) return;
+      lastRenderWidth = measuredWidth;
+      render(measuredWidth);
     }, 120);
   }
 
-  render();
+  scheduleRender(true);
   hideDetail(true);
-  window.addEventListener('resize', scheduleRender);
+  window.addEventListener('resize', function() { scheduleRender(false); });
 })();

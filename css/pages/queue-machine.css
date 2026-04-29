@@ -18,9 +18,12 @@
 }
 
 .queue-machine-page var,
-.queue-machine-page math,
-.queue-machine-page math * {
+.queue-machine-page math {
   font-family: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', math, var(--serif);
+}
+
+.queue-machine-page var,
+.queue-machine-page math mi {
   font-style: italic;
 }
 
@@ -175,7 +178,7 @@
   margin: 0 0 1rem;
   color: var(--ink-mid);
   font-family: var(--serif);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   line-height: 1.45;
   letter-spacing: 0;
   text-transform: none;
@@ -208,21 +211,22 @@
 .queue-machine-control label,
 .queue-machine-readout dt {
   color: var(--ink-faint);
-  font-size: 0.68rem;
+  font-size: 0.7rem;
 }
 
 .queue-machine-control span,
 .queue-machine-readout dd,
 .queue-machine-status {
   color: var(--ink-mid);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
 }
 
 .queue-machine-control .queue-machine-control-meta {
   color: var(--queue-bars-color);
-  font-size: 0.62rem;
-  letter-spacing: 0.05em;
-  margin-top: -0.05rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.015em;
+  text-transform: none;
+  margin-top: 0;
 }
 
 .queue-machine-control .queue-machine-control-meta * {
@@ -314,7 +318,6 @@
 }
 
 .queue-machine-chart-title,
-.queue-machine-chart-note,
 .queue-machine-chart-label,
 .queue-machine-axis {
   font-family: var(--mono);
@@ -333,8 +336,12 @@
   max-inline-size: 52rem;
   margin: 0 0 0.8rem;
   color: var(--ink-mid);
-  font-size: 0.62rem;
-  line-height: 1.55;
+  font-family: var(--serif);
+  font-size: 0.78rem;
+  font-style: italic;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-transform: none;
 }
 
 .queue-machine-chart {
@@ -369,6 +376,13 @@
 
 .queue-machine-readout-caption {
   margin: 1rem 0 0.6rem;
+  color: var(--ink-mid);
+  font-family: var(--serif);
+  font-size: 0.8rem;
+  font-style: italic;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-transform: none;
 }
 
 .queue-machine-mapping-list {
@@ -443,7 +457,7 @@
 .queue-machine-variable-table th {
   color: var(--ink);
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.64rem;
   font-weight: 300;
   letter-spacing: 0.045em;
   line-height: 1.35;
@@ -462,7 +476,7 @@
 .queue-machine-variable-table td {
   color: var(--ink-mid);
   font-family: var(--serif);
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   line-height: 1.48;
 }
 
@@ -487,7 +501,8 @@
   margin-top: 0.6rem;
   color: var(--ink-mid);
   font-family: var(--serif);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
+  font-style: italic;
   line-height: 1.55;
 }
 
@@ -564,10 +579,18 @@
   gap: 0.45rem;
   margin: 0 0 0.35rem;
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--ink-faint);
+}
+
+.queue-machine-concept .force-graph-helper {
+  font-size: 0.68rem;
+}
+
+.queue-machine-concept .force-graph-detail {
+  font-size: 0.6rem;
 }
 
 .queue-machine-concept-edge-key {

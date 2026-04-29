@@ -56,22 +56,22 @@
 
 .taxonomy-grid-header {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--ink-faint);
   padding: 0.75rem 0.5rem;
-  text-align: center;
+  text-align: left;
   border-bottom: 1px solid var(--ink-ghost);
 }
 
 .taxonomy-grid-row-header {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--ink-faint);
   padding: 0.75rem 0.75rem;
   text-align: left;
@@ -84,7 +84,8 @@
   font-size: var(--fs-body);
   color: var(--ink-mid);
   padding: 0.75rem 0.5rem;
-  text-align: center;
+  text-align: left;
+  line-height: 1.5;
   border: 1px solid var(--paper-deep);
 }
 
@@ -131,4 +132,3 @@
     padding: 0 2.5rem 1rem;
   }
 }
-

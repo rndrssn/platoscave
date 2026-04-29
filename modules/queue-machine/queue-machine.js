@@ -20,6 +20,7 @@
   var sessionSeed = Math.random() * Math.PI * 2;
   var activePreset = null;
   var resizeTimer = null;
+  var DISPLAY_ITEM_SCALE = 6;
   var PRESET_VALUES = {
     breathing: { arrivalRate: 0.48, serviceRate: 1.00, arrivalCv: 0.70, serviceCv: 0.80 },
     strained: { arrivalRate: 0.78, serviceRate: 1.00, arrivalCv: 1.00, serviceCv: 1.00 },
@@ -53,13 +54,33 @@
     if (node) node.textContent = value;
   }
 
-  function updateStatus(utilization, stable, timeline) {
+  function scaleItems(value) {
+    if (!Number.isFinite(value)) return value;
+    return value * DISPLAY_ITEM_SCALE;
+  }
+
+  function buildDisplayTimeline(timeline) {
+    return {
+      serviceRate: scaleItems(timeline.serviceRate),
+      maxBacklog: scaleItems(timeline.maxBacklog),
+      points: timeline.points.map(function(point) {
+        return {
+          bucket: point.bucket,
+          arrivals: scaleItems(point.arrivals),
+          capacity: scaleItems(point.capacity),
+          backlog: scaleItems(point.backlog)
+        };
+      })
+    };
+  }
+
+  function updateStatus(utilization, stable, timeline, displayTimeline) {
     if (!statusText) return;
     if (!stable) {
       statusText.textContent = 'Unstable: arrivals exceed service capacity. Notice how WIP and lead time stop being bounded.';
       return;
     }
-    var backlogCopy = ' Peak simulated backlog: ' + formatNumber(timeline.maxBacklog, 1) + ' items.';
+    var backlogCopy = ' Peak simulated backlog: ' + formatNumber(displayTimeline.maxBacklog, 1) + ' items.';
     if (timeline.maxBacklog >= 1 && utilization < 0.75) {
       statusText.textContent = 'Surprise: the system is not overloaded on average, but bursty work still creates a queue.' + backlogCopy + ' Utilization stayed at ' + formatNumber(utilization * 100, 1) + '%.';
       return;
@@ -175,13 +196,13 @@
       .attr('fill-opacity', 0.44);
   }
 
-  function renderArrivalsChart(timeline) {
+  function renderArrivalsChart(displayTimeline) {
     clearSvg(arrivalsChart);
     var size = getChartSize(arrivalsChart);
     var margin = { top: 16, right: 18, bottom: 32, left: 42 };
     var innerWidth = size.width - margin.left - margin.right;
     var innerHeight = size.height - margin.top - margin.bottom;
-    var points = timeline.points;
+    var points = displayTimeline.points;
     var maxY = d3Lib.max(points, function maxPoint(point) {
       return Math.max(point.arrivals, point.capacity);
     }) || 1;
@@ -218,7 +239,7 @@
     chart.append('text')
       .attr('class', 'queue-machine-chart-label')
       .attr('x', innerWidth)
-      .attr('y', y(timeline.serviceRate))
+      .attr('y', y(displayTimeline.serviceRate))
       .attr('text-anchor', 'end')
       .attr('fill', capacityColor)
       .attr('fill-opacity', 0.88)
@@ -236,13 +257,13 @@
     chart.selectAll('.domain').attr('stroke', inkGhost);
   }
 
-  function renderBacklogChart(timeline) {
+  function renderBacklogChart(displayTimeline) {
     clearSvg(backlogChart);
     var size = getChartSize(backlogChart);
     var margin = { top: 16, right: 18, bottom: 32, left: 42 };
     var innerWidth = size.width - margin.left - margin.right;
     var innerHeight = size.height - margin.top - margin.bottom;
-    var points = timeline.points;
+    var points = displayTimeline.points;
     var maxY = d3Lib.max(points, function maxPoint(point) { return point.backlog; }) || 1;
     var x = d3Lib.scaleBand().domain(points.map(function key(point) { return point.bucket; })).range([0, innerWidth]).padding(0.16);
     var y = d3Lib.scaleLinear().domain([0, maxY * 1.18]).nice().range([innerHeight, 0]);
@@ -295,22 +316,23 @@
       buckets: 24,
       seed: sessionSeed
     });
+    var displayTimeline = buildDisplayTimeline(timeline);
     var utilizationPercent = mm1.utilization * 100;
 
-    setText(outputs.arrivalRate, formatNumber(input.arrivalRate, 1));
-    setText(outputs.serviceRate, formatNumber(input.serviceRate, 1));
+    setText(outputs.arrivalRate, formatNumber(scaleItems(input.arrivalRate), 1));
+    setText(outputs.serviceRate, formatNumber(scaleItems(input.serviceRate), 1));
     setText(outputs.arrivalCv, formatNumber(input.arrivalCv, 1));
     setText(outputs.serviceCv, formatNumber(input.serviceCv, 1));
     setText(outputs.utilization, formatNumber(utilizationPercent, 1) + '%');
     setText(outputs.mm1LeadTime, formatNumber(mm1.systemLeadTime, 1));
     setText(outputs.kingmanWait, formatNumber(kingman.queueWaitTime, 1));
     setText(outputs.kingmanLeadTime, formatNumber(kingman.systemLeadTime, 1));
-    setText(outputs.littleLawWip, formatNumber(little.workInSystem, 1));
+    setText(outputs.littleLawWip, formatNumber(scaleItems(little.workInSystem), 1));
     setText(outputs.variabilityFactor, formatNumber(kingman.variabilityFactor, 1));
 
-    renderArrivalsChart(timeline);
-    renderBacklogChart(timeline);
-    updateStatus(mm1.utilization, mm1.stable, timeline);
+    renderArrivalsChart(displayTimeline);
+    renderBacklogChart(displayTimeline);
+    updateStatus(mm1.utilization, mm1.stable, timeline, displayTimeline);
   }
 
   form.addEventListener('input', function onFormInput() {

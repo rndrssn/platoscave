@@ -17,6 +17,10 @@
   --queue-bars-color: var(--ink-ghost);
 }
 
+.queue-machine-theory [id] {
+  scroll-margin-top: 5.25rem;
+}
+
 .queue-machine-page var,
 .queue-machine-page math {
   font-family: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', math, var(--serif);
@@ -117,7 +121,7 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   inline-size: 100%;
   border: 1px solid var(--ink-ghost);
-  border-radius: 3px;
+  border-radius: 6px;
   overflow: hidden;
 }
 

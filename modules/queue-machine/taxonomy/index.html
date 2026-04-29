@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Taxonomy of queue and flow regimes in product-development systems." />
+  <meta name="description" content="Taxonomy of queue and flow regimes: four dimensions—load pressure, variability profile, release discipline, and constraint behavior—mapped to six recognizable team patterns." />
   <title>Taxonomy · The Queue Machine · To the Bedrock</title>
   <script src="../../../theme.config.js"></script>
   <script src="../../../js/theme-bootstrap.js"></script>
@@ -62,12 +62,14 @@
 
       <article class="module-essay">
         <section class="essay-section">
-          <h2 class="essay-heading">Four Dimensions</h2>
+          <h2 class="essay-heading">Four dimensions</h2>
 
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">Load pressure</h3>
             <p class="essay-body">
-              How close arrival rate is to sustainable service capacity at the constraint.
+              How close arrival rate is to sustainable service capacity at the constraint. Formally, utilization
+              <var>&rho;</var>&nbsp;=&nbsp;<var>&lambda;</var>&thinsp;/&thinsp;<var>&mu;</var>. Breathing is roughly
+              <var>&rho;</var>&nbsp;&lt;&nbsp;0.70; strained is 0.70–0.90; near saturation is above 0.90.
             </p>
             <div class="taxonomy-values">
               <span class="taxonomy-value"><strong>Breathing:</strong> average load leaves meaningful absorption room.</span>
@@ -79,7 +81,9 @@
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">Variability profile</h3>
             <p class="essay-body">
-              How uneven arrivals and service times are in practice.
+              How uneven arrivals and service times are in practice. Formally captured by the coefficients of variation
+              <var>C<sub>a</sub></var> (arrivals) and <var>C<sub>s</sub></var> (service times): values near zero are smooth,
+              values near 1 are exponential, and values above 1 are bursty or fat-tailed.
             </p>
             <div class="taxonomy-values">
               <span class="taxonomy-value"><strong>Smooth:</strong> low burstiness, narrow work-size spread.</span>
@@ -116,7 +120,7 @@
         </section>
 
         <section class="essay-section">
-          <h2 class="essay-heading">Flow Regimes</h2>
+          <h2 class="essay-heading">Flow regimes</h2>
           <p class="essay-body">
             These labels are interpretive lenses. They help teams reason about mechanism and intervention, not assign blame.
           </p>
@@ -126,44 +130,44 @@
               <thead>
                 <tr>
                   <th class="taxonomy-grid-header">Regime</th>
-                  <th class="taxonomy-grid-header">Typical signature</th>
-                  <th class="taxonomy-grid-header">Primary risk</th>
-                  <th class="taxonomy-grid-header">Intervention bias</th>
+                  <th class="taxonomy-grid-header">Typical Signature</th>
+                  <th class="taxonomy-grid-header">Primary Risk</th>
+                  <th class="taxonomy-grid-header">Intervention Bias</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td class="taxonomy-grid-cell">Breathing system</td>
+                  <td class="taxonomy-grid-cell">Breathing system<br><small class="taxonomy-regime-dims">low–moderate load &middot; smooth variability</small></td>
                   <td class="taxonomy-grid-cell">Moderate load, low-to-moderate variability, stable backlog.</td>
                   <td class="taxonomy-grid-cell">Complacency about rising variation.</td>
                   <td class="taxonomy-grid-cell">Protect feedback speed; keep WIP discipline before strain appears.</td>
                 </tr>
                 <tr>
-                  <td class="taxonomy-grid-cell">Strained but stable</td>
+                  <td class="taxonomy-grid-cell">Strained but stable<br><small class="taxonomy-regime-dims">high load &middot; moderate variability &middot; pull-limited</small></td>
                   <td class="taxonomy-grid-cell">High utilization with bounded queue, frequent local spill.</td>
                   <td class="taxonomy-grid-cell">Tip into saturation after small shocks.</td>
                   <td class="taxonomy-grid-cell">Reduce arrival bursts and service variability before adding load.</td>
                 </tr>
                 <tr>
-                  <td class="taxonomy-grid-cell">Burst trap</td>
+                  <td class="taxonomy-grid-cell">Burst trap<br><small class="taxonomy-regime-dims">moderate load &middot; high variability</small></td>
                   <td class="taxonomy-grid-cell">Average load looks safe, but queue appears intermittently.</td>
                   <td class="taxonomy-grid-cell">Underestimating waiting because averages stay unchanged.</td>
                   <td class="taxonomy-grid-cell">Smooth intake cadence; split large items; tighten handoffs.</td>
                 </tr>
                 <tr>
-                  <td class="taxonomy-grid-cell">Saturation trap</td>
+                  <td class="taxonomy-grid-cell">Saturation trap<br><small class="taxonomy-regime-dims">near-capacity load &middot; variability amplified</small></td>
                   <td class="taxonomy-grid-cell">Utilization near 1, steep waiting curve, chronic backlog.</td>
                   <td class="taxonomy-grid-cell">Runaway lead-time inflation and expedite churn.</td>
                   <td class="taxonomy-grid-cell">Lower effective arrival rate, protect constraint, cap starts.</td>
                 </tr>
                 <tr>
-                  <td class="taxonomy-grid-cell">Activity-decoupled</td>
+                  <td class="taxonomy-grid-cell">Activity-decoupled<br><small class="taxonomy-regime-dims">any load &middot; push-heavy discipline &middot; constraint moving</small></td>
                   <td class="taxonomy-grid-cell">High local busyness metrics with weak end-to-end flow.</td>
                   <td class="taxonomy-grid-cell">Optimizing activity while degrading throughput.</td>
                   <td class="taxonomy-grid-cell">Shift KPIs to flow, waiting, and completion quality.</td>
                 </tr>
                 <tr>
-                  <td class="taxonomy-grid-cell">Overfed constraint</td>
+                  <td class="taxonomy-grid-cell">Overfed constraint<br><small class="taxonomy-regime-dims">variable load &middot; constraint starved or overfed</small></td>
                   <td class="taxonomy-grid-cell">Non-constraints run hot; bottleneck queue dominates cycle time.</td>
                   <td class="taxonomy-grid-cell">WIP ballooning disguised as productivity.</td>
                   <td class="taxonomy-grid-cell">Subordinate release to constraint rhythm; keep non-constraint slack.</td>
@@ -174,12 +178,13 @@
         </section>
 
         <section class="essay-section">
-          <h2 class="essay-heading">Use It</h2>
+          <h2 class="essay-heading">Use it</h2>
           <p class="essay-body">
             Treat taxonomy as a diagnosis aid: identify your current regime, then test whether your intervention targets the
-            mechanism that created waiting. If you recognise your system in one of these regimes, open Explore and set
-            load and variability to match—the readouts will show you the quantitative difference between what the
-            average suggests and what the system actually produces.
+            mechanism that created waiting. Estimate load from cycle time or throughput data, observe variability from
+            arrival intervals or effort distributions, and note whether intake is pull-limited or push-heavy. If you
+            recognize your system in one of these regimes, open Explore and set load and variability to match—the readouts
+            will show the quantitative difference between what the average suggests and what the system actually produces.
           </p>
           <div class="essay-links">
             <a class="essay-link" href="../explore/">

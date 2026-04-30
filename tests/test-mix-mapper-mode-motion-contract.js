@@ -20,6 +20,10 @@ const rendererSource = fs.readFileSync(
   path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper-renderer.js'),
   'utf8'
 );
+const cssSource = fs.readFileSync(
+  path.join(__dirname, '..', 'css', 'pages', 'mix-mapper.css'),
+  'utf8'
+);
 
 const htmlSource = fs.readFileSync(
   path.join(__dirname, '..', 'modules', 'mix-mapper', 'index.html'),
@@ -112,6 +116,21 @@ function testLegendOrderContract() {
   assert(
     legendModes.slice(0, 3).join(',') === 'learning,process,assumptions',
     'Expected Mix Mapper legend order to be Learning, Process, Assumptions'
+  );
+}
+
+function testLegendMarkerShapeContract() {
+  assert(
+    /\.mix-mapper-legend-marker--process::after\s*\{[\s\S]*border-left:\s*0\.42rem solid var\(--ink-faint\)/.test(cssSource),
+    'Expected Process legend marker to use an arrowhead'
+  );
+  assert(
+    !/\.mix-mapper-legend-marker--assumptions::after/.test(cssSource),
+    'Expected Assumptions legend marker to stay a plain line without a terminal dot'
+  );
+  assert(
+    /\.mix-mapper-legend-btn\.is-active \.mix-mapper-legend-marker--assumptions\s*\{[\s\S]*border-top-color:\s*var\(--viz-slate/.test(cssSource),
+    'Expected active Assumptions legend marker to color the line itself'
   );
 }
 
@@ -455,6 +474,7 @@ testRendererModuleSurface();
   testRuntimeUsesSplitModules();
   testScriptLoadOrderContract();
   testLegendOrderContract();
+  testLegendMarkerShapeContract();
   testRuntimeUsesPolicyPulseDistanceSampling();
   testComplexityFeedbackPulsesReenterForwardFlow();
   testRuntimeUsesInteractionBindings();

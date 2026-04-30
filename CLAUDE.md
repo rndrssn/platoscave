@@ -81,7 +81,7 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | Module 06 The Descent | `modules/the-descent/index.html`, `modules/the-descent/section-map/index.html`, `modules/the-descent/section-map/section-map.js`, `css/pages/the-descent.css` |
 | UI, CSS, navigation, IA | `docs/10-guides/GUIDE-architecture.md`, `docs/40-principles/PRINCIPLE-coding-standards.md`, `docs/20-reference/REFERENCE-css-architecture.md`, `docs/20-reference/navigation-patterns.md` |
 | Module 04 Mix Mapper | All files in `modules/mix-mapper/*` + relevant contract tests in `tests/` |
-| Queue Machine module | `modules/queue-machine/index.html`, `modules/queue-machine/taxonomy/index.html`, `modules/queue-machine/explore/index.html`, `modules/queue-machine/queue-machine-model.js`, `modules/queue-machine/queue-machine.js`, `modules/queue-machine/concept-graph/index.html`, `modules/queue-machine/concept-graph/concept-graph.js`, `css/pages/queue-machine.css` |
+| Queue Machine module | `modules/queue-machine/index.html`, `modules/queue-machine/taxonomy/index.html`, `modules/queue-machine/explore/index.html`, `modules/queue-machine/queue-machine-model.js`, `modules/queue-machine/queue-machine.js`, `modules/queue-machine/concept-graph/index.html`, `modules/queue-machine/concept-graph/concept-graph.js`, `css/pages/queue-machine.css`, `docs/20-reference/REFERENCE-queue-machine-semantics.md` |
 | Force graph (Skills, Concept Map) | `modules/experience-skill-graph/index.html`, `modules/queue-machine/concept-graph/concept-graph.js`, `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
 | Semantics and labels | Treat implementation and tests as canonical; align across UI, summaries, legends |
 
@@ -99,7 +99,7 @@ Includes navigation link checks and notes build checks.
 
 **Optional** (auto-skips without Playwright): `node tests/test-browser-smoke-optional.js`
 
-**Semantics/copy changes:** keep terms aligned with `docs/20-reference/REFERENCE-gc-model-semantics.md`; update relevant docs in the same change.
+**Semantics/copy changes:** keep terms aligned with `docs/20-reference/REFERENCE-gc-model-semantics.md` (GC) and `docs/20-reference/REFERENCE-queue-machine-semantics.md` (Queue Machine); update relevant docs in the same change.
 
 **Merge readiness:** tests pass, no docs integrity errors, no known mismatch between code behavior and documented semantics.
 
@@ -108,6 +108,7 @@ Includes navigation link checks and notes build checks.
 | Changed | Also update |
 |---------|-------------|
 | GC model math or outputs | Tests + user-facing summary logic/copy |
+| Queue Machine model math, symbols, or labels | Tests + `docs/20-reference/REFERENCE-queue-machine-semantics.md` |
 | UI labels/readouts | All affected surfaces (legend, runtime text, summary) |
 | Module title, section name, or IA label | `modules/index.html`, `js/nav-controller.js`, module page labels, redirect copy |
 | Contributor or release workflow | `README.md` + tracked workflow docs |

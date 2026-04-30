@@ -1,25 +1,12 @@
----
-id: GUIDE-03-code-review
-type: GUIDE
-title: Code Review Playbook
-status: ACTIVE
-created: 2026-03-25
-updated: 2026-03-25
-owner: Robert Andersson
-relates_to: [GUIDE-llm-review-playbooks-index, CORE-quality-gates]
-tags: [llm, review, playbook]
-load_when: [when-running-reviews]
-do_not_load_when: []
-token_cost_estimate: low
----
+# Code and Test Review Playbook
 
-# Code Review Playbook
+## Code Quality
 
-## Scope
+### Scope
 
 HTML, CSS, JS implementation quality, safety, and maintainability.
 
-## Check
+### Check
 
 - Correctness and edge-case handling.
 - Readability, cohesion, and duplication.
@@ -27,14 +14,41 @@ HTML, CSS, JS implementation quality, safety, and maintainability.
 - Performance pitfalls and unnecessary complexity.
 - Standards adherence and consistency with project patterns.
 
-## Report
+### Report
 
 - Functional bugs/regressions (Must).
 - Unsafe patterns (Must).
 - Fragile logic / hidden coupling (Should).
 - Refactor opportunities with measurable payoff (Could).
 
-## Verify
+### Verify
 
 - Provide file/function-level evidence.
 - Require tests or smoke checks for each Must/Should fix.
+
+---
+
+## Test Coverage
+
+### Scope
+
+Adequacy of unit/integration/e2e coverage and regression protection.
+
+### Check
+
+- High-risk logic coverage.
+- Contract/boundary/error-path tests.
+- Accessibility and navigation baseline checks.
+- CI gating alignment with required tests.
+
+### Report
+
+- Untested critical paths (Must).
+- Missing regressions for previously fixed bugs (Should).
+- Weak assertions/false-confidence tests (Should).
+- Flaky or redundant tests (Could).
+
+### Verify
+
+- Map risks to specific test files.
+- Propose exact new tests with expected assertions.

@@ -1,18 +1,3 @@
----
-id: GUIDE-17-information-architecture-review
-type: GUIDE
-title: Information Architecture Review Playbook
-status: ACTIVE
-created: 2026-04-19
-updated: 2026-04-25
-owner: Robert Andersson
-relates_to: [GUIDE-llm-review-playbooks-index, CORE-quality-gates, REFERENCE-navigation-patterns, REFERENCE-content-taxonomy]
-tags: [llm, review, playbook, ia, navigation, taxonomy]
-load_when: [when-running-reviews, ia_changes, navigation_changes]
-do_not_load_when: []
-token_cost_estimate: low
----
-
 # Information Architecture Review Playbook
 
 ## Scope

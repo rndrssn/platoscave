@@ -253,7 +253,7 @@
         }
         if (assumptionRole === 'certainty-revisit') {
           return {
-            color: COLORS.learningArrow,
+            color: assumptionColor,
             width: Math.max(0.82, layout.edgeLearning - 0.06),
             opacity: 0.74,
             marker: assumptionMarker
@@ -279,14 +279,12 @@
 
       if (mode === 'learning') {
         var learningRole = getLearningRole(link);
-        var learningColor = COLORS.learningArrow;
-        var complexityLearningMarker = 'url(#mix-map-arrow-learning)';
         if (learningRole === 'learning-loop') {
           return {
-            color: learningColor,
-            width: layout.edgeLearning + 0.62,
-            opacity: 0.98,
-            marker: complexityLearningMarker
+            color: COLORS.inkFaint,
+            width: Math.max(0.75, layout.edgeSecondary - 0.16),
+            opacity: 0.3,
+            marker: 'url(#mix-map-arrow-ink-faint)'
           };
         }
         if (learningRole === 'learning-support') {
@@ -301,10 +299,10 @@
         }
         if (learningRole === 'legacy-upstream') {
           return {
-            color: learningColor,
-            width: Math.max(0.82, layout.edgeLearning - 0.06),
-            opacity: 0.74,
-            marker: 'url(#mix-map-arrow-assumption)'
+            color: COLORS.inkFaint,
+            width: Math.max(0.75, layout.edgeSecondary - 0.16),
+            opacity: 0.28,
+            marker: 'url(#mix-map-arrow-process-dot)'
           };
         }
         return {
@@ -313,7 +311,7 @@
           opacity: 0.22,
           marker: link.lane === 'complexity'
             ? 'url(#mix-map-arrow-ink-faint)'
-            : 'url(#mix-map-arrow-learning)'
+            : 'url(#mix-map-arrow-process-dot)'
         };
       }
 

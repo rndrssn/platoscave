@@ -88,31 +88,21 @@
   border-top: 1.4px solid var(--ink-faint);
 }
 
-.mix-mapper-legend-marker--assumptions {
+.mix-mapper-legend-marker--process {
   position: relative;
-  border-top: 0;
 }
 
-.mix-mapper-legend-marker--assumptions::before {
+.mix-mapper-legend-marker--process::after {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
   top: 50%;
-  border-top: 1.4px solid var(--ink-faint);
-  transform: translateY(-50%);
-}
-
-.mix-mapper-legend-marker--assumptions::after {
-  content: '';
-  position: absolute;
   right: 0;
-  top: 50%;
-  width: 0.44rem;
-  height: 0.44rem;
-  border-radius: 999px;
-  transform: translateY(-50%);
-  background: color-mix(in srgb, var(--ink-faint) 82%, var(--paper) 18%);
+  width: 0;
+  height: 0;
+  border-top: 0.24rem solid transparent;
+  border-bottom: 0.24rem solid transparent;
+  border-left: 0.42rem solid var(--ink-faint);
+  transform: translate(0.12rem, -50%);
 }
 
 .mix-mapper-legend-marker--dot {
@@ -126,16 +116,12 @@
   border-top-color: var(--rust);
 }
 
+.mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--process::after {
+  border-left-color: var(--rust);
+}
+
 .mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--assumptions {
-  border-top-color: transparent;
-}
-
-.mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--assumptions::before {
   border-top-color: var(--viz-slate, var(--slate));
-}
-
-.mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--assumptions::after {
-  background: var(--viz-slate, var(--slate));
 }
 
 .mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--learning {

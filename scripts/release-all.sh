@@ -4,9 +4,19 @@ set -euo pipefail
 MSG="${1:-Update all changes}"
 
 git checkout sandbox
+git pull --ff-only origin sandbox
+
+echo "==> Running tests..."
+node tests/run-all.js
+
 git add -A
-git commit -m "$MSG" || true
-git push origin sandbox
+
+if git diff --cached --quiet; then
+  echo "==> Nothing to commit, skipping commit step."
+else
+  git commit -m "$MSG"
+  git push origin sandbox
+fi
 
 git checkout develop
 git pull --ff-only origin develop

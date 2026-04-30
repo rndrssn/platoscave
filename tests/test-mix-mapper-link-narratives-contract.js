@@ -54,6 +54,28 @@ function testNarrativeResolutionByMode() {
   );
 }
 
+function testLaunchOutcomeDirectValidationLoopNarrative() {
+  const link = findLink('c6', 'c4', 'learning');
+  assert(link, 'Missing c6 -> c4 learning link');
+
+  const processText = semantics.complexityLinkNarrative(link, 'process', data.COMPLEXITY_LINK_NARRATIVES);
+  const assumptionsText = semantics.complexityLinkNarrative(link, 'assumptions', data.COMPLEXITY_LINK_NARRATIVES);
+  const learningText = semantics.complexityLinkNarrative(link, 'learning', data.COMPLEXITY_LINK_NARRATIVES);
+
+  assert(
+    processText.includes('solution exploration') && processText.includes('validation'),
+    'Expected c6 -> c4 process narrative to frame direct return to solution exploration and validation'
+  );
+  assert(
+    assumptionsText.includes('measured outcomes') && assumptionsText.includes('solution options'),
+    'Expected c6 -> c4 assumptions narrative to ground the loop in measured outcomes'
+  );
+  assert(
+    learningText.includes('Market response') && learningText.includes('solution experiments'),
+    'Expected c6 -> c4 learning narrative to describe market response redirecting experiments'
+  );
+}
+
 function testModeLabelsContract() {
   assert(semantics.modeLabel('all') === 'Overview', 'Expected all mode label');
   assert(semantics.modeLabel('process') === 'Process', 'Expected process mode label');
@@ -65,6 +87,7 @@ function run() {
   testComplexityNarrativeMapExists();
   testComplexityNarrativeCoverageForComplexityLinks();
   testNarrativeResolutionByMode();
+  testLaunchOutcomeDirectValidationLoopNarrative();
   testModeLabelsContract();
   console.log('PASS: tests/test-mix-mapper-link-narratives-contract.js');
 }

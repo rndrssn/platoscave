@@ -157,6 +157,7 @@ Tests enforcing this contract:
 - Module 04 root is canonical local section `01` at `modules/mix-mapper/`, titled "Epistemic Bets" under "Management Mix".
 - Mix Mapper SVG colors: never use color-mix(…, transparent) via D3 .attr() — broken on iOS WebKit. Use D3 .style() for all visual properties (fill, stroke, fill-opacity, stroke-opacity) on SVG elements.
 - Mix Mapper SVG text: dominant-baseline and text-anchor must be CSS properties on the label class in `css/pages/mix-mapper.css`, not SVG presentation attributes.
+- Mix Mapper complexity feedback/learning pulses travel backward on their arc, dwell at the absorbing node, then re-enter the next downstream primary flow segment. Do not add node pulse/glow unless explicitly requested.
 - buildColors() reads --viz-* token tier (--viz-ink-faint, --viz-ink-ghost, --viz-sage, --viz-rust, etc.). Do not revert to --ink-* UI tokens.
 - Queue Machine module root is canonical local section `01` at `modules/queue-machine/`. Sections: `01` Flow and Waiting, `02` Taxonomy (`modules/queue-machine/taxonomy/`), `03` Explore (`modules/queue-machine/explore/`), `04` Concept Map (`modules/queue-machine/concept-graph/`).
 - Queue Machine Explore preset behavior: there is no standalone reshuffle button. Re-clicking the currently active preset reseeds local variability while preserving preset averages.

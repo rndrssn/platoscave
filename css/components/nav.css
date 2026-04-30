@@ -616,6 +616,36 @@
   }
 }
 
+/* ── Desktop nav link rotation ──────────────────────────────── */
+@media (min-width: 900px) {
+  /* Allow rotated text to spill outside the nav bar */
+  .site-header,
+  .main-nav {
+    overflow: visible;
+  }
+
+  /* Smooth snap on hover-in and drift back on hover-out */
+  .js-enabled .nav-links > .nav-link {
+    transition: transform 180ms ease;
+  }
+
+  /* Hand-tuned angles — reads as scattered, not systematic */
+  .js-enabled .nav-links > .nav-link:nth-child(1) { transform: rotate(-4deg); }
+  .js-enabled .nav-links > .nav-link:nth-child(2) { transform: rotate(6deg);  }
+  .js-enabled .nav-links > .nav-link:nth-child(3) { transform: rotate(-5deg); }
+  .js-enabled .nav-links > .nav-link:nth-child(4) { transform: rotate(4deg);  }
+
+  /* Hover and focus: snap upright */
+  .js-enabled .nav-links > .nav-link:hover,
+  .js-enabled .nav-links > .nav-link:focus-visible {
+    transform: rotate(0deg);
+  }
+}
+
+@media (min-width: 900px) and (prefers-reduced-motion: reduce) {
+  .js-enabled .nav-links > .nav-link { transition: none; }
+}
+
 @media (max-width: 640px) {
   .nav-sublink {
     font-size: 0.66rem;

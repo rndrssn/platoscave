@@ -621,10 +621,52 @@
         }
 
         var distancePx = modePolicy.pulseDistancePx(elapsed, link, idx, resolvePulseMode(link));
+
+        if (link.__reentryPathNode && link.__reentryPathLength > 0 && link.__reentryAbsorbDistance > 0) {
+          var speedPxPerMs = modePolicy.pulseSpeedPxPerMs(resolvePulseMode(link), link);
+          var cycleDistance = ((elapsed * speedPxPerMs) + modePolicy.pulsePhaseOffsetPx(idx)) %
+            (link.__pathLength + link.__reentryAbsorbDistance + link.__reentryPathLength);
+          var baseRadius = state.layout && Number.isFinite(state.layout.pulseRadius)
+            ? state.layout.pulseRadius
+            : 3.8;
+
+          if (cycleDistance <= link.__pathLength) {
+            point = link.__pathNode.getPointAtLength(cycleDistance);
+            pulseSel
+              .attr('cx', point.x)
+              .attr('cy', point.y)
+              .attr('r', baseRadius)
+              .attr('opacity', opacity);
+            return;
+          }
+
+          if (cycleDistance <= link.__pathLength + link.__reentryAbsorbDistance) {
+            var absorbProgress = (cycleDistance - link.__pathLength) / link.__reentryAbsorbDistance;
+            var absorbRadius = baseRadius * (1 + (Math.sin(absorbProgress * Math.PI) * 0.58));
+            point = link.__pathNode.getPointAtLength(link.__pathLength);
+            pulseSel
+              .attr('cx', point.x)
+              .attr('cy', point.y)
+              .attr('r', absorbRadius)
+              .attr('opacity', Math.min(0.98, opacity + 0.18));
+            return;
+          }
+
+          var reentryDistancePx = cycleDistance - link.__pathLength - link.__reentryAbsorbDistance;
+          point = link.__reentryPathNode.getPointAtLength(reentryDistancePx);
+          pulseSel
+            .attr('cx', point.x)
+            .attr('cy', point.y)
+            .attr('r', baseRadius)
+            .attr('opacity', opacity);
+          return;
+        }
+
         point = link.__pathNode.getPointAtLength(distancePx);
         pulseSel
           .attr('cx', point.x)
           .attr('cy', point.y)
+          .attr('r', state.layout && Number.isFinite(state.layout.pulseRadius) ? state.layout.pulseRadius : 3.8)
           .attr('opacity', opacity);
       });
     });

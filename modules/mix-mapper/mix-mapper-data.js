@@ -139,7 +139,8 @@
     { source: 'c4', target: 'c2', lane: 'complexity', kind: 'feedback', semantic: 'option evidence alters commitment' },
     { source: 'c6', target: 'c1', lane: 'complexity', kind: 'learning', semantic: 'market evidence updates sensing' },
     { source: 'c6', target: 'c2', lane: 'complexity', kind: 'learning', semantic: 'outcomes reshape investments' },
-    { source: 'c6', target: 'c3', lane: 'complexity', kind: 'learning', semantic: 'launch signals reframe discovery' }
+    { source: 'c6', target: 'c3', lane: 'complexity', kind: 'learning', semantic: 'launch signals reframe discovery' },
+    { source: 'c6', target: 'c4', lane: 'complexity', kind: 'learning', semantic: 'outcomes redirect solution experiments' }
   ];
 
   var COMPLEXITY_LINK_NARRATIVES = {
@@ -202,6 +203,11 @@
       process: 'Launch evidence loops into new discovery framing.',
       assumptions: 'Assumes teams revisit earlier framing with fresh evidence instead of defending prior narratives.',
       learning: 'Real-world performance reframes hypotheses for the next discovery cycle.'
+    },
+    'c6>c4:learning': {
+      process: 'Launch evidence can send teams directly back into solution exploration and validation.',
+      assumptions: 'Assumes measured outcomes are strong enough to reopen solution options, not only reporting dashboards.',
+      learning: 'Market response redirects which solution experiments should run next.'
     }
   };
 

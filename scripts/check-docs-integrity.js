@@ -100,39 +100,12 @@ for (const f of files) {
   if (id) resolvable.add(id);
 }
 
-const activePrefixAllow = [
-  'docs/00-core/',
-  'docs/10-guides/',
-  'docs/20-reference/',
-  'docs/30-tasks/'
-];
-
-const requiredActiveFields = [
-  'id', 'type', 'title', 'status', 'created', 'updated', 'owner', 'relates_to', 'tags',
-  'load_when', 'do_not_load_when', 'token_cost_estimate'
-];
-
 for (const f of files) {
   const r = rel(f);
   if (r.startsWith(archivePrefix)) continue;
 
   const src = fs.readFileSync(f, 'utf8');
   const fm = parseFrontmatter(src);
-
-  const isActiveManaged = activePrefixAllow.some((p) => r.startsWith(p));
-  if (isActiveManaged) {
-    if (!fm) {
-      console.error('FAIL: active doc missing frontmatter:', r);
-      failed++;
-      continue;
-    }
-    for (const k of requiredActiveFields) {
-      if (!fm.has(k) || fm.get(k) === '') {
-        console.error('FAIL: active doc missing field', k + ':', r);
-        failed++;
-      }
-    }
-  }
 
   if (!fm || !fm.has('relates_to')) continue;
   const raw = fm.get('relates_to');

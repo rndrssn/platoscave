@@ -1,18 +1,3 @@
----
-id: REFERENCE-notes-module-linking
-type: REFERENCE
-title: Notes-Module Linking Contract
-status: ACTIVE
-created: 2026-03-22
-updated: 2026-03-24
-owner: Robert Andersson
-relates_to: [REFERENCE-content-taxonomy, CORE]
-tags: [linking, ia, notes, modules]
-load_when: [ia_changes, content_design]
-do_not_load_when: [pure_logic_changes]
-token_cost_estimate: low
----
-
 # Notes-Module Linking Contract
 
 ## Purpose

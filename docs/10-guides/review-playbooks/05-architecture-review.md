@@ -1,18 +1,3 @@
----
-id: GUIDE-05-architecture-review
-type: GUIDE
-title: Architecture Review Playbook
-status: ACTIVE
-created: 2026-03-25
-updated: 2026-03-30
-owner: Robert Andersson
-relates_to: [GUIDE-llm-review-playbooks-index, CORE-quality-gates, GUIDE-architecture]
-tags: [llm, review, playbook, architecture]
-load_when: [when-running-reviews, architecture_changes]
-do_not_load_when: []
-token_cost_estimate: low
----
-
 # Architecture Review Playbook
 
 ## Purpose

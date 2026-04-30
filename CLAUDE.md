@@ -83,7 +83,6 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | Module 04 Mix Mapper | All files in `modules/mix-mapper/*` + relevant contract tests in `tests/` |
 | Queue Machine module | `modules/queue-machine/index.html`, `modules/queue-machine/taxonomy/index.html`, `modules/queue-machine/explore/index.html`, `modules/queue-machine/queue-machine-model.js`, `modules/queue-machine/queue-machine.js`, `modules/queue-machine/concept-graph/index.html`, `modules/queue-machine/concept-graph/concept-graph.js`, `css/pages/queue-machine.css` |
 | Force graph (Skills, Concept Map) | `modules/experience-skill-graph/index.html`, `modules/queue-machine/concept-graph/concept-graph.js`, `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
-| Documentation edits | `docs/10-guides/DOC-CONVENTIONS.md` |
 | Semantics and labels | Treat implementation and tests as canonical; align across UI, summaries, legends |
 
 Full rules: `docs/00-core/CORE-loading-rules.md`.

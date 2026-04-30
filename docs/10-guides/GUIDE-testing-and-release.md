@@ -1,18 +1,3 @@
----
-id: GUIDE-testing-and-release
-type: GUIDE
-title: Testing and Release Guide
-status: ACTIVE
-created: 2026-03-19
-updated: 2026-04-25
-owner: Robert Andersson
-relates_to: [CORE-quality-gates, GUIDE-getting-started]
-tags: [testing, release]
-load_when: [always]
-do_not_load_when: []
-token_cost_estimate: low
----
-
 # Testing and Release Guide
 
 ## Required checks

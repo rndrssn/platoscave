@@ -1,18 +1,3 @@
----
-id: REFERENCE-navigation-patterns
-type: REFERENCE
-title: Frontend Navigation Patterns
-status: ACTIVE
-created: 2026-03-22
-updated: 2026-04-25
-owner: Robert Andersson
-relates_to: [CORE, CORE-quality-gates, REFERENCE-css-architecture]
-tags: [navigation, ia, accessibility, responsive]
-load_when: [navigation_changes, ia_changes]
-do_not_load_when: [pure_logic_changes]
-token_cost_estimate: low
----
-
 # Frontend Navigation Patterns
 
 This document defines the canonical link and navigation patterns used across the frontend.

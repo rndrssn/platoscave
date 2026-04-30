@@ -490,12 +490,9 @@ function buildTickSnapshots(Choices, Problems, ChoicesEnergyRequired, ChoicesEne
 
 // ─── Public API ───────────────────────────────────────────────────────────────
 
-const [A0, A1, A2]   = buildAccessMatrices();
-const [D0, D1, D2]   = buildDecisionMatrices();
+const A_MATRIX       = buildAccessMatrices();
+const D_MATRIX       = buildDecisionMatrices();
 const [, E1]         = buildEnergyVectors(); // uniform energy distribution (fixed)
-
-const A_MATRIX = [A0, A1, A2];
-const D_MATRIX = [D0, D1, D2];
 const STRUCTURES = ['unsegmented', 'hierarchical', 'specialized'];
 
 /**

@@ -11,7 +11,7 @@ node tests/run-all.js
 
 git add -A
 
-if git diff --cached --quiet; then
+if git diff --cached --quiet; then  # nothing staged → skip
   echo "==> Nothing to commit, skipping commit step."
 else
   git commit -m "$MSG"

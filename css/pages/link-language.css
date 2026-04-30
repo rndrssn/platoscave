@@ -247,7 +247,8 @@
 }
 
 /* Taxonomy/modules card entry labels remain card-first, with chip accent */
-.essay-link-label {
+.essay-link-label,
+.module-entry--live .module-title {
   color: var(--link-text-strong);
   background: transparent;
   text-decoration: none;
@@ -256,7 +257,9 @@
 }
 
 .essay-link:hover .essay-link-label,
-.essay-link:focus-visible .essay-link-label {
+.essay-link:focus-visible .essay-link-label,
+.module-entry--live:hover .module-title,
+.module-entry--live:focus-within .module-title {
   color: var(--link-text-strong);
   background: var(--link-surface-nav-chip-hover);
   text-decoration: none;

@@ -27,6 +27,8 @@ function loadAssessWithHarness(harness) {
   };
 
   vm.createContext(context);
+  const uiUtilsSrc = fs.readFileSync(path.join(__dirname, '..', 'modules', 'garbage-can', 'gc-ui-utils.js'), 'utf8');
+  vm.runInContext(uiUtilsSrc, context, { filename: 'gc-ui-utils.js' });
   vm.runInContext(source, context, { filename: 'assess.js' });
 }
 

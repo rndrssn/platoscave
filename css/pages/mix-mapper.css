@@ -131,15 +131,15 @@
 }
 
 .mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--assumptions::before {
-  border-top-color: var(--sage);
+  border-top-color: var(--viz-slate, var(--slate));
 }
 
 .mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--assumptions::after {
-  background: var(--sage);
+  background: var(--viz-slate, var(--slate));
 }
 
 .mix-mapper-legend-btn.is-active .mix-mapper-legend-marker--learning {
-  background: var(--sage);
+  background: var(--viz-slate, var(--slate));
 }
 
 .mix-mapper-viz-shell {

@@ -107,6 +107,14 @@ function testScriptLoadOrderContract() {
   assert(rendererPos < runtimePos, 'Expected renderer script before runtime script');
 }
 
+function testLegendOrderContract() {
+  const legendModes = Array.from(htmlSource.matchAll(/data-mode="([^"]+)"/g)).map((match) => match[1]);
+  assert(
+    legendModes.slice(0, 3).join(',') === 'learning,process,assumptions',
+    'Expected Mix Mapper legend order to be Learning, Process, Assumptions'
+  );
+}
+
 function testLayoutUtilsModuleSurface() {
   assert(typeof layoutUtilsModule.createLayoutUtils === 'function', 'Expected createLayoutUtils export');
 
@@ -446,6 +454,7 @@ testRuntimeLegendToggleFallbackContract();
 testRendererModuleSurface();
   testRuntimeUsesSplitModules();
   testScriptLoadOrderContract();
+  testLegendOrderContract();
   testRuntimeUsesPolicyPulseDistanceSampling();
   testComplexityFeedbackPulsesReenterForwardFlow();
   testRuntimeUsesInteractionBindings();

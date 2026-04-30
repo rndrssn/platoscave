@@ -16,9 +16,9 @@ function buildPolicy() {
     inkFaint: '#767676',
     rust: '#9A4F2F',
     processArrow: '#2A2018',
-    assumptionArrow: '#4A6741',
+    assumptionArrow: '#3D4F5C',
     learningArrow: '#4A6741',
-    learningDot: '#4A6741'
+    learningDot: '#3D4F5C'
   };
 
   const policy = modePolicyModule.createModePolicy({
@@ -90,10 +90,12 @@ function testAssumptionsModeMarkersAndOpacity() {
 
   const certainty = policy.modeStyle('assumptions', links.traditionalPrimary, box);
   const learningTest = policy.modeStyle('assumptions', links.complexityFeedback, box);
+  const certaintyRevisit = policy.modeStyle('assumptions', links.traditionalLearning, box);
   const context = policy.modeStyle('assumptions', links.complexityPrimary, box);
 
   assert(certainty.color === colors.assumptionArrow, 'Assumptions mode should highlight certainty links in assumption color');
   assert(certainty.marker === 'url(#mix-map-arrow-assumption)', 'Assumptions mode traditional links should use ---o marker');
+  assert(certaintyRevisit.color === colors.assumptionArrow, 'Assumptions mode should keep revisited assumption arcs in assumption color');
   assert(learningTest.marker === 'url(#mix-map-arrow-assumption-triangle)', 'Assumptions mode complexity links should keep triangle marker');
   assert(context.color === colors.inkFaint, 'Assumptions mode should faint context-only links');
   assert(context.opacity < certainty.opacity, 'Assumptions mode should reduce context link opacity');
@@ -108,11 +110,12 @@ function testLearningModeAndDotSemantics() {
   const traditionalLegacy = policy.modeStyle('learning', links.traditionalLearning, box);
   const support = policy.modeStyle('learning', links.complexityPrimary, box);
 
-  assert(complexityLoop.color === colors.learningArrow, 'Learning mode should highlight complexity learning links in learning color');
-  assert(complexityLoop.marker === 'url(#mix-map-arrow-learning)', 'Learning mode complexity loops should use learning marker');
-  assert(traditionalLegacy.marker === 'url(#mix-map-arrow-assumption)', 'Learning mode traditional upstream links should keep ---o marker');
+  assert(complexityLoop.color === colors.inkFaint, 'Learning mode should keep complexity learning arcs neutral');
+  assert(complexityLoop.marker === 'url(#mix-map-arrow-ink-faint)', 'Learning mode complexity loops should keep neutral markers');
+  assert(traditionalLegacy.color === colors.inkFaint, 'Learning mode should keep traditional upstream arcs neutral');
+  assert(traditionalLegacy.marker === 'url(#mix-map-arrow-process-dot)', 'Learning mode traditional upstream links should keep neutral dot markers');
   assert(support.color === colors.inkFaint, 'Learning mode should faint process/support links');
-  assert(support.opacity < complexityLoop.opacity, 'Learning mode should keep support links dimmer than active learning loops');
+  assert(support.opacity < complexityLoop.opacity, 'Learning mode should keep support arcs dimmer than learning-loop arcs without changing arc color');
 }
 
 function testPulseContractAcrossModeMatrix() {

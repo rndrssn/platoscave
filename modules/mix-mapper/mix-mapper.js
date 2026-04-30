@@ -96,6 +96,7 @@
   function buildColors() {
     var ink = readScopedCssVar('--viz-ink', '#2A2018');
     var sage = readScopedCssVar('--viz-sage', '#4A6741');
+    var slate = readScopedCssVar('--viz-slate', '#3D4F5C');
     var rust = readScopedCssVar('--viz-rust', '#8B3A2A');
     var text = ink;
     var muted = readScopedCssVar('--viz-ink-mid', '#5C4F3A');
@@ -125,7 +126,7 @@
       accentArrow: 'color-mix(in srgb, ' + toggleAccent + ' 72%, ' + panel + ' 28%)',
       processArrow: ink,
       learningArrow: sage,
-      assumptionArrow: sage,
+      assumptionArrow: slate,
       nodeFill: 'color-mix(in srgb, ' + ink + ' 18%, ' + panel + ' 82%)',
       nodeStroke: ink,
       processTraditionalFlow: 'color-mix(in srgb, ' + readScopedCssVar('--mix-map-traditional', readScopedCssVar('--viz-slate', baseViz)) + ' 78%, ' + panel + ' 22%)',
@@ -138,8 +139,8 @@
       assumptionCertainty: 'color-mix(in srgb, ' + toggleAccent + ' 58%, ' + text + ' 42%)',
       assumptionTest: 'color-mix(in srgb, ' + toggleAccent + ' 84%, ' + panel + ' 16%)',
       assumptionContext: 'color-mix(in srgb, ' + ghost + ' 40%, ' + panel + ' 60%)',
-      learningDot: sage,
-      dotStroke: sage
+      learningDot: slate,
+      dotStroke: slate
     };
   }
 

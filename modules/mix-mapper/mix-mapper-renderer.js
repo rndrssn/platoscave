@@ -35,6 +35,41 @@
         return 0;
       };
 
+    function linkIdentityKey(link) {
+      return String(link && link.source || '') + '>' +
+        String(link && link.target || '') + ':' +
+        String(link && link.kind || '');
+    }
+
+    function assignComplexityReentryMeta(nodeById, pathNodeByKey) {
+      links.forEach(function(link) {
+        link.__reentryPathNode = null;
+        link.__reentryPathLength = 0;
+        link.__reentryAbsorbDistance = 0;
+
+        if (!link || link.lane !== 'complexity') return;
+        if (link.kind !== 'feedback' && link.kind !== 'learning') return;
+
+        var target = nodeById[link.target];
+        if (!target) return;
+
+        var nextPrimary = links.find(function(candidate) {
+          return candidate &&
+            candidate.lane === 'complexity' &&
+            candidate.kind === 'primary' &&
+            candidate.source === link.target;
+        });
+        if (!nextPrimary || !nextPrimary.__pathLength) return;
+
+        var reentryPathNode = pathNodeByKey[linkIdentityKey(nextPrimary)];
+        if (!reentryPathNode) return;
+
+        link.__reentryPathNode = reentryPathNode;
+        link.__reentryPathLength = nextPrimary.__pathLength;
+        link.__reentryAbsorbDistance = Math.max(14, Math.min(28, target.height * 0.48));
+      });
+    }
+
     function renderGraph(params) {
       params = params || {};
       if (!d3Lib || !svgEl || !layoutUtils || !nodeUtils || !modePolicy || !interactionBindings) return null;
@@ -226,6 +261,7 @@
         .attr('stroke-width', 0)
         .attr('pointer-events', 'none');
 
+      var pathNodeByKey = Object.create(null);
       linkSel.each(function(link) {
         link.__pathNode = this;
         link.__pathLength = 0;
@@ -234,8 +270,10 @@
         } catch (error) {
           link.__pathLength = 0;
         }
+        pathNodeByKey[linkIdentityKey(link)] = this;
       });
       modePolicy.assignForwardCascadeMeta(links, nodeById);
+      assignComplexityReentryMeta(nodeById, pathNodeByKey);
 
       var nodeSel = nodeLayer.selectAll('.mix-map-node')
         .data(nodes, function(node) {

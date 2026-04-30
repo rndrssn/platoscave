@@ -340,6 +340,33 @@ function testRuntimeUsesPolicyPulseDistanceSampling() {
   assert(/getPointAtLength\(distancePx\)/.test(runtimeSource), 'Expected pulse motion to sample path by distance');
 }
 
+function testComplexityFeedbackPulsesReenterForwardFlow() {
+  assert(
+    /function\s+assignComplexityReentryMeta\(nodeById,\s*pathNodeByKey\)/.test(rendererSource),
+    'Expected renderer to assign re-entry metadata for complexity feedback pulses'
+  );
+  assert(
+    /link\.lane !== 'complexity'/.test(rendererSource) &&
+      /link\.kind !== 'feedback' && link\.kind !== 'learning'/.test(rendererSource),
+    'Expected only complexity feedback and learning arcs to receive re-entry metadata'
+  );
+  assert(
+    /candidate\.kind === 'primary'/.test(rendererSource) &&
+      /candidate\.source === link\.target/.test(rendererSource),
+    'Expected feedback pulses to re-enter through the next downstream primary flow segment'
+  );
+  assert(
+    /link\.__reentryPathNode/.test(runtimeSource) &&
+      /link\.__reentryAbsorbDistance/.test(runtimeSource) &&
+      /Math\.sin\(absorbProgress \* Math\.PI\)/.test(runtimeSource),
+    'Expected runtime to dwell feedback pulses at the absorbing node before re-entry'
+  );
+  assert(
+    /link\.__reentryPathNode\.getPointAtLength\(reentryDistancePx\)/.test(runtimeSource),
+    'Expected runtime to move absorbed feedback pulses along the downstream re-entry path'
+  );
+}
+
 function testRuntimeUsesInteractionBindings() {
   assert(
     /interactionBindings\.bindLinkInteractions\(linkHitSel,\s*nodeById\)/.test(rendererSource),
@@ -420,6 +447,7 @@ testRendererModuleSurface();
   testRuntimeUsesSplitModules();
   testScriptLoadOrderContract();
   testRuntimeUsesPolicyPulseDistanceSampling();
+  testComplexityFeedbackPulsesReenterForwardFlow();
   testRuntimeUsesInteractionBindings();
   testRuntimeUsesRendererModule();
   testRuntimeUsesScreenScaledTypography();

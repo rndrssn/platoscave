@@ -9,6 +9,8 @@ vendor/
 !assets/vendor/
 assets/vendor/*
 !assets/vendor/d3.v7.min.js
+!assets/vendor/katex/
+!assets/vendor/katex/**
 
 # Build output
 dist/

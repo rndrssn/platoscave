@@ -4,12 +4,12 @@ const fs = require('fs');
 const path = require('path');
 
 const htmlSource = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'the-descent', 'section-map', 'index.html'),
+  path.join(__dirname, '..', 'modules', 'ambiguity-clarity', 'section-map', 'index.html'),
   'utf8'
 );
 
 const runtimeSource = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'the-descent', 'section-map', 'section-map.js'),
+  path.join(__dirname, '..', 'modules', 'ambiguity-clarity', 'section-map', 'section-map.js'),
   'utf8'
 );
 

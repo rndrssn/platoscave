@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Conway's Game of Life simulation within the Emergence module." />
+  <title>Conway's Game of Life · Emergence · To the Bedrock</title>
+  <script src="../../theme.config.js"></script>
+  <script src="../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../css/fonts.css" />
+  <link rel="stylesheet" href="../../css/tokens.css" />
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="../../css/layout.css" />
+  <link rel="stylesheet" href="../../css/components.css" />
+  <link rel="stylesheet" href="../../css/utilities.css" />
+  <link rel="stylesheet" href="../../css/themes.css" />
+  <link rel="stylesheet" href="../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../">To the Bedrock</a>
+    <nav class="main-nav">
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../">Home</a>
+      <a class="nav-link" href="../../notes/">Notes</a>
+      <a class="nav-link nav-link--active" href="../../modules/" aria-current="page">Modules</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page emergence-primer-page">
+      <a class="module-back-link" href="../" aria-label="Back to Modules"></a>
+      <a class="module-header-number module-context-number module-context-link" href="./">Emergence</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01</span> Conway's Game of Life</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="ganttgol/"><span class="module-sub-nav-number">02</span> GANTT meets Game of Life</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Conway's Game of Life</h1>
+        <p class="module-header-body">
+          Conway's Game of Life is a discrete mathematical model on a two-dimensional grid. Each cell is either alive or dead, and time advances in fixed ticks. On each tick, a dead cell is born with exactly 3 live neighbours, and a live cell survives with 2 or 3 live neighbours. This is the classic B3/S23 rule.
+        </p>
+        <p class="module-header-cue">
+          <a class="ep-jump ep-jump--hero" href="#ep-life-panel" data-ep-jump-hero>Try the simulation below &darr;</a>
+        </p>
+      </header>
+
+      <article class="module-essay">
+        <section class="essay-section">
+          <h2 class="essay-heading">Scientific interest</h2>
+          <p class="essay-body">
+            The update rule is deterministic: the next state of each cell depends only on its current state and the count of its eight live neighbours. There is no randomness in the rule itself. Given the same initial state, each run produces the same trajectory. But deterministic does not mean easy to predict; to know what happens, you still need to run the system forward &mdash; <a class="ep-jump" href="#ep-life-panel" data-ep-jump-seed="r-pentomino">try R-pentomino &darr;</a>.
+          </p>
+          <p class="essay-body">
+            That is why the model is scientifically useful. Simple local rules create rich global behaviour: stable structures, oscillators, moving patterns, long transients, and sensitivity to initial conditions &mdash; <a class="ep-jump" href="#ep-life-panel" data-ep-jump-patterns>see canonical patterns &darr;</a>. Complexity emerges from interaction, not from central control.
+          </p>
+
+          <div class="ep-life-panel" id="ep-life-panel" tabindex="-1">
+            <div class="ep-life-toolbar ep-life-toolbar--inline" role="group" aria-label="Conway Game of Life controls">
+              <span class="can-controls ep-life-controls" role="group" aria-label="Simulation controls">
+                <button class="can-media-btn can-media-btn--play" id="ep-life-start" aria-label="Start simulation" title="Start simulation" aria-pressed="false" type="button"><span class="can-media-glyph can-media-glyph--play" aria-hidden="true"></span></button>
+                <button class="can-icon-btn" id="ep-life-reset" aria-label="Reset simulation" title="Reset simulation" type="button"></button>
+              </span>
+
+            </div>
+
+            <div class="ep-seed-picker" role="group" aria-label="Seed selector">
+              <button class="ep-seed-btn is-active" type="button" data-ep-seed="bunnies" aria-pressed="true">
+                <canvas class="ep-seed-preview" width="44" height="44" aria-hidden="true"></canvas>
+                <span class="ep-seed-label">Bunnies</span>
+              </button>
+              <button class="ep-seed-btn" type="button" data-ep-seed="r-pentomino" aria-pressed="false">
+                <canvas class="ep-seed-preview" width="44" height="44" aria-hidden="true"></canvas>
+                <span class="ep-seed-label">R-pentomino</span>
+              </button>
+              <button class="ep-seed-btn" type="button" data-ep-seed="acorn" aria-pressed="false">
+                <canvas class="ep-seed-preview" width="44" height="44" aria-hidden="true"></canvas>
+                <span class="ep-seed-label">Acorn</span>
+              </button>
+            </div>
+
+            <p class="ep-life-mode-note">Press play to start. Selecting a seed stops and resets the simulation. The simulation is deterministic.</p>
+
+            <div class="ep-life-stage">
+              <canvas id="ep-life-canvas" class="ep-life-canvas ep-life-canvas--cells" data-life-kind="vanilla" width="960" height="600" role="img" aria-label="Vanilla Conway simulation grid at 192 by 120 cells"></canvas>
+              <canvas id="ep-life-overlay" class="ep-life-canvas ep-life-canvas--overlay" width="960" height="600" aria-hidden="true"></canvas>
+            </div>
+
+            <p id="ep-life-fallback" class="essay-body ep-life-fallback" hidden>
+              Canvas rendering is unavailable in this browser.
+            </p>
+          </div>
+
+          <button class="ep-pattern-toggle" type="button" data-ep-pattern-toggle aria-expanded="false" aria-controls="ep-pattern-panel">+ Patterns to look for</button>
+          <aside id="ep-pattern-panel" class="ep-pattern-footnote is-collapsed" aria-label="Canonical Game of Life patterns" aria-hidden="true">
+            <p class="ep-pattern-footnote-title">Canonical patterns in this setup</p>
+            <div class="ep-pattern-grid">
+              <figure class="ep-pattern-item">
+                <canvas class="ep-pattern-preview" width="56" height="56" data-ep-pattern="block" aria-hidden="true"></canvas>
+                <figcaption class="ep-pattern-caption">Block · still life</figcaption>
+              </figure>
+              <figure class="ep-pattern-item">
+                <canvas class="ep-pattern-preview" width="56" height="56" data-ep-pattern="beehive" aria-hidden="true"></canvas>
+                <figcaption class="ep-pattern-caption">Beehive · still life</figcaption>
+              </figure>
+              <figure class="ep-pattern-item">
+                <canvas class="ep-pattern-preview" width="56" height="56" data-ep-pattern="blinker" aria-hidden="true"></canvas>
+                <figcaption class="ep-pattern-caption">Blinker · oscillator</figcaption>
+              </figure>
+              <figure class="ep-pattern-item">
+                <canvas class="ep-pattern-preview" width="56" height="56" data-ep-pattern="glider" aria-hidden="true"></canvas>
+                <figcaption class="ep-pattern-caption">Glider · spaceship</figcaption>
+              </figure>
+              <figure class="ep-pattern-item">
+                <canvas class="ep-pattern-preview" width="56" height="56" data-ep-pattern="boat" aria-hidden="true"></canvas>
+                <figcaption class="ep-pattern-caption">Boat · still life</figcaption>
+              </figure>
+              <figure class="ep-pattern-item">
+                <canvas class="ep-pattern-preview" width="56" height="56" data-ep-pattern="loaf" aria-hidden="true"></canvas>
+                <figcaption class="ep-pattern-caption">Loaf · still life</figcaption>
+              </figure>
+              <figure class="ep-pattern-item">
+                <canvas class="ep-pattern-preview" width="56" height="56" data-ep-pattern="tub" aria-hidden="true"></canvas>
+                <figcaption class="ep-pattern-caption">Tub · still life</figcaption>
+              </figure>
+              <figure class="ep-pattern-item">
+                <canvas class="ep-pattern-preview" width="56" height="56" data-ep-pattern="toad" aria-hidden="true"></canvas>
+                <figcaption class="ep-pattern-caption">Toad · oscillator</figcaption>
+              </figure>
+              <figure class="ep-pattern-item">
+                <canvas class="ep-pattern-preview" width="56" height="56" data-ep-pattern="beacon" aria-hidden="true"></canvas>
+                <figcaption class="ep-pattern-caption">Beacon · oscillator</figcaption>
+              </figure>
+            </div>
+            <p class="ep-pattern-note">With a fixed seed and rule set, runs are deterministic: same start state, same sequence. These motifs commonly appear from Bunnies, R-pentomino, and Acorn.</p>
+          </aside>
+        </section>
+      </article>
+
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../js/module-route-data.js"></script>
+  <script src="../../js/nav-controller.js"></script>
+  <script src="./emergence-primer-gantt.js"></script>
+  <script src="./emergence-primer.js"></script>
+</body>
+</html>

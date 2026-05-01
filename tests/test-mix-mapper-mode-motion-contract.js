@@ -3,21 +3,21 @@
 const fs = require('fs');
 const path = require('path');
 
-const semantics = require('../modules/mix-mapper/mix-mapper-semantics.js');
-const geometry = require('../modules/mix-mapper/mix-mapper-geometry.js');
-const layoutUtilsModule = require('../modules/mix-mapper/mix-mapper-layout-utils.js');
-const nodeUtilsModule = require('../modules/mix-mapper/mix-mapper-node-utils.js');
-const modePolicyModule = require('../modules/mix-mapper/mix-mapper-mode-policy.js');
-const tooltipModule = require('../modules/mix-mapper/mix-mapper-tooltip.js');
-const interactionsModule = require('../modules/mix-mapper/mix-mapper-interactions.js');
-const rendererModule = require('../modules/mix-mapper/mix-mapper-renderer.js');
+const semantics = require('../modules/learning-feedback/mix-mapper-semantics.js');
+const geometry = require('../modules/learning-feedback/mix-mapper-geometry.js');
+const layoutUtilsModule = require('../modules/learning-feedback/mix-mapper-layout-utils.js');
+const nodeUtilsModule = require('../modules/learning-feedback/mix-mapper-node-utils.js');
+const modePolicyModule = require('../modules/learning-feedback/mix-mapper-mode-policy.js');
+const tooltipModule = require('../modules/learning-feedback/mix-mapper-tooltip.js');
+const interactionsModule = require('../modules/learning-feedback/mix-mapper-interactions.js');
+const rendererModule = require('../modules/learning-feedback/mix-mapper-renderer.js');
 
 const runtimeSource = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper.js'),
+  path.join(__dirname, '..', 'modules', 'learning-feedback', 'mix-mapper.js'),
   'utf8'
 );
 const rendererSource = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper-renderer.js'),
+  path.join(__dirname, '..', 'modules', 'learning-feedback', 'mix-mapper-renderer.js'),
   'utf8'
 );
 const cssSource = fs.readFileSync(
@@ -26,7 +26,7 @@ const cssSource = fs.readFileSync(
 );
 
 const htmlSource = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'index.html'),
+  path.join(__dirname, '..', 'modules', 'learning-feedback', 'index.html'),
   'utf8'
 );
 

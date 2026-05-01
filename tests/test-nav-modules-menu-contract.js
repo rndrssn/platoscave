@@ -7,6 +7,7 @@ const navControllerSource = fs.readFileSync(
   path.join(__dirname, '..', 'js', 'nav-controller.js'),
   'utf8'
 );
+const routeData = require('../js/module-route-data.js');
 const modulesIndexSource = fs.readFileSync(
   path.join(__dirname, '..', 'modules', 'index.html'),
   'utf8'
@@ -14,28 +15,6 @@ const modulesIndexSource = fs.readFileSync(
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
-}
-
-function parseNavDefaults(source) {
-  const blockMatch = source.match(/var\s+DEFAULT_MODULE_MENU_ITEMS\s*=\s*\[([\s\S]*?)\];/);
-  assert(blockMatch, 'Could not locate DEFAULT_MODULE_MENU_ITEMS block in js/nav-controller.js');
-
-  const block = blockMatch[1];
-  const entryRegex = /{\s*title:\s*'([^']*)'\s*,\s*slug:\s*'([^']*)'\s*,\s*path:\s*'([^']*)'(?:\s*,\s*status:\s*'([^']+)')?\s*}/g;
-  const out = [];
-  let match = entryRegex.exec(block);
-  while (match) {
-    out.push({
-      title: match[1],
-      slug: match[2],
-      path: match[3],
-      status: match[4] === 'coming-soon' ? 'coming-soon' : '',
-    });
-    match = entryRegex.exec(block);
-  }
-
-  assert(out.length > 0, 'No entries parsed from DEFAULT_MODULE_MENU_ITEMS');
-  return out;
 }
 
 function decodeHtmlText(value) {
@@ -58,11 +37,15 @@ function parseModulesIndex(source) {
     const title = titleMatch ? decodeHtmlText(titleMatch[1].trim()) : '';
     const hrefMatch = block.match(/<a class="module-entry-link" href="([^"]+)">/);
     const href = hrefMatch ? hrefMatch[1] : null;
+    const descriptorMatch = block.match(/<p class="module-descriptor">([^<]+)<\/p>/);
+    const sectionsMatch = block.match(/<p class="module-entry-sections">([^<]+)<\/p>/);
 
     out.push({
       title,
       status: state,
       href,
+      descriptor: descriptorMatch ? decodeHtmlText(descriptorMatch[1].trim()) : '',
+      sections: sectionsMatch ? decodeHtmlText(sectionsMatch[1].trim()) : '',
     });
 
     match = liRegex.exec(source);
@@ -72,17 +55,51 @@ function parseModulesIndex(source) {
   return out;
 }
 
+function listNavHtmlPages(rootDir) {
+  const out = [];
+  const stack = [rootDir];
+  while (stack.length) {
+    const current = stack.pop();
+    const entries = fs.readdirSync(current, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.name === '.git' || entry.name === 'node_modules') continue;
+      const abs = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        stack.push(abs);
+        continue;
+      }
+      if (!entry.isFile() || !entry.name.toLowerCase().endsWith('.html')) continue;
+      const source = fs.readFileSync(abs, 'utf8');
+      if (/src="[^"]*js\/nav-controller\.js"/.test(source)) {
+        out.push({
+          relPath: path.relative(path.join(__dirname, '..'), abs).split(path.sep).join('/'),
+          source,
+        });
+      }
+    }
+  }
+  return out.sort((a, b) => a.relPath.localeCompare(b.relPath));
+}
+
 function run() {
   assert(
     !/number:\s*'/.test(navControllerSource),
-    'DEFAULT_MODULE_MENU_ITEMS should not define top-level module number fields'
+    'Module route data should not define top-level module number fields'
+  );
+  assert(
+    /PlatoscaveModuleRouteData/.test(navControllerSource),
+    'Expected js/nav-controller.js to read module menu defaults from js/module-route-data.js'
+  );
+  assert(
+    !/var\s+DEFAULT_MODULE_MENU_ITEMS\s*=/.test(navControllerSource),
+    'Expected js/nav-controller.js to avoid a second inline module route registry'
   );
   assert(
     !/class="module-number"/.test(modulesIndexSource),
     'modules/index.html should not render top-level module number spans'
   );
 
-  const navDefaults = parseNavDefaults(navControllerSource);
+  const navDefaults = routeData.getModuleRoutes();
   const modulesIndex = parseModulesIndex(modulesIndexSource);
 
   assert(
@@ -115,6 +132,27 @@ function run() {
         'Expected live module href to match slug path for "' + entry.title + '"'
       );
     }
+
+    assert(
+      navEntry.descriptor === entry.descriptor,
+      'Descriptor mismatch for module "' + entry.title + '"'
+    );
+    assert(
+      navEntry.sections === entry.sections,
+      'Sections mismatch for module "' + entry.title + '"'
+    );
+  });
+
+  const navPages = listNavHtmlPages(path.join(__dirname, '..'));
+  assert(navPages.length > 0, 'Expected pages that load js/nav-controller.js');
+  navPages.forEach((page) => {
+    const routeDataIndex = page.source.indexOf('js/module-route-data.js');
+    const navControllerIndex = page.source.indexOf('js/nav-controller.js');
+    assert(routeDataIndex !== -1, page.relPath + ' must load js/module-route-data.js');
+    assert(
+      routeDataIndex < navControllerIndex,
+      page.relPath + ' must load js/module-route-data.js before js/nav-controller.js'
+    );
   });
 
   console.log('PASS: tests/test-nav-modules-menu-contract.js');

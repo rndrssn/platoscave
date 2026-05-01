@@ -4,19 +4,19 @@ const fs = require('fs');
 const path = require('path');
 
 const layoutUtilsSource = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper-layout-utils.js'),
+  path.join(__dirname, '..', 'modules', 'learning-feedback', 'mix-mapper-layout-utils.js'),
   'utf8'
 );
 const runtimeSource = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper.js'),
+  path.join(__dirname, '..', 'modules', 'learning-feedback', 'mix-mapper.js'),
   'utf8'
 );
 const pageCssSource = fs.readFileSync(
   path.join(__dirname, '..', 'css', 'pages', 'mix-mapper.css'),
   'utf8'
 );
-const layoutUtilsModule = require('../modules/mix-mapper/mix-mapper-layout-utils.js');
-const nodeUtilsModule = require('../modules/mix-mapper/mix-mapper-node-utils.js');
+const layoutUtilsModule = require('../modules/learning-feedback/mix-mapper-layout-utils.js');
+const nodeUtilsModule = require('../modules/learning-feedback/mix-mapper-node-utils.js');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);

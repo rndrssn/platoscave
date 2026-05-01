@@ -38,6 +38,15 @@ function parseNavDefaults(source) {
   return out;
 }
 
+function decodeHtmlText(value) {
+  return String(value || '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+}
+
 function parseModulesIndex(source) {
   const liRegex = /<li class="module-entry module-entry--(live|coming)">([\s\S]*?)<\/li>/g;
   const out = [];
@@ -46,7 +55,7 @@ function parseModulesIndex(source) {
     const state = match[1] === 'coming' ? 'coming-soon' : '';
     const block = match[2];
     const titleMatch = block.match(/<span class="module-title">([^<]+)<\/span>/);
-    const title = titleMatch ? titleMatch[1].trim() : '';
+    const title = titleMatch ? decodeHtmlText(titleMatch[1].trim()) : '';
     const hrefMatch = block.match(/<a class="module-entry-link" href="([^"]+)">/);
     const href = hrefMatch ? hrefMatch[1] : null;
 

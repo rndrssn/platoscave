@@ -22,16 +22,16 @@ function testScriptOrderContract() {
   const navPos = htmlSource.indexOf('js/nav-controller.js');
   const runtimePos = htmlSource.indexOf('./section-map.js');
 
-  assert(d3Pos > -1, 'Expected Section Map page to load local D3');
-  assert(navPos > -1, 'Expected Section Map page to load nav controller');
-  assert(runtimePos > -1, 'Expected Section Map page to load section-map runtime');
+  assert(d3Pos > -1, 'Expected Clarity Map page to load local D3');
+  assert(navPos > -1, 'Expected Clarity Map page to load nav controller');
+  assert(runtimePos > -1, 'Expected Clarity Map page to load section-map runtime');
   assert(d3Pos < navPos, 'Expected D3 to load before nav controller');
   assert(navPos < runtimePos, 'Expected nav controller to load before section-map runtime');
 }
 
 function testDataContract() {
   const stationCount = (runtimeSource.match(/id:\s*'[^']+'\s*,\s*number:\s*\d+/g) || []).length;
-  assert(stationCount === 8, 'Expected exactly 8 Section Map stations');
+  assert(stationCount === 8, 'Expected exactly 8 Clarity Map stations');
 
   assert(/const state = \{ mode: 'improvement' \};/.test(runtimeSource), 'Expected default mode to be improvement');
   assert(/anchorFor:\s*'improvement'/.test(runtimeSource), 'Expected improvement anchor station');

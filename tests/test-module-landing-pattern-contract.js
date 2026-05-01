@@ -7,31 +7,10 @@ const navControllerSource = fs.readFileSync(
   path.join(__dirname, '..', 'js', 'nav-controller.js'),
   'utf8'
 );
+const routeData = require('../js/module-route-data.js');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
-}
-
-function parseNavDefaults(source) {
-  const blockMatch = source.match(/var\s+DEFAULT_MODULE_MENU_ITEMS\s*=\s*\[([\s\S]*?)\];/);
-  assert(blockMatch, 'Could not locate DEFAULT_MODULE_MENU_ITEMS block in js/nav-controller.js');
-
-  const block = blockMatch[1];
-  const entryRegex = /{\s*title:\s*'([^']*)'\s*,\s*slug:\s*'([^']*)'\s*,\s*path:\s*'([^']*)'(?:\s*,\s*status:\s*'([^']+)')?\s*}/g;
-  const out = [];
-  let match = entryRegex.exec(block);
-  while (match) {
-    out.push({
-      title: match[1],
-      slug: match[2],
-      path: match[3],
-      status: match[4] === 'coming-soon' ? 'coming-soon' : '',
-    });
-    match = entryRegex.exec(block);
-  }
-
-  assert(out.length > 0, 'No entries parsed from DEFAULT_MODULE_MENU_ITEMS');
-  return out;
 }
 
 function read(relPath) {
@@ -53,7 +32,12 @@ function countActiveSubNavLinks(html) {
 }
 
 function run() {
-  const navEntries = parseNavDefaults(navControllerSource)
+  assert(
+    /PlatoscaveModuleRouteData/.test(navControllerSource),
+    'Expected js/nav-controller.js to read module routes from js/module-route-data.js'
+  );
+
+  const navEntries = routeData.getModuleRoutes()
     .filter((entry) => entry.status !== 'coming-soon' && entry.slug);
 
   navEntries.forEach((entry) => {

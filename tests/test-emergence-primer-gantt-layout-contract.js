@@ -7,7 +7,7 @@ const modelPath = path.join(
   __dirname,
   '..',
   'modules',
-  'emergence-primer',
+  'emergence',
   'emergence-primer-gantt.js'
 );
 const modelSource = fs.readFileSync(modelPath, 'utf8');

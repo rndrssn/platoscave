@@ -10,14 +10,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    var DEFAULT_MODULE_MENU_ITEMS = [
-      { title: 'Emergence', slug: 'emergence-primer', path: 'emergence-primer/' },
-      { title: 'Organisational Diagnostic', slug: 'maturity', path: 'maturity/', status: 'coming-soon' },
-      { title: 'The Garbage Can Model', slug: 'garbage-can', path: 'garbage-can/' },
-      { title: 'Learning & Feedback', slug: 'mix-mapper', path: 'mix-mapper/' },
-      { title: 'Flow & Queuing', slug: 'queue-machine', path: 'queue-machine/' },
-      { title: 'From Ambiguity to Clarity', slug: 'the-descent', path: 'the-descent/' }
-    ];
     var NAV_SWATCH_ALLOWLIST = [
       'white',
     ];
@@ -53,6 +45,20 @@
       return status === 'coming-soon' ? 'coming-soon' : '';
     }
 
+    function getDefaultModuleMenuItems() {
+      var routeData = window && window.PlatoscaveModuleRouteData;
+      if (routeData && typeof routeData.getModuleMenuItems === 'function') {
+        return routeData.getModuleMenuItems();
+      }
+      if (routeData && Array.isArray(routeData.moduleRoutes) && routeData.moduleRoutes.length) {
+        return routeData.moduleRoutes;
+      }
+      if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+        console.warn('Missing PlatoscaveModuleRouteData; module launcher will be empty');
+      }
+      return [];
+    }
+
     function getModuleMenuItems() {
       var fromWindow =
         window &&
@@ -60,7 +66,7 @@
         window.PLATOSCAVE_MODULE_MENU_ITEMS.length
           ? window.PLATOSCAVE_MODULE_MENU_ITEMS
           : null;
-      var source = fromWindow || DEFAULT_MODULE_MENU_ITEMS;
+      var source = fromWindow || getDefaultModuleMenuItems();
       return source.map(function (item) {
         return {
           title: (item && item.title) || '',

@@ -24,8 +24,8 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ## Modules
 
 - **Emergence** — Local rules yielding global patterns.
-  - **01 Conway's Game of Life** (`/modules/emergence-primer/`)
-  - **02 GANTT meets Game of Life** (`/modules/emergence-primer/ganttgol/`)
+  - **01 Conway's Game of Life** (`/modules/emergence/`)
+  - **02 GANTT meets Game of Life** (`/modules/emergence/ganttgol/`)
 - **Organisational Diagnostic** *(planned)* — A situation check for predictive vs adaptive contexts.
 - **The Garbage Can Model** — Organisational choice under ambiguity. An interactive implementation of Cohen, March & Olsen's 1972 model, with narrative essay, taxonomy of organisation types, a concept animation, an exploration surface, and an assessment flow.
   - **01 Organised Anarchy** (`/modules/garbage-can/`)
@@ -34,22 +34,22 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - **04 Explore** (`/modules/garbage-can/explorer/`)
   - **05 Assess** (`/modules/garbage-can/assess/`)
 - **Learning & Feedback** — Where traditional control and adaptive learning coexist. Explores epistemic bets and feedback debt: the assumptions an organisation makes about when it can know enough to decide, and what happens when evidence cannot revise those assumptions.
-  - **01 Epistemic Bets** (`/modules/mix-mapper/`)
-  - **02 Feedback Debt** (`/modules/mix-mapper/feedback-debt/`)
+  - **01 Epistemic Bets** (`/modules/learning-feedback/`)
+  - **02 Feedback Debt** (`/modules/learning-feedback/feedback-debt/`)
 - **Flow & Queuing** — Queueing theory and the resource-utilization trap, using D3 visuals to show how average load, variability, backlog, and flow interact.
-  - **01 Flow and Waiting** (`/modules/queue-machine/`)
+  - **01 Flow and Waiting** (`/modules/flow-queuing/`)
     - Plain-language introduction to queueing theory, utilization pressure, variability amplification, Little's Law, and TOC framing.
-  - **02 Taxonomy** (`/modules/queue-machine/taxonomy/`)
+  - **02 Taxonomy** (`/modules/flow-queuing/taxonomy/`)
     - Flow-regime taxonomy for diagnosing load pressure, variability profile, release discipline, and constraint behavior.
-  - **03 Explore** (`/modules/queue-machine/explore/`)
+  - **03 Explore** (`/modules/flow-queuing/explore/`)
     - Interactive lab with arrival/capacity controls, backlog charts, and live readouts from M/M/1, Kingman's approximation, and Little's Law.
-  - **04 Concept Map** (`/modules/queue-machine/concept-graph/`)
+  - **04 Concept Map** (`/modules/flow-queuing/concept-graph/`)
     - D3 force-directed graph showing how queueing theory, complexity science, and modern agile practice connect; observations they predict; folklore intuitions and the counter-intuitive surprises that contradict them.
-  - **05 Appendix: M/M/1 Derivation** (`/modules/queue-machine/derivation/`)
+  - **05 Appendix: M/M/1 Derivation** (`/modules/flow-queuing/derivation/`)
     - Mathematical appendix deriving the M/M/1 queueing formula from Poisson arrivals, exponential service, and steady-state balance equations.
 - **From Ambiguity to Clarity** — How open work becomes clear enough to test and build. Paired narratively with Module 04 (same epistemic bet, at unit scale).
-  - **01 From Ambiguity to Clarity** (`/modules/the-descent/`)
-  - **02 Clarity Map** (`/modules/the-descent/section-map/`)
+  - **01 From Ambiguity to Clarity** (`/modules/ambiguity-clarity/`)
+  - **02 Clarity Map** (`/modules/ambiguity-clarity/section-map/`)
 
 ### Also on site
 
@@ -58,8 +58,8 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 ### Module 06 Contract (Minimal)
 
-- Canonical root is local section `01` at `/modules/the-descent/`.
-- Clarity Map is local section `02` at `/modules/the-descent/section-map/`.
+- Canonical root is local section `01` at `/modules/ambiguity-clarity/`.
+- Clarity Map is local section `02` at `/modules/ambiguity-clarity/section-map/`.
 - Section `02` runtime is data-driven (`STATIONS`, `TRACKS`, `ARTIFACTS`) and the anchor mode toggle must remain mouse + keyboard accessible (Enter/Space on toggleable rows).
 
 ## Built With

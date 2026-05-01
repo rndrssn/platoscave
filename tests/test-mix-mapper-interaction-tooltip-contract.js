@@ -4,15 +4,15 @@ const fs = require('fs');
 const path = require('path');
 
 const rendererSource = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper-renderer.js'),
+  path.join(__dirname, '..', 'modules', 'learning-feedback', 'mix-mapper-renderer.js'),
   'utf8'
 );
 const interactionsSource = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper-interactions.js'),
+  path.join(__dirname, '..', 'modules', 'learning-feedback', 'mix-mapper-interactions.js'),
   'utf8'
 );
 const runtimeSource = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper.js'),
+  path.join(__dirname, '..', 'modules', 'learning-feedback', 'mix-mapper.js'),
   'utf8'
 );
 const cssSource = fs.readFileSync(

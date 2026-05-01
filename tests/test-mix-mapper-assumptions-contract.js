@@ -1,7 +1,7 @@
 'use strict';
 
-const data = require('../modules/mix-mapper/mix-mapper-data.js');
-const semantics = require('../modules/mix-mapper/mix-mapper-semantics.js');
+const data = require('../modules/learning-feedback/mix-mapper-data.js');
+const semantics = require('../modules/learning-feedback/mix-mapper-semantics.js');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);

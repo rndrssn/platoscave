@@ -3,10 +3,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const geometry = require('../modules/mix-mapper/mix-mapper-geometry.js');
+const geometry = require('../modules/learning-feedback/mix-mapper-geometry.js');
 
 const geometrySource = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper-geometry.js'),
+  path.join(__dirname, '..', 'modules', 'learning-feedback', 'mix-mapper-geometry.js'),
   'utf8'
 );
 

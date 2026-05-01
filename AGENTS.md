@@ -78,11 +78,11 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | Task involves | Load |
 |---------------|------|
 | GC simulation, scoring, diagnosis, viz | `modules/garbage-can/runtime/gc-simulation.js`, `modules/garbage-can/runtime/gc-viz.js`, `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js` |
-| Module 06 From Ambiguity to Clarity | `modules/the-descent/index.html`, `modules/the-descent/section-map/index.html`, `modules/the-descent/section-map/section-map.js`, `css/pages/the-descent.css` |
+| Module 06 From Ambiguity to Clarity | `modules/ambiguity-clarity/index.html`, `modules/ambiguity-clarity/section-map/index.html`, `modules/ambiguity-clarity/section-map/section-map.js`, `css/pages/the-descent.css` |
 | UI, CSS, navigation, IA | `docs/10-guides/GUIDE-architecture.md`, `docs/40-principles/PRINCIPLE-coding-standards.md`, `docs/20-reference/REFERENCE-css-architecture.md`, `docs/20-reference/navigation-patterns.md` |
-| Module 04 Mix Mapper | All files in `modules/mix-mapper/*` + relevant contract tests in `tests/` |
-| Queue Machine module | `modules/queue-machine/index.html`, `modules/queue-machine/taxonomy/index.html`, `modules/queue-machine/explore/index.html`, `modules/queue-machine/queue-machine-model.js`, `modules/queue-machine/queue-machine.js`, `modules/queue-machine/concept-graph/index.html`, `modules/queue-machine/concept-graph/concept-graph.js`, `css/pages/queue-machine.css`, `docs/20-reference/REFERENCE-queue-machine-semantics.md` |
-| Force graph (Skills, Concept Map) | `modules/experience-skill-graph/index.html`, `modules/queue-machine/concept-graph/concept-graph.js`, `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
+| Module 04 Learning & Feedback | All files in `modules/learning-feedback/*` + relevant contract tests in `tests/` |
+| Queue Machine module | `modules/flow-queuing/index.html`, `modules/flow-queuing/taxonomy/index.html`, `modules/flow-queuing/explore/index.html`, `modules/flow-queuing/flow-queuing-model.js`, `modules/flow-queuing/flow-queuing.js`, `modules/flow-queuing/concept-graph/index.html`, `modules/flow-queuing/concept-graph/concept-graph.js`, `css/pages/flow-queuing.css`, `docs/20-reference/REFERENCE-flow-queuing-semantics.md` |
+| Force graph (Skills, Concept Map) | `modules/experience-skill-graph/index.html`, `modules/flow-queuing/concept-graph/concept-graph.js`, `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
 | Semantics and labels | Treat implementation and tests as canonical; align across UI, summaries, legends |
 
 Full rules: `docs/00-core/CORE-loading-rules.md`.
@@ -99,7 +99,7 @@ Includes navigation link checks and notes build checks.
 
 **Optional** (auto-skips without Playwright): `node tests/test-browser-smoke-optional.js`
 
-**Semantics/copy changes:** keep terms aligned with `docs/20-reference/REFERENCE-gc-model-semantics.md` (GC) and `docs/20-reference/REFERENCE-queue-machine-semantics.md` (Queue Machine); update relevant docs in the same change.
+**Semantics/copy changes:** keep terms aligned with `docs/20-reference/REFERENCE-gc-model-semantics.md` (GC) and `docs/20-reference/REFERENCE-flow-queuing-semantics.md` (Queue Machine); update relevant docs in the same change.
 
 **Merge readiness:** tests pass, no docs integrity errors, no known mismatch between code behavior and documented semantics.
 
@@ -108,7 +108,7 @@ Includes navigation link checks and notes build checks.
 | Changed | Also update |
 |---------|-------------|
 | GC model math or outputs | Tests + user-facing summary logic/copy |
-| Queue Machine model math, symbols, or labels | Tests + `docs/20-reference/REFERENCE-queue-machine-semantics.md` |
+| Queue Machine model math, symbols, or labels | Tests + `docs/20-reference/REFERENCE-flow-queuing-semantics.md` |
 | UI labels/readouts | All affected surfaces (legend, runtime text, summary) |
 | Module title, section name, or IA label | `modules/index.html`, `js/nav-controller.js`, module page labels, redirect copy |
 | Contributor or release workflow | `README.md` + tracked workflow docs |
@@ -140,9 +140,9 @@ Tests enforcing this contract:
 | GC logic | `modules/garbage-can/runtime/gc-simulation-core.js`, `modules/garbage-can/runtime/gc-simulation.js`, `modules/garbage-can/runtime/gc-scoring.js`, `modules/garbage-can/runtime/gc-diagnosis.js`, `modules/garbage-can/runtime/gc-viz.js` |
 | GC narrative | `modules/garbage-can/runtime/gc-pressure-narrative.js` — must load before assess.js / explorer.js |
 | GC page wiring | `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js` |
-| Module 06 runtime | `modules/the-descent/index.html`, `modules/the-descent/section-map/index.html`, `modules/the-descent/section-map/section-map.js`, `css/pages/the-descent.css` |
-| Module 04 runtime | `modules/mix-mapper/mix-mapper-data.js`, `modules/mix-mapper/mix-mapper-semantics.js`, `modules/mix-mapper/mix-mapper-geometry.js`, `modules/mix-mapper/mix-mapper-layout-utils.js`, `modules/mix-mapper/mix-mapper-node-utils.js`, `modules/mix-mapper/mix-mapper-mode-policy.js`, `modules/mix-mapper/mix-mapper-tooltip.js`, `modules/mix-mapper/mix-mapper-interactions.js`, `modules/mix-mapper/mix-mapper-renderer.js`, `modules/mix-mapper/mix-mapper.js` |
-| Queue Machine runtime | `modules/queue-machine/index.html`, `modules/queue-machine/taxonomy/index.html`, `modules/queue-machine/explore/index.html`, `modules/queue-machine/queue-machine-model.js`, `modules/queue-machine/queue-machine.js`, `modules/queue-machine/concept-graph/concept-graph.js` |
+| Module 06 runtime | `modules/ambiguity-clarity/index.html`, `modules/ambiguity-clarity/section-map/index.html`, `modules/ambiguity-clarity/section-map/section-map.js`, `css/pages/the-descent.css` |
+| Module 04 runtime | `modules/learning-feedback/mix-mapper-data.js`, `modules/learning-feedback/mix-mapper-semantics.js`, `modules/learning-feedback/mix-mapper-geometry.js`, `modules/learning-feedback/mix-mapper-layout-utils.js`, `modules/learning-feedback/mix-mapper-node-utils.js`, `modules/learning-feedback/mix-mapper-mode-policy.js`, `modules/learning-feedback/mix-mapper-tooltip.js`, `modules/learning-feedback/mix-mapper-interactions.js`, `modules/learning-feedback/mix-mapper-renderer.js`, `modules/learning-feedback/mix-mapper.js` |
+| Queue Machine runtime | `modules/flow-queuing/index.html`, `modules/flow-queuing/taxonomy/index.html`, `modules/flow-queuing/explore/index.html`, `modules/flow-queuing/flow-queuing-model.js`, `modules/flow-queuing/flow-queuing.js`, `modules/flow-queuing/concept-graph/concept-graph.js` |
 | Queue Machine math rendering | `assets/vendor/katex/katex.min.css`, `assets/vendor/katex/katex.min.js`, `js/katex-render.js` |
 | Force-graph shared layer | `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
 | Tests | `tests/run-all.js` |
@@ -152,15 +152,15 @@ Tests enforcing this contract:
 - Assess path fixes problemInflow to 'moderate' — survey does not capture inflow timing. Explorer exposes all four parameters. See `docs/10-guides/GUIDE-architecture.md`.
 - Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both set by gc-pressure-narrative.js and gc-diagnosis.js before page wiring runs.
 - Use simResult.meta.problems (not a hardcoded constant) when computing problem proportions.
-- Module 06 root is canonical local section `01` at `modules/the-descent/`; Clarity Map is local section `02` at `modules/the-descent/section-map/`.
+- Module 06 root is canonical local section `01` at `modules/ambiguity-clarity/`; Clarity Map is local section `02` at `modules/ambiguity-clarity/section-map/`.
 - Clarity Map anchor switch behavior is part of the feature contract: activating the shadow anchor row toggles mode and must stay keyboard-accessible (Enter/Space).
-- Module 04 root is canonical local section `01` at `modules/mix-mapper/`, titled "Epistemic Bets" under "Learning & Feedback".
+- Module 04 root is canonical local section `01` at `modules/learning-feedback/`, titled "Epistemic Bets" under "Learning & Feedback".
 - Mix Mapper SVG colors: never use color-mix(…, transparent) via D3 .attr() — broken on iOS WebKit. Use D3 .style() for all visual properties (fill, stroke, fill-opacity, stroke-opacity) on SVG elements.
 - Mix Mapper SVG text: dominant-baseline and text-anchor must be CSS properties on the label class in `css/pages/mix-mapper.css`, not SVG presentation attributes.
 - Mix Mapper complexity feedback/learning pulses travel backward on their arc, dwell at the absorbing node, then re-enter the next downstream primary flow segment. Do not add node pulse/glow unless explicitly requested.
 - Mix Mapper legend order is Learning, Process, Assumptions. Active Learning emphasizes moving dots only; active Assumptions owns active blue/slate arc emphasis.
 - buildColors() reads --viz-* token tier (--viz-ink-faint, --viz-ink-ghost, --viz-sage, --viz-rust, etc.). Do not revert to --ink-* UI tokens.
-- Queue Machine module root is canonical local section `01` at `modules/queue-machine/`. Sections: `01` Flow and Waiting, `02` Taxonomy (`modules/queue-machine/taxonomy/`), `03` Explore (`modules/queue-machine/explore/`), `04` Concept Map (`modules/queue-machine/concept-graph/`).
+- Queue Machine module root is canonical local section `01` at `modules/flow-queuing/`. Sections: `01` Flow and Waiting, `02` Taxonomy (`modules/flow-queuing/taxonomy/`), `03` Explore (`modules/flow-queuing/explore/`), `04` Concept Map (`modules/flow-queuing/concept-graph/`).
 - Queue Machine Explore preset behavior: there is no standalone reshuffle button. Re-clicking the currently active preset reseeds local variability while preserving preset averages.
 - Queue Machine symbol labels use non-division notation for readability: `WIP (L)`, `Lead time (W)`, `Arrival rate (λ)`, `Service capacity (μ)`, `Utilization (ρ)`, `Cₐ`, `Cₛ`.
 - Queue Machine Concept Map semantics: dashed links (`kind: contradicts`) represent explicit contradiction edges from assumptions.

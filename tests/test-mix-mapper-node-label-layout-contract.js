@@ -15,6 +15,7 @@ const pageCssSource = fs.readFileSync(
   path.join(__dirname, '..', 'css', 'pages', 'mix-mapper.css'),
   'utf8'
 );
+const layoutUtilsModule = require('../modules/mix-mapper/mix-mapper-layout-utils.js');
 const nodeUtilsModule = require('../modules/mix-mapper/mix-mapper-node-utils.js');
 
 function assert(condition, message) {
@@ -94,6 +95,28 @@ function testMobileNodeFontScalingTokenContract() {
     'Expected mix-mapper page CSS to define base node font scale token'
   );
   assert(
+    /--mix-map-mobile-compaction:\s*0;/.test(pageCssSource) &&
+      /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*--mix-map-mobile-compaction:\s*1;/.test(pageCssSource),
+    'Expected aggressive layout compaction to be explicitly gated to the mobile breakpoint'
+  );
+  assert(
+    /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*--mix-map-fs-node-px:\s*7\.05px;/.test(pageCssSource),
+    'Expected mobile breakpoint to reduce node label size by 25 percent'
+  );
+  assert(
+    /nodeMinPx\s*=\s*layout\s*&&\s*layout\.mobileCompaction\s*\?\s*5\.8/.test(runtimeSource),
+    'Expected runtime node label clamp to allow the reduced mobile label size'
+  );
+  assert(
+    /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*--mix-map-fs-lane-title-px:\s*8\.4px;[\s\S]*--mix-map-fs-lane-subtitle-px:\s*6\.9px;/.test(pageCssSource),
+    'Expected mobile breakpoint to reduce lane header text size by 25 percent'
+  );
+  assert(
+    /layout\s*&&\s*layout\.mobileCompaction\s*\?\s*7\s*:\s*11\.2/.test(runtimeSource) &&
+      /layout\s*&&\s*layout\.mobileCompaction\s*\?\s*6\.2\s*:\s*10/.test(runtimeSource),
+    'Expected runtime lane header clamps to allow the reduced mobile header sizes'
+  );
+  assert(
     /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*--mix-map-node-font-scale:\s*0\.(?:8[0-9]|9[0-9]?);/.test(pageCssSource),
     'Expected mobile breakpoint to tune node font scale token'
   );
@@ -126,10 +149,76 @@ function testMobileNodeFontScalingTokenContract() {
   );
 }
 
+function testMobileLayoutCompactionContract() {
+  const cssValues = {
+    '--mix-map-lane-gap-scale': 1.38,
+    '--mix-map-node-width-scale': 0.54,
+    '--mix-map-node-height-scale': 0.76,
+    '--mix-map-mobile-compaction': 1,
+    '--mix-map-mobile-step-gap-scale': 1.3,
+    '--mix-map-learning-arc': 190,
+    '--mix-map-feedback-arc': 126,
+    '--mix-map-desktop-arc-overflow': 0
+  };
+  const layoutUtils = layoutUtilsModule.createLayoutUtils({
+    clamp: (value, min, max) => Math.max(min, Math.min(max, value)),
+    readScopedCssNumber: (name, fallback) => Object.prototype.hasOwnProperty.call(cssValues, name) ? cssValues[name] : fallback,
+    getColors: () => ({ muted: '#5C4F3A', gold: '#B8943A' })
+  });
+  const layout = layoutUtils.getLayout({ clientWidth: 390 });
+
+  assert(layout.compact === true, 'Expected narrow shell to use compact layout');
+  assert(layout.mobileCompaction === true, 'Expected mobile CSS breakpoint to opt into aggressive compaction');
+  assert(layout.height <= 640, 'Expected compact mobile viewBox height to stay vertically compressed');
+  assert(layout.stepGap >= 48 && layout.stepGap <= 70, 'Expected compact mobile node spacing to be reduced without collapsing rows');
+  assert(layout.nodeWidth <= 90, 'Expected compact mobile nodes to narrow further after mobile text reduction');
+  assert(layout.topY >= 146, 'Expected compact first node to leave header clearance');
+}
+
+function testDesktopLayoutPreservationContract() {
+  const layoutUtils = layoutUtilsModule.createLayoutUtils({
+    clamp: (value, min, max) => Math.max(min, Math.min(max, value)),
+    readScopedCssNumber: (_name, fallback) => fallback,
+    getColors: () => ({ muted: '#5C4F3A', gold: '#B8943A' })
+  });
+  const layout = layoutUtils.getLayout({ clientWidth: 980 });
+
+  assert(layout.compact === false, 'Expected desktop shell to keep non-compact layout');
+  assert(layout.height === 990, 'Expected desktop viewBox height to remain at the pre-mobile-pass size');
+  assert(layout.topY === 140, 'Expected desktop first node position to remain unchanged');
+  assert(layout.nodeWidth === 196, 'Expected desktop node width to remain unchanged');
+  assert(layout.laneGap === 304, 'Expected desktop lane spacing to remain unchanged');
+  assert(layout.stepGap > 90 && layout.stepGap < 91, 'Expected desktop vertical spacing to remain unchanged');
+  assert(layout.learningArc === 252, 'Expected desktop learning arc radius to remain unchanged');
+  assert(layout.feedbackArc === 162, 'Expected desktop feedback arc radius to remain unchanged');
+  assert(layout.allowArcOverflowX === true, 'Expected desktop arcs to retain horizontal overflow allowance');
+}
+
+function testNarrowDesktopLayoutPreservationContract() {
+  const layoutUtils = layoutUtilsModule.createLayoutUtils({
+    clamp: (value, min, max) => Math.max(min, Math.min(max, value)),
+    readScopedCssNumber: (_name, fallback) => fallback,
+    getColors: () => ({ muted: '#5C4F3A', gold: '#B8943A' })
+  });
+  const layout = layoutUtils.getLayout({ clientWidth: 650 });
+
+  assert(layout.compact === true, 'Expected narrow desktop shell to use compact layout');
+  assert(layout.mobileCompaction === false, 'Expected narrow desktop shell not to use mobile-only compaction');
+  assert(layout.height === 923, 'Expected narrow desktop viewBox height to keep the previous compact value');
+  assert(layout.topY === 142, 'Expected narrow desktop first node position to remain unchanged');
+  assert(layout.nodeWidth === 142, 'Expected narrow desktop node width to remain unchanged');
+  assert(layout.stepGap > 80 && layout.stepGap < 81, 'Expected narrow desktop vertical spacing to remain unchanged');
+  assert(layout.learningArc === 150, 'Expected narrow desktop learning arc fallback to remain unchanged');
+  assert(layout.feedbackArc === 92, 'Expected narrow desktop feedback arc fallback to remain unchanged');
+}
+
 function run() {
   testNodeLabelWrappingContractInLayoutUtils();
   testNodeWidthResolverSupportsFixedWidthMode();
   testMobileNodeFontScalingTokenContract();
+  testMobileLayoutCompactionContract();
+  testDesktopLayoutPreservationContract();
+  testNarrowDesktopLayoutPreservationContract();
   console.log('PASS: tests/test-mix-mapper-node-label-layout-contract.js');
 }
 

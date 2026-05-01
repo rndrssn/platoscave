@@ -82,10 +82,10 @@
   function circularLateralReach(link, source, target, layout, nodeById) {
     var verticalSpan = Math.max(1, Math.abs((source && source.y) - (target && target.y)));
     var span = complexityLinkSpan(link, nodeById);
-    var ratio = layout && layout.compact ? 0.56 : 0.64;
+    var ratio = layout && layout.mobileCompaction ? 0.92 : (layout && layout.compact ? 0.56 : 0.64);
     var kindBoost = link && link.kind === 'learning' ? 1.08 : 1;
     var spanBoost = (span - 1) * (layout && layout.compact ? 6 : 8);
-    return Math.max(32, (verticalSpan * ratio * kindBoost) + spanBoost);
+    return Math.max(layout && layout.mobileCompaction ? 44 : 32, (verticalSpan * ratio * kindBoost) + spanBoost);
   }
 
   function resolveArcCanvasBounds(layout) {

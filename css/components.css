@@ -125,6 +125,16 @@
   padding-left: 0;
 }
 
+.module-entry-sections {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+  color: var(--ink-faint);
+  line-height: 1.55;
+}
+
 .module-status {
   font-family: var(--mono);
   font-size: var(--fs-status-module);
@@ -150,6 +160,7 @@
 
   .module-title      { font-size: var(--fs-heading-module-card-md); }
   .module-descriptor { font-size: var(--fs-body-module-card-md); }
+  .module-entry-sections { font-size: 0.72rem; }
   .module-status     { margin-left: 2rem; }
   .module-entry      { padding: 1.75rem 0; }
 }

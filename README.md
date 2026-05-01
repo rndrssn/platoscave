@@ -35,6 +35,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - **05 Assess** (`/modules/garbage-can/assess/`)
 - **Learning & Feedback** — Where traditional control and adaptive learning coexist. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
   - **01 Epistemic Bets** (`/modules/mix-mapper/`)
+  - **02 Feedback Debt** (`/modules/mix-mapper/feedback-debt/`)
 - **Flow & Queuing** — Queueing theory and the resource-utilization trap, using D3 visuals to show how average load, variability, backlog, and flow interact.
   - **01 Narrative** (`/modules/queue-machine/`)
     - Plain-language introduction to queueing theory, utilization pressure, variability amplification, Little's Law, and TOC framing.

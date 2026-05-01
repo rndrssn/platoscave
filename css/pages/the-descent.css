@@ -1,4 +1,4 @@
-/* ─── The Descent (Module 06) ─────────────────────────── */
+/* ─── From Ambiguity to Clarity (Module 06) ───────────── */
 
 .the-descent-page .taxonomy-dimension-title .section-sub {
   font-family: var(--mono);
@@ -12,7 +12,7 @@
   vertical-align: middle;
 }
 
-/* ─── Section Map (06.02) ──────────────────────────────── */
+/* ─── Clarity Map (06.02) ─────────────────────────────── */
 
 .the-descent-page {
   --section-map-readiness: var(--ink-ghost, #C8BDA8);

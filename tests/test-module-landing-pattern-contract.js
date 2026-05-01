@@ -38,6 +38,15 @@ function read(relPath) {
   return fs.readFileSync(path.join(__dirname, '..', relPath), 'utf8');
 }
 
+function decodeHtmlText(value) {
+  return String(value || '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+}
+
 function countActiveSubNavLinks(html) {
   const matches = html.match(/class="[^"]*module-sub-nav-link[^"]*module-sub-nav-link--active[^"]*"/g);
   return matches ? matches.length : 0;
@@ -69,7 +78,7 @@ function run() {
     const contextMatch = html.match(/class="module-header-number module-context-number module-context-link"\s+href="\.\/"[^>]*>([^<]+)</i);
     assert(contextMatch, relIndexPath + ' must include module context link with href="./"');
     assert(
-      contextMatch[1].trim() === entry.title,
+      decodeHtmlText(contextMatch[1].trim()) === entry.title,
       relIndexPath + ' context title must match nav entry title'
     );
 

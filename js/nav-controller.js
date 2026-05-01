@@ -11,12 +11,12 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     var DEFAULT_MODULE_MENU_ITEMS = [
-      { title: 'Emergence Primer', slug: 'emergence-primer', path: 'emergence-primer/' },
+      { title: 'Emergence', slug: 'emergence-primer', path: 'emergence-primer/' },
       { title: 'Organisational Diagnostic', slug: 'maturity', path: 'maturity/', status: 'coming-soon' },
       { title: 'The Garbage Can Model', slug: 'garbage-can', path: 'garbage-can/' },
-      { title: 'Management Mix', slug: 'mix-mapper', path: 'mix-mapper/' },
-      { title: 'The Queue Machine', slug: 'queue-machine', path: 'queue-machine/' },
-      { title: 'The Descent', slug: 'the-descent', path: 'the-descent/' }
+      { title: 'Learning & Feedback', slug: 'mix-mapper', path: 'mix-mapper/' },
+      { title: 'Flow & Queuing', slug: 'queue-machine', path: 'queue-machine/' },
+      { title: 'From Ambiguity to Clarity', slug: 'the-descent', path: 'the-descent/' }
     ];
     var NAV_SWATCH_ALLOWLIST = [
       'white',

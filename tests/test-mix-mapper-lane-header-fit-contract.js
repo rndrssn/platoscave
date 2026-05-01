@@ -4,11 +4,11 @@ const fs = require('fs');
 const path = require('path');
 
 const source = fs.readFileSync(
-  path.join(__dirname, '..', 'modules', 'mix-mapper', 'mix-mapper-layout-utils.js'),
+  path.join(__dirname, '..', 'modules', 'learning-feedback', 'mix-mapper-layout-utils.js'),
   'utf8'
 );
 
-const layoutUtilsModule = require('../modules/mix-mapper/mix-mapper-layout-utils.js');
+const layoutUtilsModule = require('../modules/learning-feedback/mix-mapper-layout-utils.js');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);

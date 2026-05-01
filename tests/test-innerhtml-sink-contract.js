@@ -18,12 +18,12 @@ const ALLOWLIST = [
     reason: 'static HTML literal, no interpolation (footer social icons)',
   },
   {
-    file: 'modules/the-descent/section-map/section-map.js',
+    file: 'modules/ambiguity-clarity/section-map/section-map.js',
     line: "el.innerHTML = '';",
     reason: 'clears container before rebuilding from textContent',
   },
   {
-    file: 'modules/mix-mapper/mix-mapper.js',
+    file: 'modules/learning-feedback/mix-mapper.js',
     line: 'tooltipEl.innerHTML = contentHtml;',
     reason: 'tooltip builders pre-escape all interpolated data (mix-mapper-tooltip.js)',
   },

@@ -1,5 +1,5 @@
 /* Token tier policy:
-   - Bar charts (Explore lab): --ink-ghost neutral tier, read directly in queue-machine.js via cssValue('--ink-ghost').
+   - Bar charts (Explore lab): --ink-ghost neutral tier, read directly in flow-queuing.js via cssValue('--ink-ghost').
      Matches section-map readiness bars (--section-map-readiness = var(--ink-ghost)). Opacity varies: fit 0.88, spill 0.34, backlog 0.44.
    - Force graph nodes (concept-graph): --rust-light / --gold / --sage-light / --slate-light pastel tier
    - Aside-card accent borders (assumption / TOC panels): --sage / --rust UI tier (chrome accent, not data viz)

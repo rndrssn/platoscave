@@ -8,7 +8,7 @@ const {
   calculateMM1,
   calculateKingman,
   buildTimeline,
-} = require(path.join(__dirname, '..', 'modules', 'queue-machine', 'queue-machine-model.js'));
+} = require(path.join(__dirname, '..', 'modules', 'flow-queuing', 'flow-queuing-model.js'));
 
 function nearlyEqual(actual, expected, epsilon, label) {
   assert(
@@ -82,7 +82,7 @@ function run() {
     'Higher variability should create larger backlog at fixed utilization'
   );
 
-  console.log('PASS: tests/test-queue-machine-model.js');
+  console.log('PASS: tests/test-flow-queuing-model.js');
 }
 
 run();

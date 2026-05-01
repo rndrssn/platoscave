@@ -7,6 +7,7 @@ This document defines the canonical link and navigation patterns used across the
 - Pattern at runtime: `Notes`, `Articles`, `My Experience`, plus a `Modules` launcher trigger.
 - Home path is provided by the title link (`To the Bedrock`).
 - Runtime normalization is handled by `js/nav-controller.js` from fallback HTML links.
+- Canonical module route metadata is owned by `js/module-route-data.js`; module launcher labels/paths should be changed there first.
 - Active item must include:
   - visual class (`nav-link--active`)
   - semantic state (`aria-current="page"`)

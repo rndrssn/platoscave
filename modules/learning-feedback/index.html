@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Map where traditional control and complexity-informed learning coexist, clash, or drift apart." />
+  <title>Epistemic Bets · Learning &amp; Feedback · To the Bedrock</title>
+  <script src="../../theme.config.js"></script>
+  <script src="../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../css/fonts.css" />
+  <link rel="stylesheet" href="../../css/tokens.css" />
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="../../css/layout.css" />
+  <link rel="stylesheet" href="../../css/components.css" />
+  <link rel="stylesheet" href="../../css/utilities.css" />
+  <link rel="stylesheet" href="../../css/themes.css" />
+  <link rel="stylesheet" href="../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../">To the Bedrock</a>
+    <nav class="main-nav">
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../">Home</a>
+      <a class="nav-link" href="../../notes/">Notes</a>
+      <a class="nav-link nav-link--active" href="../../modules/" aria-current="page">Modules</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page mix-mapper-page">
+      <a class="module-back-link" href="../" aria-label="Back to Modules"></a>
+      <a class="module-header-number module-context-number module-context-link" href="./">Learning &amp; Feedback</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01</span> Epistemic Bets</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="feedback-debt/"><span class="module-sub-nav-number">02</span> Feedback Debt</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Epistemic Bets</h1>
+        <p class="module-header-body">
+          Many enterprises run with learning and feedback in tension: a traditional control model and a complexity-informed
+          digital unit coexisting in the same organisation. Epistemic bets are the assumptions an organisation makes about when it can know enough to decide.
+        </p>
+        <p class="module-header-body">
+          In high-software-content innovation, development and maintenance, activities happen in sequence, but understanding does not.
+        </p>
+        <p class="module-header-body">
+          Words like discovery, exploration, and incremental delivery do not create learning on their own. Learning only occurs when key assumptions are tested and decisions change with evidence.
+        </p>
+        <p class="module-header-body">
+          This map shows where the organisation places its bets. <a href="feedback-debt/">Feedback Debt</a> asks what accumulates when evidence reaches the system but cannot revise those bets. For the same bet at unit scale, see <a href="../ambiguity-clarity/">From Ambiguity to Clarity</a>.
+        </p>
+      </header>
+
+      <section class="mix-mapper-layout" aria-label="Learning and Feedback visualization and interpretation">
+        <article class="mix-mapper-viz-card" aria-label="Epistemic Bets visualization">
+          <p class="mix-mapper-viz-hint">Select a dimension (Process, Assumption, Learning) to explore the map.</p>
+          <div class="mix-mapper-legend" role="group" aria-label="Legend and mode filter">
+            <button type="button" class="mix-mapper-legend-btn" data-mode="learning" aria-pressed="false">
+              <span class="mix-mapper-legend-marker mix-mapper-legend-marker--dot mix-mapper-legend-marker--learning" aria-hidden="true"></span>
+              <span class="mix-mapper-legend-label">Learning</span>
+            </button>
+            <button type="button" class="mix-mapper-legend-btn" data-mode="process" aria-pressed="false">
+              <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--process" aria-hidden="true"></span>
+              <span class="mix-mapper-legend-label">Process</span>
+            </button>
+            <button type="button" class="mix-mapper-legend-btn" data-mode="assumptions" aria-pressed="false">
+              <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--assumptions" aria-hidden="true"></span>
+              <span class="mix-mapper-legend-label">Assumptions</span>
+            </button>
+          </div>
+
+          <div id="mix-mapper-viz-shell" class="mix-mapper-viz-shell">
+            <svg id="mix-mapper-svg" class="mix-mapper-svg" role="img" aria-label="Directed lifecycle map comparing complexity-informed and traditional delivery lanes"></svg>
+            <p id="mix-mapper-fallback" class="essay-body mix-mapper-fallback" hidden>The visualization couldn't load. Try refreshing the page.</p>
+            <noscript>
+              <p class="essay-body mix-mapper-fallback">This visualization requires JavaScript. Enable it in your browser settings to view it.</p>
+            </noscript>
+          </div>
+        </article>
+
+      </section>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="feedback-debt/" aria-label="Next: Feedback Debt">
+          <span class="footer-nav-label-full">Next: Feedback Debt &rarr;</span>
+          <span class="footer-nav-label-short">Next &rarr;</span>
+        </a>
+      </nav>
+
+    </div>
+  </main>
+
+  <div id="mix-mapper-tooltip" class="mix-mapper-tooltip" role="status" aria-live="polite" aria-hidden="true"></div>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../assets/vendor/d3.v7.min.js"></script>
+  <script src="../../js/module-route-data.js"></script>
+  <script src="../../js/nav-controller.js"></script>
+  <script src="./mix-mapper-data.js"></script>
+  <script src="./mix-mapper-semantics.js"></script>
+  <script src="./mix-mapper-geometry.js"></script>
+  <script src="./mix-mapper-layout-utils.js"></script>
+  <script src="./mix-mapper-node-utils.js"></script>
+  <script src="./mix-mapper-mode-policy.js"></script>
+  <script src="./mix-mapper-tooltip.js"></script>
+  <script src="./mix-mapper-interactions.js"></script>
+  <script src="./mix-mapper-renderer.js"></script>
+  <script src="./mix-mapper.js"></script>
+</body>
+</html>

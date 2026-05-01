@@ -6,11 +6,11 @@ const path = require('path');
 const PAGES = [
   {
     label: '01 Conway',
-    file: path.join(__dirname, '..', 'modules', 'emergence-primer', 'index.html'),
+    file: path.join(__dirname, '..', 'modules', 'emergence', 'index.html'),
   },
   {
     label: '02 GANTT-GoL',
-    file: path.join(__dirname, '..', 'modules', 'emergence-primer', 'ganttgol', 'index.html'),
+    file: path.join(__dirname, '..', 'modules', 'emergence', 'ganttgol', 'index.html'),
   },
 ];
 

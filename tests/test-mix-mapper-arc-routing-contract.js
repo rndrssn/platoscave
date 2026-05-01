@@ -1,6 +1,6 @@
 'use strict';
 
-const geometry = require('../modules/mix-mapper/mix-mapper-geometry.js');
+const geometry = require('../modules/learning-feedback/mix-mapper-geometry.js');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);

@@ -4,12 +4,12 @@ const fs = require('fs');
 const path = require('path');
 
 const SUBPAGE_PATHS = [
-  'modules/emergence-primer/ganttgol/index.html',
+  'modules/emergence/ganttgol/index.html',
   'modules/garbage-can/taxonomy/index.html',
   'modules/garbage-can/can-explainer/index.html',
   'modules/garbage-can/explorer/index.html',
   'modules/garbage-can/assess/index.html',
-  'modules/mix-mapper/feedback-debt/index.html',
+  'modules/learning-feedback/feedback-debt/index.html',
 ];
 
 function assert(condition, message) {

@@ -26,8 +26,9 @@
       var shellWidth = Math.max(320, shellEl && shellEl.clientWidth ? shellEl.clientWidth : 980);
       var width = clamp(Math.round(shellWidth), 520, 980);
       var compact = width < 700;
+      var mobileCompaction = compact && readScopedCssNumber('--mix-map-mobile-compaction', 0) >= 0.5;
       var height = compact
-        ? Math.max(920, Math.round(width * 1.42))
+        ? (mobileCompaction ? Math.max(600, Math.round(width * 0.9)) : Math.max(920, Math.round(width * 1.42)))
         : Math.max(900, Math.round(width * 1.01));
 
       var laneGap = compact
@@ -49,11 +50,11 @@
         : clamp(laneGap - 42, 162, 196);
 
       var baseNodeHeight = compact ? 56 : 54;
-      var nodeWidthScale = clamp(readScopedCssNumber('--mix-map-node-width-scale', 1), 0.72, 1.35);
+      var nodeWidthScale = clamp(readScopedCssNumber('--mix-map-node-width-scale', 1), mobileCompaction ? 0.5 : 0.72, 1.35);
       var nodeHeightScale = clamp(readScopedCssNumber('--mix-map-node-height-scale', 1), 0.72, 1.35);
       var nodeWidth = clamp(
         Math.round(baseNodeWidth * nodeWidthScale),
-        compact ? 108 : 140,
+        compact ? (mobileCompaction ? 84 : 108) : 140,
         compact ? 188 : 224
       );
       var nodeHeight = clamp(
@@ -75,8 +76,8 @@
         compact ? 64 : 90,
         allowArcOverflowX ? 560 : (compact ? 210 : 320)
       );
-      var topY = compact ? 142 : 140;
-      var bottomPad = compact ? 124 : 110;
+      var topY = compact ? (mobileCompaction ? 150 : 142) : 140;
+      var bottomPad = compact ? (mobileCompaction ? 84 : 124) : 110;
       var mobileStepGapScale = clamp(readScopedCssNumber('--mix-map-mobile-step-gap-scale', 1), 0.8, 1.8);
       var stepGapBase = ((height - topY - bottomPad) / 5) * 0.6125;
       var stepGap = compact ? (stepGapBase * mobileStepGapScale) : stepGapBase;
@@ -85,6 +86,7 @@
         width: width,
         height: height,
         compact: compact,
+        mobileCompaction: mobileCompaction,
         laneGap: laneGap,
         laneX: laneX,
         nodeWidth: nodeWidth,

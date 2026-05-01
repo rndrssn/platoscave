@@ -62,7 +62,7 @@
     var widthScale = effectiveWidth > 0 ? (effectiveWidth / viewWidth) : 1;
     var svgScale = clamp(widthScale, 0.25, 2.5);
     var nodeFontScale = clamp(readScopedCssNumber('--mix-map-node-font-scale', 1), 0.6, 1.3);
-    var nodeMinPx = layout && layout.compact ? 7.8 : 9.2;
+    var nodeMinPx = layout && layout.mobileCompaction ? 5.8 : (layout && layout.compact ? 7.8 : 9.2);
 
     function pxToUserUnits(px, minPx, maxPx) {
       var targetPx = clamp(px, minPx, maxPx);
@@ -77,12 +77,12 @@
       ),
       laneTitleFontU: pxToUserUnits(
         readNumberCssVarFromEl(svgEl, '--mix-map-fs-lane-title-px', 14.8),
-        11.2,
+        layout && layout.mobileCompaction ? 7 : 11.2,
         16.2
       ),
       laneSubtitleFontU: pxToUserUnits(
         readNumberCssVarFromEl(svgEl, '--mix-map-fs-lane-subtitle-px', 11.6),
-        10,
+        layout && layout.mobileCompaction ? 6.2 : 10,
         14
       ),
       compareFontU: pxToUserUnits(

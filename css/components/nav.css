@@ -902,7 +902,7 @@
 
   .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle),
   .js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle) {
-    font-size: calc(var(--fs-nav-title) * 0.46875 * var(--nav-menu-scale));
+    font-size: calc(var(--fs-nav-title) * 0.5859375 * var(--nav-menu-scale));
     color: var(--viz-rust, var(--rust));
     letter-spacing: 0.01em;
     font-weight: 300;

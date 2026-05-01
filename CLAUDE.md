@@ -78,7 +78,7 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | Task involves | Load |
 |---------------|------|
 | GC simulation, scoring, diagnosis, viz | `modules/garbage-can/runtime/gc-simulation.js`, `modules/garbage-can/runtime/gc-viz.js`, `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js` |
-| Module 06 The Descent | `modules/the-descent/index.html`, `modules/the-descent/section-map/index.html`, `modules/the-descent/section-map/section-map.js`, `css/pages/the-descent.css` |
+| Module 06 From Ambiguity to Clarity | `modules/the-descent/index.html`, `modules/the-descent/section-map/index.html`, `modules/the-descent/section-map/section-map.js`, `css/pages/the-descent.css` |
 | UI, CSS, navigation, IA | `docs/10-guides/GUIDE-architecture.md`, `docs/40-principles/PRINCIPLE-coding-standards.md`, `docs/20-reference/REFERENCE-css-architecture.md`, `docs/20-reference/navigation-patterns.md` |
 | Module 04 Mix Mapper | All files in `modules/mix-mapper/*` + relevant contract tests in `tests/` |
 | Queue Machine module | `modules/queue-machine/index.html`, `modules/queue-machine/taxonomy/index.html`, `modules/queue-machine/explore/index.html`, `modules/queue-machine/queue-machine-model.js`, `modules/queue-machine/queue-machine.js`, `modules/queue-machine/concept-graph/index.html`, `modules/queue-machine/concept-graph/concept-graph.js`, `css/pages/queue-machine.css`, `docs/20-reference/REFERENCE-queue-machine-semantics.md` |
@@ -152,9 +152,9 @@ Tests enforcing this contract:
 - Assess path fixes problemInflow to 'moderate' — survey does not capture inflow timing. Explorer exposes all four parameters. See `docs/10-guides/GUIDE-architecture.md`.
 - Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both set by gc-pressure-narrative.js and gc-diagnosis.js before page wiring runs.
 - Use simResult.meta.problems (not a hardcoded constant) when computing problem proportions.
-- Module 06 root is canonical local section `01` at `modules/the-descent/`; Section Map is local section `02` at `modules/the-descent/section-map/`.
-- Section Map anchor switch behavior is part of the feature contract: activating the shadow anchor row toggles mode and must stay keyboard-accessible (Enter/Space).
-- Module 04 root is canonical local section `01` at `modules/mix-mapper/`, titled "Epistemic Bets" under "Management Mix".
+- Module 06 root is canonical local section `01` at `modules/the-descent/`; Clarity Map is local section `02` at `modules/the-descent/section-map/`.
+- Clarity Map anchor switch behavior is part of the feature contract: activating the shadow anchor row toggles mode and must stay keyboard-accessible (Enter/Space).
+- Module 04 root is canonical local section `01` at `modules/mix-mapper/`, titled "Epistemic Bets" under "Learning & Feedback".
 - Mix Mapper SVG colors: never use color-mix(…, transparent) via D3 .attr() — broken on iOS WebKit. Use D3 .style() for all visual properties (fill, stroke, fill-opacity, stroke-opacity) on SVG elements.
 - Mix Mapper SVG text: dominant-baseline and text-anchor must be CSS properties on the label class in `css/pages/mix-mapper.css`, not SVG presentation attributes.
 - Mix Mapper complexity feedback/learning pulses travel backward on their arc, dwell at the absorbing node, then re-enter the next downstream primary flow segment. Do not add node pulse/glow unless explicitly requested.

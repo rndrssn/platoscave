@@ -23,7 +23,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 ## Modules
 
-- **Emergence Primer** — Local rules yielding global patterns.
+- **Emergence** — Local rules yielding global patterns.
   - **01 Conway's Game of Life** (`/modules/emergence-primer/`)
   - **02 GANTT meets Game of Life** (`/modules/emergence-primer/ganttgol/`)
 - **Organisational Diagnostic** *(planned)* — A situation check for predictive vs adaptive contexts.
@@ -33,9 +33,9 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - **03 What's a Garbage Can?** (`/modules/garbage-can/can-explainer/`)
   - **04 Explore** (`/modules/garbage-can/explorer/`)
   - **05 Assess** (`/modules/garbage-can/assess/`)
-- **Management Mix** — Where traditional control and adaptive learning coexist. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
+- **Learning & Feedback** — Where traditional control and adaptive learning coexist. Explores epistemic bets: the assumptions an organisation makes about when it can know enough to decide.
   - **01 Epistemic Bets** (`/modules/mix-mapper/`)
-- **The Queue Machine** — Queueing theory and the resource-utilization trap, using D3 visuals to show how average load, variability, backlog, and flow interact.
+- **Flow & Queuing** — Queueing theory and the resource-utilization trap, using D3 visuals to show how average load, variability, backlog, and flow interact.
   - **01 Narrative** (`/modules/queue-machine/`)
     - Plain-language introduction to queueing theory, utilization pressure, variability amplification, Little's Law, and TOC framing.
   - **02 Taxonomy** (`/modules/queue-machine/taxonomy/`)
@@ -44,9 +44,9 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
     - Interactive lab with arrival/capacity controls, backlog charts, and live readouts from M/M/1, Kingman's approximation, and Little's Law.
   - **04 Concept Map** (`/modules/queue-machine/concept-graph/`)
     - D3 force-directed graph showing how queueing theory, complexity science, and modern agile practice connect; observations they predict; folklore intuitions and the counter-intuitive surprises that contradict them.
-- **The Descent** — From open problem to verifiable criterion. The sections of a brief as stations of a descent. Paired narratively with Module 04 (same epistemic bet, at unit scale).
-  - **01 The Descent** (`/modules/the-descent/`)
-  - **02 Section Map** (`/modules/the-descent/section-map/`)
+- **From Ambiguity to Clarity** — How open work becomes clear enough to test and build. Paired narratively with Module 04 (same epistemic bet, at unit scale).
+  - **01 From Ambiguity to Clarity** (`/modules/the-descent/`)
+  - **02 Clarity Map** (`/modules/the-descent/section-map/`)
 
 ### Also on site
 
@@ -56,7 +56,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ### Module 06 Contract (Minimal)
 
 - Canonical root is local section `01` at `/modules/the-descent/`.
-- Section Map is local section `02` at `/modules/the-descent/section-map/`.
+- Clarity Map is local section `02` at `/modules/the-descent/section-map/`.
 - Section `02` runtime is data-driven (`STATIONS`, `TRACKS`, `ARTIFACTS`) and the anchor mode toggle must remain mouse + keyboard accessible (Enter/Space on toggleable rows).
 
 ## Built With

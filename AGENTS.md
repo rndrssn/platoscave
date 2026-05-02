@@ -81,7 +81,7 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | Module 06 Ambiguity to Clarity | `modules/ambiguity-clarity/index.html`, `modules/ambiguity-clarity/section-map/index.html`, `modules/ambiguity-clarity/section-map/section-map.js`, `css/pages/the-descent.css` |
 | UI, CSS, navigation, IA | `docs/10-guides/GUIDE-architecture.md`, `docs/40-principles/PRINCIPLE-coding-standards.md`, `docs/20-reference/REFERENCE-css-architecture.md`, `docs/20-reference/navigation-patterns.md` |
 | Module 04 Learning & Feedback | All files in `modules/learning-feedback/*` + relevant contract tests in `tests/` |
-| Queue Machine module | `modules/flow-queuing/index.html`, `modules/flow-queuing/taxonomy/index.html`, `modules/flow-queuing/explore/index.html`, `modules/flow-queuing/flow-queuing-model.js`, `modules/flow-queuing/flow-queuing.js`, `modules/flow-queuing/concept-graph/index.html`, `modules/flow-queuing/concept-graph/concept-graph.js`, `css/pages/flow-queuing.css`, `docs/20-reference/REFERENCE-flow-queuing-semantics.md` |
+| Flow & Queuing module | `modules/flow-queuing/index.html`, `modules/flow-queuing/taxonomy/index.html`, `modules/flow-queuing/explore/index.html`, `modules/flow-queuing/concept-graph/index.html`, `modules/flow-queuing/derivation/index.html`, `modules/flow-queuing/flow-queuing-model.js`, `modules/flow-queuing/flow-queuing.js`, `modules/flow-queuing/concept-graph/concept-graph.js`, `css/pages/flow-queuing.css`, `docs/20-reference/REFERENCE-flow-queuing-semantics.md` |
 | Force graph (Skills, Concept Map) | `modules/experience-skill-graph/index.html`, `modules/flow-queuing/concept-graph/concept-graph.js`, `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
 | Semantics and labels | Treat implementation and tests as canonical; align across UI, summaries, legends |
 
@@ -99,7 +99,7 @@ Includes navigation link checks and notes build checks.
 
 **Optional** (auto-skips without Playwright): `node tests/test-browser-smoke-optional.js`
 
-**Semantics/copy changes:** keep terms aligned with `docs/20-reference/REFERENCE-gc-model-semantics.md` (GC) and `docs/20-reference/REFERENCE-flow-queuing-semantics.md` (Queue Machine); update relevant docs in the same change.
+**Semantics/copy changes:** keep terms aligned with `docs/20-reference/REFERENCE-gc-model-semantics.md` (GC) and `docs/20-reference/REFERENCE-flow-queuing-semantics.md` (Flow & Queuing); update relevant docs in the same change.
 
 **Merge readiness:** tests pass, no docs integrity errors, no known mismatch between code behavior and documented semantics.
 
@@ -108,7 +108,7 @@ Includes navigation link checks and notes build checks.
 | Changed | Also update |
 |---------|-------------|
 | GC model math or outputs | Tests + user-facing summary logic/copy |
-| Queue Machine model math, symbols, or labels | Tests + `docs/20-reference/REFERENCE-flow-queuing-semantics.md` |
+| Flow & Queuing model math, symbols, or labels | Tests + `docs/20-reference/REFERENCE-flow-queuing-semantics.md` |
 | UI labels/readouts | All affected surfaces (legend, runtime text, summary) |
 | Module title, section name, or IA label | `modules/index.html`, `js/nav-controller.js`, module page labels, redirect copy |
 | Contributor or release workflow | `README.md` + tracked workflow docs |
@@ -142,8 +142,8 @@ Tests enforcing this contract:
 | GC page wiring | `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js` |
 | Module 06 runtime | `modules/ambiguity-clarity/index.html`, `modules/ambiguity-clarity/section-map/index.html`, `modules/ambiguity-clarity/section-map/section-map.js`, `css/pages/the-descent.css` |
 | Module 04 runtime | `modules/learning-feedback/mix-mapper-data.js`, `modules/learning-feedback/mix-mapper-semantics.js`, `modules/learning-feedback/mix-mapper-geometry.js`, `modules/learning-feedback/mix-mapper-layout-utils.js`, `modules/learning-feedback/mix-mapper-node-utils.js`, `modules/learning-feedback/mix-mapper-mode-policy.js`, `modules/learning-feedback/mix-mapper-tooltip.js`, `modules/learning-feedback/mix-mapper-interactions.js`, `modules/learning-feedback/mix-mapper-renderer.js`, `modules/learning-feedback/mix-mapper.js` |
-| Queue Machine runtime | `modules/flow-queuing/index.html`, `modules/flow-queuing/taxonomy/index.html`, `modules/flow-queuing/explore/index.html`, `modules/flow-queuing/flow-queuing-model.js`, `modules/flow-queuing/flow-queuing.js`, `modules/flow-queuing/concept-graph/concept-graph.js` |
-| Queue Machine math rendering | `assets/vendor/katex/katex.min.css`, `assets/vendor/katex/katex.min.js`, `js/katex-render.js` |
+| Flow & Queuing runtime | `modules/flow-queuing/index.html`, `modules/flow-queuing/taxonomy/index.html`, `modules/flow-queuing/explore/index.html`, `modules/flow-queuing/derivation/index.html`, `modules/flow-queuing/flow-queuing-model.js`, `modules/flow-queuing/flow-queuing.js`, `modules/flow-queuing/concept-graph/concept-graph.js` |
+| Flow & Queuing math rendering | `assets/vendor/katex/katex.min.css`, `assets/vendor/katex/katex.min.js`, `js/katex-render.js` |
 | Force-graph shared layer | `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
 | Tests | `tests/run-all.js` |
 
@@ -160,11 +160,14 @@ Tests enforcing this contract:
 - Mix Mapper complexity feedback/learning pulses travel backward on their arc, dwell at the absorbing node, then re-enter the next downstream primary flow segment. Do not add node pulse/glow unless explicitly requested.
 - Mix Mapper legend order is Learning, Process, Assumptions. Active Learning emphasizes moving dots only; active Assumptions owns active blue/slate arc emphasis.
 - buildColors() reads --viz-* token tier (--viz-ink-faint, --viz-ink-ghost, --viz-sage, --viz-rust, etc.). Do not revert to --ink-* UI tokens.
-- Queue Machine module root is canonical local section `01` at `modules/flow-queuing/`. Sections: `01` Flow and Waiting, `02` Taxonomy (`modules/flow-queuing/taxonomy/`), `03` Explore (`modules/flow-queuing/explore/`), `04` Concept Map (`modules/flow-queuing/concept-graph/`).
-- Queue Machine Explore preset behavior: there is no standalone reshuffle button. Re-clicking the currently active preset reseeds local variability while preserving preset averages.
-- Queue Machine symbol labels use non-division notation for readability: `WIP (L)`, `Lead time (W)`, `Arrival rate (λ)`, `Service capacity (μ)`, `Utilization (ρ)`, `Cₐ`, `Cₛ`.
-- Queue Machine Concept Map semantics: dashed links (`kind: contradicts`) represent explicit contradiction edges from assumptions.
-- Queue Machine section 01 (Flow and Waiting) loads KaTeX for math rendering: `assets/vendor/katex/katex.min.css` in the head, then `assets/vendor/katex/katex.min.js` + `js/katex-render.js` at end of body. No CDN fallback by design. Equations use `data-formula` attribute on figure elements with class `queue-machine-equation`.
+- Flow & Queuing module root is canonical local section `01` at `modules/flow-queuing/`. Sections: `01` Flow and Waiting, `02` Taxonomy (`modules/flow-queuing/taxonomy/`), `03` Explore (`modules/flow-queuing/explore/`), `04` Concept Map (`modules/flow-queuing/concept-graph/`), `05` M/M/1 Derivation (`modules/flow-queuing/derivation/`).
+- Flow & Queuing Explore preset behavior: there is no standalone reshuffle button. Re-clicking the currently active preset reseeds local variability while preserving preset averages.
+- Flow & Queuing symbol labels use non-division notation for readability: `WIP (L)`, `Lead time (W)`, `Arrival rate (λ)`, `Service capacity (μ)`, `Utilization (ρ)`, `Cₐ`, `Cₛ`.
+- Flow & Queuing Concept Map semantics: dashed links (`kind: contradicts`) represent explicit contradiction edges from assumptions.
+- Flow & Queuing section 01 (Flow and Waiting) loads KaTeX for math rendering: `assets/vendor/katex/katex.min.css` in the head, then `assets/vendor/katex/katex.min.js` + `js/katex-render.js` at end of body. No CDN fallback by design. Equations use `data-formula` attribute on figure elements with class `queue-machine-equation`.
+- Flow & Queuing section 05 (M/M/1 Derivation) must use scientific-article equation treatment: equations are in-flow display math with `data-formula` and right-aligned equation numbers; do not use equation `figcaption` content, hidden or visible, as the source of explanatory prose. Put definitions and explanatory text in visible essay-body prose.
+- M/M/1 derivation assumptions must stay explicit: homogeneous Poisson arrivals, independent exponential service times, one work-conserving server, infinite waiting room/no lost arrivals, independent arrival and service processes, and stability `λ < μ`.
+- M/M/1 memoryless-property graphics must show the conditional residual time correctly: after conditioning on survival past `s₀`, the residual variable is shifted back to zero and has the same exponential density. Do not represent the result only as an unnormalised tail of the original density.
 - Force-directed graphs (Skills graph, Concept Map) share interaction-state classes (`is-dim`, `is-related`, `is-group-focus`, `is-active`) defined in `css/components/force-graph-states.css`, and shared focus/legend-filter helpers in `js/force-graph-utils.js`. New force graphs must use these classes and helpers; page-local visual overrides are allowed when these shared classes remain the source of interaction state.
 - Force graphs use the light/pastel palette tier (`--rust-light`, `--gold`, `--sage-light`) for node fills. Do not use saturated `--viz-*` data-viz tokens for force-graph nodes.
 - Force graph viz chrome (legend, helper, detail panel, node labels) uses mono uppercase microtype: var(--mono) at ~0.6rem with letter-spacing 0.05 to 0.06em and text-transform uppercase.

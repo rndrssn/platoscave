@@ -36,6 +36,13 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - **Learning & Feedback** — Where traditional control and adaptive learning coexist. Explores epistemic bets and feedback debt: the assumptions an organisation makes about when it can know enough to decide, and what happens when evidence cannot revise those assumptions.
   - **01 Epistemic Bets** (`/modules/learning-feedback/`)
   - **02 Feedback Debt** (`/modules/learning-feedback/feedback-debt/`)
+- **Products Over Projects** — Choosing product-mode or project-mode by dominant residual risk. Reframes product and project operating models as risk treatments rather than managerial identities.
+  - **01 Risk Lens** (`/modules/products-over-projects/`)
+    - Narrative distinction between product uncertainty, execution risk, and formal control exposure.
+  - **02 Taxonomy** (`/modules/products-over-projects/taxonomy/`)
+    - Risk taxonomy grounded in ISO 31000, IEC 31010, COSO ERM, PMI risk management, FMEA/FMECA, bowtie analysis, NIST RMF, ISO/IEC 27005, HACCP, ISO 14971, and ICH Q9(R1).
+  - **03 Assessment** (`/modules/products-over-projects/assessment/`)
+    - Residual-risk scoring instrument for classifying product-mode, project-mode, hybrid, or formal risk/control governance.
 - **Flow & Queuing** — Queueing theory and the resource-utilization trap, using D3 visuals to show how average load, variability, backlog, and flow interact.
   - **01 Flow and Waiting** (`/modules/flow-queuing/`)
     - Plain-language introduction to queueing theory, utilization pressure, variability amplification, Little's Law, and TOC framing.
@@ -45,7 +52,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
     - Interactive lab with arrival/capacity controls, backlog charts, and live readouts from M/M/1, Kingman's approximation, and Little's Law.
   - **04 Concept Map** (`/modules/flow-queuing/concept-graph/`)
     - D3 force-directed graph showing how queueing theory, complexity science, and modern agile practice connect; observations they predict; folklore intuitions and the counter-intuitive surprises that contradict them.
-  - **05 Appendix: M/M/1 Derivation** (`/modules/flow-queuing/derivation/`)
+  - **05 M/M/1 Derivation** (`/modules/flow-queuing/derivation/`)
     - Mathematical appendix deriving the M/M/1 queueing formula from Poisson arrivals, exponential service, and steady-state balance equations.
 - **Ambiguity to Clarity** — How open work becomes clear enough to test and build. Paired narratively with Module 04 (same epistemic bet, at unit scale).
   - **01 Ambiguity to Clarity** (`/modules/ambiguity-clarity/`)

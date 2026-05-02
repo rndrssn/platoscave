@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Residual risk assessment for deciding whether product-mode, project-mode, hybrid governance, or formal risk-control governance is the better fit." />
+  <title>Assessment · Products Over Projects · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../../css/fonts.css" />
+  <link rel="stylesheet" href="../../../css/tokens.css" />
+  <link rel="stylesheet" href="../../../css/base.css" />
+  <link rel="stylesheet" href="../../../css/layout.css" />
+  <link rel="stylesheet" href="../../../css/components.css" />
+  <link rel="stylesheet" href="../../../css/utilities.css" />
+  <link rel="stylesheet" href="../../../css/themes.css" />
+  <link rel="stylesheet" href="../../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../../">To the Bedrock</a>
+    <nav class="main-nav">
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../../">Home</a>
+      <a class="nav-link" href="../../../notes/">Notes</a>
+      <a class="nav-link nav-link--catalogue nav-link--active" href="../../../modules/" aria-current="page">Catalogue</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page products-over-projects-page">
+      <a class="module-back-link" href="../../" aria-label="Back to Catalogue"></a>
+      <a class="module-header-number module-context-number module-context-link" href="../">Products Over Projects</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Risk Lens</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../taxonomy/"><span class="module-sub-nav-number">02</span> Taxonomy</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">03</span> Assessment</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Residual Risk Assessment</h1>
+        <p class="module-header-body">
+          Score the remaining uncertainty after current evidence, controls, and governance are considered. The result is not
+          a certification. It is a structured conversation aid for identifying whether learning, coordination, or formal
+          control should dominate the next management response.
+        </p>
+      </header>
+
+      <article class="module-essay">
+        <section class="essay-section">
+          <h2 class="essay-heading">Assessment Instrument</h2>
+          <p class="essay-body">
+            Use 0 when the residual uncertainty is negligible or credibly controlled. Use 3 when the uncertainty remains high,
+            consequential, and weakly evidenced. When unsure, score the uncertainty rather than the confidence of the loudest
+            stakeholder.
+          </p>
+
+          <form class="risk-assessment" id="risk-assessment" aria-describedby="risk-assessment-help">
+            <p class="risk-assessment-help" id="risk-assessment-help">
+              Scores are interpreted as residual risk: 0 none or controlled, 1 low, 2 material, 3 high.
+            </p>
+
+            <fieldset class="risk-assessment-group">
+              <legend>Product uncertainty</legend>
+              <div class="risk-slider" data-risk-family="product">
+                <label for="risk-value">Value/desirability risk</label>
+                <p>It remains uncertain whether users, customers, or beneficiaries will choose or value the proposed change.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-value" name="risk-value" type="range" min="0" max="3" step="1" value="2" data-risk="product" />
+                  <span>3</span>
+                  <output for="risk-value">2</output>
+                </div>
+              </div>
+              <div class="risk-slider" data-risk-family="product">
+                <label for="risk-usability">Usability/adoption risk</label>
+                <p>It remains uncertain whether people can use the change successfully in their actual operating context.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-usability" name="risk-usability" type="range" min="0" max="3" step="1" value="2" data-risk="product" />
+                  <span>3</span>
+                  <output for="risk-usability">2</output>
+                </div>
+              </div>
+              <div class="risk-slider" data-risk-family="product">
+                <label for="risk-feasibility">Feasibility risk</label>
+                <p>It remains uncertain whether the solution can be built, integrated, operated, and maintained within acceptable and reasonably predictable cost constraints.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-feasibility" name="risk-feasibility" type="range" min="0" max="3" step="1" value="1" data-risk="product" />
+                  <span>3</span>
+                  <output for="risk-feasibility">1</output>
+                </div>
+              </div>
+              <div class="risk-slider" data-risk-family="product">
+                <label for="risk-viability">Business viability risk</label>
+                <p>It remains uncertain whether the change fits financial, legal, commercial, support, or operating constraints.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-viability" name="risk-viability" type="range" min="0" max="3" step="1" value="1" data-risk="product" />
+                  <span>3</span>
+                  <output for="risk-viability">1</output>
+                </div>
+              </div>
+              <div class="risk-slider" data-risk-family="product">
+                <label for="risk-outcome">Outcome risk</label>
+                <p>It remains uncertain whether the intended performance, behavioural, or business outcome will improve.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-outcome" name="risk-outcome" type="range" min="0" max="3" step="1" value="2" data-risk="product" />
+                  <span>3</span>
+                  <output for="risk-outcome">2</output>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="risk-assessment-group">
+              <legend>Execution uncertainty</legend>
+              <div class="risk-slider" data-risk-family="execution">
+                <label for="risk-coordination">Coordination/dependency risk</label>
+                <p>Completion depends on many teams, vendors, approvals, systems, or external decisions aligning.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-coordination" name="risk-coordination" type="range" min="0" max="3" step="1" value="1" data-risk="execution" />
+                  <span>3</span>
+                  <output for="risk-coordination">1</output>
+                </div>
+              </div>
+              <div class="risk-slider" data-risk-family="execution">
+                <label for="risk-completion">Completion risk</label>
+                <p>The known work may fail to meet time, cost, scope, quality, or resource constraints.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-completion" name="risk-completion" type="range" min="0" max="3" step="1" value="1" data-risk="execution" />
+                  <span>3</span>
+                  <output for="risk-completion">1</output>
+                </div>
+              </div>
+              <div class="risk-slider" data-risk-family="execution">
+                <label for="risk-migration">Migration/cutover risk</label>
+                <p>The transition from current to future state may create disruption, data loss, outage, or rework.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-migration" name="risk-migration" type="range" min="0" max="3" step="1" value="1" data-risk="execution" />
+                  <span>3</span>
+                  <output for="risk-migration">1</output>
+                </div>
+              </div>
+              <div class="risk-slider" data-risk-family="execution">
+                <label for="risk-correctness">Correctness/compliance risk</label>
+                <p>The implementation must satisfy demanding correctness, auditability, legal, regulatory, or contractual criteria.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-correctness" name="risk-correctness" type="range" min="0" max="3" step="1" value="1" data-risk="execution" />
+                  <span>3</span>
+                  <output for="risk-correctness">1</output>
+                </div>
+              </div>
+              <div class="risk-slider" data-risk-family="execution">
+                <label for="risk-readiness">Operational readiness risk</label>
+                <p>The organisation may be unable to run, monitor, support, train for, or govern the change after launch.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-readiness" name="risk-readiness" type="range" min="0" max="3" step="1" value="1" data-risk="execution" />
+                  <span>3</span>
+                  <output for="risk-readiness">1</output>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="risk-assessment-group">
+              <legend>Hazard and control exposure</legend>
+              <div class="risk-slider" data-risk-family="control">
+                <label for="risk-harm">Harm exposure</label>
+                <p>Failure could harm customers, patients, workers, the public, the environment, data subjects, or critical operations.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-harm" name="risk-harm" type="range" min="0" max="3" step="1" value="0" data-risk="control" />
+                  <span>3</span>
+                  <output for="risk-harm">0</output>
+                </div>
+              </div>
+              <div class="risk-slider" data-risk-family="control">
+                <label for="risk-controls">Control evidence risk</label>
+                <p>Controls must be designed, tested, documented, authorized, and monitored to satisfy assurance obligations.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-controls" name="risk-controls" type="range" min="0" max="3" step="1" value="1" data-risk="control" />
+                  <span>3</span>
+                  <output for="risk-controls">1</output>
+                </div>
+              </div>
+              <div class="risk-slider" data-risk-family="control">
+                <label for="risk-acceptance">Residual acceptance risk</label>
+                <p>It is unclear who has authority to accept the remaining risk or what evidence is sufficient.</p>
+                <div class="risk-slider-row">
+                  <span>0</span>
+                  <input id="risk-acceptance" name="risk-acceptance" type="range" min="0" max="3" step="1" value="1" data-risk="control" />
+                  <span>3</span>
+                  <output for="risk-acceptance">1</output>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </section>
+
+        <section class="essay-section">
+          <h2 class="essay-heading">Result</h2>
+          <div class="risk-result" id="risk-result" aria-live="polite">
+            <p class="risk-result-label">Dominant residual risk</p>
+            <p class="risk-result-title" id="risk-result-title">Product uncertainty dominates</p>
+            <p class="risk-result-body" id="risk-result-body">
+              Treat discovery as a risk treatment. Reduce value, usability, feasibility, viability, and outcome uncertainty
+              before converting the work into fixed-scope delivery governance.
+            </p>
+            <div class="risk-score-grid" aria-label="Risk family scores">
+              <div>
+                <span>Product</span>
+                <strong id="risk-product-score">8</strong>
+              </div>
+              <div>
+                <span>Execution</span>
+                <strong id="risk-execution-score">5</strong>
+              </div>
+              <div>
+                <span>Control</span>
+                <strong id="risk-control-score">2</strong>
+              </div>
+            </div>
+          </div>
+          <p class="essay-body">
+            Interpret the result as a governance prompt. A high product score does not remove the need for planning; it means
+            planning should not be the primary mechanism for reducing the largest remaining uncertainty. A high control score
+            does not remove the need for learning; it means learning must occur inside explicit risk appetite, controls,
+            evidence, authorization, and monitoring.
+          </p>
+        </section>
+      </article>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../taxonomy/" aria-label="Previous: Taxonomy">
+          <span class="footer-nav-label-full">&larr; Previous: Taxonomy</span>
+          <span class="footer-nav-label-short">&larr; Previous</span>
+        </a>
+        <a class="footer-nav-link" href="../" aria-label="Back to Risk Lens">
+          <span class="footer-nav-label-full">Back to Risk Lens &rarr;</span>
+          <span class="footer-nav-label-short">Risk Lens &rarr;</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../../js/module-route-data.js"></script>
+  <script src="../../../js/nav-controller.js"></script>
+  <script src="products-over-projects-assessment.js"></script>
+</body>
+</html>

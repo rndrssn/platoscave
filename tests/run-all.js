@@ -18,6 +18,8 @@ const tests = [
   'test-theme-bootstrap.js',
   'test-theme-config-contract.js',
   'test-flow-queuing-model.js',
+  'test-flow-queuing-explore-contract.js',
+  'test-products-over-projects-assessment.js',
   'test-mix-mapper-assumptions-contract.js',
   'test-mix-mapper-mode-motion-contract.js',
   'test-mix-mapper-link-narratives-contract.js',

@@ -81,6 +81,19 @@ function run() {
     burstyTimeline.maxBacklog > smoothTimeline.maxBacklog,
     'Higher variability should create larger backlog at fixed utilization'
   );
+  assert(
+    smoothTimeline.maxBacklog < 0.01,
+    'Near-zero variability timeline should have essentially no backlog'
+  );
+
+  const unstableKingman = calculateKingman({ arrivalRate: 1.1, serviceRate: 1, arrivalCv: 1, serviceCv: 1 });
+  assert.strictEqual(unstableKingman.stable, false, 'Kingman should be unstable above capacity');
+  assert.strictEqual(unstableKingman.queueWaitTime, Infinity, 'Unstable Kingman queue wait should be infinite');
+  assert.strictEqual(unstableKingman.systemLeadTime, Infinity, 'Unstable Kingman lead time should be infinite');
+
+  const zeroArrival = calculateKingman({ arrivalRate: 0, serviceRate: 1, arrivalCv: 1, serviceCv: 1 });
+  assert.strictEqual(zeroArrival.stable, true, 'Zero-arrival Kingman should be stable');
+  nearlyEqual(zeroArrival.queueWaitTime, 0, 1e-12, 'Zero-arrival Kingman queue wait should be zero');
 
   console.log('PASS: tests/test-flow-queuing-model.js');
 }

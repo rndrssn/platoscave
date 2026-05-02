@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="../../../css/themes.css" />
   <link rel="stylesheet" href="../../../css/gc-viz.css" />
   <link rel="stylesheet" href="../../../css/pages.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
   <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
   <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
 </head>
@@ -51,38 +51,34 @@
       <header class="module-header">
         <h1 class="module-header-title">NDVI Demo</h1>
         <p class="module-header-body">
-          Navigate to an area of interest, pick a date, and click Analyse visible area. The NDVI surface updates
-          for the current viewport. Surface height represents NDVI — not elevation.
+          The demo requests Sentinel-derived NDVI for the visible viewport through a Cloudflare Worker, then renders
+          the result as an analytical surface. Surface height represents NDVI — not elevation.
         </p>
       </header>
 
       <div class="satellite-controls" role="toolbar" aria-label="Analysis controls">
-        <div class="satellite-control-group">
-          <label class="satellite-control-label" for="satellite-date">Date</label>
-          <input class="satellite-date-input" type="date" id="satellite-date" aria-label="Target acquisition date" />
-        </div>
-        <div class="satellite-control-group">
-          <span class="satellite-control-label">Index</span>
-          <span class="satellite-control-label">NDVI</span>
-        </div>
         <button class="satellite-analyse-btn" id="satellite-analyse-btn" type="button">
           Analyse visible area
         </button>
       </div>
 
-      <p class="satellite-status" id="satellite-status" aria-live="polite">
-        Navigate to an area of interest, then click Analyse visible area
-      </p>
+      <p class="satellite-status" id="satellite-status" aria-live="polite"></p>
 
       <div class="satellite-demo-stage">
         <div>
-          <p class="satellite-panel-label">Map &middot; current viewport</p>
           <div class="satellite-map-container">
             <div id="satellite-map" role="application" aria-label="Interactive map — navigate to area of interest"></div>
           </div>
         </div>
         <div>
-          <p class="satellite-panel-label">NDVI surface &middot; z = NDVI · not elevation</p>
+          <div class="satellite-surface-tools">
+            <button class="satellite-toggle-control" id="satellite-base-toggle" type="button" aria-pressed="true">
+              <span class="satellite-toggle-track" aria-hidden="true">
+                <span class="satellite-toggle-thumb"></span>
+              </span>
+              <span class="satellite-control-label">Satellite base</span>
+            </button>
+          </div>
           <div class="satellite-surface-wrap" id="satellite-surface-wrap" aria-label="NDVI 3D surface">
             <p class="satellite-surface-placeholder">Navigate to an area<br>and click Analyse</p>
             <div id="satellite-surface"></div>
@@ -93,9 +89,10 @@
       <div class="satellite-meta" id="satellite-meta" aria-label="Analysis metadata"></div>
 
       <p class="satellite-demo-note">
-        This demo uses synthetic fixture data seeded by the current viewport bounds and selected date. No external
-        API calls are made. The live pipeline — Sentinel Hub Process API via Cloudflare Worker — is designed but
-        not yet connected.
+        This demo first requests live Sentinel-derived NDVI and RGB context from a Cloudflare Worker. The browser
+        sends only viewport bounds and an analysis date; Sentinel credentials stay outside the client. If the
+        viewport is too large, the Worker is unavailable, or the imagery request fails, the surface falls back to a
+        synthetic fixture seeded by the same viewport and analysis date.
       </p>
 
       <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
@@ -113,8 +110,8 @@
 
   <script src="../../../js/module-route-data.js"></script>
   <script src="../../../js/nav-controller.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2/plotly.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.3/plotly.min.js"></script>
   <script src="./satellite-index.js"></script>
 </body>
 </html>

@@ -41,8 +41,8 @@
         control: 0
       }
     };
-    var inputs = form.querySelectorAll('input[type="range"][data-risk]');
-    inputs.forEach(function(input) {
+    var checked = form.querySelectorAll('input[type="radio"][data-risk]:checked');
+    checked.forEach(function(input) {
       var family = input.getAttribute('data-risk');
       var value = Number(input.value) || 0;
       if (!Object.prototype.hasOwnProperty.call(scores, family)) return;
@@ -79,28 +79,30 @@
     return 'hybrid';
   }
 
-  function updateOutputs(form) {
-    var inputs = form.querySelectorAll('input[type="range"]');
-    inputs.forEach(function(input) {
-      var output = form.querySelector('output[for="' + input.id + '"]');
-      if (output) output.textContent = input.value;
-    });
-  }
-
   function renderResult(doc, scores) {
-    var kind = classify(scores);
-    var copy = RESULT_COPY[kind];
     var title = doc.getElementById('risk-result-title');
     var body = doc.getElementById('risk-result-body');
     var productScore = doc.getElementById('risk-product-score');
     var executionScore = doc.getElementById('risk-execution-score');
     var controlScore = doc.getElementById('risk-control-score');
+    var totalAnswered = scores.counts.product + scores.counts.execution + scores.counts.control;
 
+    if (totalAnswered === 0) {
+      if (title) title.textContent = 'Score the items above';
+      if (body) body.textContent = 'The governance recommendation will appear as you complete the assessment.';
+      if (productScore) productScore.textContent = '—';
+      if (executionScore) executionScore.textContent = '—';
+      if (controlScore) controlScore.textContent = '—';
+      return;
+    }
+
+    var kind = classify(scores);
+    var copy = RESULT_COPY[kind];
     if (title) title.textContent = copy.title;
     if (body) body.textContent = copy.body;
-    if (productScore) productScore.textContent = scores.product + '/' + (scores.counts.product * 3);
-    if (executionScore) executionScore.textContent = scores.execution + '/' + (scores.counts.execution * 3);
-    if (controlScore) controlScore.textContent = scores.control + '/' + (scores.counts.control * 3);
+    if (productScore) productScore.textContent = scores.counts.product ? scores.product + '/' + (scores.counts.product * 3) : '—';
+    if (executionScore) executionScore.textContent = scores.counts.execution ? scores.execution + '/' + (scores.counts.execution * 3) : '—';
+    if (controlScore) controlScore.textContent = scores.counts.control ? scores.control + '/' + (scores.counts.control * 3) : '—';
   }
 
   function init(doc) {
@@ -109,11 +111,10 @@
     if (!form) return;
 
     function update() {
-      updateOutputs(form);
       renderResult(doc, readScores(form));
     }
 
-    form.addEventListener('input', update);
+    form.addEventListener('change', update);
     update();
   }
 

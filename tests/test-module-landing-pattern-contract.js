@@ -55,7 +55,7 @@ function run() {
     );
 
     assert(
-      /<a[^>]*class="module-back-link"[^>]*href="\.\.\/"[^>]*aria-label="Back to Modules"[^>]*>\s*<\/a>/i.test(html),
+      /<a[^>]*class="module-back-link"[^>]*href="\.\.\/"[^>]*aria-label="Back to Catalogue"[^>]*>\s*<\/a>/i.test(html),
       relIndexPath + ' must include the rust back-arrow link to /modules/'
     );
 

@@ -140,6 +140,10 @@
   text-transform: none;
   letter-spacing: 0.01em;
   font-size: calc(var(--fs-nav-title) * 0.7125 * var(--nav-menu-scale));
+  color: color-mix(in srgb, var(--ink-mid) 82%, var(--viz-rust, var(--rust)) 18%);
+}
+
+.nav-link--catalogue {
   color: var(--viz-rust, var(--rust));
 }
 
@@ -171,6 +175,10 @@
   text-transform: none;
   font-size: calc(var(--fs-nav-title) * 0.615 * var(--nav-menu-scale));
   line-height: 1.25;
+  color: color-mix(in srgb, var(--ink-mid) 82%, var(--viz-rust, var(--rust)) 18%);
+}
+
+.js-enabled .nav-links.is-open .nav-link.nav-link--catalogue {
   color: var(--viz-rust, var(--rust));
 }
 
@@ -463,18 +471,28 @@
   .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle),
   .js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle) {
     font-size: calc(var(--fs-nav-title) * 0.7995 * var(--nav-menu-scale));
-    color: var(--viz-rust, var(--rust));
+    color: color-mix(in srgb, var(--ink-mid) 82%, var(--viz-rust, var(--rust)) 18%);
     letter-spacing: 0.01em;
     font-weight: 300;
     position: relative;
     top: var(--nav-editorial-shift-y);
   }
 
+  .js-enabled .nav-links .nav-link.nav-link--catalogue,
+  .js-enabled .nav-links.is-open .nav-link.nav-link--catalogue {
+    color: var(--viz-rust, var(--rust));
+  }
+
   .js-enabled .nav-links .nav-link.nav-link--active,
   .js-enabled .nav-links.is-open .nav-link.nav-link--active {
-    color: var(--viz-rust, var(--rust));
+    color: color-mix(in srgb, var(--ink-mid) 82%, var(--viz-rust, var(--rust)) 18%);
     font-weight: 300;
     background: transparent;
+  }
+
+  .js-enabled .nav-links .nav-link.nav-link--catalogue,
+  .js-enabled .nav-links.is-open .nav-link.nav-link--catalogue {
+    color: var(--viz-rust, var(--rust));
   }
 
   .js-enabled .nav-links > .nav-link.nav-link--editorial:hover,
@@ -1125,6 +1143,25 @@
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink-state {
   white-space: nowrap;
   font-size: 0.58rem;
+}
+
+/* Catalogue hierarchy: root row + indented entry rows */
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-root,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-root {
+  margin-left: 0;
+  padding-left: 0;
+  padding-bottom: 0.2rem;
+  margin-bottom: 0.08rem;
+  border-bottom: 1px dashed color-mix(in srgb, var(--ink-ghost) 64%, transparent 36%);
+  font-weight: 400;
+  letter-spacing: 0.07em;
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-child,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child {
+  margin-left: 0.58rem;
+  padding-left: 0.48rem;
+  border-left: 1px solid color-mix(in srgb, var(--ink-ghost) 52%, transparent 48%);
 }
 
 .js-enabled .nav-links .nav-link.nav-modules-toggle,

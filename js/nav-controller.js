@@ -126,7 +126,10 @@
 
     function createPrimaryNavLink(config) {
       var node = document.createElement('a');
-      node.className = 'nav-link nav-link--editorial' + (config.active ? ' nav-link--active' : '');
+      node.className =
+        'nav-link nav-link--editorial'
+        + ((config.role === 'catalogue' || config.role === 'modules') ? ' nav-link--catalogue' : '')
+        + (config.active ? ' nav-link--active' : '');
       node.href = config.href;
       node.textContent = config.label;
       if (config.active) node.setAttribute('aria-current', 'page');
@@ -156,7 +159,7 @@
         { label: 'Notes', href: notesHref, active: isNotesPath(pathname) },
         { label: 'Articles', href: articlesHref, active: isArticlesPath(pathname) },
         { label: 'My Experience', href: myExperienceHref, active: isMyExperiencePath(pathname) },
-        { label: 'Modules', href: modulesHref, active: isModulesPath(pathname), role: 'modules' }
+        { label: 'Catalogue', href: modulesHref, active: isModulesPath(pathname), role: 'catalogue' }
       ].forEach(function (item) {
         navLinks.appendChild(createPrimaryNavLink(item));
       });
@@ -217,8 +220,8 @@
       positionModulesSubmenu();
       modulesSubmenu.hidden = !open;
       modulesToggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
-      modulesToggleButton.setAttribute('aria-label', open ? 'Collapse modules list' : 'Expand modules list');
-      modulesToggleButton.setAttribute('title', open ? 'Collapse modules list' : 'Expand modules list');
+      modulesToggleButton.setAttribute('aria-label', open ? 'Collapse catalogue list' : 'Expand catalogue list');
+      modulesToggleButton.setAttribute('title', open ? 'Collapse catalogue list' : 'Expand catalogue list');
       if (open) modulesToggleButton.classList.add('is-expanded');
       else modulesToggleButton.classList.remove('is-expanded');
     }
@@ -273,13 +276,13 @@
       candidates.forEach(function (link) {
         if (modulesLink) return;
         var role = (link.getAttribute('data-nav-role') || '').toLowerCase();
-        if (role === 'modules') {
+        if (role === 'catalogue' || role === 'modules') {
           modulesLink = link;
           return;
         }
         var text = (link.textContent || '').trim().toLowerCase();
         var href = (link.getAttribute('href') || '').toLowerCase();
-        if (text === 'modules' || href === './') modulesLink = link;
+        if (text === 'catalogue' || text === 'modules' || href === './') modulesLink = link;
       });
 
       if (!modulesLink || !modulesLink.parentNode) return;
@@ -293,14 +296,14 @@
       modulesToggleButton = document.createElement('button');
       modulesToggleButton.type = 'button';
       modulesToggleButton.className = 'nav-link nav-link--editorial nav-modules-toggle nav-modules-toggle--bento';
-      modulesToggleButton.title = 'Modules';
+      modulesToggleButton.title = 'Catalogue';
       modulesToggleButton.textContent = '';
       var modulesToggleLabel = document.createElement('span');
       modulesToggleLabel.className = 'visually-hidden';
-      modulesToggleLabel.textContent = 'Modules';
+      modulesToggleLabel.textContent = 'Catalogue';
       modulesToggleButton.appendChild(modulesToggleLabel);
       modulesToggleButton.setAttribute('aria-expanded', modulesAutoExpand ? 'true' : 'false');
-      modulesToggleButton.setAttribute('aria-label', modulesAutoExpand ? 'Collapse modules list' : 'Expand modules list');
+      modulesToggleButton.setAttribute('aria-label', modulesAutoExpand ? 'Collapse catalogue list' : 'Expand catalogue list');
 
       modulesSubmenu = document.createElement('div');
       modulesSubmenu.className = 'nav-modules-submenu';
@@ -324,9 +327,11 @@
       function createSubEntry(entry, isActive) {
         var label = entry.title;
         var isComingSoon = entry.status === 'coming-soon';
+        var isCatalogueRoot = !entry.slug;
         var node = isComingSoon ? document.createElement('span') : document.createElement('a');
         node.className =
           'nav-sublink' +
+          (isCatalogueRoot ? ' nav-sublink--catalogue-root' : ' nav-sublink--catalogue-child') +
           (isActive ? ' nav-sublink--active' : '') +
           (isComingSoon ? ' nav-sublink--coming' : '');
         if (isComingSoon) {
@@ -360,7 +365,7 @@
         });
 
       modulesSubmenu.appendChild(
-        createSubEntry({ title: 'All modules', slug: '', status: '', href: modulesHref }, isEntryActive(''))
+        createSubEntry({ title: 'Catalogue', slug: '', status: '', href: modulesHref }, isEntryActive(''))
       );
       entries.forEach(function (entry) {
         modulesSubmenu.appendChild(createSubEntry(entry, isEntryActive(entry.slug)));

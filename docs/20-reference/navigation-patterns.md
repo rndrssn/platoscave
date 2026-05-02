@@ -14,7 +14,7 @@ This document defines the canonical link and navigation patterns used across the
 - Catalogue launcher contract:
   - trigger is a button (`.nav-modules-toggle`) with `aria-expanded` + `aria-controls`
   - submenu uses `.nav-modules-submenu`
-  - submenu includes `Full catalogue` and live module links
+  - submenu includes `Catalogue` and live module links
   - `coming-soon` modules are intentionally excluded from the submenu
 - Sticky contract:
   - only `.main-nav` pins after scrolling past title height (`.main-nav--pinned`)

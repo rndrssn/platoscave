@@ -18,7 +18,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 - Site title (`To the Bedrock`) links to `/`.
 - Global link row is normalized by `js/nav-controller.js` to: `Notes`, `Articles`, `My Experience`, and a `Catalogue` trigger.
-- `Catalogue` opens a contextual submenu (`Full catalogue` + live entries only). Entries marked `coming-soon` are intentionally hidden from this launcher.
+- `Catalogue` opens a contextual submenu (`Catalogue` + live entries only). Entries marked `coming-soon` are intentionally hidden from this launcher.
 - Sticky behavior: only the link row (`.main-nav`) pins on scroll (`.main-nav--pinned`); the title row remains in normal flow.
 
 ## Catalogue

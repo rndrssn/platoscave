@@ -82,21 +82,21 @@
             the grid. A MapLibre map with a MapTiler basemap provides spatial context.
           </p>
           <p class="essay-body">
-            In the production pipeline, the surface would be derived from Sentinel-2 L2A satellite imagery via the
-            Sentinel Hub Process API, routed through a Cloudflare Worker that handles OAuth credentials securely.
-            In this proof of concept, the surface is generated from a procedural fixture — a spatially coherent
-            synthetic NDVI grid seeded by the viewport bounds and selected date. The interaction model is identical
-            to the live pipeline.
+            The demo first requests Sentinel-2 L2A-derived NDVI and RGB context via the Sentinel Hub Process API,
+            routed through a Cloudflare Worker that handles OAuth credentials securely. If the live imagery path is
+            unavailable, the browser falls back to a procedural fixture — a spatially coherent synthetic NDVI grid
+            seeded by the viewport bounds and analysis date. The interaction model is identical in both modes.
           </p>
           <aside class="satellite-poc-card" aria-label="Proof of concept scope">
             <p>
-              This demo runs on synthetic fixture data. No external API calls are made and no satellite credentials
-              are required. The fixture produces plausible spatial variation across the viewport — it is intended to
-              demonstrate the interaction model, not to represent real vegetation conditions.
+              This demo is live-first, with a fixture fallback. The browser sends viewport bounds and an analysis
+              date to a Cloudflare Worker, which proxies the Sentinel Hub request without exposing satellite
+              credentials to the client.
             </p>
             <p>
-              The live data pipeline — Cloudflare Worker proxy, Sentinel Hub Catalog and Process APIs, real
-              Sentinel-2 L2A imagery — is designed and documented but not yet connected.
+              The fallback fixture produces plausible spatial variation across the viewport when the Worker,
+              imagery request, or render path is unavailable, or when the viewport-size guard skips the live
+              request. It demonstrates the interaction model; it should not be read as real vegetation conditions.
             </p>
           </aside>
         </section>

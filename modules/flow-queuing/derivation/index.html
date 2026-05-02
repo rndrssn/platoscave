@@ -65,6 +65,8 @@
         <p class="module-header-body">
           The two M's in M/M/1 name the distributions: the first for Markovian (Poisson) arrivals,
           the second for Markovian (exponential) service times. The 1 designates a single server.
+          The model also assumes independent arrivals and service times, an infinite waiting room, no lost arrivals,
+          a work-conserving single server, and stability: <var>&lambda;</var>&nbsp;&lt;&nbsp;<var>&mu;</var>.
           Each assumption does specific work in the argument.
         </p>
       </header>
@@ -74,16 +76,13 @@
         <section class="essay-section">
           <h2 class="essay-heading" id="arrivals">The arrival process</h2>
           <p class="essay-body">
-            Poisson arrivals are events that occur uniformly at random across time with no memory of past events.
-            In any interval of length <var>t</var>, the number of arrivals <var>N</var>(<var>t</var>) follows the
-            Poisson distribution with mean <var>&lambda;t</var>.
+            A homogeneous Poisson process has stationary independent increments: counts in disjoint time intervals
+            are independent, and the distribution of a count depends only on the interval length. In any interval of
+            length <var>t</var>, the number of arrivals <var>N</var>(<var>t</var>) follows the Poisson distribution
+            with mean <var>&lambda;t</var>, for <var>t</var>&nbsp;&ge;&nbsp;0 and <var>&lambda;</var>&nbsp;&gt;&nbsp;0.
           </p>
 
-          <figure id="eq-1" class="queue-machine-equation queue-machine-equation--numbered" data-formula="P\!\left(N(t) = k\right) = \frac{(\lambda t)^k \, e^{-\lambda t}}{k!}">
-            <figcaption>
-              Poisson PMF: the probability of exactly <var>k</var> arrivals in an interval of length <var>t</var>,
-              where <var>&lambda;</var> is the arrival rate.
-            </figcaption>
+          <figure id="eq-1" class="queue-machine-equation queue-machine-equation--numbered" data-formula="P\!\left(N(t) = k\right) = \frac{(\lambda t)^k \, e^{-\lambda t}}{k!}, \quad k = 0,1,2,\ldots">
             <span class="eq-number">(1)</span>
           </figure>
 
@@ -95,12 +94,13 @@
           </p>
 
           <figure id="eq-2" class="queue-machine-equation queue-machine-equation--numbered" data-formula="f_T(t) = \lambda \, e^{-\lambda t}, \quad t \geq 0">
-            <figcaption>
-              Exponential interarrival time density. The mean interarrival time is
-              1&thinsp;/&thinsp;<var>&lambda;</var>.
-            </figcaption>
             <span class="eq-number">(2)</span>
           </figure>
+
+          <p class="essay-body">
+            The mean interarrival time under <a href="#eq-2" class="eq-ref">(2)</a> is
+            1&thinsp;/&thinsp;<var>&lambda;</var>.
+          </p>
 
           <figure class="qm-figure qm-figure--arrivals" aria-label="Poisson arrival process illustration">
             <svg viewBox="0 0 540 292" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig1-title">
@@ -152,7 +152,7 @@
               <line x1="40" y1="172" x2="40"  y2="262" class="qm-svg-axis"/>
               <line x1="40" y1="262" x2="500" y2="262" class="qm-svg-axis" marker-end="url(#ax-arrow)"/>
               <text x="505" y="266" class="qm-svg-label">t</text>
-              <text x="28"  y="176" class="qm-svg-label">f</text>
+              <text x="22" y="217" class="qm-svg-label qm-svg-y-label" transform="rotate(-90 22 217)">f_T(t)</text>
 
               <!-- Smooth exponential curve -->
               <path d="M 40.0,172.0 L 60.9,185.5 L 81.8,197.0 L 102.7,206.7 L 123.6,215.0 L 144.5,222.1 L 165.5,228.1 L 186.4,233.1 L 207.3,237.5 L 228.2,241.2 L 249.1,244.3 L 270.0,246.9 L 290.9,249.2 L 311.8,251.1 L 332.7,252.7 L 353.6,254.1 L 374.5,255.3 L 395.5,256.3 L 416.4,257.2 L 437.3,257.9 L 458.2,258.5 L 479.1,259.0 L 500.0,259.5"
@@ -170,13 +170,11 @@
         <section class="essay-section">
           <h2 class="essay-heading" id="service">Service times and the memoryless property</h2>
           <p class="essay-body">
-            Service times in M/M/1 also follow the exponential distribution, with rate parameter <var>&mu;</var>:
+            Service times in M/M/1 also follow the exponential distribution, with rate parameter <var>&mu;</var>
+            and mean 1&thinsp;/&thinsp;<var>&mu;</var>:
           </p>
 
           <figure id="eq-3" class="queue-machine-equation queue-machine-equation--numbered" data-formula="f_S(s) = \mu \, e^{-\mu s}, \quad s \geq 0">
-            <figcaption>
-              Exponential service time density. Mean service time is 1&thinsp;/&thinsp;<var>&mu;</var>.
-            </figcaption>
             <span class="eq-number">(3)</span>
           </figure>
 
@@ -187,49 +185,52 @@
           </p>
 
           <figure id="eq-4" class="queue-machine-equation queue-machine-equation--numbered" data-formula="P(S > s + t \mid S > s) \;=\; e^{-\mu t} \;=\; P(S > t)">
-            <figcaption>
-              Memoryless property of the exponential distribution. The residual service time is independent
-              of elapsed service time.
-            </figcaption>
             <span class="eq-number">(4)</span>
           </figure>
 
           <figure class="qm-figure qm-figure--service" aria-label="Exponential service time density and memoryless property">
-            <svg viewBox="0 0 540 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig2-title">
-              <title id="fig2-title">Exponential service time density showing that the curve to the right of any point s₀ has the same shape as the full curve</title>
+            <svg viewBox="0 0 540 156" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig2-title">
+              <title id="fig2-title">Exponential service time density and the shifted residual-time density</title>
               <defs>
                 <marker id="ax-arrow2" viewBox="0 0 6 6" refX="6" refY="3" markerWidth="5" markerHeight="5" orient="auto">
                   <polygon points="0,0 6,3 0,6" class="qm-bd-arrowhead"/>
                 </marker>
               </defs>
 
-              <!-- Axes -->
-              <line x1="50" y1="10"  x2="50"  y2="120" class="qm-svg-axis"/>
-              <line x1="50" y1="120" x2="512" y2="120" class="qm-svg-axis" marker-end="url(#ax-arrow2)"/>
-              <text x="516" y="124" class="qm-svg-label">s</text>
-              <text x="34"  y="14"  class="qm-svg-label">f</text>
+              <text x="48" y="18" class="qm-svg-section-label">Original density</text>
+              <text x="312" y="18" class="qm-svg-section-label">Residual time after conditioning</text>
 
-              <!-- Smooth exponential full curve -->
-              <path d="M 50.0,10.0 L 70.9,25.8 L 91.8,39.3 L 112.7,50.9 L 133.6,60.8 L 154.5,69.3 L 175.5,76.6 L 196.4,82.8 L 217.3,88.2 L 238.2,92.7 L 259.1,96.7 L 280.0,100.0 L 300.9,102.9 L 321.8,105.3 L 342.7,107.4 L 363.6,109.2 L 384.5,110.8 L 405.5,112.1 L 426.4,113.2 L 447.3,114.2 L 468.2,115.0 L 489.1,115.8 L 510.0,116.4"
+              <!-- Left axes: original service-time density -->
+              <line x1="48" y1="36"  x2="48"  y2="106" class="qm-svg-axis"/>
+              <line x1="48" y1="106" x2="233" y2="106" class="qm-svg-axis" marker-end="url(#ax-arrow2)"/>
+              <text x="238" y="110" class="qm-svg-label">s</text>
+              <text x="30" y="71" class="qm-svg-label qm-svg-y-label" transform="rotate(-90 30 71)">f_S(s)</text>
+
+              <path d="M 48.0,36.0 L 56.4,46.1 L 64.8,54.7 L 73.2,62.0 L 81.6,68.3 L 90.0,73.8 L 98.5,78.4 L 106.9,82.3 L 115.3,85.7 L 123.7,88.7 L 132.1,91.1 L 140.5,93.3 L 148.9,95.1 L 157.3,96.7 L 165.7,98.0 L 174.1,99.2 L 182.5,100.1 L 191.0,101.0 L 199.4,101.7 L 207.8,102.3 L 216.2,102.8 L 224.6,103.3 L 233.0,103.7"
                     class="qm-svg-curve--ghost"/>
 
-              <!-- Smooth highlighted tail after s₀ -->
-              <path d="M 175.5,76.6 L 192.2,81.7 L 208.9,86.1 L 225.6,90.1 L 242.4,93.6 L 259.1,96.7 L 275.8,99.4 L 292.5,101.8 L 309.3,103.9 L 326.0,105.8 L 342.7,107.4 L 359.5,108.9 L 376.2,110.2 L 392.9,111.3 L 409.6,112.4 L 426.4,113.2 L 443.1,114.0 L 459.8,114.7 L 476.5,115.3 L 493.3,115.9 L 510.0,116.4"
+              <path d="M 98.5,78.4 L 105.2,81.6 L 111.9,84.4 L 118.6,87.0 L 125.4,89.2 L 132.1,91.1 L 138.8,92.9 L 145.5,94.4 L 152.3,95.8 L 159.0,97.0 L 165.7,98.0 L 172.5,98.9 L 179.2,99.8 L 185.9,100.5 L 192.6,101.1 L 199.4,101.7 L 206.1,102.2 L 212.8,102.6 L 219.5,103.0 L 226.3,103.4 L 233.0,103.7"
                     class="qm-svg-curve"/>
 
-              <!-- s₀ dashed vertical -->
-              <line x1="175" y1="10" x2="175" y2="125" class="qm-svg-dashed"/>
-              <text x="172" y="133" text-anchor="middle" class="qm-svg-label">s&#x2080;</text>
+              <line x1="98.5" y1="36" x2="98.5" y2="112" class="qm-svg-dashed"/>
+              <text x="95" y="122" text-anchor="middle" class="qm-svg-label">s&#x2080;</text>
 
-              <!-- Annotation -->
-              <text x="220" y="55" class="qm-svg-annotation">same shape</text>
-              <line x1="235" y1="58" x2="235" y2="85" class="qm-svg-axis" stroke-dasharray="2 2"/>
+              <!-- Right axes: conditional residual-time density -->
+              <line x1="312" y1="36"  x2="312"  y2="106" class="qm-svg-axis"/>
+              <line x1="312" y1="106" x2="497" y2="106" class="qm-svg-axis" marker-end="url(#ax-arrow2)"/>
+              <text x="502" y="110" class="qm-svg-label">u</text>
+              <text x="294" y="71" class="qm-svg-label qm-svg-y-label" transform="rotate(-90 294 71)">f_R(u)</text>
+
+              <path d="M 312.0,36.0 L 320.4,46.1 L 328.8,54.7 L 337.2,62.0 L 345.6,68.3 L 354.0,73.8 L 362.5,78.4 L 370.9,82.3 L 379.3,85.7 L 387.7,88.7 L 396.1,91.1 L 404.5,93.3 L 412.9,95.1 L 421.3,96.7 L 429.7,98.0 L 438.1,99.2 L 446.5,100.1 L 455.0,101.0 L 463.4,101.7 L 471.8,102.3 L 480.2,102.8 L 488.6,103.3 L 497.0,103.7"
+                    class="qm-svg-curve qm-svg-curve--residual"/>
+
+              <text x="312" y="134" class="qm-svg-annotation">R = S - s&#x2080; | S &gt; s&#x2080;</text>
             </svg>
             <figcaption>
-              The exponential density from <a href="#eq-3" class="eq-ref">(3)</a>. The lighter curve shows the full
-              distribution. The darker segment after <var>s</var><sub>0</sub> has the same shape as the full curve:
-              the memoryless property <a href="#eq-4" class="eq-ref">(4)</a> says that conditioned on survival past
-              <var>s</var><sub>0</sub>, the remaining time is distributed identically to a fresh draw.
+              Left: the original exponential density from <a href="#eq-3" class="eq-ref">(3)</a>, with the tail
+              after <var>s</var><sub>0</sub> highlighted. Right: after conditioning on survival past
+              <var>s</var><sub>0</sub>, shifting the remaining time back to zero gives the same exponential density
+              for the residual variable <var>R</var>. That is the memoryless property <a href="#eq-4" class="eq-ref">(4)</a>.
             </figcaption>
           </figure>
 
@@ -258,18 +259,14 @@
           </p>
 
           <figure id="eq-5" class="queue-machine-equation queue-machine-equation--numbered" data-formula="P_a(n) = \pi_n">
-            <figcaption>
-              PASTA. Arriving customers see the time-average state. This is specific to Poisson arrivals:
-              the Poisson process has independent increments, so whether an arrival occurs in any interval
-              is independent of the system&rsquo;s state at that moment.
-            </figcaption>
             <span class="eq-number">(5)</span>
           </figure>
 
           <p class="essay-body">
             PASTA <a href="#eq-5" class="eq-ref">(5)</a> is what makes the steady-state probabilities we derive
-            next directly interpretable as the per-customer waiting statistics. Without it we would need a
-            separate calculation for what arriving customers experience.
+            next directly interpretable as arrival-epoch state probabilities. Waiting-time quantities still follow
+            from the service discipline and the state seen by an arrival. Without PASTA we would need a separate
+            calculation for what arriving customers see.
           </p>
         </section>
 
@@ -343,10 +340,6 @@
           </p>
 
           <figure id="eq-6" class="queue-machine-equation queue-machine-equation--numbered" data-formula="\lambda \,\pi_n = \mu \,\pi_{n+1} \quad \text{for all } n \geq 0">
-            <figcaption>
-              Detailed balance. The flow from state <var>n</var> to <var>n</var>&thinsp;+&thinsp;1 equals the
-              flow in the reverse direction. This holds for every adjacent pair in a birth-death chain.
-            </figcaption>
             <span class="eq-number">(6)</span>
           </figure>
 
@@ -356,10 +349,6 @@
           </p>
 
           <figure id="eq-7" class="queue-machine-equation queue-machine-equation--numbered" data-formula="\pi_{n+1} = \rho\,\pi_n \;\Longrightarrow\; \pi_n = \rho^n \pi_0">
-            <figcaption>
-              Recursion solution. Each state probability is <var>&rho;</var> times the previous one,
-              giving a geometric sequence in <var>&rho;</var> anchored at <var>&pi;</var><sub>0</sub>.
-            </figcaption>
             <span class="eq-number">(7)</span>
           </figure>
         </section>
@@ -385,14 +374,13 @@
           </p>
 
           <figure id="eq-8" class="queue-machine-equation queue-machine-equation--numbered" data-formula="\pi_n = (1 - \rho)\,\rho^n">
-            <figcaption>
-              Geometric steady-state distribution. The fraction of time the system spends with exactly
-              <var>n</var> customers is a decreasing geometric sequence in utilization <var>&rho;</var>.
-              By PASTA <a href="#eq-5" class="eq-ref">(5)</a>, this is also the distribution seen by
-              arriving customers.
-            </figcaption>
             <span class="eq-number">(8)</span>
           </figure>
+
+          <p class="essay-body">
+            Thus the time-average state distribution is geometric. By PASTA
+            <a href="#eq-5" class="eq-ref">(5)</a>, this is also the state distribution seen at Poisson arrival epochs.
+          </p>
         </section>
 
         <section class="essay-section">
@@ -407,13 +395,11 @@
             &nbsp;=&nbsp; (1&nbsp;&minus;&nbsp;<var>&rho;</var>) &sum;<sub><var>n</var>=0</sub><sup>&infin;</sup>
             <var>n</var><var>&rho;</var><sup><var>n</var></sup>
             &nbsp;=&nbsp; (1&nbsp;&minus;&nbsp;<var>&rho;</var>)&thinsp;&middot;&thinsp;<var>&rho;</var>&thinsp;/&thinsp;(1&nbsp;&minus;&nbsp;<var>&rho;</var>)<sup>2</sup>.
+            The final step uses the standard identity
+            &sum;&thinsp;<var>n</var><var>&rho;</var><sup><var>n</var></sup>&nbsp;=&nbsp;<var>&rho;</var>&thinsp;/&thinsp;(1&nbsp;&minus;&nbsp;<var>&rho;</var>)<sup>2</sup>.
           </p>
 
           <figure id="eq-9" class="queue-machine-equation queue-machine-equation--numbered" data-formula="L = \frac{\rho}{1 - \rho}">
-            <figcaption>
-              Average number of customers in the system (WIP). Uses the standard identity
-              &sum;&thinsp;<var>n</var><var>&rho;</var><sup><var>n</var></sup>&nbsp;=&nbsp;<var>&rho;</var>&thinsp;/&thinsp;(1&nbsp;&minus;&nbsp;<var>&rho;</var>)<sup>2</sup> for the derivative of the geometric series.
-            </figcaption>
             <span class="eq-number">(9)</span>
           </figure>
 
@@ -423,27 +409,28 @@
           </p>
 
           <figure id="eq-10" class="queue-machine-equation queue-machine-equation--numbered" data-formula="W = \frac{L}{\lambda} = \frac{1}{\mu - \lambda}">
-            <figcaption>
-              Average time in system (lead time). The denominator
-              <var>&mu;</var>&nbsp;&minus;&nbsp;<var>&lambda;</var> collapses toward zero as
-              <var>&lambda;</var> approaches <var>&mu;</var>, producing the hyperbolic growth
-              described in <a href="../#mm1">Flow and Waiting</a>.
-            </figcaption>
             <span class="eq-number">(10)</span>
           </figure>
+
+          <p class="essay-body">
+            The denominator <var>&mu;</var>&nbsp;&minus;&nbsp;<var>&lambda;</var> collapses toward zero as
+            <var>&lambda;</var> approaches <var>&mu;</var>, producing the hyperbolic growth described in
+            <a href="../#mm1">Flow and Waiting</a>.
+          </p>
 
           <p class="essay-body">
             The time spent waiting in queue (excluding service) follows by subtracting the mean service time:
           </p>
 
           <figure id="eq-11" class="queue-machine-equation queue-machine-equation--numbered" data-formula="W_q = W - \frac{1}{\mu} = \frac{\rho}{\mu(1 - \rho)} = \frac{\rho}{\mu - \lambda}">
-            <figcaption>
-              Average waiting time in queue. <var>W</var><sub>q</sub> grows faster than <var>W</var> as
-              utilization increases: the queue absorbs all of the nonlinearity, while service time
-              remains fixed at 1&thinsp;/&thinsp;<var>&mu;</var>.
-            </figcaption>
             <span class="eq-number">(11)</span>
           </figure>
+
+          <p class="essay-body">
+            The nonlinear growth in total time appears entirely in the queueing component:
+            <var>W</var>&nbsp;=&nbsp;<var>W</var><sub>q</sub>&nbsp;+&nbsp;1&thinsp;/&thinsp;<var>&mu;</var>,
+            while the mean service time remains fixed.
+          </p>
         </section>
 
         <section class="essay-section">

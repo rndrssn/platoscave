@@ -502,10 +502,6 @@
   margin: 0 0 clamp(0.95rem, 2vw, 1.3rem);
 }
 
-.queue-machine-equation figcaption {
-  display: none;
-}
-
 .queue-machine-assumption-card,
 .queue-machine-toc-panel {
   margin: 1.5rem 0 2rem;
@@ -914,6 +910,7 @@ a.eq-ref:hover {
 .qm-svg-dot { fill: var(--queue-flow); }
 .qm-svg-dashed { stroke: var(--ink-faint); stroke-width: 1.5; stroke-dasharray: 6 4.5; fill: none; }
 .qm-svg-label { fill: var(--ink-faint); font-family: var(--mono); font-size: 15px; letter-spacing: 0.04em; }
+.qm-svg-y-label { text-anchor: middle; dominant-baseline: central; }
 .qm-svg-section-label { fill: var(--ink-faint); font-family: var(--mono); font-size: 13.5px; letter-spacing: 0.08em; text-transform: uppercase; }
 .qm-svg-annotation { fill: var(--ink-mid); font-family: var(--serif); font-style: italic; font-size: 16.5px; }
 .qm-bd-circle { fill: var(--paper); stroke: var(--ink-mid); stroke-width: 2.25; }

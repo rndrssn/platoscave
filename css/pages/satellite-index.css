@@ -1,0 +1,337 @@
+/* ─── Cases landing ───────────────────────────────────── */
+.cases-page .module-header-body {
+  max-width: 44rem;
+}
+
+.cases-landing {
+  margin-top: 2rem;
+}
+
+.case-card-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+  max-width: 52rem;
+}
+
+@media (min-width: 640px) {
+  .case-card-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.case-card {
+  display: block;
+  background: var(--card-surface);
+  border: var(--card-border-width) solid var(--card-border-color);
+  border-left: var(--card-accent-width) solid var(--card-accent-color);
+  padding: var(--card-pad-y) var(--card-pad-x);
+  text-decoration: none;
+  color: inherit;
+}
+
+.case-card:hover {
+  box-shadow: var(--card-shadow-hover);
+}
+
+.case-card-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.4rem;
+}
+
+.case-card-title {
+  display: block;
+  font-family: var(--serif-alt);
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.case-card-desc {
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--ink-mid);
+}
+
+/* ─── Satellite Index — framing page ─────────────────── */
+.satellite-index-page .tech-stack-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.55rem;
+  max-width: 48rem;
+  margin-top: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .satellite-index-page .tech-stack-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.tech-stack-list span {
+  border-left: 2px solid var(--ink-ghost);
+  color: var(--ink-mid);
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  padding-left: 0.75rem;
+}
+
+.satellite-poc-card {
+  background: var(--card-surface);
+  border: var(--card-border-width) solid var(--card-border-color);
+  border-left: var(--card-accent-width) solid var(--ochre);
+  padding: 1.15rem 1.35rem;
+  max-width: 44rem;
+  margin: 1.5rem 0 0;
+}
+
+.satellite-poc-card p {
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--ink-mid);
+  margin: 0;
+}
+
+.satellite-poc-card p + p {
+  margin-top: 0.65rem;
+}
+
+/* ─── Satellite Index — demo page ────────────────────── */
+.satellite-demo-main {
+  padding: 1.5rem 1.25rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 760px) {
+  .satellite-demo-main {
+    padding: 2rem 2.5rem 3rem;
+  }
+}
+
+.satellite-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--ink-ghost);
+  margin-bottom: 1.1rem;
+}
+
+.satellite-control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.satellite-control-label {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.satellite-date-input {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--ink);
+  background: var(--paper-dark);
+  border: 1px solid var(--ink-ghost);
+  border-radius: 0.14rem;
+  padding: 0.28rem 0.5rem;
+  cursor: pointer;
+}
+
+.satellite-date-input:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.satellite-analyse-btn {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 300;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--link-surface-nav);
+  border: none;
+  border-radius: 0.14rem;
+  padding: 0.32rem 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.satellite-analyse-btn:hover {
+  background: var(--link-surface-nav-hover);
+}
+
+.satellite-analyse-btn:active {
+  background: var(--link-surface-nav-active);
+}
+
+.satellite-analyse-btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.satellite-analyse-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.satellite-status {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  min-height: 1.1em;
+  margin-bottom: 0.9rem;
+}
+
+.satellite-status--working { color: var(--ochre); }
+.satellite-status--ready   { color: var(--sage);  }
+
+.satellite-demo-stage {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 900px) {
+  .satellite-demo-stage {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.satellite-panel-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.4rem;
+}
+
+.satellite-map-container {
+  height: 440px;
+  border: 1px solid var(--ink-ghost);
+  position: relative;
+}
+
+#satellite-map {
+  width: 100%;
+  height: 100%;
+}
+
+.satellite-surface-wrap {
+  height: 440px;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.satellite-surface-placeholder {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  text-align: center;
+  line-height: 1.8;
+  pointer-events: none;
+}
+
+#satellite-surface {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.satellite-surface-wrap.has-surface .satellite-surface-placeholder {
+  display: none;
+}
+
+.satellite-surface-wrap.has-surface #satellite-surface {
+  display: block;
+}
+
+.satellite-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 0.85rem 0 0;
+  border-top: 1px solid var(--ink-ghost);
+  min-height: 3rem;
+}
+
+.sat-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.sat-meta-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.sat-meta-value {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--ink-mid);
+}
+
+.sat-meta-demo .sat-meta-value {
+  color: var(--ochre);
+}
+
+#satellite-surface,
+#satellite-surface canvas,
+#satellite-surface .plotly,
+#satellite-surface .js-plotly-plot,
+#satellite-surface .plot-container,
+#satellite-surface .svg-container {
+  background: transparent !important;
+}
+
+.satellite-demo-note {
+  font-family: var(--serif);
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--ink-faint);
+  margin-top: 1.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--paper-deep);
+  max-width: 52rem;
+  line-height: 1.65;
+}

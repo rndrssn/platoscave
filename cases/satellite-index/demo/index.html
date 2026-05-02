@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive NDVI surface for the current map viewport — viewport as AOI proof of concept." />
+  <title>Demo · Satellite Index · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../../css/fonts.css" />
+  <link rel="stylesheet" href="../../../css/tokens.css" />
+  <link rel="stylesheet" href="../../../css/base.css" />
+  <link rel="stylesheet" href="../../../css/layout.css" />
+  <link rel="stylesheet" href="../../../css/components.css" />
+  <link rel="stylesheet" href="../../../css/utilities.css" />
+  <link rel="stylesheet" href="../../../css/themes.css" />
+  <link rel="stylesheet" href="../../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../../css/pages.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.css" />
+  <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../../">To the Bedrock</a>
+    <nav class="main-nav">
+      <div class="nav-links" id="primary-nav">
+        <a class="nav-link" href="../../../">Home</a>
+        <a class="nav-link" href="../../../notes/">Notes</a>
+        <a class="nav-link nav-link--catalogue" href="../../../modules/">Catalogue</a>
+      </div>
+      <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="satellite-demo-main">
+    <div class="module-page satellite-demo-page">
+      <a class="module-back-link" href="../" aria-label="Back to Overview"></a>
+      <a class="module-header-number module-context-number module-context-link" href="../">Satellite Index</a>
+
+      <nav class="module-sub-nav" aria-label="Case sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Overview</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">02</span> Demo</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">NDVI Demo</h1>
+        <p class="module-header-body">
+          Navigate to an area of interest, pick a date, and click Analyse visible area. The NDVI surface updates
+          for the current viewport. Surface height represents NDVI — not elevation.
+        </p>
+      </header>
+
+      <div class="satellite-controls" role="toolbar" aria-label="Analysis controls">
+        <div class="satellite-control-group">
+          <label class="satellite-control-label" for="satellite-date">Date</label>
+          <input class="satellite-date-input" type="date" id="satellite-date" aria-label="Target acquisition date" />
+        </div>
+        <div class="satellite-control-group">
+          <span class="satellite-control-label">Index</span>
+          <span class="satellite-control-label">NDVI</span>
+        </div>
+        <button class="satellite-analyse-btn" id="satellite-analyse-btn" type="button">
+          Analyse visible area
+        </button>
+      </div>
+
+      <p class="satellite-status" id="satellite-status" aria-live="polite">
+        Navigate to an area of interest, then click Analyse visible area
+      </p>
+
+      <div class="satellite-demo-stage">
+        <div>
+          <p class="satellite-panel-label">Map &middot; current viewport</p>
+          <div class="satellite-map-container">
+            <div id="satellite-map" role="application" aria-label="Interactive map — navigate to area of interest"></div>
+          </div>
+        </div>
+        <div>
+          <p class="satellite-panel-label">NDVI surface &middot; z = NDVI · not elevation</p>
+          <div class="satellite-surface-wrap" id="satellite-surface-wrap" aria-label="NDVI 3D surface">
+            <p class="satellite-surface-placeholder">Navigate to an area<br>and click Analyse</p>
+            <div id="satellite-surface"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="satellite-meta" id="satellite-meta" aria-label="Analysis metadata"></div>
+
+      <p class="satellite-demo-note">
+        This demo uses synthetic fixture data seeded by the current viewport bounds and selected date. No external
+        API calls are made. The live pipeline — Sentinel Hub Process API via Cloudflare Worker — is designed but
+        not yet connected.
+      </p>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../" aria-label="Back to Overview">
+          <span class="footer-nav-label-full">&larr; Back to Overview</span>
+          <span class="footer-nav-label-short">&larr; Overview</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../../js/module-route-data.js"></script>
+  <script src="../../../js/nav-controller.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2/plotly.min.js"></script>
+  <script src="./satellite-index.js"></script>
+</body>
+</html>

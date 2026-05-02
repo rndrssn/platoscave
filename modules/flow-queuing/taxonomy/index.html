@@ -128,7 +128,7 @@
           </p>
 
           <div class="taxonomy-grid-wrapper">
-            <table class="taxonomy-grid">
+            <table class="taxonomy-grid taxonomy-grid--reference">
               <thead>
                 <tr>
                   <th class="taxonomy-grid-header">Regime</th>
@@ -139,37 +139,37 @@
               </thead>
               <tbody>
                 <tr>
-                  <td class="taxonomy-grid-cell">Breathing system<br><small class="taxonomy-regime-dims">low–moderate load &middot; smooth variability</small></td>
+                  <th scope="row" class="taxonomy-grid-row-label">Breathing system<br><small class="taxonomy-regime-dims">low–moderate load &middot; smooth variability</small></th>
                   <td class="taxonomy-grid-cell">Moderate load, low-to-moderate variability, stable backlog.</td>
                   <td class="taxonomy-grid-cell">Complacency about rising variation.</td>
                   <td class="taxonomy-grid-cell">Protect feedback speed; keep WIP discipline before strain appears.</td>
                 </tr>
                 <tr>
-                  <td class="taxonomy-grid-cell">Strained but stable<br><small class="taxonomy-regime-dims">high load &middot; moderate variability &middot; pull-limited</small></td>
+                  <th scope="row" class="taxonomy-grid-row-label">Strained but stable<br><small class="taxonomy-regime-dims">high load &middot; moderate variability &middot; pull-limited</small></th>
                   <td class="taxonomy-grid-cell">High utilization with bounded queue, frequent local spill.</td>
                   <td class="taxonomy-grid-cell">Tip into saturation after small shocks.</td>
                   <td class="taxonomy-grid-cell">Reduce arrival bursts and service variability before adding load.</td>
                 </tr>
                 <tr>
-                  <td class="taxonomy-grid-cell">Burst trap<br><small class="taxonomy-regime-dims">moderate load &middot; high variability</small></td>
+                  <th scope="row" class="taxonomy-grid-row-label">Burst trap<br><small class="taxonomy-regime-dims">moderate load &middot; high variability</small></th>
                   <td class="taxonomy-grid-cell">Average load looks safe, but queue appears intermittently.</td>
                   <td class="taxonomy-grid-cell">Underestimating waiting because averages stay unchanged.</td>
                   <td class="taxonomy-grid-cell">Smooth intake cadence; split large items; tighten handoffs.</td>
                 </tr>
                 <tr>
-                  <td class="taxonomy-grid-cell">Saturation trap<br><small class="taxonomy-regime-dims">near-capacity load &middot; variability amplified</small></td>
+                  <th scope="row" class="taxonomy-grid-row-label">Saturation trap<br><small class="taxonomy-regime-dims">near-capacity load &middot; variability amplified</small></th>
                   <td class="taxonomy-grid-cell">Utilization near 1, steep waiting curve, chronic backlog.</td>
                   <td class="taxonomy-grid-cell">Runaway lead-time inflation and expedite churn.</td>
                   <td class="taxonomy-grid-cell">Lower effective arrival rate, protect constraint, cap starts.</td>
                 </tr>
                 <tr>
-                  <td class="taxonomy-grid-cell">Activity-decoupled<br><small class="taxonomy-regime-dims">any load &middot; push-heavy discipline &middot; constraint moving</small></td>
+                  <th scope="row" class="taxonomy-grid-row-label">Activity-decoupled<br><small class="taxonomy-regime-dims">any load &middot; push-heavy discipline &middot; constraint moving</small></th>
                   <td class="taxonomy-grid-cell">High local busyness metrics with weak end-to-end flow.</td>
                   <td class="taxonomy-grid-cell">Optimizing activity while degrading throughput.</td>
                   <td class="taxonomy-grid-cell">Shift KPIs to flow, waiting, and completion quality.</td>
                 </tr>
                 <tr>
-                  <td class="taxonomy-grid-cell">Overfed constraint<br><small class="taxonomy-regime-dims">variable load &middot; constraint starved or overfed</small></td>
+                  <th scope="row" class="taxonomy-grid-row-label">Overfed constraint<br><small class="taxonomy-regime-dims">variable load &middot; constraint starved or overfed</small></th>
                   <td class="taxonomy-grid-cell">Non-constraints run hot; bottleneck queue dominates cycle time.</td>
                   <td class="taxonomy-grid-cell">WIP ballooning disguised as productivity.</td>
                   <td class="taxonomy-grid-cell">Subordinate release to constraint rhythm; keep non-constraint slack.</td>

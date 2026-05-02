@@ -89,6 +89,25 @@
   border: 1px solid var(--paper-deep);
 }
 
+.taxonomy-grid-row-label {
+  font-family: var(--serif-alt);
+  font-weight: 300;
+  font-style: italic;
+  font-size: var(--fs-body);
+  color: var(--ink);
+  padding: 0.75rem 1rem 0.75rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+  border-right: 1px solid var(--ink-ghost);
+  border-bottom: 1px solid var(--paper-deep);
+}
+
+.taxonomy-grid--reference .taxonomy-grid-cell {
+  border: none;
+  border-bottom: 1px solid var(--paper-deep);
+  vertical-align: top;
+}
+
 .taxonomy-regime-dims {
   display: block;
   margin-top: 0.25rem;

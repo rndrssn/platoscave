@@ -892,22 +892,26 @@ a.eq-ref:hover {
 }
 
 .qm-figure figcaption {
-  margin-top: 0.8rem;
+  margin-top: 0;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--ink-ghost);
   max-inline-size: 60ch;
-  color: var(--ink-faint);
+  color: var(--ink-mid);
   font-family: var(--serif);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-style: normal;
   line-height: 1.55;
 }
 
 .qm-figure figcaption::before {
-  content: 'Figure ' counter(flow-figure) '. ';
+  content: 'Figure ' counter(flow-figure) '.';
+  display: block;
+  margin-bottom: 0.25rem;
   font-family: var(--mono);
   font-size: 0.66rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--ink-mid);
+  color: var(--ink-faint);
 }
 
 .qm-svg-axis { stroke: var(--ink-faint); stroke-width: 1.5; fill: none; }
@@ -995,12 +999,12 @@ a.eq-ref:hover {
   }
   
   .queue-machine-page .qm-figure figcaption {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     line-height: 1.5;
   }
 
   .queue-machine-page .qm-figure figcaption::before {
-    font-size: 0.6rem;
+    font-size: 0.58rem;
   }
 
   .queue-machine-page .queue-machine-variable-table tbody th {

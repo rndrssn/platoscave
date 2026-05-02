@@ -1114,10 +1114,8 @@
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink:hover,
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink:focus-visible,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:hover,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:focus-visible,
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink.nav-sublink--active,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink.nav-sublink--active {
-  color: var(--ink);
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:focus-visible {
+  color: var(--ink-mid);
 }
 
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink.nav-sublink--coming,
@@ -1143,6 +1141,29 @@
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink-state {
   white-space: nowrap;
   font-size: 0.58rem;
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-root,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-root {
+  color: var(--ink);
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-child,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child {
+  color: var(--ink-mid);
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-root.nav-sublink--active,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-root.nav-sublink--active {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-child.nav-sublink--active,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child.nav-sublink--active {
+  color: var(--rust);
+  font-weight: 400;
+  border-left-color: color-mix(in srgb, var(--rust) 62%, var(--ink-ghost) 38%);
 }
 
 /* Catalogue hierarchy: root row + indented entry rows */

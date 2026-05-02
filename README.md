@@ -47,8 +47,8 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
     - D3 force-directed graph showing how queueing theory, complexity science, and modern agile practice connect; observations they predict; folklore intuitions and the counter-intuitive surprises that contradict them.
   - **05 Appendix: M/M/1 Derivation** (`/modules/flow-queuing/derivation/`)
     - Mathematical appendix deriving the M/M/1 queueing formula from Poisson arrivals, exponential service, and steady-state balance equations.
-- **From Ambiguity to Clarity** — How open work becomes clear enough to test and build. Paired narratively with Module 04 (same epistemic bet, at unit scale).
-  - **01 From Ambiguity to Clarity** (`/modules/ambiguity-clarity/`)
+- **Ambiguity to Clarity** — How open work becomes clear enough to test and build. Paired narratively with Module 04 (same epistemic bet, at unit scale).
+  - **01 Ambiguity to Clarity** (`/modules/ambiguity-clarity/`)
   - **02 Clarity Map** (`/modules/ambiguity-clarity/section-map/`)
 
 ### Also on site

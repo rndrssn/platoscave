@@ -107,7 +107,7 @@
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink:visited,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:visited {
   color: var(--link-text-strong);
-  background: var(--link-surface-nav-visited);
+  background: var(--link-surface-nav);
 }
 
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink.nav-sublink--coming,

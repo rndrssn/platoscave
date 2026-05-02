@@ -632,7 +632,7 @@ function writeNotesIndex(notes) {
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">Notes</h1>\n'
     + '        <p class="module-header-body">\n'
-    + '          My notes are stories and reflections about the way we organise work, the way we do that work, related feedback loops, and the emergent phenomena that lead to tensions, fragility, and unexpected behaviors in organisations and technologies. Some notes become future <a href="../modules/">modules</a>. Longer essays live in <a href="../articles/">articles</a>. This is not a chronological blog feed; it is a field-notes layer connected to the interactive work.\n'
+    + '          My notes are stories and reflections about the way we organise work, the way we do that work, related feedback loops, and the emergent phenomena that lead to tensions, fragility, and unexpected behaviors in organisations and technologies. Some notes become future <a href="../modules/">catalogue entries</a>. Longer essays live in <a href="../articles/">articles</a>. This is not a chronological blog feed; it is a field-notes layer connected to the interactive work.\n'
     + '        </p>\n'
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'
@@ -745,7 +745,7 @@ function writeTagPage(tag, notes, articles, modules) {
           + '          </a>';
       }).join('\n')
       + '\n        </div>'
-    : '<p class="essay-body">No modules mapped to this tag yet.</p>';
+    : '<p class="essay-body">No catalogue entries mapped to this tag yet.</p>';
 
   const articleItems = articles.length
     ? '<div class="essay-links">\n'
@@ -761,7 +761,7 @@ function writeTagPage(tag, notes, articles, modules) {
   const body = '    <div class="module-page">\n'
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">Tag: ' + escapeHtml(tag.label) + '</h1>\n'
-    + '        <p class="module-header-body">Related notes, articles, and modules for this theme.</p>\n'
+    + '        <p class="module-header-body">Related notes, articles, and catalogue entries for this theme.</p>\n'
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'
     + '        <section class="essay-section">\n'
@@ -773,7 +773,7 @@ function writeTagPage(tag, notes, articles, modules) {
     + '          ' + articleItems + '\n'
     + '        </section>\n'
     + '        <section class="essay-section">\n'
-    + '          <h2 class="essay-heading">Modules</h2>\n'
+    + '          <h2 class="essay-heading">Catalogue</h2>\n'
     + '          ' + moduleItems + '\n'
     + '        </section>\n'
     + '      </article>\n\n'
@@ -813,7 +813,7 @@ function writeTagsIndex(tagsWithCounts) {
           + ' · '
           + formatCount(tag.articleCount, 'article', 'articles')
           + ' · '
-          + formatCount(tag.moduleCount, 'module', 'modules')
+          + formatCount(tag.moduleCount, 'catalogue entry', 'catalogue entries')
         ) + '</span>\n'
         + '          </a>').join('\n')
       + '\n        </div>')
@@ -822,7 +822,7 @@ function writeTagsIndex(tagsWithCounts) {
   const body = '    <div class="module-page">\n'
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">Tags</h1>\n'
-    + '        <p class="module-header-body">Browse themes across notes, articles, and mapped modules.</p>\n'
+    + '        <p class="module-header-body">Browse themes across notes, articles, and mapped catalogue entries.</p>\n'
     + '      </header>\n\n'
     + '      <article class="module-essay">\n'
     + '        <section class="essay-section">\n'
@@ -834,7 +834,7 @@ function writeTagsIndex(tagsWithCounts) {
 
   const html = htmlShell({
     title: 'Tags · To the Bedrock',
-    description: 'Tag index across notes, articles, and modules.',
+    description: 'Tag index across notes, articles, and catalogue entries.',
     prefix,
     nav: navHtml(prefix, 'notes'),
     main: body

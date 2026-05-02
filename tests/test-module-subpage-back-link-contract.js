@@ -20,7 +20,7 @@ function run() {
   SUBPAGE_PATHS.forEach((relPath) => {
     const source = fs.readFileSync(path.join(__dirname, '..', relPath), 'utf8');
     const backLinkMatch = source.match(
-      /<a[^>]*class="module-back-link"[^>]*href="\.\.\/\.\.\/"[^>]*aria-label="Back to Modules"[^>]*>\s*<\/a>/i
+      /<a[^>]*class="module-back-link"[^>]*href="\.\.\/\.\.\/"[^>]*aria-label="Back to Catalogue"[^>]*>\s*<\/a>/i
     );
     assert(
       Boolean(backLinkMatch),
@@ -28,8 +28,8 @@ function run() {
     );
 
     assert(
-      !/<a[^>]*class="module-back-link"[^>]*>\s*Modules\s*<\/a>/i.test(source),
-      relPath + ' back-link should be arrow-only without visible Modules text'
+      !/<a[^>]*class="module-back-link"[^>]*>\s*Catalogue\s*<\/a>/i.test(source),
+      relPath + ' back-link should be arrow-only without visible Catalogue text'
     );
 
     const backIndex = source.indexOf('<a class="module-back-link"');

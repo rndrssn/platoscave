@@ -15,7 +15,7 @@ function escapeAttr(value) {
 
 function navHtml(prefix, active) {
   const homeClass = active === 'home' ? 'nav-link nav-link--active' : 'nav-link';
-  const modulesClass = active === 'modules' ? 'nav-link nav-link--active' : 'nav-link';
+  const modulesClass = active === 'modules' ? 'nav-link nav-link--catalogue nav-link--active' : 'nav-link nav-link--catalogue';
   const notesClass = active === 'notes' ? 'nav-link nav-link--active' : 'nav-link';
   const articlesClass = active === 'articles' ? 'nav-link nav-link--active' : 'nav-link';
   const notesCurrent = active === 'notes' ? ' aria-current="page"' : '';
@@ -29,7 +29,7 @@ function navHtml(prefix, active) {
     + '      <a class="' + homeClass + '" href="' + prefix + '">Home</a>\n'
     + '      <a class="' + notesClass + '" href="' + prefix + 'notes/"' + notesCurrent + '>Notes</a>\n'
     + '      <a class="' + articlesClass + '" href="' + prefix + 'articles/"' + articlesCurrent + '>Articles</a>\n'
-    + '      <a class="' + modulesClass + '" href="' + prefix + 'modules/"' + modulesCurrent + '>Modules</a>\n'
+    + '      <a class="' + modulesClass + '" href="' + prefix + 'modules/"' + modulesCurrent + '>Catalogue</a>\n'
     + '    </div>\n'
     + '    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>\n'
     + '    </nav>\n'

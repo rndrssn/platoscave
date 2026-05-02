@@ -62,13 +62,19 @@
     var controlAverage = average(scores, 'control');
     var highest = Math.max(productAverage, executionAverage, controlAverage);
 
+    // All averages below 1/3 of scale maximum — proportionate lightweight governance
     if (highest < 1) return 'light';
+    // High harm/assurance exposure overrides product-vs-project arbitration
     if (controlAverage >= 2.15) return 'control';
+    // Both product and execution high and similarly sized — separate learning from delivery
     if (productAverage >= 1.6 && executionAverage >= 1.6 && Math.abs(productAverage - executionAverage) < 0.45) {
       return 'hybrid';
     }
+    // Product clearly dominates — 0.35 gap chosen to require material, not marginal, difference
     if (productAverage > executionAverage + 0.35) return 'product';
+    // Execution clearly dominates — same 0.35 gap
     if (executionAverage > productAverage + 0.35) return 'execution';
+    // Control is competitive with the leading family — formal framework warranted
     if (controlAverage >= 1.6 && controlAverage >= Math.max(productAverage, executionAverage) - 0.15) return 'control';
     return 'hybrid';
   }
@@ -92,9 +98,9 @@
 
     if (title) title.textContent = copy.title;
     if (body) body.textContent = copy.body;
-    if (productScore) productScore.textContent = scores.product + '/15';
-    if (executionScore) executionScore.textContent = scores.execution + '/15';
-    if (controlScore) controlScore.textContent = scores.control + '/9';
+    if (productScore) productScore.textContent = scores.product + '/' + (scores.counts.product * 3);
+    if (executionScore) executionScore.textContent = scores.execution + '/' + (scores.counts.execution * 3);
+    if (controlScore) controlScore.textContent = scores.control + '/' + (scores.counts.control * 3);
   }
 
   function init(doc) {

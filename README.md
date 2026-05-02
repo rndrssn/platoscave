@@ -9,7 +9,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ## Site Structure
 
 - **Home** (`/`) — identity and orientation
-- **Modules** (`/modules/`) — interactive artifacts with local section numbering inside each module
+- **Catalogue** (`/modules/`) — interactive artifacts with local section numbering inside each entry
 - **Notes** (`/notes/`) — narrative context, stories, and reflections (text-first)
 - **Articles** (`/articles/`) — long-form essays and argument-driven writing
 - **Site Notes** (`/colophon/`) — utility/meta information
@@ -17,11 +17,11 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ## Navigation Shell
 
 - Site title (`To the Bedrock`) links to `/`.
-- Global link row is normalized by `js/nav-controller.js` to: `Notes`, `Articles`, `My Experience`, and a `Modules` trigger.
-- `Modules` opens a contextual submenu (`All modules` + live modules only). Entries marked `coming-soon` are intentionally hidden from this launcher.
+- Global link row is normalized by `js/nav-controller.js` to: `Notes`, `Articles`, `My Experience`, and a `Catalogue` trigger.
+- `Catalogue` opens a contextual submenu (`Full catalogue` + live entries only). Entries marked `coming-soon` are intentionally hidden from this launcher.
 - Sticky behavior: only the link row (`.main-nav`) pins on scroll (`.main-nav--pinned`); the title row remains in normal flow.
 
-## Modules
+## Catalogue
 
 - **Emergence** — Local rules yielding global patterns.
   - **01 Conway's Game of Life** (`/modules/emergence/`)

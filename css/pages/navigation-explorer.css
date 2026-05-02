@@ -135,7 +135,7 @@
 }
 
 .module-back-link::after {
-  content: 'Modules';
+  content: 'Catalogue';
   font-size: 0.58rem;
   line-height: 1;
 }

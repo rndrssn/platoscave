@@ -4,17 +4,17 @@ This document defines the canonical link and navigation patterns used across the
 
 ## 1. Global Navigation
 - Scope: all pages.
-- Pattern at runtime: `Notes`, `Articles`, `My Experience`, plus a `Modules` launcher trigger.
+- Pattern at runtime: `Notes`, `Articles`, `My Experience`, plus a `Catalogue` launcher trigger.
 - Home path is provided by the title link (`To the Bedrock`).
 - Runtime normalization is handled by `js/nav-controller.js` from fallback HTML links.
 - Canonical module route metadata is owned by `js/module-route-data.js`; module launcher labels/paths should be changed there first.
 - Active item must include:
   - visual class (`nav-link--active`)
   - semantic state (`aria-current="page"`)
-- Modules launcher contract:
+- Catalogue launcher contract:
   - trigger is a button (`.nav-modules-toggle`) with `aria-expanded` + `aria-controls`
   - submenu uses `.nav-modules-submenu`
-  - submenu includes `All modules` and live module links
+  - submenu includes `Full catalogue` and live module links
   - `coming-soon` modules are intentionally excluded from the submenu
 - Sticky contract:
   - only `.main-nav` pins after scrolling past title height (`.main-nav--pinned`)
@@ -70,7 +70,7 @@ Exception:
 
 ## 6. Site Structure Semantics
 - `Home` (`/`): identity and orientation.
-- `Modules` (`/modules/`): interactive artifacts with local section numbering inside each module (`01`, `02`, ...).
+- `Catalogue` (`/modules/`): interactive artifacts with local section numbering inside each entry (`01`, `02`, ...).
 - `Notes` (`/notes/`): text-first narrative context and reflections.
 - `Articles` (`/articles/`): long-form essays and argument-driven writing.
 - `My Experience` (`/skills/` -> `/modules/experience-skill-graph/`): top-level utility destination in primary navigation with internal view switcher (`Skills Graph` <-> `CV`).

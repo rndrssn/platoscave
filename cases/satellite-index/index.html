@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Testing whether the current map viewport is a sufficient area of interest for satellite vegetation-index inspection — no polygon drawing required." />
+  <title>Viewport as AOI · Satellite Index · To the Bedrock</title>
+  <script src="../../theme.config.js"></script>
+  <script src="../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../css/fonts.css" />
+  <link rel="stylesheet" href="../../css/tokens.css" />
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="../../css/layout.css" />
+  <link rel="stylesheet" href="../../css/components.css" />
+  <link rel="stylesheet" href="../../css/utilities.css" />
+  <link rel="stylesheet" href="../../css/themes.css" />
+  <link rel="stylesheet" href="../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../">To the Bedrock</a>
+    <nav class="main-nav">
+      <div class="nav-links" id="primary-nav">
+        <a class="nav-link" href="../../">Home</a>
+        <a class="nav-link" href="../../notes/">Notes</a>
+        <a class="nav-link nav-link--catalogue" href="../../modules/">Catalogue</a>
+      </div>
+      <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page satellite-index-page">
+      <a class="module-back-link" href="../" aria-label="Back to Cases"></a>
+      <a class="module-header-number module-context-number module-context-link" href="./">Satellite Index</a>
+
+      <nav class="module-sub-nav" aria-label="Case sections">
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01</span> Overview</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="demo/"><span class="module-sub-nav-number">02</span> Demo</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Viewport as AOI</h1>
+        <p class="module-header-body">
+          Standard remote-sensing tools ask users to define an area of interest before returning data — draw a polygon,
+          upload a shapefile, or enter bounding-box coordinates. This proof of concept tests a simpler premise: a user
+          who has navigated a map to an area they care about has already implicitly defined their AOI. Formalising that
+          selection adds friction without adding analytical clarity for a first-pass inspection.
+        </p>
+      </header>
+
+      <article class="module-essay">
+        <section class="essay-section">
+          <h2 class="essay-heading">Hypothesis</h2>
+          <p class="essay-body">
+            The current map viewport is a sufficient area of interest for vegetation-index inspection at typical
+            inspection zoom levels. The user's navigation act — panning to a farm, a watershed, a landscape of
+            interest — is itself an implicit AOI declaration. Capturing that implicitly, rather than requiring an
+            explicit drawing step, reduces the interaction cost to near zero.
+          </p>
+          <p class="essay-body">
+            The test: build a browser tool that returns an NDVI surface for whatever the user currently sees on
+            the map, with no drawing, uploading, or coordinate entry required. If the result is analytically useful
+            and the interaction feels natural, the hypothesis holds. If the viewport proves too coarse or too
+            variable to be useful, the hypothesis fails and polygon-drawing becomes justified.
+          </p>
+        </section>
+
+        <section class="essay-section">
+          <h2 class="essay-heading">What the demo shows</h2>
+          <p class="essay-body">
+            The demo renders an NDVI surface as a Plotly.js 3D visualisation for the visible map viewport. The
+            surface height represents the NDVI value — not elevation. Contour lines mark NDVI isolines across
+            the grid. A MapLibre map with a MapTiler basemap provides spatial context.
+          </p>
+          <p class="essay-body">
+            In the production pipeline, the surface would be derived from Sentinel-2 L2A satellite imagery via the
+            Sentinel Hub Process API, routed through a Cloudflare Worker that handles OAuth credentials securely.
+            In this proof of concept, the surface is generated from a procedural fixture — a spatially coherent
+            synthetic NDVI grid seeded by the viewport bounds and selected date. The interaction model is identical
+            to the live pipeline.
+          </p>
+          <aside class="satellite-poc-card" aria-label="Proof of concept scope">
+            <p>
+              This demo runs on synthetic fixture data. No external API calls are made and no satellite credentials
+              are required. The fixture produces plausible spatial variation across the viewport — it is intended to
+              demonstrate the interaction model, not to represent real vegetation conditions.
+            </p>
+            <p>
+              The live data pipeline — Cloudflare Worker proxy, Sentinel Hub Catalog and Process APIs, real
+              Sentinel-2 L2A imagery — is designed and documented but not yet connected.
+            </p>
+          </aside>
+        </section>
+
+        <section class="essay-section">
+          <h2 class="essay-heading">Design decisions</h2>
+          <p class="essay-body">
+            Several decisions were made deliberately to keep the interaction model minimal.
+          </p>
+          <p class="essay-body">
+            The AOI is always the current viewport. There is no draw tool, no saved area, and no coordinate input.
+            If a user wants a different area they move the map. This removes an entire class of UX complexity while
+            preserving the core analytical value: spatial vegetation-index inspection.
+          </p>
+          <p class="essay-body">
+            The index selection is fixed to NDVI for the first pass. Additional indices — NDRE, NDWI, EVI — are
+            straightforward additions once the pipeline is live, but adding them before the interaction model is
+            validated introduces unnecessary optionality.
+          </p>
+          <p class="essay-body">
+            The 3D surface uses NDVI as the z-axis height, not elevation. This is an analytical surface, not a
+            terrain visualisation. The label is explicit: z = NDVI. Elevation-height mode using a DEM grid is a
+            defined future enhancement.
+          </p>
+        </section>
+
+        <section class="essay-section">
+          <h2 class="essay-heading">Technical stack</h2>
+          <div class="tech-stack-list">
+            <span>MapLibre GL JS — interactive map rendering</span>
+            <span>MapTiler Cloud — basemap and terrain tile provider</span>
+            <span>Plotly.js — 3D analytical surface visualisation</span>
+            <span>Sentinel-2 L2A — satellite imagery source (production path)</span>
+            <span>Sentinel Hub Process API — RGB and index products (production path)</span>
+            <span>Sentinel Hub Catalog API — scene search and selection (production path)</span>
+            <span>Cloudflare Workers — secure OAuth proxy (production path)</span>
+            <span>GitHub Pages — static frontend hosting</span>
+          </div>
+        </section>
+
+        <section class="essay-section">
+          <h2 class="essay-heading">Try it</h2>
+          <p class="essay-body">
+            Navigate to an area on the map, select a date, and click Analyse visible area. The NDVI surface
+            updates for the current viewport.
+          </p>
+          <div class="essay-links">
+            <a class="essay-link" href="demo/">
+              <span class="essay-link-label">Demo</span>
+              <span class="essay-link-desc">Interactive NDVI surface for the current map viewport</span>
+            </a>
+          </div>
+        </section>
+      </article>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../" aria-label="Back to Cases">
+          <span class="footer-nav-label-full">&larr; Back to Cases</span>
+          <span class="footer-nav-label-short">&larr; Cases</span>
+        </a>
+        <a class="footer-nav-link" href="demo/" aria-label="Next: Demo">
+          <span class="footer-nav-label-full">Next: Demo &rarr;</span>
+          <span class="footer-nav-label-short">Next &rarr;</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../js/module-route-data.js"></script>
+  <script src="../../js/nav-controller.js"></script>
+</body>
+</html>

@@ -56,13 +56,12 @@
       <header class="module-header">
         <h1 class="module-header-title">Explore</h1>
         <p class="module-header-body">
-          An interactive demonstration of queueing behavior. Vary arrival rate, service capacity, and variability
-          coefficients to observe how overflow, backlog, and lead time respond.
+          An interactive demonstration of queueing behavior.
         </p>
       </header>
 
       <section class="queue-machine-lab" aria-label="Queue and utilization demonstration">
-        <p class="force-graph-helper queue-machine-lab-helper">Select a scenario preset or adjust the parameters, then observe how the charts and readouts change together.</p>
+        <p class="force-graph-helper queue-machine-lab-helper">Select a scenario preset or adjust arrival rate, service capacity, and variability coefficients &mdash; then observe how the charts and readouts change together.</p>
         <div class="queue-machine-presets">
           <div class="queue-machine-preset-group" role="group" aria-label="Scenario presets">
             <button type="button" data-queue-preset="bursty">Bursty product work</button>
@@ -96,6 +95,7 @@
           </div>
         </form>
 
+        <p class="queue-machine-fallback" data-queue-fallback>Charts require JavaScript and the D3 library to render.</p>
         <div class="queue-machine-stage" aria-label="Queue visual">
           <div class="queue-machine-chart-panel">
             <h2 class="queue-machine-chart-title">Arrivals versus capacity</h2>

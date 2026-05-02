@@ -13,14 +13,19 @@
   var backlogChart = document.querySelector('[data-queue-backlog-chart]');
   var statusText = document.querySelector('[data-queue-status]');
   var presetButtons = document.querySelectorAll('[data-queue-preset]');
+  var fallbackEl = document.querySelector('[data-queue-fallback]');
   var d3Lib = window.d3;
 
   if (!form || !arrivalInput || !serviceInput || !arrivalVarInput || !serviceVarInput || !arrivalsChart || !backlogChart || !d3Lib) return;
+  if (fallbackEl) fallbackEl.hidden = true;
 
   var sessionSeed = Math.random() * Math.PI * 2;
   var activePreset = null;
   var resizeTimer = null;
+  // Model normalises around serviceRate ≈ 1. Multiply by 6 so readouts show
+  // natural item counts (e.g. serviceRate 1.0 → "6.0 items / time unit").
   var DISPLAY_ITEM_SCALE = 6;
+  var CHART_MARGIN = { top: 16, right: 18, bottom: 32, left: 42 };
   var PRESET_VALUES = {
     breathing: { arrivalRate: 0.48, serviceRate: 1.00, arrivalCv: 0.70, serviceCv: 0.80 },
     strained: { arrivalRate: 0.78, serviceRate: 1.00, arrivalCv: 1.00, serviceCv: 1.00 },
@@ -199,7 +204,7 @@
   function renderArrivalsChart(displayTimeline) {
     clearSvg(arrivalsChart);
     var size = getChartSize(arrivalsChart);
-    var margin = { top: 16, right: 18, bottom: 32, left: 42 };
+    var margin = CHART_MARGIN;
     var innerWidth = size.width - margin.left - margin.right;
     var innerHeight = size.height - margin.top - margin.bottom;
     var points = displayTimeline.points;
@@ -260,7 +265,7 @@
   function renderBacklogChart(displayTimeline) {
     clearSvg(backlogChart);
     var size = getChartSize(backlogChart);
-    var margin = { top: 16, right: 18, bottom: 32, left: 42 };
+    var margin = CHART_MARGIN;
     var innerWidth = size.width - margin.left - margin.right;
     var innerHeight = size.height - margin.top - margin.bottom;
     var points = displayTimeline.points;

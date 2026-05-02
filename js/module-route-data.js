@@ -41,6 +41,14 @@
       sections: 'Epistemic Bets / Feedback Debt'
     },
     {
+      title: 'Products Over Projects',
+      slug: 'products-over-projects',
+      path: 'products-over-projects/',
+      status: '',
+      descriptor: 'Choosing product-mode or project-mode by dominant residual risk.',
+      sections: 'Risk Lens / Taxonomy / Assessment'
+    },
+    {
       title: 'Flow & Queuing',
       slug: 'flow-queuing',
       path: 'flow-queuing/',

@@ -108,6 +108,12 @@
   margin: 0 0 1rem;
 }
 
+.queue-machine-fallback {
+  margin: 1rem 0;
+  color: var(--ink-mid);
+  font-family: var(--serif);
+}
+
 .queue-machine-presets {
   display: flex;
   flex-wrap: wrap;
@@ -153,6 +159,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .queue-machine-preset-group [data-queue-preset] {
+    padding-block: 0.75rem;
+  }
+
   .queue-machine-preset-group [data-queue-preset]:nth-child(2n) {
     border-right: 0;
   }
@@ -180,12 +190,13 @@
 
 .queue-machine-preset-note {
   margin: 0 0 1rem;
-  color: var(--ink-mid);
-  font-family: var(--serif);
-  font-size: 0.75rem;
-  line-height: 1.45;
-  letter-spacing: 0;
-  text-transform: none;
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+  text-transform: uppercase;
 }
 
 .queue-machine-controls {
@@ -233,10 +244,6 @@
   margin-top: 0;
 }
 
-.queue-machine-control .queue-machine-control-meta * {
-  color: var(--queue-bars-color);
-}
-
 .queue-machine-control .queue-machine-control-meta [data-output] {
   color: var(--queue-bars-color);
 }
@@ -255,7 +262,7 @@
   margin: 0.1rem 0;
 }
 
-.queue-machine-control input[type="range"]:focus {
+.queue-machine-control input[type="range"]:focus:not(:focus-visible) {
   outline: none;
 }
 

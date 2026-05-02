@@ -489,15 +489,15 @@
 }
 
 .queue-machine-equation {
-  margin: 1.5rem 0 2rem;
-  padding: 1rem 0;
+  margin: clamp(2rem, 4.4vw, 2.8rem) 0 clamp(2.3rem, 5vw, 3.1rem);
+  padding: clamp(1.2rem, 2.8vw, 1.7rem) 0;
   border-top: 1px solid var(--ink-ghost);
   border-bottom: 1px solid var(--ink-ghost);
 }
 
 .queue-machine-equation .katex-display {
   color: var(--ink);
-  margin: 0 0 0.9rem;
+  margin: 0 0 clamp(0.95rem, 2vw, 1.3rem);
 }
 
 .queue-machine-equation figcaption {
@@ -880,8 +880,8 @@ a.eq-ref:hover {
 
 /* ── Derivation SVG figures ─────────────────────────────────── */
 .qm-figure {
-  margin: 1.5rem 0 2rem;
-  padding: 1rem 0;
+  margin: clamp(2rem, 4.4vw, 2.8rem) 0 clamp(2.3rem, 5vw, 3.1rem);
+  padding: clamp(1.2rem, 2.8vw, 1.7rem) 0;
   border-top: 1px solid var(--ink-ghost);
   border-bottom: 1px solid var(--ink-ghost);
 }
@@ -916,3 +916,35 @@ a.eq-ref:hover {
 .qm-bd-arrow { stroke: var(--ink-mid); stroke-width: 1.5; fill: none; }
 .qm-bd-arrowhead { fill: var(--ink-mid); }
 .qm-bd-rate { fill: var(--ink-faint); font-family: var(--mono); font-size: 11px; text-anchor: middle; font-style: italic; }
+
+@media (max-width: 760px) {
+  .queue-machine-page .module-header-body {
+    font-size: calc(var(--fs-body-module-header) * 0.8);
+  }
+
+  .queue-machine-page .essay-body,
+  .queue-machine-page .queue-machine-assumption-card p,
+  .queue-machine-page .queue-machine-toc-panel p,
+  .queue-machine-page .queue-machine-step-list li {
+    font-size: calc(var(--fs-body) * 0.8);
+  }
+
+  .queue-machine-page .queue-machine-mini-legend span {
+    font-size: 0.736rem;
+  }
+
+  .queue-machine-page .queue-machine-preset-note,
+  .queue-machine-page .queue-machine-chart-note,
+  .queue-machine-page .queue-machine-readout-caption,
+  .queue-machine-page .queue-machine-variable-table td,
+  .queue-machine-page .queue-machine-equation figcaption,
+  .queue-machine-page .qm-figure figcaption,
+  .queue-machine-page .queue-machine-concept-detail-note,
+  .queue-machine-page .queue-machine-references li {
+    font-size: 0.704rem;
+  }
+
+  .queue-machine-page .queue-machine-variable-table tbody th {
+    font-size: 0.8rem;
+  }
+}

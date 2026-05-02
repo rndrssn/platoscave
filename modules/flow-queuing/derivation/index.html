@@ -89,7 +89,7 @@
 
           <p class="essay-body">
             A direct consequence of <a href="#eq-1" class="eq-ref">(1)</a> is that the waiting times between
-            successive arrivals&mdash;the interarrival gaps&mdash;follow the exponential distribution.
+            successive arrivals, the interarrival gaps, follow the exponential distribution.
             If arrivals are Poisson with rate <var>&lambda;</var>, the time until the next arrival
             has probability density:
           </p>
@@ -146,7 +146,7 @@
               <line x1="40" y1="110" x2="500" y2="110" class="qm-svg-dashed"/>
 
               <!-- PDF section label -->
-              <text x="40" y="124" class="qm-svg-section-label">Interarrival time distribution &mdash; Eq.&thinsp;(2)</text>
+              <text x="40" y="124" class="qm-svg-section-label">Interarrival time distribution: Eq.&thinsp;(2)</text>
 
               <!-- y-axis and x-axis -->
               <line x1="40" y1="128" x2="40"  y2="188" class="qm-svg-axis"/>
@@ -237,7 +237,7 @@
             The memoryless property <a href="#eq-4" class="eq-ref">(4)</a> is essential for what follows.
             Because the server&rsquo;s remaining workload at any moment is independent of how long it has
             been working, the system&rsquo;s future evolution depends only on the current number of customers
-            in the system&mdash;not on any history. That is precisely the Markov property.
+            in the system, not on any history. That is precisely the Markov property.
           </p>
         </section>
 
@@ -250,7 +250,7 @@
             Poisson arrivals are different.
           </p>
           <p class="essay-body">
-            PASTA&mdash;Poisson Arrivals See Time Averages&mdash;is the theorem that the fraction of Poisson
+            PASTA (Poisson Arrivals See Time Averages) is the theorem that the fraction of Poisson
             arrivals who find the system in state <var>n</var> equals the long-run fraction of time the system
             spends in state <var>n</var>. Let <var>&pi;</var><sub><var>n</var></sub> be the steady-state
             probability of <var>n</var> customers in the system, and <var>P</var><sub>a</sub>(<var>n</var>)
@@ -276,8 +276,8 @@
         <section class="essay-section">
           <h2 class="essay-heading" id="chain">The birth-death chain</h2>
           <p class="essay-body">
-            With Poisson arrivals and exponential service times, the system state&mdash;the number of customers
-            present, including any in service&mdash;evolves as a continuous-time Markov chain. From state
+            With Poisson arrivals and exponential service times, the system state, the number of customers
+            present (including any in service), evolves as a continuous-time Markov chain. From state
             <var>n</var> the next event is either an arrival (at rate <var>&lambda;</var>, moving to
             <var>n</var>&thinsp;+&thinsp;1) or a service completion (at rate <var>&mu;</var>, moving to
             <var>n</var>&thinsp;&minus;&thinsp;1, provided <var>n</var>&thinsp;&gt;&thinsp;0). Chains where
@@ -418,7 +418,7 @@
           </figure>
 
           <p class="essay-body">
-            Little&rsquo;s Law&mdash;<var>L</var>&nbsp;=&nbsp;<var>&lambda;W</var>&mdash;then gives average
+            Little&rsquo;s Law, <var>L</var>&nbsp;=&nbsp;<var>&lambda;W</var>, then gives average
             lead time immediately:
           </p>
 
@@ -462,7 +462,7 @@
             looks simple because everything has already been done: the distributions, the chain, the balance
             equations, and the geometric series. The (1&nbsp;&minus;&nbsp;<var>&rho;</var>) in the denominator
             of <a href="#eq-9" class="eq-ref">(9)</a> is the normalization constant for the geometric
-            distribution&mdash;the nonlinear part comes from there, not from any arbitrary choice.
+            distribution; the nonlinear part comes from there, not from any arbitrary choice.
           </p>
           <p class="essay-body">
             Return to <a href="../#mm1">Flow and Waiting</a> to see how the formula is used, or to

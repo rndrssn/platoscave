@@ -220,6 +220,7 @@
 @media (min-width: 900px) {
   .satellite-demo-stage {
     grid-template-columns: 1fr 1fr;
+    align-items: start;
   }
 }
 
@@ -234,7 +235,7 @@
 }
 
 .satellite-map-container {
-  height: 440px;
+  aspect-ratio: 1;
   border: 1px solid var(--ink-ghost);
   position: relative;
 }
@@ -245,7 +246,7 @@
 }
 
 .satellite-surface-wrap {
-  height: 440px;
+  aspect-ratio: 1;
   background: var(--paper);
   display: flex;
   align-items: center;

@@ -51,7 +51,7 @@
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="../concept-graph/"><span class="module-sub-nav-number">04</span> Concept Map</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">05</span> Appendix</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">05</span> M/M/1 Derivation</a>
       </nav>
 
       <header class="module-header">
@@ -102,8 +102,8 @@
             <span class="eq-number">(2)</span>
           </figure>
 
-          <figure class="qm-figure" aria-label="Poisson arrival process illustration">
-            <svg viewBox="0 0 540 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig1-title">
+          <figure class="qm-figure qm-figure--arrivals" aria-label="Poisson arrival process illustration">
+            <svg viewBox="0 0 540 292" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig1-title">
               <title id="fig1-title">Poisson arrivals on a time axis and the exponential interarrival distribution</title>
               <defs>
                 <marker id="ax-arrow" viewBox="0 0 6 6" refX="6" refY="3" markerWidth="5" markerHeight="5" orient="auto">
@@ -112,7 +112,7 @@
               </defs>
 
               <!-- Section label -->
-              <text x="40" y="16" class="qm-svg-section-label">Arrival process</text>
+              <text x="40" y="18" class="qm-svg-section-label">Arrival process</text>
 
               <!-- Time axis -->
               <line x1="40" y1="68" x2="506" y2="68" class="qm-svg-axis" marker-end="url(#ax-arrow)"/>
@@ -143,20 +143,20 @@
               <text x="110" y="97" text-anchor="middle" class="qm-svg-annotation">t&#x2081;</text>
 
               <!-- Divider -->
-              <line x1="40" y1="110" x2="500" y2="110" class="qm-svg-dashed"/>
+              <line x1="40" y1="138" x2="500" y2="138" class="qm-svg-dashed"/>
 
               <!-- PDF section label -->
-              <text x="40" y="124" class="qm-svg-section-label">Interarrival time distribution: Eq.&thinsp;(2)</text>
+              <text x="40" y="160" class="qm-svg-section-label">Interarrival time distribution: Eq.&thinsp;(2)</text>
 
               <!-- y-axis and x-axis -->
-              <line x1="40" y1="128" x2="40"  y2="188" class="qm-svg-axis"/>
-              <line x1="40" y1="188" x2="316" y2="188" class="qm-svg-axis" marker-end="url(#ax-arrow)"/>
-              <text x="320" y="192" class="qm-svg-label">t</text>
-              <text x="28"  y="132" class="qm-svg-label">f</text>
+              <line x1="40" y1="172" x2="40"  y2="262" class="qm-svg-axis"/>
+              <line x1="40" y1="262" x2="500" y2="262" class="qm-svg-axis" marker-end="url(#ax-arrow)"/>
+              <text x="505" y="266" class="qm-svg-label">t</text>
+              <text x="28"  y="176" class="qm-svg-label">f</text>
 
-              <!-- Exponential curve: t in [0..5.5], x=40+t*49.1, y=188-f*60 -->
-              <polyline points="40,128 55,143 70,152 84,159 99,164 114,168 128,171 143,174 163,177 187,179 236,181 316,188"
-                        class="qm-svg-curve"/>
+              <!-- Smooth exponential curve -->
+              <path d="M 40.0,172.0 L 60.9,185.5 L 81.8,197.0 L 102.7,206.7 L 123.6,215.0 L 144.5,222.1 L 165.5,228.1 L 186.4,233.1 L 207.3,237.5 L 228.2,241.2 L 249.1,244.3 L 270.0,246.9 L 290.9,249.2 L 311.8,251.1 L 332.7,252.7 L 353.6,254.1 L 374.5,255.3 L 395.5,256.3 L 416.4,257.2 L 437.3,257.9 L 458.2,258.5 L 479.1,259.0 L 500.0,259.5"
+                    class="qm-svg-curve"/>
             </svg>
             <figcaption>
               Top: a realisation of a Poisson arrival process on a time axis; ticks mark arrivals and the gap
@@ -194,7 +194,7 @@
             <span class="eq-number">(4)</span>
           </figure>
 
-          <figure class="qm-figure" aria-label="Exponential service time density and memoryless property">
+          <figure class="qm-figure qm-figure--service" aria-label="Exponential service time density and memoryless property">
             <svg viewBox="0 0 540 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig2-title">
               <title id="fig2-title">Exponential service time density showing that the curve to the right of any point s₀ has the same shape as the full curve</title>
               <defs>
@@ -209,13 +209,13 @@
               <text x="516" y="124" class="qm-svg-label">s</text>
               <text x="34"  y="14"  class="qm-svg-label">f</text>
 
-              <!-- Full curve (ghost): t in [0..5.5], x=50+t*83.6, y=120-f*110 -->
-              <polyline points="50,10 67,29 83,45 100,57 117,68 134,76 159,87 184,95 217,102 259,107 301,111 384,114 510,120"
-                        class="qm-svg-curve--ghost"/>
+              <!-- Smooth exponential full curve -->
+              <path d="M 50.0,10.0 L 70.9,25.8 L 91.8,39.3 L 112.7,50.9 L 133.6,60.8 L 154.5,69.3 L 175.5,76.6 L 196.4,82.8 L 217.3,88.2 L 238.2,92.7 L 259.1,96.7 L 280.0,100.0 L 300.9,102.9 L 321.8,105.3 L 342.7,107.4 L 363.6,109.2 L 384.5,110.8 L 405.5,112.1 L 426.4,113.2 L 447.3,114.2 L 468.2,115.0 L 489.1,115.8 L 510.0,116.4"
+                    class="qm-svg-curve--ghost"/>
 
-              <!-- Highlighted tail after s₀ = t=1.5, x=175 -->
-              <polyline points="175,95 192,101 209,106 226,110 243,113 260,116 293,117 326,118 393,119 510,120"
-                        class="qm-svg-curve"/>
+              <!-- Smooth highlighted tail after s₀ -->
+              <path d="M 175.5,76.6 L 192.2,81.7 L 208.9,86.1 L 225.6,90.1 L 242.4,93.6 L 259.1,96.7 L 275.8,99.4 L 292.5,101.8 L 309.3,103.9 L 326.0,105.8 L 342.7,107.4 L 359.5,108.9 L 376.2,110.2 L 392.9,111.3 L 409.6,112.4 L 426.4,113.2 L 443.1,114.0 L 459.8,114.7 L 476.5,115.3 L 493.3,115.9 L 510.0,116.4"
+                    class="qm-svg-curve"/>
 
               <!-- s₀ dashed vertical -->
               <line x1="175" y1="10" x2="175" y2="125" class="qm-svg-dashed"/>
@@ -284,7 +284,7 @@
             transitions move only one step up or one step down are called birth-death chains.
           </p>
 
-          <figure class="qm-figure" aria-label="Birth-death Markov chain state diagram">
+          <figure class="qm-figure qm-figure--chain" aria-label="Birth-death Markov chain state diagram">
             <svg viewBox="0 0 560 88" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig3-title">
               <title id="fig3-title">Birth-death Markov chain: states 0, 1, 2, 3, … connected by forward transitions at rate λ and backward transitions at rate μ</title>
               <defs>
@@ -304,7 +304,7 @@
               <text x="195" y="44" class="qm-bd-label">1</text>
               <text x="320" y="44" class="qm-bd-label">2</text>
               <text x="445" y="44" class="qm-bd-label">3</text>
-              <text x="512" y="49" class="qm-bd-label" style="font-size:18px">&hellip;</text>
+              <text x="512" y="49" class="qm-bd-label" style="font-size:14px">&hellip;</text>
 
               <!-- Forward arrows (above, y=36) -->
               <line x1="94"  y1="36" x2="171" y2="36" class="qm-bd-arrow" marker-end="url(#bd-arr)"/>

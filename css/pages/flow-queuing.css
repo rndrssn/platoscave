@@ -351,12 +351,12 @@
 .queue-machine-chart {
   display: block;
   inline-size: 100%;
-  block-size: 17rem;
+  block-size: 25.5rem;
 }
 
 .queue-machine-axis {
   color: var(--ink-faint);
-  font-size: 0.58rem;
+  font-size: 0.87rem;
 }
 
 .queue-machine-axis line,
@@ -369,7 +369,7 @@
 }
 
 .queue-machine-chart-label {
-  font-size: 0.58rem;
+  font-size: 0.87rem;
 }
 
 .queue-machine-status {
@@ -424,6 +424,7 @@
 
 .queue-machine-theory {
   margin-top: 3rem;
+  counter-reset: flow-figure;
 }
 
 .queue-machine-table-wrap {
@@ -489,24 +490,20 @@
 }
 
 .queue-machine-equation {
-  margin: clamp(2rem, 4.4vw, 2.8rem) 0 clamp(2.3rem, 5vw, 3.1rem);
-  padding: clamp(1.2rem, 2.8vw, 1.7rem) 0;
-  border-top: 1px solid var(--ink-ghost);
-  border-bottom: 1px solid var(--ink-ghost);
+  margin: clamp(1.8rem, 3.5vw, 2.6rem) 0;
+  padding: 0;
+  border: 0;
+  max-inline-size: 60ch;
 }
 
 .queue-machine-equation .katex-display {
   color: var(--ink);
+  font-size: var(--fs-body);
   margin: 0 0 clamp(0.95rem, 2vw, 1.3rem);
 }
 
 .queue-machine-equation figcaption {
-  margin-top: 0.6rem;
-  color: var(--ink-mid);
-  font-family: var(--serif);
-  font-size: 0.88rem;
-  font-style: italic;
-  line-height: 1.55;
+  display: none;
 }
 
 .queue-machine-assumption-card,
@@ -561,7 +558,7 @@
 
 .queue-machine-concept {
   margin-top: 2rem;
-  --force-graph-label-size: 10px;
+  --force-graph-label-size: 15px;
   --force-graph-label-letter-spacing: 0;
 }
 
@@ -800,7 +797,7 @@
 
   /* Subgrid: pin chart SVGs to the same row across both columns */
   .queue-machine-stage {
-    grid-template-rows: auto auto 17rem;
+    grid-template-rows: auto auto 25.5rem;
     align-items: start;
   }
 
@@ -822,7 +819,7 @@
   }
 
   .queue-machine-chart {
-    block-size: 14.5rem;
+    block-size: 21.75rem;
   }
 
   .queue-machine-equation .katex-display {
@@ -835,19 +832,14 @@
 .queue-machine-equation--numbered {
   display: grid;
   grid-template-columns: 1fr auto;
-  grid-template-rows: auto auto;
-  align-items: start;
+  grid-template-rows: auto;
+  align-items: center;
   column-gap: 0.5rem;
 }
 
 .queue-machine-equation--numbered > div {
   grid-column: 1;
   grid-row: 1;
-}
-
-.queue-machine-equation--numbered figcaption {
-  grid-column: 1 / 3;
-  grid-row: 2;
 }
 
 .queue-machine-equation--numbered .katex-display {
@@ -880,42 +872,94 @@ a.eq-ref:hover {
 
 /* ── Derivation SVG figures ─────────────────────────────────── */
 .qm-figure {
-  margin: clamp(2rem, 4.4vw, 2.8rem) 0 clamp(2.3rem, 5vw, 3.1rem);
-  padding: clamp(1.2rem, 2.8vw, 1.7rem) 0;
-  border-top: 1px solid var(--ink-ghost);
-  border-bottom: 1px solid var(--ink-ghost);
+  margin: clamp(2.3rem, 4.2vw, 3.2rem) 0;
+  padding: 0;
+  border: 0;
+  max-inline-size: 60ch;
+  counter-increment: flow-figure;
 }
 
 .qm-figure svg {
   display: block;
   width: 100%;
+  max-width: 100%;
+  margin-left: 0;
   height: auto;
   overflow: visible;
 }
 
 .qm-figure figcaption {
-  margin-top: 0.6rem;
-  color: var(--ink-mid);
+  margin-top: 0.8rem;
+  max-inline-size: 60ch;
+  color: var(--ink-faint);
   font-family: var(--serif);
-  font-size: 0.88rem;
-  font-style: italic;
+  font-size: 0.8rem;
+  font-style: normal;
   line-height: 1.55;
 }
 
-.qm-svg-axis { stroke: var(--ink-faint); stroke-width: 1; fill: none; }
-.qm-svg-curve { fill: none; stroke: var(--queue-strained); stroke-width: 2; stroke-linejoin: round; }
-.qm-svg-curve--ghost { fill: none; stroke: var(--ink-ghost); stroke-width: 1.5; stroke-linejoin: round; }
-.qm-svg-tick { stroke: var(--queue-flow); stroke-width: 2; }
+.qm-figure figcaption::before {
+  content: 'Figure ' counter(flow-figure) '. ';
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+.qm-svg-axis { stroke: var(--ink-faint); stroke-width: 1.5; fill: none; }
+.qm-svg-curve { fill: none; stroke: var(--queue-strained); stroke-width: 3; stroke-linejoin: round; }
+.qm-svg-curve--ghost { fill: none; stroke: var(--ink-ghost); stroke-width: 2.25; stroke-linejoin: round; }
+.qm-svg-tick { stroke: var(--queue-flow); stroke-width: 3; }
 .qm-svg-dot { fill: var(--queue-flow); }
-.qm-svg-dashed { stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 4 3; fill: none; }
-.qm-svg-label { fill: var(--ink-faint); font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em; }
-.qm-svg-section-label { fill: var(--ink-faint); font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
-.qm-svg-annotation { fill: var(--ink-mid); font-family: var(--serif); font-style: italic; font-size: 11px; }
-.qm-bd-circle { fill: var(--paper); stroke: var(--ink-mid); stroke-width: 1.5; }
-.qm-bd-label { fill: var(--ink); font-family: var(--mono); font-size: 13px; text-anchor: middle; dominant-baseline: central; }
-.qm-bd-arrow { stroke: var(--ink-mid); stroke-width: 1.5; fill: none; }
+.qm-svg-dashed { stroke: var(--ink-faint); stroke-width: 1.5; stroke-dasharray: 6 4.5; fill: none; }
+.qm-svg-label { fill: var(--ink-faint); font-family: var(--mono); font-size: 15px; letter-spacing: 0.04em; }
+.qm-svg-section-label { fill: var(--ink-faint); font-family: var(--mono); font-size: 13.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+.qm-svg-annotation { fill: var(--ink-mid); font-family: var(--serif); font-style: italic; font-size: 16.5px; }
+.qm-bd-circle { fill: var(--paper); stroke: var(--ink-mid); stroke-width: 2.25; }
+.qm-bd-label { fill: var(--ink); font-family: var(--mono); font-size: 19.5px; text-anchor: middle; dominant-baseline: central; }
+.qm-bd-arrow { stroke: var(--ink-mid); stroke-width: 2.25; fill: none; }
 .qm-bd-arrowhead { fill: var(--ink-mid); }
-.qm-bd-rate { fill: var(--ink-faint); font-family: var(--mono); font-size: 11px; text-anchor: middle; font-style: italic; }
+.qm-bd-rate { fill: var(--ink-faint); font-family: var(--mono); font-size: 16.5px; text-anchor: middle; font-style: italic; }
+
+/* Figures 1+2: lighter strokes/type. */
+.qm-figure--arrivals .qm-svg-axis,
+.qm-figure--service .qm-svg-axis { stroke-width: 1; }
+
+.qm-figure--arrivals .qm-svg-curve,
+.qm-figure--service .qm-svg-curve { stroke-width: 1.4; }
+
+.qm-figure--service .qm-svg-curve--ghost {
+  stroke-width: 1.1;
+  stroke: color-mix(in srgb, var(--ink-ghost) 88%, var(--paper) 12%);
+  stroke-opacity: 0.62;
+}
+
+.qm-figure--service .qm-svg-curve {
+  stroke: color-mix(in srgb, var(--rust) 82%, var(--ink-mid) 18%);
+  stroke-opacity: 0.96;
+}
+
+.qm-figure--arrivals .qm-svg-tick,
+.qm-figure--service .qm-svg-tick { stroke-width: 1.4; }
+
+.qm-figure--arrivals .qm-svg-dashed,
+.qm-figure--service .qm-svg-dashed { stroke-width: 0.8; stroke-dasharray: 4 3; }
+
+.qm-figure--arrivals .qm-svg-label,
+.qm-figure--service .qm-svg-label { font-size: 12px; }
+
+.qm-figure--arrivals .qm-svg-section-label,
+.qm-figure--service .qm-svg-section-label { font-size: 10.5px; }
+
+.qm-figure--arrivals .qm-svg-annotation,
+.qm-figure--service .qm-svg-annotation { font-size: 13px; }
+
+/* Figure 3: smaller typography and lighter chain strokes. */
+.qm-figure--chain .qm-bd-circle { stroke-width: 1.4; }
+.qm-figure--chain .qm-bd-label { font-size: 15px; }
+.qm-figure--chain .qm-bd-arrow { stroke-width: 1.4; }
+.qm-figure--chain .qm-bd-rate { font-size: 12px; }
 
 @media (max-width: 760px) {
   .queue-machine-page .module-header-body {
@@ -937,11 +981,22 @@ a.eq-ref:hover {
   .queue-machine-page .queue-machine-chart-note,
   .queue-machine-page .queue-machine-readout-caption,
   .queue-machine-page .queue-machine-variable-table td,
-  .queue-machine-page .queue-machine-equation figcaption,
-  .queue-machine-page .qm-figure figcaption,
   .queue-machine-page .queue-machine-concept-detail-note,
   .queue-machine-page .queue-machine-references li {
     font-size: 0.704rem;
+  }
+
+  .queue-machine-page .queue-machine-equation .katex-display {
+    font-size: calc(var(--fs-body) * 0.8);
+  }
+  
+  .queue-machine-page .qm-figure figcaption {
+    font-size: 0.72rem;
+    line-height: 1.5;
+  }
+
+  .queue-machine-page .qm-figure figcaption::before {
+    font-size: 0.6rem;
   }
 
   .queue-machine-page .queue-machine-variable-table tbody th {

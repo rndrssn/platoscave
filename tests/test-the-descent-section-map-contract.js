@@ -22,20 +22,20 @@ function testScriptOrderContract() {
   const navPos = htmlSource.indexOf('js/nav-controller.js');
   const runtimePos = htmlSource.indexOf('./section-map.js');
 
-  assert(d3Pos > -1, 'Expected Clarity Map page to load local D3');
-  assert(navPos > -1, 'Expected Clarity Map page to load nav controller');
-  assert(runtimePos > -1, 'Expected Clarity Map page to load section-map runtime');
+  assert(d3Pos > -1, 'Expected Document Map page to load local D3');
+  assert(navPos > -1, 'Expected Document Map page to load nav controller');
+  assert(runtimePos > -1, 'Expected Document Map page to load section-map runtime');
   assert(d3Pos < navPos, 'Expected D3 to load before nav controller');
   assert(navPos < runtimePos, 'Expected nav controller to load before section-map runtime');
 }
 
 function testDataContract() {
   const stationCount = (runtimeSource.match(/id:\s*'[^']+'\s*,\s*number:\s*\d+/g) || []).length;
-  assert(stationCount === 8, 'Expected exactly 8 Clarity Map stations');
+  assert(stationCount === 8, 'Expected exactly 8 Document Map rows');
 
-  assert(/const state = \{ mode: 'improvement' \};/.test(runtimeSource), 'Expected default mode to be improvement');
-  assert(/anchorFor:\s*'improvement'/.test(runtimeSource), 'Expected improvement anchor station');
-  assert(/anchorFor:\s*'new-feature'/.test(runtimeSource), 'Expected new-feature anchor station');
+  assert(/const state = \{ mode: 'none' \};/.test(runtimeSource), 'Expected default mode to be neutral');
+  assert(/anchorFor:\s*'improvement'/.test(runtimeSource), 'Expected improvement anchor document');
+  assert(/anchorFor:\s*'new-feature'/.test(runtimeSource), 'Expected new-feature anchor document');
 
   ['narrative', 'brief', 'plan', 'story', 'ticket'].forEach((artifactId) => {
     assert(
@@ -47,10 +47,14 @@ function testDataContract() {
 
 function testInteractionContract() {
   assert(/function setMode\(mode\)\s*\{[\s\S]*hideTip\(tooltipRef\);/.test(runtimeSource), 'Expected mode switch to hide any visible tooltip before rerender');
-  assert(/g\.attr\('tabindex',\s*0\)/.test(runtimeSource), 'Expected toggleable station rows to be keyboard-focusable');
-  assert(/g\.on\('click',\s*toggle\);/.test(runtimeSource), 'Expected single click toggle binding on station row group');
+  assert(/data-anchor-mode="improvement"/.test(htmlSource), 'Expected Improvement Opportunity anchor control');
+  assert(/data-anchor-mode="new-feature"/.test(htmlSource), 'Expected New Feature anchor control');
+  assert(/aria-pressed="false"/.test(htmlSource), 'Expected anchor controls to initialize unpressed');
+  assert(/querySelectorAll\('\[data-anchor-mode\]'\)/.test(runtimeSource), 'Expected runtime to bind anchor controls');
+  assert(/setAttribute\('aria-pressed'/.test(runtimeSource), 'Expected runtime to update anchor button pressed state');
+  assert(!/g\.attr\('tabindex',\s*0\)/.test(runtimeSource), 'Expected SVG rows not to own keyboard button behavior');
+  assert(!/g\.on\('click',\s*toggle\);/.test(runtimeSource), 'Expected SVG rows not to own anchor click behavior');
   assert(!/hoverRect\.on\('click',\s*toggle\);/.test(runtimeSource), 'Expected no duplicate click toggle binding on hover rect');
-  assert(/event\.key === 'Enter' \|\| event\.key === ' '/.test(runtimeSource), 'Expected Enter/Space keyboard toggle support');
 }
 
 function testPageWiringContract() {

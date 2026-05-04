@@ -127,7 +127,6 @@
   align-items: center;
   gap: 0.75rem 1.25rem;
   padding: 0.85rem 0;
-  border-bottom: 1px solid var(--ink-ghost);
   margin-bottom: 1.1rem;
 }
 
@@ -139,9 +138,9 @@
 
 .satellite-control-label {
   font-family: var(--mono);
-  font-size: 0.64rem;
+  font-size: 0.58rem;
   font-weight: 300;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--ink-faint);
   white-space: nowrap;
@@ -151,27 +150,28 @@
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0;
+  gap: 0.42rem;
+  padding: 0 0.08rem;
   border: 0;
   background: transparent;
+  color: var(--ink-faint);
   cursor: pointer;
 }
 
 .satellite-toggle-track {
-  width: 2.25rem;
-  height: 1.2rem;
+  width: 1.82rem;
+  height: 1rem;
   display: inline-flex;
   align-items: center;
   border: 1px solid var(--ink-ghost);
   border-radius: 999px;
-  background: var(--paper-dark);
+  background: transparent;
   transition: background 160ms ease, border-color 160ms ease;
 }
 
 .satellite-toggle-thumb {
-  width: 0.82rem;
-  height: 0.82rem;
+  width: 0.62rem;
+  height: 0.62rem;
   margin-left: 0.18rem;
   border-radius: 999px;
   background: var(--ink-faint);
@@ -180,11 +180,11 @@
 
 .satellite-toggle-control[aria-pressed="true"] .satellite-toggle-track {
   border-color: var(--sage);
-  background: var(--paper-dark);
+  background: transparent;
 }
 
 .satellite-toggle-control[aria-pressed="true"] .satellite-toggle-thumb {
-  transform: translateX(1rem);
+  transform: translateX(0.78rem);
   background: var(--sage);
 }
 
@@ -235,6 +235,20 @@
   cursor: default;
 }
 
+.satellite-viewport-readout {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.satellite-viewport-readout--blocked {
+  color: var(--rust);
+}
+
 .satellite-status {
   font-family: var(--mono);
   font-size: 0.62rem;
@@ -279,6 +293,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  margin-bottom: 0.15rem;
 }
 
 #satellite-map {
@@ -342,7 +357,6 @@
   flex-wrap: wrap;
   gap: 1.5rem;
   padding: 0.85rem 0 0;
-  border-top: 1px solid var(--ink-ghost);
   min-height: 3rem;
 }
 

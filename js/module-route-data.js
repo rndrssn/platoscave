@@ -57,12 +57,12 @@
       sections: 'Flow and Waiting / Taxonomy / Explore / Concept Map / Appendix'
     },
     {
-      title: 'Ambiguity to Clarity',
+      title: 'Ambiguous Documents',
       slug: 'ambiguity-clarity',
       path: 'ambiguity-clarity/',
       status: '',
-      descriptor: 'How open work becomes clear enough to test and build.',
-      sections: 'Ambiguity to Clarity / Clarity Map'
+      descriptor: 'How ambiguous product documentation becomes precise enough to test and build.',
+      sections: 'Ambiguous Documents / Document Map'
     }
   ];
 

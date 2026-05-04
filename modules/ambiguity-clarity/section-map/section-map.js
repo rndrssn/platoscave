@@ -1,17 +1,17 @@
 (function () {
   'use strict';
 
-  // Per-station readiness percentages (0-100) and also-in set,
+  // Per-document readiness percentages (0-100) and also-in set,
   // carried over from the prototype at sandbox/brief_section_map.html.
   const STATIONS = [
-    { id: 'problem',       number: 1, label: 'The Problem',         exploration: 70,  solutioning: 10,  dev: 5,  livesIn: 'narrative',                tip: 'Why this work exists. Ambiguity is highest here.' },
-    { id: 'direction',     number: 2, label: 'Direction',           exploration: 75,  solutioning: 20,  dev: 10, livesIn: 'brief',                    tip: 'Desired change in the world. Outcome, not solution. The last fully open station.' },
-    { id: 'where-we-are',  number: 3, label: 'Where We Are',        exploration: 100, solutioning: 50,  dev: 25, livesIn: 'brief',                    tip: 'Improvement anchor. Baseline for existing-feature briefs; anchors design and engineering in the current system.', anchorFor: 'improvement' },
+    { id: 'problem',       number: 1, label: 'Problem',             exploration: 70,  solutioning: 10,  dev: 5,  livesIn: 'narrative',                tip: 'Why this work exists. Ambiguity is highest here.' },
+    { id: 'direction',     number: 2, label: 'Direction',           exploration: 75,  solutioning: 20,  dev: 10, livesIn: 'brief',                    tip: 'Desired change in the world. Outcome, not solution. The last fully open document.' },
+    { id: 'where-we-are',  number: 3, label: 'Where We Are',        exploration: 100, solutioning: 50,  dev: 25, livesIn: 'brief',                    tip: 'Improvement anchor. Baseline for existing-feature work; anchors design and engineering in the current system.', anchorFor: 'improvement' },
     { id: 'people',        number: 4, label: 'People',              exploration: 100, solutioning: 65,  dev: 25, livesIn: 'brief',                    tip: 'New-feature anchor. Users, jobs, and conditions when no existing baseline exists.',  anchorFor: 'new-feature' },
     { id: 'scope',         number: 5, label: 'Scope',               exploration: 100, solutioning: 75,  dev: 35, livesIn: 'brief', consideredIn: ['plan'], tip: 'In, out, open questions. Home is the brief; also in the plan as choices narrow.' },
     { id: 'slices',        number: 6, label: 'Slices',              exploration: 100, solutioning: 100, dev: 55, livesIn: 'story', consideredIn: ['plan'], tip: 'User-facing units of value. Considered in planning, then made concrete in stories.' },
     { id: 'constraints',   number: 7, label: 'Constraints',         exploration: 100, solutioning: 100, dev: 70, livesIn: 'story', consideredIn: ['plan'], tip: 'Legal, technical, deadlines, non-functional. Considered in the plan; crystallizes in stories.' },
-    { id: 'acceptance',    number: 8, label: 'Acceptance Criteria', exploration: 100, solutioning: 100, dev: 95, livesIn: 'ticket',                   tip: 'Binary pass/fail. The most precise thing in the document.' }
+    { id: 'acceptance',    number: 8, label: 'Acceptance Criteria', labelLines: ['Acceptance', 'Criteria'], exploration: 100, solutioning: 100, dev: 95, livesIn: 'ticket', tip: 'Binary pass/fail. The most precise document in the set.' }
   ];
 
   const TRACKS = [
@@ -33,20 +33,16 @@
   });
 
   const CAPTIONS = {
-    'improvement': 'Current anchor: Where We Are (improvement brief). Something already exists; how it works today is what we stand on.',
-    'new-feature': 'Current anchor: People (new-feature brief). Nothing exists yet; who we build for is what we stand on.'
+    'none': 'Select an anchor type to show which document carries the baseline for this work.',
+    'improvement': 'Current anchor: Where We Are (improvement opportunity). Something already exists; how it works today is what the documentation stands on.',
+    'new-feature': 'Current anchor: People (new feature). Nothing exists yet; who we build for is what the documentation stands on.'
   };
 
-  const state = { mode: 'improvement' };
+  const state = { mode: 'none' };
 
   let resizeRaf = 0;
   let svgRef, shellRef, tooltipRef, captionRef;
-
-  function anchorModeLabel(mode) {
-    if (mode === 'improvement') return 'improvement brief';
-    if (mode === 'new-feature') return 'new-feature brief';
-    return mode || 'anchor';
-  }
+  let anchorButtons = [];
 
   function artifactLabel(id) {
     return ARTIFACT_LABEL_BY_ID[id] || id || 'Unknown';
@@ -59,6 +55,21 @@
       .join(', ');
     if (!alsoIn) return 'Home: ' + home + '.';
     return 'Home: ' + home + '. Also in: ' + alsoIn + '.';
+  }
+
+  function appendStationLabel(group, station, labelX) {
+    const lines = station.labelLines || [station.label];
+    const text = group.append('text')
+      .attr('class', 'section-map-station-label')
+      .attr('x', labelX)
+      .attr('y', lines.length > 1 ? -7 : 4);
+
+    lines.forEach((line, index) => {
+      text.append('tspan')
+        .attr('x', labelX)
+        .attr('dy', index === 0 ? 0 : 13)
+        .text(line);
+    });
   }
 
   function init() {
@@ -76,8 +87,13 @@
     shellRef = shellEl;
     tooltipRef = tooltipEl;
     captionRef = document.getElementById('section-map-caption');
+    anchorButtons = Array.prototype.slice.call(document.querySelectorAll('[data-anchor-mode]'));
+    anchorButtons.forEach((button) => {
+      button.addEventListener('click', () => setMode(button.getAttribute('data-anchor-mode')));
+    });
 
     updateCaption(captionRef);
+    updateAnchorButtons();
     render(svgRef, shellRef, tooltipRef);
 
     window.addEventListener('resize', () => {
@@ -91,12 +107,21 @@
     state.mode = mode;
     hideTip(tooltipRef);
     updateCaption(captionRef);
+    updateAnchorButtons();
     render(svgRef, shellRef, tooltipRef);
   }
 
   function updateCaption(el) {
     if (!el) return;
     el.textContent = CAPTIONS[state.mode] || '';
+  }
+
+  function updateAnchorButtons() {
+    anchorButtons.forEach((button) => {
+      const isActive = button.getAttribute('data-anchor-mode') === state.mode;
+      button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      button.classList.toggle('is-active', isActive);
+    });
   }
 
   function render(svgEl, shellEl, tooltipEl) {
@@ -156,7 +181,7 @@
     headerG.append('text')
       .attr('class', 'section-map-col-header')
       .attr('x', readinessGroupCenter).attr('y', headerY - 12)
-      .text('Handover readiness');
+      .text('Document readiness');
     const artifactGroupCenter = artifactStartX + (ARTIFACTS.length - 1) * artifactStep / 2;
     headerG.append('text')
       .attr('class', 'section-map-col-header')
@@ -175,26 +200,18 @@
       .attr('x1', spineX).attr('y1', topPad - 8)
       .attr('x2', spineX).attr('y2', yFor(STATIONS.length - 1) + 8);
 
-    // Station rows
+    // Document rows
     const stationG = svg.append('g').attr('class', 'section-map-stations');
     STATIONS.forEach((station, i) => {
       const y = yFor(i);
       const isAnchor = station.anchorFor === state.mode;
-      const isShadowAnchor = station.anchorFor && station.anchorFor !== state.mode;
+      const isShadowAnchor = state.mode !== 'none' && station.anchorFor && !isAnchor;
 
-      const canToggleHere = isShadowAnchor;
       const g = stationG.append('g')
         .attr('class', 'section-map-station'
           + (isAnchor ? ' is-anchor' : '')
-          + (isShadowAnchor ? ' is-shadow' : '')
-          + (canToggleHere ? ' is-toggleable' : ''))
+          + (isShadowAnchor ? ' is-shadow' : ''))
         .attr('transform', `translate(0, ${y})`);
-
-      if (canToggleHere) {
-        g.attr('tabindex', 0)
-          .attr('role', 'button')
-          .attr('aria-label', 'Switch anchor to ' + station.label + ' (' + anchorModeLabel(station.anchorFor) + ')');
-      }
 
       g.append('circle')
         .attr('class', 'section-map-station-dot')
@@ -206,7 +223,7 @@
           .attr('class', 'section-map-station-halo')
           .attr('cx', spineX).attr('cy', 0)
           .attr('r', 12);
-      } else if (canToggleHere) {
+      } else if (isShadowAnchor) {
         g.append('circle')
           .attr('class', 'section-map-station-halo section-map-station-halo--shadow')
           .attr('cx', spineX).attr('cy', 0)
@@ -218,10 +235,7 @@
         .attr('x', numberX).attr('y', 4)
         .text(String(station.number));
 
-      g.append('text')
-        .attr('class', 'section-map-station-label')
-        .attr('x', labelX).attr('y', 4)
-        .text(station.label);
+      appendStationLabel(g, station, labelX);
 
       // Readiness bars
       TRACKS.forEach((track, ti) => {
@@ -254,27 +268,16 @@
 
       // Hover target spans the whole row
       const hoverRect = g.append('rect')
-        .attr('class', 'section-map-row-hover' + (canToggleHere ? ' is-toggleable' : ''))
+        .attr('class', 'section-map-row-hover')
         .attr('x', 0).attr('y', -rowHeight / 2)
         .attr('width', VIEW_W).attr('height', rowHeight)
         .attr('fill', 'transparent')
         .on('mouseenter', (event) => showTip(tooltipEl, event, station.label, station.tip, placementSummary(station)))
         .on('mousemove', (event) => moveTip(tooltipEl, event))
         .on('mouseleave', () => hideTip(tooltipEl));
-
-      if (canToggleHere) {
-        const toggle = () => setMode(station.anchorFor);
-        g.on('click', toggle);
-        g.on('keydown', (event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            toggle();
-          }
-        });
-      }
     });
 
-    // Axis hints on the spine
+    // Axis hints on the document spine
     svg.append('text')
       .attr('class', 'section-map-axis-hint')
       .attr('x', spineX).attr('y', topPad - 34)

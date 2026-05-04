@@ -1,4 +1,4 @@
-/* ─── Ambiguity to Clarity (Module 06) ───────────── */
+/* --- Ambiguous Documents (Module 06) ---------------- */
 
 .the-descent-page .taxonomy-dimension-title .section-sub {
   font-family: var(--mono);
@@ -12,17 +12,17 @@
   vertical-align: middle;
 }
 
-/* ─── Clarity Map (06.02) ─────────────────────────────── */
+/* --- Document Map (06.02) ------------------------------ */
 
 .the-descent-page {
-  --section-map-readiness: var(--ink-ghost, #C8BDA8);
+  --section-map-readiness: var(--ink-mid, #5C5752);
   --section-map-anchor-active: var(--viz-rust, #8B3A2A);
   --section-map-anchor-inactive: var(--ink-mid, #5C5752);
-  --section-map-ink-spine: rgba(42,32,24,0.22);
-  --section-map-ink-surface: rgba(42,32,24,0.08);
-  --section-map-ink-strong: rgba(42,32,24,0.42);
-  --section-map-ink-underline: rgba(42,32,24,0.35);
-  --section-map-ink-border: rgba(42,32,24,0.12);
+  --section-map-ink-spine: rgba(42,32,24,0.36);
+  --section-map-ink-surface: rgba(42,32,24,0.16);
+  --section-map-ink-strong: rgba(42,32,24,0.72);
+  --section-map-ink-underline: rgba(42,32,24,0.5);
+  --section-map-ink-border: rgba(42,32,24,0.2);
   --section-map-ink-shadow: rgba(42,32,24,0.1);
 }
 
@@ -87,10 +87,10 @@
 .section-map-legend-bar--dev         { background: var(--section-map-readiness); }
 
 .section-map-legend-dot {
-  width: 0.52rem;
-  height: 0.52rem;
+  width: 0.6rem;
+  height: 0.6rem;
   border-radius: 50%;
-  border: 1px solid var(--section-map-ink-strong);
+  border: 1.5px solid var(--section-map-ink-strong);
   display: inline-block;
   flex-shrink: 0;
 }
@@ -103,18 +103,74 @@
   background: transparent;
 }
 
+.section-map-anchor-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.85rem;
+}
+
+.section-map-anchor-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-mid);
+  margin-right: 0.2rem;
+}
+
+.section-map-anchor-button {
+  border: 1px solid var(--section-map-ink-border);
+  background: transparent;
+  color: var(--ink-mid);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.62rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.section-map-anchor-button:hover,
+.section-map-anchor-button:focus-visible {
+  border-color: var(--section-map-ink-strong);
+  color: var(--ink);
+  outline: none;
+}
+
+.section-map-anchor-button.is-active,
+.section-map-anchor-button[aria-pressed="true"] {
+  background: var(--section-map-anchor-active);
+  border-color: var(--section-map-anchor-active);
+  color: var(--paper);
+}
+
 .section-map-shell {
   position: relative;
   width: 100%;
   color: var(--ink);
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-color: var(--section-map-ink-strong) transparent;
 }
 
 .section-map-svg {
   display: block;
   width: 100%;
+  min-width: 680px;
   height: auto;
   color: var(--ink);
   overflow: visible;
+}
+
+@media (min-width: 760px) {
+  .section-map-svg {
+    min-width: 0;
+  }
 }
 
 .section-map-spine {
@@ -214,7 +270,7 @@
 
 .section-map-artifact-dot {
   stroke: var(--section-map-ink-strong);
-  stroke-width: 1;
+  stroke-width: 1.4;
 }
 
 .section-map-artifact-dot.is-home {
@@ -243,33 +299,6 @@
 
 .section-map-row-hover {
   cursor: help;
-}
-
-.section-map-row-hover.is-toggleable {
-  cursor: pointer;
-}
-
-.section-map-station.is-toggleable .section-map-station-label {
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  text-decoration-color: var(--section-map-ink-underline);
-}
-
-.section-map-station.is-toggleable:hover .section-map-station-label,
-.section-map-station.is-toggleable:focus .section-map-station-label {
-  fill: var(--ink-mid);
-  text-decoration-color: var(--ink-mid);
-}
-
-.section-map-station.is-toggleable:focus {
-  outline: none;
-}
-
-.section-map-station.is-toggleable:focus .section-map-station-dot {
-  stroke: var(--ink-mid);
-  stroke-width: 1.5;
 }
 
 .section-map-fallback {

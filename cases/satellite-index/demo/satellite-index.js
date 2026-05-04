@@ -1,23 +1,30 @@
 // ─── Config ───────────────────────────────────────────────
 const WORKER_URL     = 'https://satellite-worker.platoscave.workers.dev';
 const MAPTILER_API_KEY = 'tkMgnElXUcAiA79ZmSAX';
-const MIN_GRID_SIZE  = 64;
-const SMALL_VIEWPORT_GRID_SIZE = 128;
-const MAX_GRID_SIZE  = 192;
-const TARGET_METERS_PER_SAMPLE = 10;
+const SMALL_VIEWPORT_GRID_SIZE = 512;
+const MEDIUM_VIEWPORT_GRID_SIZE = 256;
 const SMALL_VIEWPORT_AREA_KM2 = 0.1; // 10 hectares
-const MAX_LIVE_VIEWPORT_KM = 2;
+const MAX_LIVE_VIEWPORT_AREA_KM2 = 1; // 100 hectares
 const DEFAULT_CENTER = [10.5, 48.2];  // Bavaria — varied forest/farmland
 const DEFAULT_ZOOM   = 10;
 const MONO_FONT      = "'DM Mono', monospace";
+const NDVI_RENDER_SMOOTHING_PASSES = 1;
+const NDVI_ENCODE_MIN = -1;
+const NDVI_ENCODE_MAX = 1;
+const NDVI_DISPLAY_MIN = -1;
+const NDVI_DISPLAY_MAX = 1;
+const NDVI_BASE_PLANE_Z = -1.1;
+const NDVI_CONTOUR_PLANE_Z = NDVI_BASE_PLANE_Z + 0.01;
+const NDVI_CONTOUR_STEP = 0.2;
+const NDVI_CONTOUR_MAX_GRID_SIZE = 160;
 
-// Platoscave palette — rust → ochre → gold → sage-light → sage
+// Brightened Platoscave palette — copper → ochre → gold → fresh sage → green
 const NDVI_COLORSCALE = [
-  [0,    '#8B3A2A'],
-  [0.2,  '#9A7B3A'],
-  [0.45, '#B8943A'],
-  [0.65, '#6B8F62'],
-  [1,    '#4A6741'],
+  [0,    '#B84F35'],
+  [0.2,  '#C98B2E'],
+  [0.45, '#E1BA45'],
+  [0.65, '#88B96B'],
+  [1,    '#4F8F45'],
 ];
 
 // ─── State ────────────────────────────────────────────────
@@ -26,14 +33,15 @@ let busy      = false;
 let plotReady = false;
 let btnEl     = null;
 let baseToggleEl = null;
+let viewportReadoutEl = null;
 let showSatelliteBase = true;
 let lastNdviGrid = null;
+let lastRenderNdviGrid = null;
 let lastImageGrid = null;
 let lastBounds = null;
 let lastDate = null;
 let lastScene = null;
 let lastGridLabel = '—';
-let lastLiveSkipped = false;
 let lastAxes = null;
 
 function canUseMapLibre() {
@@ -67,19 +75,17 @@ function getViewportMetrics(bounds) {
 }
 
 function getAdaptiveGridSize(metrics) {
-  const nativeishSize = Math.ceil(Math.max(metrics.widthKm, metrics.heightKm) * 1000 / TARGET_METERS_PER_SAMPLE);
-  const smallViewportSize = metrics.areaKm2 <= SMALL_VIEWPORT_AREA_KM2
+  return metrics.areaKm2 <= SMALL_VIEWPORT_AREA_KM2
     ? SMALL_VIEWPORT_GRID_SIZE
-    : MIN_GRID_SIZE;
-  return clamp(Math.max(nativeishSize, smallViewportSize), MIN_GRID_SIZE, MAX_GRID_SIZE);
+    : MEDIUM_VIEWPORT_GRID_SIZE;
 }
 
 function canRequestLive(metrics) {
-  return metrics.widthKm <= MAX_LIVE_VIEWPORT_KM && metrics.heightKm <= MAX_LIVE_VIEWPORT_KM;
+  return metrics.areaKm2 <= MAX_LIVE_VIEWPORT_AREA_KM2;
 }
 
 function getLiveLimitLabel() {
-  return MAX_LIVE_VIEWPORT_KM + '×' + MAX_LIVE_VIEWPORT_KM + ' km';
+  return '100 ha';
 }
 
 function formatArea(metrics) {
@@ -125,7 +131,7 @@ function buildLocalAxes(metrics, grid) {
 
 // ─── Fixture NDVI generator ───────────────────────────────
 // Produces spatially coherent synthetic NDVI values seeded by viewport bounds.
-// Values are in the realistic NDVI range [-0.15, 0.82] for mixed landscapes.
+// Values span the full theoretical NDVI domain so fixture views can represent water-like negatives too.
 function generateNdviGrid(bounds, size) {
   const { west, south, east, north } = bounds;
   const lonStep = (east  - west)  / (size - 1);
@@ -140,17 +146,116 @@ function generateNdviGrid(bounds, size) {
         + 0.22 * Math.sin(lon * 85  + lat * 67)
         + 0.14 * Math.cos(lon * 160 - lat * 95)
         + 0.10 * Math.sin(lon * 240 + lat * 200)
-        + 0.06 * Math.cos(lon * 380 - lat * 310);
-      rowArr.push(Math.round(Math.max(-0.15, Math.min(0.82, v)) * 1000) / 1000);
+        + 0.06 * Math.cos(lon * 380 - lat * 310)
+        - 0.48 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+      rowArr.push(Math.round(clamp(v, NDVI_ENCODE_MIN, NDVI_ENCODE_MAX) * 1000) / 1000);
     }
     grid.push(rowArr);
   }
   return grid;
 }
 
+function smoothNdviGridForRender(grid, passes) {
+  let source = grid;
+
+  for (let pass = 0; pass < passes; pass++) {
+    source = source.map((row, rowIndex) =>
+      row.map((_, colIndex) => {
+        let weightedSum = 0;
+        let weightTotal = 0;
+
+        for (let rowOffset = -1; rowOffset <= 1; rowOffset++) {
+          for (let colOffset = -1; colOffset <= 1; colOffset++) {
+            const sampleRow = clamp(rowIndex + rowOffset, 0, source.length - 1);
+            const sampleCol = clamp(colIndex + colOffset, 0, row.length - 1);
+            const weight = (rowOffset === 0 ? 2 : 1) * (colOffset === 0 ? 2 : 1);
+            weightedSum += source[sampleRow][sampleCol] * weight;
+            weightTotal += weight;
+          }
+        }
+
+        return Math.round(weightedSum / weightTotal * 1000) / 1000;
+      })
+    );
+  }
+
+  return source;
+}
+
+function addContourIntersection(points, a, b, level) {
+  if (a.value === b.value) return;
+
+  const crosses = (a.value < level && b.value >= level) || (b.value < level && a.value >= level);
+  if (!crosses) return;
+
+  const t = (level - a.value) / (b.value - a.value);
+  points.push({
+    x: a.x + (b.x - a.x) * t,
+    y: a.y + (b.y - a.y) * t,
+  });
+}
+
+function buildNdviContourTraces(grid, axes) {
+  const rowCount = grid.length;
+  const colCount = grid[0] ? grid[0].length : 0;
+  if (rowCount < 2 || colCount < 2) return [];
+
+  const maxGridSize = Math.max(rowCount, colCount);
+  const sampleStep = Math.max(1, Math.ceil(maxGridSize / NDVI_CONTOUR_MAX_GRID_SIZE));
+  const x = [];
+  const y = [];
+  const z = [];
+
+  for (
+    let level = NDVI_DISPLAY_MIN + NDVI_CONTOUR_STEP;
+    level < NDVI_DISPLAY_MAX;
+    level = Math.round((level + NDVI_CONTOUR_STEP) * 1000) / 1000
+  ) {
+    for (let row = 0; row < rowCount - 1; row += sampleStep) {
+      const nextRow = Math.min(row + sampleStep, rowCount - 1);
+
+      for (let col = 0; col < colCount - 1; col += sampleStep) {
+        const nextCol = Math.min(col + sampleStep, colCount - 1);
+        const topLeft = { x: axes.x[col], y: axes.y[row], value: grid[row][col] };
+        const topRight = { x: axes.x[nextCol], y: axes.y[row], value: grid[row][nextCol] };
+        const bottomRight = { x: axes.x[nextCol], y: axes.y[nextRow], value: grid[nextRow][nextCol] };
+        const bottomLeft = { x: axes.x[col], y: axes.y[nextRow], value: grid[nextRow][col] };
+        const points = [];
+
+        addContourIntersection(points, topLeft, topRight, level);
+        addContourIntersection(points, topRight, bottomRight, level);
+        addContourIntersection(points, bottomRight, bottomLeft, level);
+        addContourIntersection(points, bottomLeft, topLeft, level);
+
+        for (let i = 0; i + 1 < points.length; i += 2) {
+          x.push(points[i].x, points[i + 1].x, null);
+          y.push(points[i].y, points[i + 1].y, null);
+          z.push(NDVI_CONTOUR_PLANE_Z, NDVI_CONTOUR_PLANE_Z, null);
+        }
+      }
+    }
+  }
+
+  if (!x.length) return [];
+
+  return [
+    {
+      type: 'scatter3d',
+      mode: 'lines',
+      x,
+      y,
+      z,
+      line: { color: '#8B3A2A', width: 2 },
+      opacity: 0.72,
+      hoverinfo: 'skip',
+      showlegend: false,
+    },
+  ];
+}
+
 // ─── PNG decoders ─────────────────────────────────────────
 // Decodes a base64 grayscale NDVI PNG (Worker format) into a 2-D numeric grid.
-// Encoding: uint8 = (ndvi + 0.2) / 1.05 * 255  →  ndvi = byte / 255 * 1.05 - 0.2
+// Encoding: uint8 = (ndvi + 1) / 2 * 255  →  ndvi = byte / 255 * 2 - 1
 function decodeNdviPng(base64) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -166,7 +271,8 @@ function decodeNdviPng(base64) {
         const row = [];
         for (let c = 0; c < img.width; c++) {
           const byte = pixels[(r * img.width + c) * 4]; // R channel = grayscale value
-          row.push(Math.round((byte / 255 * 1.05 - 0.2) * 1000) / 1000);
+          const ndvi = byte / 255 * (NDVI_ENCODE_MAX - NDVI_ENCODE_MIN) + NDVI_ENCODE_MIN;
+          row.push(Math.round(clamp(ndvi, NDVI_ENCODE_MIN, NDVI_ENCODE_MAX) * 1000) / 1000);
         }
         grid.push(row);
       }
@@ -220,15 +326,11 @@ function buildPlotAnnotationText() {
     return lastScene.date + ' · cloud ' + Math.round(lastScene.cloudCover) + '%';
   }
 
-  if (lastLiveSkipped) {
-    return (lastDate || getAnalysisDate()) + ' · live skipped';
-  }
-
   return (lastDate || getAnalysisDate()) + ' · fixture fallback';
 }
 
 // ─── Plotly surface ───────────────────────────────────────
-function renderSurface(ndviGrid, imageGrid, axes, annotationText) {
+function renderSurface(ndviGrid, imageGrid, axes, annotationText, showBase) {
   if (!canUsePlotly()) {
     throw new Error('Plotly is unavailable');
   }
@@ -237,7 +339,7 @@ function renderSurface(ndviGrid, imageGrid, axes, annotationText) {
   const surfaceAxes = axes || buildLocalAxes({ widthKm: 1, heightKm: 1 }, ndviGrid);
 
   if (imageGrid) {
-    const zFlat = imageGrid.map(row => row.map(() => -0.5));
+    const zFlat = imageGrid.map(row => row.map(() => NDVI_BASE_PLANE_Z));
     traces.push({
       type: 'surface',
       x: surfaceAxes.x,
@@ -248,6 +350,7 @@ function renderSurface(ndviGrid, imageGrid, axes, annotationText) {
       cmin: 0,
       cmax: 1,
       opacity: 0.7,
+      visible: showBase ? true : false,
       showscale: false,
       hoverinfo: 'skip',
       lighting: { diffuse: 0, specular: 0, ambient: 1 },
@@ -261,20 +364,9 @@ function renderSurface(ndviGrid, imageGrid, axes, annotationText) {
     y: surfaceAxes.y,
     z: ndviGrid,
     colorscale: NDVI_COLORSCALE,
-    cmin: -0.2,
-    cmax: 0.85,
-    contours: {
-      z: {
-        show: true,
-        usecolormap: false,
-        color: '#8B3A2A',
-        width: 3,
-        start: -0.2,
-        end: 0.85,
-        size: 0.1,
-        project: { z: true },
-      },
-    },
+    cmin: NDVI_DISPLAY_MIN,
+    cmax: NDVI_DISPLAY_MAX,
+    contours: { x: { show: false }, y: { show: false }, z: { show: false } },
     colorbar: {
       thickness: 10,
       len: 0.55,
@@ -290,6 +382,7 @@ function renderSurface(ndviGrid, imageGrid, axes, annotationText) {
     showscale: true,
   };
   traces.push(ndviTrace);
+  traces.push(...buildNdviContourTraces(ndviGrid, surfaceAxes));
 
   const layout = {
     margin: { t: 34, r: 60, b: 0, l: 0 },
@@ -335,7 +428,7 @@ function renderSurface(ndviGrid, imageGrid, axes, annotationText) {
       zaxis: {
         title: { text: 'NDVI', font: { family: MONO_FONT, size: 12, color: '#5C4F3A' } },
         tickfont: { family: MONO_FONT, size: 11, color: '#5C4F3A' },
-        range: [-0.5, 0.85],
+        range: [NDVI_BASE_PLANE_Z, NDVI_DISPLAY_MAX],
         gridcolor: '#9C8E78',
         showbackground: false,
         showline: false,
@@ -359,8 +452,7 @@ function renderSurface(ndviGrid, imageGrid, axes, annotationText) {
 
 function renderCurrentSurface() {
   if (!lastNdviGrid) return;
-  const imageGrid = showSatelliteBase ? lastImageGrid : null;
-  renderSurface(lastNdviGrid, imageGrid, lastAxes, buildPlotAnnotationText());
+  renderSurface(lastRenderNdviGrid || lastNdviGrid, lastImageGrid, lastAxes, buildPlotAnnotationText(), showSatelliteBase);
 }
 
 // ─── UI helpers ───────────────────────────────────────────
@@ -381,7 +473,7 @@ function setSurfacePlaceholder(msg) {
 
 function resetAnalysisButton() {
   if (btnEl) {
-    btnEl.textContent = 'Analyse visible area';
+    btnEl.textContent = 'Get NDVI for current map';
     btnEl.disabled = false;
   }
   busy = false;
@@ -402,7 +494,7 @@ function setMeta(bounds, date, scene) {
     : [
         { label: 'area',  value: formatArea(metrics) },
         { label: 'grid',  value: lastGridLabel },
-        { label: 'mode',  value: lastLiveSkipped ? 'fixture · live skipped' : 'demo fixture', demo: true },
+        { label: 'mode',  value: 'demo fixture', demo: true },
       ];
 
   el.textContent = '';
@@ -421,13 +513,30 @@ function setMeta(bounds, date, scene) {
   }
 }
 
+function updateViewportReadout() {
+  if (!map || !viewportReadoutEl || !btnEl) return;
+
+  const b = map.getBounds();
+  const bounds = { west: b.getWest(), south: b.getSouth(), east: b.getEast(), north: b.getNorth() };
+  const metrics = getViewportMetrics(bounds);
+  const liveAllowed = canRequestLive(metrics);
+  const gridSize = getAdaptiveGridSize(metrics);
+
+  viewportReadoutEl.textContent = liveAllowed
+    ? 'Current map ' + formatArea(metrics) + ' · ' + gridSize + '×' + gridSize
+    : 'Current map ' + formatArea(metrics) + ' · zoom in below ' + getLiveLimitLabel();
+  viewportReadoutEl.classList.toggle('satellite-viewport-readout--blocked', !liveAllowed);
+  btnEl.disabled = busy || !liveAllowed;
+  btnEl.setAttribute('aria-disabled', String(!liveAllowed));
+}
+
 // ─── Analysis ─────────────────────────────────────────────
 async function runAnalysis() {
   if (busy) return;
   busy = true;
 
   if (btnEl) {
-    btnEl.textContent = 'Analysing…';
+    btnEl.textContent = 'Getting NDVI…';
     btnEl.disabled = true;
   }
 
@@ -443,41 +552,39 @@ async function runAnalysis() {
     const gridSize = getAdaptiveGridSize(metrics);
     const liveAllowed = canRequestLive(metrics);
 
+    if (!liveAllowed) {
+      setStatus('Zoom in below ' + getLiveLimitLabel() + ' to get NDVI', 'working');
+      updateViewportReadout();
+      return;
+    }
+
     let grid      = null;
     let imageGrid = null;
     let scene     = null;
 
-    lastLiveSkipped = !liveAllowed;
-    setStatus(
-      liveAllowed
-        ? 'Fetching satellite data…'
-        : 'Live request skipped · zoom in below ' + getLiveLimitLabel() + ' · fixture shown',
-      'working'
-    );
+    setStatus('Fetching satellite data…', 'working');
 
-    if (liveAllowed) {
-      try {
-        const payload = JSON.stringify({ bounds, date, width: gridSize, height: gridSize });
-        const headers = { 'Content-Type': 'application/json' };
+    try {
+      const payload = JSON.stringify({ bounds, date, width: gridSize, height: gridSize });
+      const headers = { 'Content-Type': 'application/json' };
 
-        const [ndviRes, imageRes] = await Promise.all([
-          fetch(WORKER_URL + '/ndvi',  { method: 'POST', headers, body: payload }),
-          fetch(WORKER_URL + '/image', { method: 'POST', headers, body: payload }),
-        ]);
+      const [ndviRes, imageRes] = await Promise.all([
+        fetch(WORKER_URL + '/ndvi',  { method: 'POST', headers, body: payload }),
+        fetch(WORKER_URL + '/image', { method: 'POST', headers, body: payload }),
+      ]);
 
-        if (ndviRes.ok) {
-          const data = await ndviRes.json();
-          grid  = await decodeNdviPng(data.png);
-          scene = data.scene;
-        }
-
-        if (imageRes.ok) {
-          const data = await imageRes.json();
-          imageGrid = await decodeRgbToLuminance(data.png);
-        }
-      } catch (_) {
-        // Fall through to fixture.
+      if (ndviRes.ok) {
+        const data = await ndviRes.json();
+        grid  = await decodeNdviPng(data.png);
+        scene = data.scene;
       }
+
+      if (imageRes.ok) {
+        const data = await imageRes.json();
+        imageGrid = await decodeRgbToLuminance(data.png);
+      }
+    } catch (_) {
+      // Fall through to fixture.
     }
 
     if (!grid) {
@@ -488,6 +595,7 @@ async function runAnalysis() {
     }
 
     lastNdviGrid = grid;
+    lastRenderNdviGrid = smoothNdviGridForRender(grid, NDVI_RENDER_SMOOTHING_PASSES);
     lastImageGrid = imageGrid;
     lastBounds = bounds;
     lastDate = date;
@@ -498,15 +606,13 @@ async function runAnalysis() {
     renderCurrentSurface();
     setMeta(bounds, date, scene);
 
-    setStatus(
-      liveAllowed ? '' : 'Live request skipped · zoom in below ' + getLiveLimitLabel(),
-      liveAllowed ? null : 'working'
-    );
+    setStatus('', null);
   } catch (_) {
     setSurfacePlaceholder('Surface unavailable');
     setStatus('Unable to render NDVI surface · refresh and try again', 'error');
   } finally {
     resetAnalysisButton();
+    updateViewportReadout();
   }
 }
 
@@ -514,8 +620,9 @@ async function runAnalysis() {
 function initMap() {
   btnEl = document.getElementById('satellite-analyse-btn');
   baseToggleEl = document.getElementById('satellite-base-toggle');
+  viewportReadoutEl = document.getElementById('satellite-viewport-readout');
 
-  if (!btnEl || !baseToggleEl) return;
+  if (!btnEl || !baseToggleEl || !viewportReadoutEl) return;
 
   showSatelliteBase = baseToggleEl.getAttribute('aria-pressed') === 'true';
 
@@ -539,6 +646,9 @@ function initMap() {
   });
 
   map.addControl(new maplibregl.NavigationControl(), 'top-right');
+  map.on('load', updateViewportReadout);
+  map.on('move', updateViewportReadout);
+  updateViewportReadout();
 
   if (!canUsePlotly()) {
     setSurfacePlaceholder('Surface library unavailable');

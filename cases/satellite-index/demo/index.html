@@ -58,8 +58,9 @@
 
       <div class="satellite-controls" role="toolbar" aria-label="Analysis controls">
         <button class="satellite-analyse-btn" id="satellite-analyse-btn" type="button">
-          Analyse visible area
+          Get NDVI for current map
         </button>
+        <span class="satellite-viewport-readout" id="satellite-viewport-readout" aria-live="polite"></span>
       </div>
 
       <p class="satellite-status" id="satellite-status" aria-live="polite"></p>
@@ -72,15 +73,15 @@
         </div>
         <div>
           <div class="satellite-surface-tools">
-            <button class="satellite-toggle-control" id="satellite-base-toggle" type="button" aria-pressed="true">
+            <button class="satellite-toggle-control" id="satellite-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map">
+              <span class="satellite-control-label">Base map</span>
               <span class="satellite-toggle-track" aria-hidden="true">
                 <span class="satellite-toggle-thumb"></span>
               </span>
-              <span class="satellite-control-label">Satellite base</span>
             </button>
           </div>
           <div class="satellite-surface-wrap" id="satellite-surface-wrap" aria-label="NDVI 3D surface">
-            <p class="satellite-surface-placeholder">Navigate to an area<br>and click Analyse</p>
+            <p class="satellite-surface-placeholder">Navigate to an area<br>and get NDVI</p>
             <div id="satellite-surface"></div>
           </div>
         </div>

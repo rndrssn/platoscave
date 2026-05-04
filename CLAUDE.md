@@ -78,7 +78,7 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | Task involves | Load |
 |---------------|------|
 | GC simulation, scoring, diagnosis, viz | `modules/garbage-can/runtime/gc-simulation.js`, `modules/garbage-can/runtime/gc-viz.js`, `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js` |
-| Module 06 Ambiguity to Clarity | `modules/ambiguity-clarity/index.html`, `modules/ambiguity-clarity/section-map/index.html`, `modules/ambiguity-clarity/section-map/section-map.js`, `css/pages/the-descent.css` |
+| Module 06 Ambiguous Documents | `modules/ambiguity-clarity/index.html`, `modules/ambiguity-clarity/section-map/index.html`, `modules/ambiguity-clarity/section-map/section-map.js`, `css/pages/the-descent.css` |
 | UI, CSS, navigation, IA | `docs/10-guides/GUIDE-architecture.md`, `docs/40-principles/PRINCIPLE-coding-standards.md`, `docs/20-reference/REFERENCE-css-architecture.md`, `docs/20-reference/navigation-patterns.md` |
 | Module 04 Learning & Feedback | All files in `modules/learning-feedback/*` + relevant contract tests in `tests/` |
 | Products Over Projects module | `modules/products-over-projects/index.html`, `modules/products-over-projects/taxonomy/index.html`, `modules/products-over-projects/assessment/index.html`, `modules/products-over-projects/assessment/products-over-projects-assessment.js`, `css/pages/products-over-projects.css`, `tests/test-products-over-projects-assessment.js` |
@@ -157,8 +157,8 @@ Tests enforcing this contract:
 - Assess path fixes problemInflow to 'moderate' — survey does not capture inflow timing. Explorer exposes all four parameters. See `docs/10-guides/GUIDE-architecture.md`.
 - Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both set by gc-pressure-narrative.js and gc-diagnosis.js before page wiring runs.
 - Use simResult.meta.problems (not a hardcoded constant) when computing problem proportions.
-- Module 06 root is canonical local section `01` at `modules/ambiguity-clarity/`; Clarity Map is local section `02` at `modules/ambiguity-clarity/section-map/`.
-- Clarity Map anchor switch behavior is part of the feature contract: activating the shadow anchor row toggles mode and must stay keyboard-accessible (Enter/Space).
+- Module 06 root is canonical local section `01` at `modules/ambiguity-clarity/`; Document Map is local section `02` at `modules/ambiguity-clarity/section-map/`.
+- Document Map anchor switch behavior is part of the feature contract: anchor-type buttons set the active mode and must stay keyboard-accessible with synchronized `aria-pressed` state.
 - Module 04 root is canonical local section `01` at `modules/learning-feedback/`, titled "Epistemic Bets" under "Learning & Feedback".
 - Products Over Projects root is canonical local section `01` at `modules/products-over-projects/`. Sections: `01` Risk Lens, `02` Taxonomy (`modules/products-over-projects/taxonomy/`), `03` Assessment (`modules/products-over-projects/assessment/`).
 - Products Over Projects is written in an academic, risk-management tone. Avoid Substack/Medium-style hooks and ideology framing. The core claim is product-mode versus project-mode as a dominant residual-risk distinction, not "products good, projects bad."

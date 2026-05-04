@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Visual map of the eight stations of a brief, the three thresholds, and how improvement and new-feature briefs differ in what carries the weight." />
-  <title>Clarity Map · Ambiguity to Clarity · To the Bedrock</title>
+  <meta name="description" content="Visual map of eight ambiguous product documents, their handover thresholds, and which anchors carry improvement or new-feature work." />
+  <title>Document Map · Ambiguous Documents · To the Bedrock</title>
   <script src="../../../theme.config.js"></script>
   <script src="../../../js/theme-bootstrap.js"></script>
   <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
@@ -39,25 +39,25 @@
   <main id="main-content" class="main--narrow">
     <div class="module-page the-descent-page">
       <a class="module-back-link" href="../../" aria-label="Back to Catalogue"></a>
-      <a class="module-header-number module-context-number module-context-link" href="../">Ambiguity to Clarity</a>
+      <a class="module-header-number module-context-number module-context-link" href="../">Ambiguous Documents</a>
 
       <nav class="module-sub-nav" aria-label="Module sections">
-        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Ambiguity to Clarity</a>
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Ambiguous Documents</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">02</span> Clarity Map</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">02</span> Document Map</a>
       </nav>
 
       <header class="module-header">
-        <h1 class="module-header-title">Clarity Map</h1>
+        <h1 class="module-header-title">Document Map</h1>
         <p class="module-header-body">
-          The path from ambiguity to clarity, at a glance. Eight stations show handover readiness for PM, Design, and Dev. As you move down, ambiguity is reduced and work becomes more targeted.
+          Eight ambiguous documents, at a glance. Each row shows how ready that document is for exploration, solution work, and development. As you move down, the documentation should leave less for the next team to infer.
         </p>
         <p class="module-header-body">
-          Handover happens through artifacts: PM starts in <em>Narrative</em> and <em>Brief</em>. Design converges in <em>Brief</em> and <em>Plan</em>. Dev becomes build-ready in <em>Story</em> and <em>Ticket</em>. While <em>Problem</em> and <em>Direction</em> stay open, every brief still needs firm ground: <em>improvement briefs</em> anchor on <em>Where We Are</em>; <em>new-feature briefs</em> anchor on <em>People</em>.
+          Handover happens through documentation: PM starts in <em>Narrative</em> and <em>Brief</em>. Design converges in <em>Brief</em> and <em>Plan</em>. Dev becomes build-ready in <em>Story</em> and <em>Ticket</em>. While <em>Problem</em> and <em>Direction</em> stay open, every document set still needs firm ground: <em>improvement work</em> anchors on <em>Where We Are</em>; <em>new-feature work</em> anchors on <em>People</em>.
         </p>
       </header>
 
-      <section class="section-map-layout" aria-label="Clarity map visualization">
+      <section class="section-map-layout" aria-label="Document map visualization">
         <div class="section-map-legend" role="group" aria-label="Legend">
           <span class="section-map-legend-item">
             <span class="section-map-legend-dot section-map-legend-dot--home" aria-hidden="true"></span>
@@ -69,10 +69,20 @@
           </span>
         </div>
 
+        <div class="section-map-anchor-control" role="group" aria-label="Anchor type">
+          <span class="section-map-anchor-label">Anchor type</span>
+          <button class="section-map-anchor-button" type="button" data-anchor-mode="improvement" aria-pressed="false">
+            Improvement Opportunity
+          </button>
+          <button class="section-map-anchor-button" type="button" data-anchor-mode="new-feature" aria-pressed="false">
+            New Feature
+          </button>
+        </div>
+
         <p id="section-map-caption" class="section-map-caption" aria-live="polite"></p>
 
         <div id="section-map-shell" class="section-map-shell">
-          <svg id="section-map-svg" class="section-map-svg" role="img" aria-label="Vertical clarity path of eight brief sections with three thresholds"></svg>
+          <svg id="section-map-svg" class="section-map-svg" role="img" aria-label="Vertical document map of eight ambiguous product documents with three handover thresholds"></svg>
           <p id="section-map-fallback" class="essay-body section-map-fallback" hidden>The visualization couldn't load. Try refreshing the page.</p>
           <noscript>
             <p class="essay-body section-map-fallback">This visualization requires JavaScript. Enable it in your browser settings to view it.</p>
@@ -80,7 +90,7 @@
         </div>
 
         <p class="section-map-footnote">
-          Each section has one home. As the work moves forward through Narrative &rarr; Brief &rarr; Plan &rarr; Story &rarr; Ticket, earlier artifacts rarely get re-synced &mdash; what you see is the documentation problem in miniature. Ultimately the code becomes the brief.
+          Each document has one home. As the work moves forward through Narrative &rarr; Brief &rarr; Plan &rarr; Story &rarr; Ticket, earlier artifacts rarely get re-synced &mdash; what you see is the documentation problem in miniature. Ultimately the code becomes the most precise document.
         </p>
       </section>
 

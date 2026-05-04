@@ -54,9 +54,9 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
     - D3 force-directed graph showing how queueing theory, complexity science, and modern agile practice connect; observations they predict; folklore intuitions and the counter-intuitive surprises that contradict them.
   - **05 M/M/1 Derivation** (`/modules/flow-queuing/derivation/`)
     - Mathematical appendix deriving the M/M/1 queueing formula from Poisson arrivals, exponential service, and steady-state balance equations.
-- **Ambiguity to Clarity** — How open work becomes clear enough to test and build. Paired narratively with Module 04 (same epistemic bet, at unit scale).
-  - **01 Ambiguity to Clarity** (`/modules/ambiguity-clarity/`)
-  - **02 Clarity Map** (`/modules/ambiguity-clarity/section-map/`)
+- **Ambiguous Documents** — How ambiguous product documentation becomes precise enough to test and build. Paired narratively with Module 04 (same epistemic bet, at unit scale).
+  - **01 Ambiguous Documents** (`/modules/ambiguity-clarity/`)
+  - **02 Document Map** (`/modules/ambiguity-clarity/section-map/`)
 
 ### Also on site
 
@@ -66,8 +66,8 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 ### Module 06 Contract (Minimal)
 
 - Canonical root is local section `01` at `/modules/ambiguity-clarity/`.
-- Clarity Map is local section `02` at `/modules/ambiguity-clarity/section-map/`.
-- Section `02` runtime is data-driven (`STATIONS`, `TRACKS`, `ARTIFACTS`) and the anchor mode toggle must remain mouse + keyboard accessible (Enter/Space on toggleable rows).
+- Document Map is local section `02` at `/modules/ambiguity-clarity/section-map/`.
+- Section `02` runtime is data-driven (`STATIONS`, `TRACKS`, `ARTIFACTS`) and anchor-type buttons must remain mouse + keyboard accessible with correct `aria-pressed` state.
 
 ## Built With
 

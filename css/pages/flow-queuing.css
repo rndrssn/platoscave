@@ -561,7 +561,7 @@
 
 .queue-machine-concept {
   margin-top: 2rem;
-  --force-graph-label-size: 15px;
+  --force-graph-label-size: 10px;
   --force-graph-label-letter-spacing: 0;
 }
 

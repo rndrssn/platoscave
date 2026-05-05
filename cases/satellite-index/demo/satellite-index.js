@@ -528,16 +528,8 @@ function decodeIndexPng(base64, encMin, encMax) {
   });
 }
 
-function buildPlotAnnotationText() {
-  if (lastScene) {
-    return lastScene.date + ' · cloud ' + Math.round(lastScene.cloudCover) + '%';
-  }
-
-  return (lastDate || getAnalysisDate()) + ' · fixture fallback';
-}
-
 // ─── Plotly surface ───────────────────────────────────────
-function renderSurface(ndviGrid, imageGrid, axes, annotationText, showBase) {
+function renderSurface(ndviGrid, imageGrid, axes, showBase) {
   if (!canUsePlotly()) {
     throw new Error('Plotly is unavailable');
   }
@@ -592,24 +584,8 @@ function renderSurface(ndviGrid, imageGrid, axes, annotationText, showBase) {
   traces.push(...buildNdviContourTraces(ndviGrid, surfaceAxes));
 
   const layout = {
-    margin: { t: 34, r: 60, b: 0, l: 0 },
+    margin: { t: 16, r: 60, b: 0, l: 0 },
     paper_bgcolor: 'rgba(0,0,0,0)',
-    annotations: annotationText
-      ? [
-          {
-            text: annotationText,
-            xref: 'paper',
-            yref: 'paper',
-            x: 0,
-            y: 1.08,
-            xanchor: 'left',
-            yanchor: 'top',
-            showarrow: false,
-            font: { family: MONO_FONT, size: 12, color: '#5C4F3A' },
-            align: 'left',
-          },
-        ]
-      : [],
     scene: {
       bgcolor: 'rgba(0,0,0,0)',
       xaxis: {
@@ -659,7 +635,7 @@ function renderSurface(ndviGrid, imageGrid, axes, annotationText, showBase) {
 
 function renderCurrentSurface() {
   if (!lastNdviGrid) return;
-  renderSurface(lastRenderNdviGrid || lastNdviGrid, lastImageGrid, lastAxes, buildPlotAnnotationText(), showSatelliteBase);
+  renderSurface(lastRenderNdviGrid || lastNdviGrid, lastImageGrid, lastAxes, showSatelliteBase);
 }
 
 // ─── Index grid ───────────────────────────────────────────
@@ -699,10 +675,11 @@ function initIndexGrid() {
   }
 }
 
-function renderIndexSurface(def, renderGrid, axes, annotationText) {
+function renderIndexSurface(def, renderGrid, axes) {
   if (!canUsePlotly()) return;
   const plotId = 'satellite-plot-' + def.id;
   const wrapId = 'satellite-index-wrap-' + def.id;
+  const wrap = document.getElementById(wrapId);
 
   const trace = {
     type: 'surface',
@@ -725,17 +702,8 @@ function renderIndexSurface(def, renderGrid, axes, annotationText) {
   };
 
   const layout = {
-    margin: { t: 24, r: 52, b: 0, l: 0 },
+    margin: { t: 12, r: 52, b: 0, l: 0 },
     paper_bgcolor: 'rgba(0,0,0,0)',
-    annotations: annotationText ? [{
-      text: annotationText,
-      xref: 'paper', yref: 'paper',
-      x: 0, y: 1.06,
-      xanchor: 'left', yanchor: 'top',
-      showarrow: false,
-      font: { family: MONO_FONT, size: 10, color: '#5C4F3A' },
-      align: 'left',
-    }] : [],
     scene: {
       bgcolor: 'rgba(0,0,0,0)',
       xaxis: {
@@ -769,19 +737,17 @@ function renderIndexSurface(def, renderGrid, axes, annotationText) {
   if (indexPlotReady[def.id]) {
     Plotly.react(plotId, [trace], layout, config);
   } else {
-    Plotly.newPlot(plotId, [trace], layout, config);
-    const wrap = document.getElementById(wrapId);
     if (wrap) wrap.classList.add('has-surface');
+    Plotly.newPlot(plotId, [trace], layout, config);
     indexPlotReady[def.id] = true;
   }
 }
 
 function renderAllIndexSurfaces() {
   if (!lastAxes) return;
-  const annotationText = buildPlotAnnotationText();
   for (const def of INDEX_DEFS) {
     const grid = lastIndexRenderGrids[def.id];
-    if (grid) renderIndexSurface(def, grid, lastAxes, annotationText);
+    if (grid) renderIndexSurface(def, grid, lastAxes);
   }
 }
 
@@ -810,37 +776,22 @@ function resetAnalysisButton() {
 }
 
 function setMeta(bounds, date, scene) {
-  const el = document.getElementById('satellite-meta');
-  if (!el) return;
+  const sceneEl = document.querySelector('[data-satellite-scene-meta]');
+  if (!sceneEl) return;
 
-  const metrics = getViewportMetrics(bounds);
+  const sceneValue = scene
+    ? scene.constellation + ' / ' + scene.date + ' / cloud ' + Math.round(scene.cloudCover) + '%'
+    : 'fixture fallback / ' + (date || getAnalysisDate());
 
-  const items = scene
-    ? [
-        { label: 'area',   value: formatArea(metrics) },
-        { label: 'grid',   value: lastGridLabel },
-        { label: 'source', value: scene.constellation },
-      ]
-    : [
-        { label: 'area',  value: formatArea(metrics) },
-        { label: 'grid',  value: lastGridLabel },
-        { label: 'mode',  value: 'demo fixture', demo: true },
-      ];
-
-  el.textContent = '';
-  for (const item of items) {
-    const wrap  = document.createElement('span');
-    const label = document.createElement('span');
-    const value = document.createElement('span');
-    wrap.className  = 'sat-meta-item' + (item.demo ? ' sat-meta-demo' : '');
-    label.className = 'sat-meta-label';
-    value.className = 'sat-meta-value';
-    label.textContent = item.label;
-    value.textContent = item.value;
-    wrap.appendChild(label);
-    wrap.appendChild(value);
-    el.appendChild(wrap);
-  }
+  sceneEl.textContent = '';
+  const label = document.createElement('span');
+  const value = document.createElement('span');
+  label.className = 'satellite-receipt-label';
+  value.className = 'satellite-receipt-value' + (scene ? '' : ' satellite-receipt-value--demo');
+  label.textContent = 'Scene';
+  value.textContent = sceneValue;
+  sceneEl.appendChild(label);
+  sceneEl.appendChild(value);
 }
 
 function updateViewportReadout() {
@@ -853,8 +804,8 @@ function updateViewportReadout() {
   const gridSize = getAdaptiveGridSize(metrics);
 
   viewportReadoutEl.textContent = liveAllowed
-    ? 'Current map ' + formatArea(metrics) + ' · ' + gridSize + '×' + gridSize
-    : 'Current map ' + formatArea(metrics) + ' · zoom in below ' + getLiveLimitLabel();
+    ? formatArea(metrics) + ' / ' + gridSize + '×' + gridSize
+    : formatArea(metrics) + ' / zoom in below ' + getLiveLimitLabel();
   viewportReadoutEl.classList.toggle('satellite-viewport-readout--blocked', !liveAllowed);
   btnEl.disabled = busy || !liveAllowed;
   btnEl.setAttribute('aria-disabled', String(!liveAllowed));

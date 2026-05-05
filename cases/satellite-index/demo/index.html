@@ -49,10 +49,10 @@
       </nav>
 
       <header class="module-header">
-        <h1 class="module-header-title">NDVI Demo</h1>
+        <h1 class="module-header-title">Spectral Index Demo</h1>
         <p class="module-header-body">
-          The demo requests Sentinel-derived NDVI for the visible viewport through a Cloudflare Worker, then renders
-          the result as an analytical surface. Surface height represents NDVI — not elevation.
+          The demo requests Sentinel-derived NDVI, RGB context, and six companion spectral indices for the visible
+          viewport through a Cloudflare Worker. Each surface uses index value as analytical height — not elevation.
         </p>
       </header>
 
@@ -60,8 +60,7 @@
         <button class="satellite-analyse-btn" id="satellite-analyse-btn" type="button">
           Analyse viewport &rarr;
         </button>
-        <span class="satellite-viewport-readout" id="satellite-viewport-readout" aria-live="polite"></span>
-        <button class="satellite-toggle-control satellite-toggle-control--right" id="satellite-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map">
+        <button class="satellite-toggle-control" id="satellite-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map">
           <span class="satellite-control-label">Base map</span>
           <span class="satellite-toggle-track" aria-hidden="true">
             <span class="satellite-toggle-thumb"></span>
@@ -70,6 +69,17 @@
       </div>
 
       <p class="satellite-status" id="satellite-status" aria-live="polite"></p>
+
+      <div class="satellite-meta" id="satellite-meta" aria-label="Analysis metadata">
+        <p class="satellite-receipt-line satellite-receipt-line--request">
+          <span class="satellite-receipt-label">Request</span>
+          <span class="satellite-viewport-readout" id="satellite-viewport-readout" aria-live="polite"></span>
+        </p>
+        <p class="satellite-receipt-line satellite-receipt-line--scene" data-satellite-scene-meta>
+          <span class="satellite-receipt-label">Scene</span>
+          <span class="satellite-receipt-value satellite-receipt-value--empty">Run analysis</span>
+        </p>
+      </div>
 
       <div class="satellite-demo-stage">
         <div>
@@ -84,8 +94,6 @@
           </div>
         </div>
       </div>
-
-      <div class="satellite-meta" id="satellite-meta" aria-label="Analysis metadata"></div>
 
       <div class="satellite-indices-grid" id="satellite-indices-grid" aria-label="Additional vegetation indices"></div>
 

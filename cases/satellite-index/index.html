@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="../../css/themes.css" />
   <link rel="stylesheet" href="../../css/gc-viz.css" />
   <link rel="stylesheet" href="../../css/pages.css" />
+  <link rel="stylesheet" href="../../assets/vendor/katex/katex.min.css" />
   <link rel="icon" type="image/png" href="../../assets/images/doodles/skate_c.png" />
   <link rel="apple-touch-icon" href="../../assets/images/doodles/skate_c.png" />
 </head>
@@ -77,15 +78,17 @@
         <section class="essay-section">
           <h2 class="essay-heading">What the demo shows</h2>
           <p class="essay-body">
-            The demo renders an NDVI surface as a Plotly.js 3D visualisation for the visible map viewport. The
-            surface height represents the NDVI value — not elevation. Contour lines mark NDVI isolines across
-            the grid. A MapLibre map with a MapTiler basemap provides spatial context.
+            The demo renders seven vegetation index surfaces — NDVI, NDRE, NDWI, NDMI, EVI, SAVI, and CIre —
+            as Plotly.js 3D visualisations for the visible map viewport. Surface height represents the index value.
+            Contour lines mark NDVI isolines on the primary surface. A MapLibre map with a MapTiler basemap
+            provides spatial context.
           </p>
           <p class="essay-body">
-            The demo first requests Sentinel-2 L2A-derived NDVI and RGB context via the Sentinel Hub Process API,
-            routed through a Cloudflare Worker that handles OAuth credentials securely. If the live imagery path is
-            unavailable, the browser falls back to a procedural fixture — a spatially coherent synthetic NDVI grid
-            seeded by the viewport bounds and analysis date. The interaction model is identical in both modes.
+            The demo first requests Sentinel-2 L2A-derived data via the Sentinel Hub Process API, routed through
+            a Cloudflare Worker that handles OAuth credentials securely. All seven index requests are dispatched
+            in parallel for the same viewport and date. If the live imagery path is unavailable, the browser
+            falls back to procedural fixtures — spatially coherent synthetic grids seeded by the viewport bounds
+            and analysis date. The interaction model is identical in both modes.
           </p>
           <aside class="satellite-poc-card" aria-label="Proof of concept scope">
             <p>
@@ -102,6 +105,121 @@
         </section>
 
         <section class="essay-section">
+          <h2 class="essay-heading">Spectral indices</h2>
+          <p class="essay-body">
+            Each index exploits a specific feature of the electromagnetic reflectance spectrum of vegetation,
+            soil, or water. Sentinel-2 is particularly suited to crop monitoring because it carries three
+            red-edge bands (B05, B06, B07) absent from most earlier sensors, enabling direct measurement of
+            the chlorophyll absorption edge — the primary indicator of plant nitrogen status and photosynthetic
+            capacity. In the formulas below, &rho; denotes surface reflectance in the named spectral band.
+          </p>
+
+          <h3 class="essay-subheading">NDVI &mdash; Normalized Difference Vegetation Index</h3>
+          <figure class="index-equation" data-formula="\text{NDVI} = \frac{\rho_\text{NIR} - \rho_\text{Red}}{\rho_\text{NIR} + \rho_\text{Red}}"></figure>
+          <p class="essay-bands">Sentinel-2 &middot; B08 (NIR, 842&thinsp;nm) &middot; B04 (Red, 665&thinsp;nm)</p>
+          <p class="essay-body">
+            Chlorophyll absorbs red light strongly at its photosynthetic peak (~680&thinsp;nm), while the palisade
+            and spongy mesophyll layers of a leaf reflect and scatter NIR radiation intensively through multiple
+            internal cell-wall interfaces. The reflectance contrast between these two regions therefore scales with
+            canopy greenness. NDVI normalises this contrast to the interval [&minus;1,&thinsp;1]. Dense healthy canopy
+            yields values of 0.6&ndash;0.9; sparse or stressed vegetation 0.2&ndash;0.5; bare mineral soil
+            approximately 0.1; open water and cloud produce negative values. NDVI saturates in high-biomass
+            canopies because chlorophyll absorption in the red channel reaches a floor before NIR reflectance
+            reaches its ceiling with increasing leaf area index.
+          </p>
+
+          <h3 class="essay-subheading">NDRE &mdash; Normalized Difference Red Edge</h3>
+          <figure class="index-equation" data-formula="\text{NDRE} = \frac{\rho_\text{NIR} - \rho_\text{RE}}{\rho_\text{NIR} + \rho_\text{RE}}"></figure>
+          <p class="essay-bands">Sentinel-2 &middot; B08 (NIR, 842&thinsp;nm) &middot; B05 (Red Edge, 705&thinsp;nm)</p>
+          <p class="essay-body">
+            The red-edge region (680&ndash;750&thinsp;nm) is the steep reflectance slope between the chlorophyll
+            absorption maximum and the NIR plateau. The position and gradient of this slope shift as a function
+            of chlorophyll concentration: a nitrogen-deficient or senescing leaf narrows its absorption well,
+            and reflectance at B05 (705&thinsp;nm) rises accordingly. By comparing NIR to the red-edge band rather
+            than to the red band, NDRE measures chlorophyll content rather than simply canopy cover. It does not
+            saturate in dense crops where NDVI has ceased to discriminate, making it the preferred index for
+            nitrogen management in precision agriculture. Typical values for a healthy crop canopy fall in the
+            range 0.2&ndash;0.5.
+          </p>
+
+          <h3 class="essay-subheading">NDWI &mdash; Normalized Difference Water Index</h3>
+          <figure class="index-equation" data-formula="\text{NDWI} = \frac{\rho_\text{Green} - \rho_\text{NIR}}{\rho_\text{Green} + \rho_\text{NIR}}"></figure>
+          <p class="essay-bands">Sentinel-2 &middot; B03 (Green, 560&thinsp;nm) &middot; B08 (NIR, 842&thinsp;nm)</p>
+          <p class="essay-body">
+            Open water reflects green light moderately and absorbs NIR strongly, producing a positive
+            Green&thinsp;&minus;&thinsp;NIR contrast. Vegetation inverts this relationship: chlorophyll partially
+            transmits green light while the mesophyll strongly reflects NIR. The index therefore reliably
+            separates open water bodies (positive values) from vegetated and dry surfaces (negative values).
+            Following McFeeters (1996), this formulation uses B03 and B08; a related index by Gao (1996)
+            substitutes SWIR for green and is better understood as a canopy moisture proxy &mdash; that version
+            corresponds to NDMI below. In a crop context, NDWI is most informative at field margins,
+            irrigation channels, and drainage features, and can detect inundation or waterlogging at plot scale.
+          </p>
+
+          <h3 class="essay-subheading">NDMI &mdash; Normalized Difference Moisture Index</h3>
+          <figure class="index-equation" data-formula="\text{NDMI} = \frac{\rho_\text{NIR} - \rho_\text{SWIR}}{\rho_\text{NIR} + \rho_\text{SWIR}}"></figure>
+          <p class="essay-bands">Sentinel-2 &middot; B08 (NIR, 842&thinsp;nm) &middot; B11 (SWIR, 1610&thinsp;nm)</p>
+          <p class="essay-body">
+            Liquid water in plant tissue absorbs strongly in the short-wave infrared through overtone vibrations
+            of O&ndash;H molecular bonds. A well-hydrated crop canopy therefore reflects strongly in NIR (from
+            leaf structure) and absorbs in SWIR (from leaf water), yielding a large positive NDMI. As canopy
+            water content declines under drought stress, stomata close, cells lose turgor, and SWIR reflectance
+            rises as water is replaced by air, reducing NDMI. This makes NDMI a more direct estimator of plant
+            water stress than NDVI, which responds primarily to chlorophyll concentration rather than hydration
+            state. Typical irrigated crop values fall in the range 0.1&ndash;0.4; values approaching zero or
+            below indicate severe moisture deficit.
+          </p>
+
+          <h3 class="essay-subheading">EVI &mdash; Enhanced Vegetation Index</h3>
+          <figure class="index-equation" data-formula="\text{EVI} = 2.5 \cdot \frac{\rho_\text{NIR} - \rho_\text{Red}}{\rho_\text{NIR} + 6\,\rho_\text{Red} - 7.5\,\rho_\text{Blue} + 1}"></figure>
+          <p class="essay-bands">Sentinel-2 &middot; B08 (NIR, 842&thinsp;nm) &middot; B04 (Red, 665&thinsp;nm) &middot; B02 (Blue, 490&thinsp;nm)</p>
+          <p class="essay-body">
+            NDVI is susceptible to two systematic biases which EVI corrects simultaneously. First, atmospheric
+            aerosols preferentially scatter blue light through Rayleigh scattering, contaminating surface
+            reflectance retrievals; the &minus;7.5&thinsp;&rho;<sub>Blue</sub> term in the denominator reduces
+            this effect by coupling the blue channel to the aerosol signal. Second, at high leaf area index the
+            red channel reaches its absorption floor before NIR reflectance reaches its maximum, causing NDVI
+            to saturate; the linear denominator with coefficients C<sub>1</sub>&thinsp;=&thinsp;6 and
+            C<sub>2</sub>&thinsp;=&thinsp;7.5 preserves sensitivity across the full biomass range. EVI was
+            operationally developed for MODIS and transfers well to Sentinel-2, extending useful dynamic range
+            in dense canopies and aerosol-prone conditions. Typical cropland values during active growth are
+            0.4&ndash;0.7.
+          </p>
+
+          <h3 class="essay-subheading">SAVI &mdash; Soil Adjusted Vegetation Index</h3>
+          <figure class="index-equation" data-formula="\text{SAVI} = \frac{\rho_\text{NIR} - \rho_\text{Red}}{\rho_\text{NIR} + \rho_\text{Red} + L} \cdot (1 + L), \quad L = 0.5"></figure>
+          <p class="essay-bands">Sentinel-2 &middot; B08 (NIR, 842&thinsp;nm) &middot; B04 (Red, 665&thinsp;nm)</p>
+          <p class="essay-body">
+            When vegetation is sparse and does not completely cover the ground, bare soil contributes directly
+            to the pixel-average reflectance recorded by the sensor. Dry mineral soil reflects broadly across
+            the visible and NIR spectrum; its specific NIR-to-red ratio varies with soil brightness and moisture,
+            introducing noise into NDVI estimates that is uncorrelated with vegetation status. Huete (1988)
+            introduced the soil brightness correction factor <em>L</em> to shift the denominator away from
+            the singularity at the origin, where NDVI is most sensitive to soil background variation. At
+            <em>L</em>&thinsp;=&thinsp;0.5 (moderate fractional cover), SAVI reduces soil-induced variance
+            by roughly half relative to NDVI. It is the appropriate index for early-season monitoring, arid
+            and semi-arid landscapes, or any regime where fractional vegetation cover remains below
+            approximately 30&thinsp;%.
+          </p>
+
+          <h3 class="essay-subheading">CIre &mdash; Chlorophyll Index Red Edge</h3>
+          <figure class="index-equation" data-formula="\text{CI}_\text{re} = \frac{\rho_\text{NIR}}{\rho_\text{RE}} - 1"></figure>
+          <p class="essay-bands">Sentinel-2 &middot; B07 (NIR, 783&thinsp;nm) &middot; B05 (Red Edge, 705&thinsp;nm)</p>
+          <p class="essay-body">
+            Rather than normalising the NIR&ndash;red-edge contrast, CIre expresses it as a simple ratio minus
+            one, which preserves near-linear sensitivity over a wide range of chlorophyll concentrations. B05
+            (705&thinsp;nm) sits within the chlorophyll absorption well at the base of the red edge, while B07
+            (783&thinsp;nm) lies in the NIR plateau beyond chlorophyll absorption. The ratio
+            &rho;<sub>NIR</sub>&thinsp;/&thinsp;&rho;<sub>RE</sub> therefore scales directly with chlorophyll
+            content per unit leaf area, and subtracting one sets the baseline at reflectance equality. Unlike
+            normalised-difference forms, CIre is unbounded above zero, maintaining sensitivity at high chlorophyll
+            concentrations where NDRE begins to compress. Agricultural crops in active growth typically return
+            values of 0.5&ndash;2.5; values above 2 indicate dense, well-nourished canopies with high
+            photosynthetic capacity.
+          </p>
+        </section>
+
+        <section class="essay-section">
           <h2 class="essay-heading">Design decisions</h2>
           <p class="essay-body">
             Several decisions were made deliberately to keep the interaction model minimal.
@@ -112,14 +230,13 @@
             preserving the core analytical value: spatial vegetation-index inspection.
           </p>
           <p class="essay-body">
-            The index selection is fixed to NDVI for the first pass. Additional indices — NDRE, NDWI, EVI — are
-            straightforward additions once the pipeline is live, but adding them before the interaction model is
-            validated introduces unnecessary optionality.
+            Seven indices are computed simultaneously for the same viewport and date. NDVI serves as the primary
+            surface; the remaining six appear in a secondary grid below. Each surface uses an index-appropriate
+            colorscale and z-axis range. Adding further indices requires only a new evalscript on the Worker
+            and a definition entry in the client config.
           </p>
           <p class="essay-body">
-            The 3D surface uses NDVI as the z-axis height, not elevation. This is an analytical surface, not a
-            terrain visualisation. The label is explicit: z = NDVI. Elevation-height mode using a DEM grid is a
-            defined future enhancement.
+            Surface height represents the index value, not terrain elevation.
           </p>
         </section>
 
@@ -140,7 +257,7 @@
         <section class="essay-section">
           <h2 class="essay-heading">Try it</h2>
           <p class="essay-body">
-            Navigate to an area on the map and click Get NDVI for current map. The NDVI surface
+            Navigate to an area on the map and click Analyse viewport. The NDVI surface
             updates for the current viewport.
           </p>
           <div class="essay-links">
@@ -171,5 +288,7 @@
 
   <script src="../../js/module-route-data.js"></script>
   <script src="../../js/nav-controller.js"></script>
+  <script src="../../assets/vendor/katex/katex.min.js"></script>
+  <script src="../../js/katex-render.js"></script>
 </body>
 </html>

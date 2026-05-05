@@ -31,11 +31,11 @@ function testScriptOrderContract() {
 
 function testDataContract() {
   const stationCount = (runtimeSource.match(/id:\s*'[^']+'\s*,\s*number:\s*\d+/g) || []).length;
-  assert(stationCount === 8, 'Expected exactly 8 Document Map rows');
+  assert(stationCount === 8, 'Expected exactly 8 Document Map clarity concerns');
 
   assert(/const state = \{ mode: 'none' \};/.test(runtimeSource), 'Expected default mode to be neutral');
-  assert(/anchorFor:\s*'improvement'/.test(runtimeSource), 'Expected improvement anchor document');
-  assert(/anchorFor:\s*'new-feature'/.test(runtimeSource), 'Expected new-feature anchor document');
+  assert(/anchorFor:\s*'improvement'/.test(runtimeSource), 'Expected improvement anchor concern');
+  assert(/anchorFor:\s*'new-feature'/.test(runtimeSource), 'Expected new-feature anchor concern');
 
   ['narrative', 'brief', 'plan', 'story', 'ticket'].forEach((artifactId) => {
     assert(

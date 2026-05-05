@@ -1,5 +1,6 @@
 // ─── Config ───────────────────────────────────────────────
 const WORKER_URL     = 'https://satellite-worker.platoscave.workers.dev';
+const WORKER_API_KEY = '__WORKER_API_KEY__';
 const MAPTILER_API_KEY = 'tkMgnElXUcAiA79ZmSAX';
 const SMALL_VIEWPORT_GRID_SIZE = 512;
 const MEDIUM_VIEWPORT_GRID_SIZE = 256;
@@ -27,6 +28,181 @@ const NDVI_COLORSCALE = [
   [1,    '#4F8F45'],
 ];
 
+// ─── Additional index definitions ─────────────────────────
+const INDEX_DEFS = [
+  {
+    id: 'ndre', label: 'NDRE', desc: 'Red-edge chlorophyll',
+    endpoint: '/ndre', encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
+    colorscale: [
+      [0, '#6B7E7A'], [0.35, '#7EA898'], [0.55, '#88B96B'], [0.75, '#5A9A4A'], [1, '#2A6A28'],
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = 0.18
+            + 0.16 * Math.sin(lon * 85  + lat * 67)
+            + 0.10 * Math.cos(lon * 160 - lat * 95)
+            + 0.07 * Math.sin(lon * 240 + lat * 200)
+            + 0.04 * Math.cos(lon * 380 - lat * 310)
+            - 0.34 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, -1, 1) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
+  {
+    id: 'ndwi', label: 'NDWI', desc: 'Water content',
+    endpoint: '/ndwi', encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
+    colorscale: [
+      [0, '#C98B2E'], [0.4, '#C4BAB0'], [0.6, '#7AAABF'], [0.8, '#3A7A9A'], [1, '#0A4A6A'],
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = -0.12
+            - 0.16 * Math.sin(lon * 85  + lat * 67)
+            + 0.12 * Math.cos(lon * 110 + lat * 80)
+            + 0.08 * Math.sin(lon * 200 - lat * 140)
+            + 0.38 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, -1, 1) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
+  {
+    id: 'ndmi', label: 'NDMI', desc: 'Canopy moisture',
+    endpoint: '/ndmi', encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
+    colorscale: [
+      [0, '#B84F35'], [0.3, '#C4BAB0'], [0.55, '#6ABAA0'], [0.75, '#3A8A78'], [1, '#0A5A50'],
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = 0.10
+            + 0.14 * Math.sin(lon * 85  + lat * 67)
+            + 0.09 * Math.cos(lon * 130 - lat * 100)
+            + 0.06 * Math.sin(lon * 270 + lat * 180)
+            - 0.24 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, -1, 1) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
+  {
+    id: 'evi', label: 'EVI', desc: 'Enhanced vegetation',
+    endpoint: '/evi', encMin: -0.2, encMax: 1, displayMin: -0.2, displayMax: 1,
+    colorscale: [
+      [0, '#7A5A4A'], [0.2, '#B88A5A'], [0.45, '#D4B86A'], [0.65, '#88B96B'], [1, '#2A6A28'],
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = 0.30
+            + 0.18 * Math.sin(lon * 85  + lat * 67)
+            + 0.11 * Math.cos(lon * 155 - lat * 90)
+            + 0.08 * Math.sin(lon * 230 + lat * 195)
+            + 0.05 * Math.cos(lon * 370 - lat * 300)
+            - 0.36 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, -0.2, 1) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
+  {
+    id: 'savi', label: 'SAVI', desc: 'Soil-adjusted vegetation',
+    endpoint: '/savi', encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
+    colorscale: [
+      [0, '#8A5E3A'], [0.35, '#C4A060'], [0.55, '#C4C870'], [0.72, '#78A85A'], [1, '#2A5E28'],
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = 0.24
+            + 0.17 * Math.sin(lon * 85  + lat * 67)
+            + 0.11 * Math.cos(lon * 160 - lat * 95)
+            + 0.08 * Math.sin(lon * 240 + lat * 200)
+            + 0.05 * Math.cos(lon * 375 - lat * 305)
+            - 0.42 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, -1, 1) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
+  {
+    id: 'cire', label: 'CIre', desc: 'Chlorophyll index',
+    endpoint: '/cire', encMin: 0, encMax: 3, displayMin: 0, displayMax: 3,
+    colorscale: [
+      [0, '#E8E4D0'], [0.25, '#B8D48A'], [0.5, '#78B45A'], [0.75, '#3A8A35'], [1, '#0A5A15'],
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = 0.85
+            + 0.55 * Math.sin(lon * 85  + lat * 67)
+            + 0.35 * Math.cos(lon * 160 - lat * 95)
+            + 0.25 * Math.sin(lon * 240 + lat * 200)
+            - 0.90 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, 0, 3) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
+];
+
 // ─── State ────────────────────────────────────────────────
 let map       = null;
 let busy      = false;
@@ -43,6 +219,9 @@ let lastDate = null;
 let lastScene = null;
 let lastGridLabel = '—';
 let lastAxes = null;
+let lastIndexGrids = {};
+let lastIndexRenderGrids = {};
+let indexPlotReady = {};
 
 function canUseMapLibre() {
   return typeof maplibregl !== 'undefined' && typeof maplibregl.Map === 'function';
@@ -321,6 +500,34 @@ function decodeRgbToLuminance(base64) {
   });
 }
 
+// General index PNG decoder — same grayscale format, parameterised range.
+function decodeIndexPng(base64, encMin, encMax) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width  = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const pixels = ctx.getImageData(0, 0, img.width, img.height).data;
+      const grid = [];
+      for (let r = 0; r < img.height; r++) {
+        const row = [];
+        for (let c = 0; c < img.width; c++) {
+          const byte = pixels[(r * img.width + c) * 4];
+          const val = byte / 255 * (encMax - encMin) + encMin;
+          row.push(Math.round(clamp(val, encMin, encMax) * 1000) / 1000);
+        }
+        grid.push(row);
+      }
+      resolve(grid.reverse());
+    };
+    img.onerror = reject;
+    img.src = 'data:image/png;base64,' + base64;
+  });
+}
+
 function buildPlotAnnotationText() {
   if (lastScene) {
     return lastScene.date + ' · cloud ' + Math.round(lastScene.cloudCover) + '%';
@@ -455,6 +662,129 @@ function renderCurrentSurface() {
   renderSurface(lastRenderNdviGrid || lastNdviGrid, lastImageGrid, lastAxes, buildPlotAnnotationText(), showSatelliteBase);
 }
 
+// ─── Index grid ───────────────────────────────────────────
+function initIndexGrid() {
+  const container = document.getElementById('satellite-indices-grid');
+  if (!container) return;
+  for (const def of INDEX_DEFS) {
+    const panel = document.createElement('div');
+    panel.className = 'satellite-index-panel';
+
+    const header = document.createElement('div');
+    header.className = 'satellite-index-header';
+    const labelEl = document.createElement('span');
+    labelEl.className = 'satellite-index-label';
+    labelEl.textContent = def.label;
+    const descEl = document.createElement('span');
+    descEl.className = 'satellite-index-desc';
+    descEl.textContent = def.desc;
+    header.appendChild(labelEl);
+    header.appendChild(descEl);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'satellite-index-surface-wrap';
+    wrap.id = 'satellite-index-wrap-' + def.id;
+    wrap.setAttribute('aria-label', def.label + ' 3D surface');
+    const placeholder = document.createElement('p');
+    placeholder.className = 'satellite-index-placeholder';
+    placeholder.textContent = 'Run analysis to view';
+    const plot = document.createElement('div');
+    plot.id = 'satellite-plot-' + def.id;
+    wrap.appendChild(placeholder);
+    wrap.appendChild(plot);
+
+    panel.appendChild(header);
+    panel.appendChild(wrap);
+    container.appendChild(panel);
+  }
+}
+
+function renderIndexSurface(def, renderGrid, axes, annotationText) {
+  if (!canUsePlotly()) return;
+  const plotId = 'satellite-plot-' + def.id;
+  const wrapId = 'satellite-index-wrap-' + def.id;
+
+  const trace = {
+    type: 'surface',
+    x: axes.x,
+    y: axes.y,
+    z: renderGrid,
+    colorscale: def.colorscale,
+    cmin: def.displayMin,
+    cmax: def.displayMax,
+    contours: { x: { show: false }, y: { show: false }, z: { show: false } },
+    colorbar: {
+      thickness: 8,
+      len: 0.45,
+      tickformat: '.1f',
+      tickfont: { family: MONO_FONT, size: 10, color: '#5C4F3A' },
+      title: { text: def.label, font: { family: MONO_FONT, size: 10, color: '#5C4F3A' }, side: 'right' },
+    },
+    opacity: 0.96,
+    showscale: true,
+  };
+
+  const layout = {
+    margin: { t: 24, r: 52, b: 0, l: 0 },
+    paper_bgcolor: 'rgba(0,0,0,0)',
+    annotations: annotationText ? [{
+      text: annotationText,
+      xref: 'paper', yref: 'paper',
+      x: 0, y: 1.06,
+      xanchor: 'left', yanchor: 'top',
+      showarrow: false,
+      font: { family: MONO_FONT, size: 10, color: '#5C4F3A' },
+      align: 'left',
+    }] : [],
+    scene: {
+      bgcolor: 'rgba(0,0,0,0)',
+      xaxis: {
+        title: { text: 'E', font: { family: MONO_FONT, size: 10, color: '#5C4F3A' } },
+        tickfont: { family: MONO_FONT, size: 9, color: '#5C4F3A' },
+        ticksuffix: ' m',
+        gridcolor: '#C4BAB0',
+        zeroline: false, showline: false, showspikes: false, showbackground: false,
+      },
+      yaxis: {
+        title: { text: 'N', font: { family: MONO_FONT, size: 10, color: '#5C4F3A' } },
+        tickfont: { family: MONO_FONT, size: 9, color: '#5C4F3A' },
+        ticksuffix: ' m',
+        gridcolor: '#C4BAB0',
+        zeroline: false, showline: false, showspikes: false, showbackground: false,
+      },
+      zaxis: {
+        title: { text: def.label, font: { family: MONO_FONT, size: 10, color: '#5C4F3A' } },
+        tickfont: { family: MONO_FONT, size: 9, color: '#5C4F3A' },
+        range: [def.displayMin, def.displayMax],
+        gridcolor: '#9C8E78',
+        showbackground: false, showline: false, showspikes: false,
+      },
+      camera: { eye: { x: 1.5, y: -1.5, z: 1.1 } },
+    },
+    font: { family: MONO_FONT, size: 10 },
+  };
+
+  const config = { displayModeBar: false, responsive: true };
+
+  if (indexPlotReady[def.id]) {
+    Plotly.react(plotId, [trace], layout, config);
+  } else {
+    Plotly.newPlot(plotId, [trace], layout, config);
+    const wrap = document.getElementById(wrapId);
+    if (wrap) wrap.classList.add('has-surface');
+    indexPlotReady[def.id] = true;
+  }
+}
+
+function renderAllIndexSurfaces() {
+  if (!lastAxes) return;
+  const annotationText = buildPlotAnnotationText();
+  for (const def of INDEX_DEFS) {
+    const grid = lastIndexRenderGrids[def.id];
+    if (grid) renderIndexSurface(def, grid, lastAxes, annotationText);
+  }
+}
+
 // ─── UI helpers ───────────────────────────────────────────
 function setStatus(msg, variant) {
   const el = document.getElementById('satellite-status');
@@ -473,7 +803,7 @@ function setSurfacePlaceholder(msg) {
 
 function resetAnalysisButton() {
   if (btnEl) {
-    btnEl.textContent = 'Get NDVI for current map';
+    btnEl.textContent = 'Analyse viewport →';
     btnEl.disabled = false;
   }
   busy = false;
@@ -536,7 +866,7 @@ async function runAnalysis() {
   busy = true;
 
   if (btnEl) {
-    btnEl.textContent = 'Getting NDVI…';
+    btnEl.textContent = 'Analysing…';
     btnEl.disabled = true;
   }
 
@@ -564,13 +894,15 @@ async function runAnalysis() {
 
     setStatus('Fetching satellite data…', 'working');
 
+    const rawIndexGrids = {};
     try {
       const payload = JSON.stringify({ bounds, date, width: gridSize, height: gridSize });
-      const headers = { 'Content-Type': 'application/json' };
+      const headers = { 'Content-Type': 'application/json', 'X-API-Key': WORKER_API_KEY };
 
-      const [ndviRes, imageRes] = await Promise.all([
+      const [ndviRes, imageRes, ...idxResults] = await Promise.all([
         fetch(WORKER_URL + '/ndvi',  { method: 'POST', headers, body: payload }),
         fetch(WORKER_URL + '/image', { method: 'POST', headers, body: payload }),
+        ...INDEX_DEFS.map(def => fetch(WORKER_URL + def.endpoint, { method: 'POST', headers, body: payload })),
       ]);
 
       if (ndviRes.ok) {
@@ -583,15 +915,30 @@ async function runAnalysis() {
         const data = await imageRes.json();
         imageGrid = await decodeRgbToLuminance(data.png);
       }
+
+      for (let i = 0; i < INDEX_DEFS.length; i++) {
+        const def = INDEX_DEFS[i];
+        if (idxResults[i].ok) {
+          try {
+            const data = await idxResults[i].json();
+            rawIndexGrids[def.id] = await decodeIndexPng(data.png, def.encMin, def.encMax);
+          } catch (_) {}
+        }
+      }
     } catch (_) {
-      // Fall through to fixture.
+      // Fall through to fixtures.
     }
 
     if (!grid) {
-      setStatus('Generating fixture NDVI surface…', 'working');
+      setStatus('Generating fixture surfaces…', 'working');
       // Yield so status text paints before synchronous grid computation.
       await new Promise(r => setTimeout(r, 0));
       grid = generateNdviGrid(bounds, gridSize);
+    }
+
+    const indexGrids = {};
+    for (const def of INDEX_DEFS) {
+      indexGrids[def.id] = rawIndexGrids[def.id] || def.generate(bounds, gridSize);
     }
 
     lastNdviGrid = grid;
@@ -602,8 +949,14 @@ async function runAnalysis() {
     lastScene = scene;
     lastGridLabel = getGridLabel(grid, gridSize);
     lastAxes = buildLocalAxes(metrics, grid);
+    lastIndexGrids = indexGrids;
+    lastIndexRenderGrids = {};
+    for (const def of INDEX_DEFS) {
+      lastIndexRenderGrids[def.id] = smoothNdviGridForRender(indexGrids[def.id], NDVI_RENDER_SMOOTHING_PASSES);
+    }
 
     renderCurrentSurface();
+    renderAllIndexSurfaces();
     setMeta(bounds, date, scene);
 
     setStatus('', null);
@@ -671,6 +1024,7 @@ function initMap() {
   });
 
   btnEl.addEventListener('click', runAnalysis);
+  initIndexGrid();
 }
 
 // ─── Boot ─────────────────────────────────────────────────

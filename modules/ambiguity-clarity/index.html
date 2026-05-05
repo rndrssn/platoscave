@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="How ambiguous product documentation is split into eight documents that become precise enough to design, test, and build." />
+  <meta name="description" content="How product documentation carries work from ambiguous intent toward code that is precise enough to test and build." />
   <title>Ambiguous Documents · To the Bedrock</title>
   <script src="../../theme.config.js"></script>
   <script src="../../js/theme-bootstrap.js"></script>
@@ -53,115 +53,115 @@
           Product work usually enters the organisation as documentation before it enters the codebase. The danger is not that early documents are ambiguous; the danger is pretending they are already precise enough to hand over.
         </p>
         <p class="module-header-body">
-          This module treats a brief as a documentation system made of eight working documents. They should be ordered so ambiguity decreases as you read down: the top keeps the question open, the middle narrows the design surface, and the bottom is where engineering can build without inventing missing decisions.
+          This module follows a lineage of artifacts: narrative, brief, plan, story, ticket, and finally code. PM, UX, and engineering rely on different artifacts because they work at different distances from ambiguity.
         </p>
         <p class="module-header-body">
-          The documents are provisional, not sacred. They should reduce ambiguity enough for the next responsible move, while staying open to evidence that changes the bet. When documentation cannot absorb feedback, the organisation accumulates <a href="../learning-feedback/feedback-debt/">Feedback Debt</a>.
+          Documentation does not remove uncertainty completely. It should reduce enough ambiguity for the next responsible move, while staying open to evidence that changes the bet. When documentation cannot absorb feedback, the organisation accumulates <a href="../learning-feedback/feedback-debt/">Feedback Debt</a>.
         </p>
       </header>
 
       <article class="module-essay">
 
         <section class="essay-section">
-          <h2 class="essay-heading">What the documents are for</h2>
+          <h2 class="essay-heading">Why documentation exists</h2>
           <p class="essay-body">
-            Early documentation is the artefact before convergence. It holds the problem open so product, design, and engineering can explore without mistaking a first description for a final decision. A PRD &mdash; or whatever the organisation calls its closing document &mdash; comes later, once the solution is understood.
+            Early documentation is the artifact before convergence. It holds the problem open so PM, UX, and engineering can explore without mistaking a first description for a final decision. A PRD &mdash; or whatever the organisation calls its closing document &mdash; comes later, once the solution is understood.
           </p>
           <p class="essay-body">
             Writing the closing document before discovery is the common failure mode. It looks decisive, but usually means the documentation stopped holding ambiguity before the team had enough signal.
           </p>
           <p class="essay-body">
-            There are two common documentation paths. <strong>Improvement work</strong> changes something that already exists; it needs a <em>Where We Are</em> document as an anchor, because design and engineering are not starting from zero. <strong>New-feature work</strong> has no such ground to stand on, so the <em>People</em> document has to carry more weight &mdash; it is the only scaffolding available.
+            There are two common documentation paths. <strong>Improvement work</strong> changes something that already exists; it needs <em>Where We Are</em> as an anchor, because UX and engineering are not starting from zero. <strong>New-feature work</strong> has no such ground to stand on, so <em>People</em> has to carry more weight &mdash; it is the only scaffolding available.
           </p>
         </section>
 
         <section class="essay-section">
-          <h2 class="essay-heading">The eight documents</h2>
+          <h2 class="essay-heading">Eight clarity concerns</h2>
           <p class="essay-body">
-            Each document does one job. The further down the set you go, the less room there should be for interpretation.
+            These are not eight separate documents. They are concerns that show up across the documentation lineage. The further a concern travels toward tickets and code, the less room there should be for interpretation.
           </p>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">1 &middot; Problem Document</h3>
+            <h3 class="taxonomy-dimension-title">1 &middot; Problem</h3>
             <p class="essay-body">
-              Why this work exists at all. The point of departure. Must be agreed before anything else moves. Ambiguity is highest here and that is correct &mdash; premature precision at the top of the document set is how solutions get smuggled in as problems.
+              Why this work exists at all. The point of departure. Must be agreed before anything else moves. Ambiguity is highest here and that is correct &mdash; premature precision at the top of the lineage is how solutions get smuggled in as problems.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">2 &middot; Direction Document</h3>
+            <h3 class="taxonomy-dimension-title">2 &middot; Direction</h3>
             <p class="essay-body">
-              The desired change in the world. Outcome, not solution. This is the earliest document where design can start diverging, and the last document where the work is still fully open. After this point the shape of the thing begins to matter.
+              The desired change in the world. Outcome, not solution. This is the earliest point where UX can start diverging, and the last point where the work is still fully open. After this, the shape of the thing begins to matter.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">3 &middot; Where We Are Document <span class="section-sub">(improvement work only)</span></h3>
+            <h3 class="taxonomy-dimension-title">3 &middot; Where We Are <span class="section-sub">(improvement work only)</span></h3>
             <p class="essay-body">
-              A shared baseline &mdash; how the current thing works, what is broken, what the constraints of the existing system are. Without this document, the first week of any improvement project is spent reconstructing it anyway.
+              A shared baseline &mdash; how the current thing works, what is broken, what the constraints of the existing system are. Without this, the first week of any improvement project is spent reconstructing it anyway.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">4 &middot; People Document</h3>
+            <h3 class="taxonomy-dimension-title">4 &middot; People</h3>
             <p class="essay-body">
               Who is affected, what they are trying to accomplish, under what conditions. Load-bearing in new-feature documentation where there is no existing feature to orient around. In improvement work this still matters, but <em>Where We Are</em> shares the weight.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">5 &middot; Scope Document</h3>
+            <h3 class="taxonomy-dimension-title">5 &middot; Scope</h3>
             <p class="essay-body">
-              In, out, and open questions. The open-questions column is the one to watch: it should shrink as discovery progresses. A scope document that stays static is a scope document that is not being challenged.
+              In, out, and open questions. The open-questions column is the one to watch: it should shrink as discovery progresses. Scope that stays static is scope that is not being challenged.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">6 &middot; Slice Document <span class="section-sub">(stories)</span></h3>
+            <h3 class="taxonomy-dimension-title">6 &middot; Slices <span class="section-sub">(stories)</span></h3>
             <p class="essay-body">
-              User-facing units of value. Written loosely here to keep exploration possible; tightened into ticket-ready form later, in the PRD or directly in the backlog. If you cannot yet write this document, the direction above probably is not specific enough.
+              User-facing units of value. Written loosely here to keep exploration possible; tightened into ticket-ready form later, in the PRD or directly in the backlog. If you cannot yet write these, the direction above probably is not specific enough.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">7 &middot; Constraints Document</h3>
+            <h3 class="taxonomy-dimension-title">7 &middot; Constraints</h3>
             <p class="essay-body">
-              The boundaries the solution must operate within: legal, technical, deadlines, non-functional needs, integration dependencies. Should be short. If this document gets long, scope decisions have crept in disguised as constraints.
+              The boundaries the solution must operate within: legal, technical, deadlines, non-functional needs, integration dependencies. Should be short. If this list gets long, scope decisions have crept in disguised as constraints.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">8 &middot; Acceptance Criteria Document</h3>
+            <h3 class="taxonomy-dimension-title">8 &middot; Acceptance Criteria</h3>
             <p class="essay-body">
-              Binary pass/fail conditions. The most precise document in the set, and the one with the least ambiguity. If these are hard to write, the documents above are not yet clear enough &mdash; which is information, not failure.
+              Binary pass/fail conditions. This is the least ambiguous concern because it sits closest to build and test. If acceptance criteria are hard to write, the artifacts above are not yet clear enough &mdash; which is information, not failure.
             </p>
           </div>
         </section>
 
         <section class="essay-section">
-          <h2 class="essay-heading">Three thresholds</h2>
+          <h2 class="essay-heading">Three readiness thresholds</h2>
           <p class="essay-body">
-            A documentation set becomes ready in stages. Different kinds of work can start when different documents are stable enough. Treating those thresholds as one moment is how design starts too late or locks down too early.
+            The documentation lineage becomes useful in stages. Different functions can start when the artifacts they rely on are clear enough. Treating those thresholds as one moment is how UX starts too late or locks down too early.
           </p>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">Explore opens <span class="section-sub">(after Direction)</span></h3>
+            <h3 class="taxonomy-dimension-title">PM can frame <span class="section-sub">(after Direction)</span></h3>
             <p class="essay-body">
-              The Problem and Direction documents together are enough to start exploration. You do not need users, scope, or stories yet. Waiting for them is how design shows up after decisions are already made.
+              Problem and direction together are enough to start exploration and frame the work. You do not need users, scope, or stories yet. Waiting for them is how UX shows up after decisions are already made.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">Solution can commit <span class="section-sub">(after Slices)</span></h3>
+            <h3 class="taxonomy-dimension-title">UX can commit <span class="section-sub">(after Slices)</span></h3>
             <p class="essay-body">
-              People, Scope, and Slice documents are all known. This is the right threshold for solution work to commit. Earlier than this, detailed work is often reworked. Much later than this, keeping everything open creates churn.
+              People, scope, and slices are known well enough for solution work to commit. Earlier than this, detailed design is often reworked. Much later than this, keeping everything open creates churn.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
-            <h3 class="taxonomy-dimension-title">Dev can build <span class="section-sub">(after Acceptance Criteria)</span></h3>
+            <h3 class="taxonomy-dimension-title">Engineering can build <span class="section-sub">(after Acceptance Criteria)</span></h3>
             <p class="essay-body">
-              Fully unlocked at Acceptance Criteria. Earlier documents contribute gradually; the bottom of the set is where dev can build without interpretation.
+              Fully unlocked at acceptance criteria. Earlier artifacts contribute gradually; the bottom of the lineage is where engineering can build without inventing missing decisions.
             </p>
           </div>
         </section>
@@ -172,7 +172,7 @@
             This documentation problem happens many times over in any organisation. <a href="../learning-feedback/">04 &middot; Learning &amp; Feedback</a> asks <em>where</em> an organisation should commit to knowing &mdash; which paths it can afford to run sequentially and which must stay genuinely open. This module shows <em>how</em> one path is documented while it runs.
           </p>
           <p class="essay-body">
-            The same bet, at two altitudes. A document set that pretends to be final is a portfolio that pretends complexity is manageable &mdash; the same failure mode, one level down.
+            The same bet, at two altitudes. Documentation that pretends to be final is a portfolio that pretends complexity is manageable &mdash; the same failure mode, one level down.
           </p>
         </section>
 

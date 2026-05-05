@@ -36,7 +36,7 @@ assertNotMatches(overviewHtml, staleFixtureOnlyCopy, 'Overview must not describe
 assertNotMatches(demoHtml, staleFixtureOnlyCopy, 'Demo must not describe the pipeline as disconnected');
 
 assertIncludes(overviewHtml, 'live-first, with a fixture fallback', 'Overview should state live-first/fallback behavior');
-assertIncludes(overviewHtml, 'Get NDVI for current map', 'Overview try-it copy should match demo action wording');
+assertIncludes(overviewHtml, 'Analyse viewport', 'Overview try-it copy should match demo action wording');
 assertNotMatches(overviewHtml, /select a date|Analyse visible area/, 'Overview should not reference removed date picker or old action copy');
 assertIncludes(demoHtml, 'first requests live Sentinel-derived NDVI', 'Demo note should state live data path');
 assertIncludes(demoHtml, 'synthetic fixture seeded by the same', 'Demo note should state fallback path');
@@ -49,11 +49,11 @@ assertIncludes(demoHtml, '<span class="satellite-control-label">Base map</span>'
 assertNotMatches(demoHtml, /Satellite base/, 'Satellite base copy should not return as a peer action label');
 assertNotMatches(demoHtml, /class="satellite-base-toggle" type="checkbox"/, 'Satellite base toggle should not use the hidden checkbox pattern');
 assertIncludes(demoHtml, 'id="satellite-viewport-readout"', 'Live viewport readout missing');
-assertIncludes(demoHtml, 'Get NDVI for current map', 'Primary action should use current-map NDVI wording');
+assertIncludes(demoHtml, 'Analyse viewport', 'Primary action should use analyse viewport wording');
 assertNotMatches(demoHtml, /Analyse visible area/, 'Primary action should not use technical analysis wording');
 assertNotMatches(demoHtml, /id="satellite-date"|type="date"/, 'Date picker should not be present in the demo controls');
 assertNotMatches(demoHtml, /<span class="satellite-control-label">Index<\/span>|Map &middot; current viewport|NDVI surface &middot; z = NDVI/, 'Technical labels above the canvases should stay removed');
-assertIncludes(demoHtml, '<div class="satellite-surface-tools">', 'Satellite base toggle should sit above the Plotly surface');
+assertIncludes(demoHtml, 'id="satellite-base-toggle"', 'Satellite base toggle should be present in the controls bar');
 assertIncludes(demoHtml, '<p class="satellite-status" id="satellite-status" aria-live="polite"></p>', 'Status line should start empty');
 
 assertIncludes(demoHtml, 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css', 'MapLibre CSS must be exact-pinned');
@@ -64,6 +64,8 @@ assertNotMatches(demoHtml, /maplibre-gl@4\/|plotly\.js-dist-min@2\//, 'Satellite
 assertNotMatches(moduleRouteData, /cases\/|satellite-index/, 'Cases should stay out of module route data');
 
 assertIncludes(demoJs, "const WORKER_URL     = 'https://satellite-worker.platoscave.workers.dev';", 'Worker URL contract changed');
+assertIncludes(demoJs, "const WORKER_API_KEY = '__WORKER_API_KEY__';", 'WORKER_API_KEY must use placeholder — real key is injected by GitHub Actions at deploy time');
+assertIncludes(demoJs, "'X-API-Key': WORKER_API_KEY", 'X-API-Key header must be sent on all Worker requests');
 assertIncludes(demoJs, "fetch(WORKER_URL + '/ndvi'", 'NDVI endpoint should be fetched');
 assertIncludes(demoJs, "fetch(WORKER_URL + '/image'", 'Image endpoint should be fetched');
 assertIncludes(demoJs, 'const SMALL_VIEWPORT_GRID_SIZE = 512;', 'Small viewport adaptive grid size changed');
@@ -110,10 +112,10 @@ assertIncludes(demoJs, 'const date   = getAnalysisDate();', 'Demo should use an 
 assertIncludes(demoJs, 'let lastImageGrid = null;', 'Satellite base toggle should use cached image data');
 assertIncludes(demoJs, 'renderSurface(lastRenderNdviGrid || lastNdviGrid, lastImageGrid, lastAxes, buildPlotAnnotationText(), showSatelliteBase);', 'Satellite base toggle should re-render cached smoothed NDVI and cached base without refetching');
 assertIncludes(demoJs, 'visible: showBase ? true : false', 'Satellite base toggle should use Plotly trace visibility instead of removing the base trace');
-assertIncludes(demoJs, "btnEl.textContent = 'Get NDVI for current map';", 'Primary action reset copy should use current-map NDVI wording');
-assertIncludes(demoJs, "btnEl.textContent = 'Getting NDVI…';", 'Busy action copy should use current-map NDVI wording');
+assertIncludes(demoJs, "btnEl.textContent = 'Analyse viewport →';", 'Primary action reset copy should use analyse viewport wording');
+assertIncludes(demoJs, "btnEl.textContent = 'Analysing…';", 'Busy action copy should use analysing wording');
 assertIncludes(demoJs, "'Current map ' + formatArea(metrics)", 'Viewport readout should use current-map wording');
-assertNotMatches(demoJs, /Analyse visible area|Analysing…|to analyse|Viewport ' \+ formatArea/, 'Technical analysis/viewport copy should not return');
+assertNotMatches(demoJs, /Analyse visible area|to analyse|Viewport ' \+ formatArea/, 'Old analysis/viewport copy should not return');
 assertIncludes(demoJs, "baseToggleEl.getAttribute('aria-pressed') === 'true'", 'Satellite base toggle should initialize from aria-pressed');
 assertIncludes(demoJs, "baseToggleEl.addEventListener('click'", 'Satellite base toggle should use button click handling');
 assertIncludes(demoJs, "baseToggleEl.setAttribute('aria-pressed', String(showSatelliteBase));", 'Satellite base toggle should keep aria-pressed in sync');
@@ -140,5 +142,23 @@ assertIncludes(selectorBlock(css, '.satellite-toggle-track'), 'width: 1.82rem;',
 assertIncludes(selectorBlock(css, '.satellite-analyse-btn'), 'min-height: 44px;', 'Analyze button should meet mobile touch-target minimum');
 assertIncludes(css, '.satellite-status--error', 'Error status style missing');
 assertIncludes(css, '#satellite-map.satellite-map-fallback', 'Map dependency fallback style missing');
+
+assertIncludes(demoHtml, 'id="satellite-indices-grid"', 'Additional indices grid container missing');
+assertIncludes(demoJs, 'const INDEX_DEFS = [', 'INDEX_DEFS config array missing');
+for (const id of ['ndre', 'ndwi', 'ndmi', 'evi', 'savi', 'cire']) {
+  assertIncludes(demoJs, "endpoint: '/" + id + "'", 'Worker endpoint missing for index: ' + id);
+}
+assertIncludes(demoJs, 'function decodeIndexPng(base64, encMin, encMax)', 'General index PNG decoder missing');
+assertIncludes(demoJs, 'function initIndexGrid()', 'Index grid initialiser missing');
+assertIncludes(demoJs, 'function renderIndexSurface(def, renderGrid, axes, annotationText)', 'Index surface renderer missing');
+assertIncludes(demoJs, 'function renderAllIndexSurfaces()', 'Bulk index renderer missing');
+assertIncludes(demoJs, 'lastIndexGrids = indexGrids;', 'Index grids should be stored in state');
+assertIncludes(demoJs, 'lastIndexRenderGrids = {};', 'Index render grids should be cached separately');
+assertIncludes(demoJs, 'renderAllIndexSurfaces();', 'runAnalysis should call renderAllIndexSurfaces');
+assertIncludes(demoJs, 'initIndexGrid();', 'initMap should call initIndexGrid');
+assertIncludes(demoJs, "...INDEX_DEFS.map(def => fetch(WORKER_URL + def.endpoint", 'Index endpoints should be fetched in parallel');
+assertIncludes(demoJs, 'rawIndexGrids[def.id] || def.generate(bounds, gridSize)', 'Index fixture fallback per def missing');
+assertIncludes(css, '.satellite-indices-grid', 'Index grid CSS missing');
+assertIncludes(css, '.satellite-index-surface-wrap', 'Index surface wrap CSS missing');
 
 console.log('PASS: satellite index case contract holds');

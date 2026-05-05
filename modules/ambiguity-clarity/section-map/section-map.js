@@ -1,23 +1,23 @@
 (function () {
   'use strict';
 
-  // Per-document readiness percentages (0-100) and also-in set,
+  // Per-concern readiness percentages (0-100) and also-in set,
   // carried over from the prototype at sandbox/brief_section_map.html.
   const STATIONS = [
     { id: 'problem',       number: 1, label: 'Problem',             exploration: 70,  solutioning: 10,  dev: 5,  livesIn: 'narrative',                tip: 'Why this work exists. Ambiguity is highest here.' },
-    { id: 'direction',     number: 2, label: 'Direction',           exploration: 75,  solutioning: 20,  dev: 10, livesIn: 'brief',                    tip: 'Desired change in the world. Outcome, not solution. The last fully open document.' },
-    { id: 'where-we-are',  number: 3, label: 'Where We Are',        exploration: 100, solutioning: 50,  dev: 25, livesIn: 'brief',                    tip: 'Improvement anchor. Baseline for existing-feature work; anchors design and engineering in the current system.', anchorFor: 'improvement' },
+    { id: 'direction',     number: 2, label: 'Direction',           exploration: 75,  solutioning: 20,  dev: 10, livesIn: 'brief',                    tip: 'Desired change in the world. Outcome, not solution. The last fully open concern.' },
+    { id: 'where-we-are',  number: 3, label: 'Where We Are',        exploration: 100, solutioning: 50,  dev: 25, livesIn: 'brief',                    tip: 'Improvement anchor. Baseline for existing-feature work; anchors UX and engineering in the current system.', anchorFor: 'improvement' },
     { id: 'people',        number: 4, label: 'People',              exploration: 100, solutioning: 65,  dev: 25, livesIn: 'brief',                    tip: 'New-feature anchor. Users, jobs, and conditions when no existing baseline exists.',  anchorFor: 'new-feature' },
     { id: 'scope',         number: 5, label: 'Scope',               exploration: 100, solutioning: 75,  dev: 35, livesIn: 'brief', consideredIn: ['plan'], tip: 'In, out, open questions. Home is the brief; also in the plan as choices narrow.' },
     { id: 'slices',        number: 6, label: 'Slices',              exploration: 100, solutioning: 100, dev: 55, livesIn: 'story', consideredIn: ['plan'], tip: 'User-facing units of value. Considered in planning, then made concrete in stories.' },
     { id: 'constraints',   number: 7, label: 'Constraints',         exploration: 100, solutioning: 100, dev: 70, livesIn: 'story', consideredIn: ['plan'], tip: 'Legal, technical, deadlines, non-functional. Considered in the plan; crystallizes in stories.' },
-    { id: 'acceptance',    number: 8, label: 'Acceptance Criteria', labelLines: ['Acceptance', 'Criteria'], exploration: 100, solutioning: 100, dev: 95, livesIn: 'ticket', tip: 'Binary pass/fail. The most precise document in the set.' }
+    { id: 'acceptance',    number: 8, label: 'Acceptance Criteria', labelLines: ['Acceptance', 'Criteria'], exploration: 100, solutioning: 100, dev: 95, livesIn: 'ticket', tip: 'Binary pass/fail. The most precise concern in the lineage.' }
   ];
 
   const TRACKS = [
-    { key: 'exploration', label: 'Explore',  className: 'section-map-bar--exploration' },
-    { key: 'solutioning', label: 'Solution', className: 'section-map-bar--solutioning' },
-    { key: 'dev',         label: 'Dev',      className: 'section-map-bar--dev' }
+    { key: 'exploration', label: 'PM',  className: 'section-map-bar--exploration' },
+    { key: 'solutioning', label: 'UX',  className: 'section-map-bar--solutioning' },
+    { key: 'dev',         label: 'Eng', className: 'section-map-bar--dev' }
   ];
 
   const ARTIFACTS = [
@@ -33,7 +33,7 @@
   });
 
   const CAPTIONS = {
-    'none': 'Select an anchor type to show which document carries the baseline for this work.',
+    'none': 'Select an anchor type to show which concern carries the baseline for this work.',
     'improvement': 'Current anchor: Where We Are (improvement opportunity). Something already exists; how it works today is what the documentation stands on.',
     'new-feature': 'Current anchor: People (new feature). Nothing exists yet; who we build for is what the documentation stands on.'
   };
@@ -181,7 +181,7 @@
     headerG.append('text')
       .attr('class', 'section-map-col-header')
       .attr('x', readinessGroupCenter).attr('y', headerY - 12)
-      .text('Document readiness');
+      .text('Functional clarity');
     const artifactGroupCenter = artifactStartX + (ARTIFACTS.length - 1) * artifactStep / 2;
     headerG.append('text')
       .attr('class', 'section-map-col-header')

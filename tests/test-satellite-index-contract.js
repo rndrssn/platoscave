@@ -38,6 +38,10 @@ assertNotMatches(demoHtml, staleFixtureOnlyCopy, 'Demo must not describe the pip
 assertIncludes(overviewHtml, 'live-first, with a fixture fallback', 'Overview should state live-first/fallback behavior');
 assertIncludes(overviewHtml, 'Analyse viewport', 'Overview try-it copy should match demo action wording');
 assertNotMatches(overviewHtml, /select a date|Analyse visible area/, 'Overview should not reference removed date picker or old action copy');
+assertIncludes(demoHtml, 'Spectral Index Demo', 'Demo heading should describe the multi-index surface set');
+assertIncludes(demoHtml, 'six companion spectral indices', 'Demo intro should not frame the page as NDVI-only');
+assertIncludes(demoHtml, 'Each surface uses index value as analytical height', 'Demo intro should explain surface-height semantics across all indices');
+assertNotMatches(demoHtml, /<h1 class="module-header-title">NDVI Demo<\/h1>|Surface height represents NDVI/, 'Demo intro should not use stale NDVI-only framing');
 assertIncludes(demoHtml, 'first requests live Sentinel-derived NDVI', 'Demo note should state live data path');
 assertIncludes(demoHtml, 'synthetic fixture seeded by the same', 'Demo note should state fallback path');
 assertIncludes(demoHtml, 'Sentinel credentials stay outside the client', 'Demo should preserve credential boundary copy');
@@ -48,13 +52,23 @@ assertIncludes(demoHtml, 'aria-label="Toggle satellite base map"', 'Satellite ba
 assertIncludes(demoHtml, '<span class="satellite-control-label">Base map</span>', 'Satellite base toggle should use quiet panel-setting copy');
 assertNotMatches(demoHtml, /Satellite base/, 'Satellite base copy should not return as a peer action label');
 assertNotMatches(demoHtml, /class="satellite-base-toggle" type="checkbox"/, 'Satellite base toggle should not use the hidden checkbox pattern');
+assertNotMatches(demoHtml, /satellite-toggle-control--right/, 'Satellite base toggle should sit next to the analyse button, not be pushed to the far edge');
 assertIncludes(demoHtml, 'id="satellite-viewport-readout"', 'Live viewport readout missing');
 assertIncludes(demoHtml, 'Analyse viewport', 'Primary action should use analyse viewport wording');
 assertNotMatches(demoHtml, /Analyse visible area/, 'Primary action should not use technical analysis wording');
 assertNotMatches(demoHtml, /id="satellite-date"|type="date"/, 'Date picker should not be present in the demo controls');
 assertNotMatches(demoHtml, /<span class="satellite-control-label">Index<\/span>|Map &middot; current viewport|NDVI surface &middot; z = NDVI/, 'Technical labels above the canvases should stay removed');
 assertIncludes(demoHtml, 'id="satellite-base-toggle"', 'Satellite base toggle should be present in the controls bar');
+assertNotMatches(demoHtml, /data-control-style|data-control-style-option|satellite-control-style-switch/, 'Temporary control style switcher should not remain after choosing the Experience style');
 assertIncludes(demoHtml, '<p class="satellite-status" id="satellite-status" aria-live="polite"></p>', 'Status line should start empty');
+assert(demoHtml.indexOf('id="satellite-meta"') < demoHtml.indexOf('class="satellite-demo-stage"'), 'Analysis metadata should appear above the map and Plotly surfaces');
+assert(demoHtml.indexOf('id="satellite-meta"') < demoHtml.indexOf('id="satellite-viewport-readout"'), 'Viewport readout should live inside the request receipt');
+assert(demoHtml.indexOf('id="satellite-viewport-readout"') < demoHtml.indexOf('class="satellite-demo-stage"'), 'Viewport readout should appear before the map and Plotly surfaces');
+assertIncludes(demoHtml, 'satellite-receipt-line satellite-receipt-line--request', 'Request receipt line missing');
+assertIncludes(demoHtml, 'satellite-receipt-line satellite-receipt-line--scene', 'Scene receipt line missing');
+assertIncludes(demoHtml, 'data-satellite-scene-meta', 'Acquisition metadata target missing');
+assertIncludes(demoHtml, '<span class="satellite-receipt-label">Request</span>', 'Request receipt label missing');
+assertIncludes(demoHtml, '<span class="satellite-receipt-label">Scene</span>', 'Scene receipt label missing');
 
 assertIncludes(demoHtml, 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css', 'MapLibre CSS must be exact-pinned');
 assertIncludes(demoHtml, 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js', 'MapLibre JS must be exact-pinned');
@@ -110,18 +124,21 @@ assertIncludes(demoJs, 'setSurfacePlaceholder', 'Surface fallback state helper m
 assertIncludes(demoJs, 'finally {\n    resetAnalysisButton();\n    updateViewportReadout();\n  }', 'Analysis must reset UI state and viewport readout in finally');
 assertIncludes(demoJs, 'const date   = getAnalysisDate();', 'Demo should use an internal analysis date after removing the date picker');
 assertIncludes(demoJs, 'let lastImageGrid = null;', 'Satellite base toggle should use cached image data');
-assertIncludes(demoJs, 'renderSurface(lastRenderNdviGrid || lastNdviGrid, lastImageGrid, lastAxes, buildPlotAnnotationText(), showSatelliteBase);', 'Satellite base toggle should re-render cached smoothed NDVI and cached base without refetching');
+assertIncludes(demoJs, 'renderSurface(lastRenderNdviGrid || lastNdviGrid, lastImageGrid, lastAxes, showSatelliteBase);', 'Satellite base toggle should re-render cached smoothed NDVI and cached base without refetching');
 assertIncludes(demoJs, 'visible: showBase ? true : false', 'Satellite base toggle should use Plotly trace visibility instead of removing the base trace');
 assertIncludes(demoJs, "btnEl.textContent = 'Analyse viewport →';", 'Primary action reset copy should use analyse viewport wording');
 assertIncludes(demoJs, "btnEl.textContent = 'Analysing…';", 'Busy action copy should use analysing wording');
-assertIncludes(demoJs, "'Current map ' + formatArea(metrics)", 'Viewport readout should use current-map wording');
-assertNotMatches(demoJs, /Analyse visible area|to analyse|Viewport ' \+ formatArea/, 'Old analysis/viewport copy should not return');
+assertIncludes(demoJs, "formatArea(metrics) + ' / ' + gridSize + '×' + gridSize", 'Request receipt should show area and grid size');
+assertNotMatches(demoJs, /Current map|Analyse visible area|to analyse|Viewport ' \+ formatArea/, 'Old analysis/viewport copy should not return');
 assertIncludes(demoJs, "baseToggleEl.getAttribute('aria-pressed') === 'true'", 'Satellite base toggle should initialize from aria-pressed');
 assertIncludes(demoJs, "baseToggleEl.addEventListener('click'", 'Satellite base toggle should use button click handling');
 assertIncludes(demoJs, "baseToggleEl.setAttribute('aria-pressed', String(showSatelliteBase));", 'Satellite base toggle should keep aria-pressed in sync');
-assertIncludes(demoJs, 'function buildPlotAnnotationText()', 'Plotly annotation text helper missing');
-assertIncludes(demoJs, "return lastScene.date + ' · cloud ' + Math.round(lastScene.cloudCover) + '%';", 'Live date/cloud should render inside Plotly');
-assertIncludes(demoJs, 'annotations: annotationText', 'Plotly layout should receive annotation text');
+assertNotMatches(demoJs, /CONTROL_STYLE_OPTIONS|initControlStyleSwitcher|setControlStyle|controlStyleRootEl|controlStyleOptionEls/, 'Temporary control style switcher JS should not remain');
+assertNotMatches(demoJs, /buildPlotAnnotationText|annotations: annotationText/, 'Scene metadata should stay in the shared metadata readout, not repeated inside Plotly charts');
+assertIncludes(demoJs, "scene.constellation + ' / ' + scene.date + ' / cloud ' + Math.round(scene.cloudCover) + '%'", 'Live acquisition should render as a receipt scene line');
+assertIncludes(demoJs, "'fixture fallback / ' + (date || getAnalysisDate())", 'Fixture fallback should render as a receipt scene line');
+assertIncludes(demoJs, "document.querySelector('[data-satellite-scene-meta]')", 'Acquisition metadata should render into its dedicated receipt line');
+assert(!/label: 'area'[\s\S]*label: 'source'/.test(demoJs), 'Acquisition metadata should not duplicate viewport area/grid values');
 assertIncludes(demoJs, 'lastAxes = buildLocalAxes(metrics, grid);', 'Plotly render should use local E/N metric axes');
 assertIncludes(demoJs, 'x: surfaceAxes.x', 'Plotly surfaces should receive local easting values');
 assertIncludes(demoJs, 'y: surfaceAxes.y', 'Plotly surfaces should receive local northing values');
@@ -137,11 +154,19 @@ for (const color of ['#B84F35', '#C98B2E', '#E1BA45', '#88B96B', '#4F8F45']) {
 assert((demoJs.match(/\.reverse\(\)/g) || []).length >= 2, 'Worker PNG grids should keep north-to-south orientation correction');
 
 assertIncludes(selectorBlock(css, '.satellite-toggle-control'), 'min-height: 44px;', 'Satellite base toggle should meet mobile touch-target minimum');
-assertIncludes(selectorBlock(css, '.satellite-toggle-control'), 'background: transparent;', 'Satellite base toggle should remain a quiet view setting, not a peer action button');
-assertIncludes(selectorBlock(css, '.satellite-toggle-track'), 'width: 1.82rem;', 'Satellite base toggle track should stay compact');
+assertIncludes(selectorBlock(css, '.satellite-toggle-control'), 'background: var(--experience-switch-surface);', 'Satellite base toggle should use the permanent Experience-inspired style');
+assertIncludes(selectorBlock(css, '.satellite-toggle-track'), 'width: 2.1rem;', 'Satellite base toggle track should stay compact but legible');
 assertIncludes(selectorBlock(css, '.satellite-analyse-btn'), 'min-height: 44px;', 'Analyze button should meet mobile touch-target minimum');
+assertIncludes(css, 'box-shadow: 0.32rem 0.32rem 0 var(--experience-switch-shadow);', 'Experience control option should inherit the offset-shadow switch language');
+assertNotMatches(css, /data-control-style|satellite-control-style|border-style: dashed|content: ">"|0\.28rem 0\.28rem 0 var\(--rust\)/, 'Temporary control style variants should not remain in CSS');
+assertIncludes(selectorBlock(css, '.satellite-meta'), 'border: 2px solid var(--ink);', 'Receipt metadata block should use a bordered proof-of-work treatment');
+assertIncludes(css, '.satellite-receipt-line', 'Receipt line styling missing');
+assertIncludes(css, '.satellite-receipt-label', 'Receipt label styling missing');
 assertIncludes(css, '.satellite-status--error', 'Error status style missing');
 assertIncludes(css, '#satellite-map.satellite-map-fallback', 'Map dependency fallback style missing');
+assertIncludes(selectorBlock(css, '.satellite-surface-wrap'), 'background: transparent;', 'Main Plotly surface should not sit in a framed surface box');
+assertIncludes(selectorBlock(css, '.satellite-index-surface-wrap'), 'background: transparent;', 'Index Plotly surfaces should not sit in framed surface boxes');
+assert(!selectorBlock(css, '.satellite-index-surface-wrap').includes('border:'), 'Index Plotly surfaces should not have a wrapper border');
 
 assertIncludes(demoHtml, 'id="satellite-indices-grid"', 'Additional indices grid container missing');
 assertIncludes(demoJs, 'const INDEX_DEFS = [', 'INDEX_DEFS config array missing');
@@ -150,7 +175,8 @@ for (const id of ['ndre', 'ndwi', 'ndmi', 'evi', 'savi', 'cire']) {
 }
 assertIncludes(demoJs, 'function decodeIndexPng(base64, encMin, encMax)', 'General index PNG decoder missing');
 assertIncludes(demoJs, 'function initIndexGrid()', 'Index grid initialiser missing');
-assertIncludes(demoJs, 'function renderIndexSurface(def, renderGrid, axes, annotationText)', 'Index surface renderer missing');
+assertIncludes(demoJs, 'function renderIndexSurface(def, renderGrid, axes)', 'Index surface renderer missing');
+assert(/function renderIndexSurface\(def, renderGrid, axes\)[\s\S]*if \(wrap\) wrap\.classList\.add\('has-surface'\);\n    Plotly\.newPlot\(plotId, \[trace\], layout, config\);/.test(demoJs), 'Index Plotly surfaces should be visible before newPlot measures their containers');
 assertIncludes(demoJs, 'function renderAllIndexSurfaces()', 'Bulk index renderer missing');
 assertIncludes(demoJs, 'lastIndexGrids = indexGrids;', 'Index grids should be stored in state');
 assertIncludes(demoJs, 'lastIndexRenderGrids = {};', 'Index render grids should be cached separately');

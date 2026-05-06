@@ -5,7 +5,7 @@ const MAPTILER_API_KEY = 'tkMgnElXUcAiA79ZmSAX';
 const SMALL_VIEWPORT_GRID_SIZE = 512;
 const MEDIUM_VIEWPORT_GRID_SIZE = 256;
 const SMALL_VIEWPORT_AREA_KM2 = 0.1; // 10 hectares
-const MAX_LIVE_VIEWPORT_AREA_KM2 = 1; // 100 hectares
+const MAX_LIVE_VIEWPORT_AREA_KM2 = 2; // 200 hectares
 const DEFAULT_CENTER = [10.5, 48.2];  // Bavaria — varied forest/farmland
 const DEFAULT_ZOOM   = 10;
 const MONO_FONT      = "'DM Mono', monospace";
@@ -15,9 +15,11 @@ const NDVI_ENCODE_MAX = 1;
 const NDVI_DISPLAY_MIN = -1;
 const NDVI_DISPLAY_MAX = 1;
 const NDVI_BASE_PLANE_Z = -1.1;
-const NDVI_CONTOUR_PLANE_Z = NDVI_BASE_PLANE_Z + 0.01;
-const NDVI_CONTOUR_STEP = 0.2;
-const NDVI_CONTOUR_MAX_GRID_SIZE = 160;
+const INDEX_CONTOUR_STEP = 0.2;
+const INDEX_CONTOUR_MAX_GRID_SIZE = 160;
+const INDEX_CONTOUR_TOP_OFFSET = 0.02;
+const INDEX_CONTOUR_COLOR = '#4F8F45';
+const SENTINEL_SOURCE_RESOLUTION_LABEL = 'source 10-20 m';
 
 // Brightened Platoscave palette — copper → ochre → gold → fresh sage → green
 const NDVI_COLORSCALE = [
@@ -32,6 +34,7 @@ const NDVI_COLORSCALE = [
 const INDEX_DEFS = [
   {
     id: 'ndre', label: 'NDRE', desc: 'Red-edge chlorophyll',
+    sourceResolution: '20 m',
     endpoint: '/ndre', encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
     colorscale: [
       [0, '#6B7E7A'], [0.35, '#7EA898'], [0.55, '#88B96B'], [0.75, '#5A9A4A'], [1, '#2A6A28'],
@@ -61,6 +64,7 @@ const INDEX_DEFS = [
   },
   {
     id: 'ndwi', label: 'NDWI', desc: 'Water content',
+    sourceResolution: '10 m',
     endpoint: '/ndwi', encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
     colorscale: [
       [0, '#C98B2E'], [0.4, '#C4BAB0'], [0.6, '#7AAABF'], [0.8, '#3A7A9A'], [1, '#0A4A6A'],
@@ -89,6 +93,7 @@ const INDEX_DEFS = [
   },
   {
     id: 'ndmi', label: 'NDMI', desc: 'Canopy moisture',
+    sourceResolution: '20 m',
     endpoint: '/ndmi', encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
     colorscale: [
       [0, '#B84F35'], [0.3, '#C4BAB0'], [0.55, '#6ABAA0'], [0.75, '#3A8A78'], [1, '#0A5A50'],
@@ -117,6 +122,7 @@ const INDEX_DEFS = [
   },
   {
     id: 'evi', label: 'EVI', desc: 'Enhanced vegetation',
+    sourceResolution: '10 m',
     endpoint: '/evi', encMin: -0.2, encMax: 1, displayMin: -0.2, displayMax: 1,
     colorscale: [
       [0, '#7A5A4A'], [0.2, '#B88A5A'], [0.45, '#D4B86A'], [0.65, '#88B96B'], [1, '#2A6A28'],
@@ -146,6 +152,7 @@ const INDEX_DEFS = [
   },
   {
     id: 'savi', label: 'SAVI', desc: 'Soil-adjusted vegetation',
+    sourceResolution: '10 m',
     endpoint: '/savi', encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
     colorscale: [
       [0, '#8A5E3A'], [0.35, '#C4A060'], [0.55, '#C4C870'], [0.72, '#78A85A'], [1, '#2A5E28'],
@@ -175,6 +182,7 @@ const INDEX_DEFS = [
   },
   {
     id: 'cire', label: 'CIre', desc: 'Chlorophyll index',
+    sourceResolution: '20 m',
     endpoint: '/cire', encMin: 0, encMax: 3, displayMin: 0, displayMax: 3,
     colorscale: [
       [0, '#E8E4D0'], [0.25, '#B8D48A'], [0.5, '#78B45A'], [0.75, '#3A8A35'], [1, '#0A5A15'],
@@ -217,7 +225,6 @@ let lastImageGrid = null;
 let lastBounds = null;
 let lastDate = null;
 let lastScene = null;
-let lastGridLabel = '—';
 let lastAxes = null;
 let lastIndexGrids = {};
 let lastIndexRenderGrids = {};
@@ -264,7 +271,7 @@ function canRequestLive(metrics) {
 }
 
 function getLiveLimitLabel() {
-  return '100 ha';
+  return '200 ha';
 }
 
 function formatArea(metrics) {
@@ -278,13 +285,6 @@ function formatArea(metrics) {
   }
 
   return Math.max(1, Math.round(metrics.areaKm2 * 1000000)) + ' m²';
-}
-
-function getGridLabel(grid, fallbackSize) {
-  if (grid && grid.length && grid[0]) {
-    return grid[0].length + '×' + grid.length;
-  }
-  return fallbackSize + '×' + fallbackSize;
 }
 
 function buildLocalAxes(metrics, grid) {
@@ -374,21 +374,22 @@ function addContourIntersection(points, a, b, level) {
   });
 }
 
-function buildNdviContourTraces(grid, axes) {
+function buildIndexContourTraces(grid, axes, minValue, maxValue, step) {
   const rowCount = grid.length;
   const colCount = grid[0] ? grid[0].length : 0;
   if (rowCount < 2 || colCount < 2) return [];
 
   const maxGridSize = Math.max(rowCount, colCount);
-  const sampleStep = Math.max(1, Math.ceil(maxGridSize / NDVI_CONTOUR_MAX_GRID_SIZE));
+  const sampleStep = Math.max(1, Math.ceil(maxGridSize / INDEX_CONTOUR_MAX_GRID_SIZE));
+  const contourPlaneZ = maxValue + INDEX_CONTOUR_TOP_OFFSET;
   const x = [];
   const y = [];
   const z = [];
 
   for (
-    let level = NDVI_DISPLAY_MIN + NDVI_CONTOUR_STEP;
-    level < NDVI_DISPLAY_MAX;
-    level = Math.round((level + NDVI_CONTOUR_STEP) * 1000) / 1000
+    let level = minValue + step;
+    level < maxValue;
+    level = Math.round((level + step) * 1000) / 1000
   ) {
     for (let row = 0; row < rowCount - 1; row += sampleStep) {
       const nextRow = Math.min(row + sampleStep, rowCount - 1);
@@ -409,7 +410,7 @@ function buildNdviContourTraces(grid, axes) {
         for (let i = 0; i + 1 < points.length; i += 2) {
           x.push(points[i].x, points[i + 1].x, null);
           y.push(points[i].y, points[i + 1].y, null);
-          z.push(NDVI_CONTOUR_PLANE_Z, NDVI_CONTOUR_PLANE_Z, null);
+          z.push(contourPlaneZ, contourPlaneZ, null);
         }
       }
     }
@@ -424,7 +425,7 @@ function buildNdviContourTraces(grid, axes) {
       x,
       y,
       z,
-      line: { color: '#8B3A2A', width: 2 },
+      line: { color: INDEX_CONTOUR_COLOR, width: 2 },
       opacity: 0.72,
       hoverinfo: 'skip',
       showlegend: false,
@@ -581,7 +582,7 @@ function renderSurface(ndviGrid, imageGrid, axes, showBase) {
     showscale: true,
   };
   traces.push(ndviTrace);
-  traces.push(...buildNdviContourTraces(ndviGrid, surfaceAxes));
+  traces.push(...buildIndexContourTraces(ndviGrid, surfaceAxes, NDVI_DISPLAY_MIN, NDVI_DISPLAY_MAX, INDEX_CONTOUR_STEP));
 
   const layout = {
     margin: { t: 16, r: 60, b: 0, l: 0 },
@@ -611,7 +612,7 @@ function renderSurface(ndviGrid, imageGrid, axes, showBase) {
       zaxis: {
         title: { text: 'NDVI', font: { family: MONO_FONT, size: 12, color: '#5C4F3A' } },
         tickfont: { family: MONO_FONT, size: 11, color: '#5C4F3A' },
-        range: [NDVI_BASE_PLANE_Z, NDVI_DISPLAY_MAX],
+        range: [NDVI_BASE_PLANE_Z, NDVI_DISPLAY_MAX + INDEX_CONTOUR_TOP_OFFSET],
         gridcolor: '#9C8E78',
         showbackground: false,
         showline: false,
@@ -627,8 +628,9 @@ function renderSurface(ndviGrid, imageGrid, axes, showBase) {
   if (plotReady) {
     Plotly.react('satellite-surface', traces, layout, config);
   } else {
+    const wrap = document.getElementById('satellite-surface-wrap');
+    if (wrap) wrap.classList.add('has-surface');
     Plotly.newPlot('satellite-surface', traces, layout, config);
-    document.getElementById('satellite-surface-wrap').classList.add('has-surface');
     plotReady = true;
   }
 }
@@ -654,8 +656,12 @@ function initIndexGrid() {
     const descEl = document.createElement('span');
     descEl.className = 'satellite-index-desc';
     descEl.textContent = def.desc;
+    const sourceEl = document.createElement('span');
+    sourceEl.className = 'satellite-index-source';
+    sourceEl.textContent = def.sourceResolution + ' source';
     header.appendChild(labelEl);
     header.appendChild(descEl);
+    header.appendChild(sourceEl);
 
     const wrap = document.createElement('div');
     wrap.className = 'satellite-index-surface-wrap';
@@ -680,6 +686,7 @@ function renderIndexSurface(def, renderGrid, axes) {
   const plotId = 'satellite-plot-' + def.id;
   const wrapId = 'satellite-index-wrap-' + def.id;
   const wrap = document.getElementById(wrapId);
+  const contourTraces = buildIndexContourTraces(renderGrid, axes, def.displayMin, def.displayMax, INDEX_CONTOUR_STEP);
 
   const trace = {
     type: 'surface',
@@ -723,7 +730,7 @@ function renderIndexSurface(def, renderGrid, axes) {
       zaxis: {
         title: { text: def.label, font: { family: MONO_FONT, size: 10, color: '#5C4F3A' } },
         tickfont: { family: MONO_FONT, size: 9, color: '#5C4F3A' },
-        range: [def.displayMin, def.displayMax],
+        range: [def.displayMin, def.displayMax + INDEX_CONTOUR_TOP_OFFSET],
         gridcolor: '#9C8E78',
         showbackground: false, showline: false, showspikes: false,
       },
@@ -735,10 +742,10 @@ function renderIndexSurface(def, renderGrid, axes) {
   const config = { displayModeBar: false, responsive: true };
 
   if (indexPlotReady[def.id]) {
-    Plotly.react(plotId, [trace], layout, config);
+    Plotly.react(plotId, [trace, ...contourTraces], layout, config);
   } else {
     if (wrap) wrap.classList.add('has-surface');
-    Plotly.newPlot(plotId, [trace], layout, config);
+    Plotly.newPlot(plotId, [trace, ...contourTraces], layout, config);
     indexPlotReady[def.id] = true;
   }
 }
@@ -780,7 +787,7 @@ function setMeta(bounds, date, scene) {
   if (!sceneEl) return;
 
   const sceneValue = scene
-    ? scene.constellation + ' / ' + scene.date + ' / cloud ' + Math.round(scene.cloudCover) + '%'
+    ? scene.constellation + ' / ' + scene.date + ' / ' + SENTINEL_SOURCE_RESOLUTION_LABEL + ' / cloud ' + Math.round(scene.cloudCover) + '%'
     : 'fixture fallback / ' + (date || getAnalysisDate());
 
   sceneEl.textContent = '';
@@ -801,10 +808,9 @@ function updateViewportReadout() {
   const bounds = { west: b.getWest(), south: b.getSouth(), east: b.getEast(), north: b.getNorth() };
   const metrics = getViewportMetrics(bounds);
   const liveAllowed = canRequestLive(metrics);
-  const gridSize = getAdaptiveGridSize(metrics);
 
   viewportReadoutEl.textContent = liveAllowed
-    ? formatArea(metrics) + ' / ' + gridSize + '×' + gridSize
+    ? formatArea(metrics)
     : formatArea(metrics) + ' / zoom in below ' + getLiveLimitLabel();
   viewportReadoutEl.classList.toggle('satellite-viewport-readout--blocked', !liveAllowed);
   btnEl.disabled = busy || !liveAllowed;
@@ -898,7 +904,6 @@ async function runAnalysis() {
     lastBounds = bounds;
     lastDate = date;
     lastScene = scene;
-    lastGridLabel = getGridLabel(grid, gridSize);
     lastAxes = buildLocalAxes(metrics, grid);
     lastIndexGrids = indexGrids;
     lastIndexRenderGrids = {};

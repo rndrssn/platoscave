@@ -102,7 +102,7 @@ assertIncludes(demoJs, 'const NDVI_BASE_PLANE_Z = -1.1;', 'Satellite base plane 
 assertIncludes(demoJs, 'const INDEX_CONTOUR_STEP = 0.2;', 'Index contour interval changed');
 assertIncludes(demoJs, 'const INDEX_CONTOUR_MAX_GRID_SIZE = 160;', 'Index contour sampling guard changed');
 assertIncludes(demoJs, 'const INDEX_CONTOUR_TOP_OFFSET = 0.02;', 'Index contours should sit just above the positive z axis cap');
-assertIncludes(demoJs, "const INDEX_CONTOUR_COLOR = '#4F8F45';", 'Index contours should use the green palette accent');
+assertIncludes(demoJs, "const INDEX_CONTOUR_COLOR = '#123D1E';", 'Index contours should use a dark high-contrast green');
 assertIncludes(demoJs, 'const zFlat = imageGrid.map(row => row.map(() => NDVI_BASE_PLANE_Z));', 'Satellite base plane should use named z offset below full NDVI range');
 assertIncludes(demoJs, 'range: [NDVI_BASE_PLANE_Z, NDVI_DISPLAY_MAX + INDEX_CONTOUR_TOP_OFFSET]', 'Plotly z-axis should include the top NDVI contour plane');
 assertIncludes(demoJs, 'function getViewportMetrics(bounds)', 'Viewport metrics helper missing');

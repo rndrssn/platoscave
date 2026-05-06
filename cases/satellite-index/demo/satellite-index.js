@@ -123,7 +123,7 @@ const INDEX_DEFS = [
   {
     id: 'evi', label: 'EVI', desc: 'Enhanced vegetation',
     sourceResolution: '10 m',
-    endpoint: '/evi', encMin: -0.2, encMax: 1, displayMin: -0.2, displayMax: 1,
+    endpoint: '/evi', encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
     colorscale: [
       [0, '#7A5A4A'], [0.2, '#B88A5A'], [0.45, '#D4B86A'], [0.65, '#88B96B'], [1, '#2A6A28'],
     ],
@@ -143,7 +143,7 @@ const INDEX_DEFS = [
             + 0.08 * Math.sin(lon * 230 + lat * 195)
             + 0.05 * Math.cos(lon * 370 - lat * 300)
             - 0.36 * Math.max(0, Math.sin(lon * 18 + lat * 13));
-          rowArr.push(Math.round(clamp(v, -0.2, 1) * 1000) / 1000);
+          rowArr.push(Math.round(clamp(v, -1, 1) * 1000) / 1000);
         }
         grid.push(rowArr);
       }
@@ -183,7 +183,7 @@ const INDEX_DEFS = [
   {
     id: 'cire', label: 'CIre', desc: 'Chlorophyll index',
     sourceResolution: '20 m',
-    endpoint: '/cire', encMin: 0, encMax: 3, displayMin: 0, displayMax: 3,
+    endpoint: '/cire', encMin: 0, encMax: 6, displayMin: 0, displayMax: 6,
     colorscale: [
       [0, '#E8E4D0'], [0.25, '#B8D48A'], [0.5, '#78B45A'], [0.75, '#3A8A35'], [1, '#0A5A15'],
     ],
@@ -246,6 +246,10 @@ function getAnalysisDate() {
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
+}
+
+function isFiniteNumber(value) {
+  return typeof value === 'number' && Number.isFinite(value);
 }
 
 function getViewportMetrics(bounds) {
@@ -347,13 +351,15 @@ function smoothNdviGridForRender(grid, passes) {
           for (let colOffset = -1; colOffset <= 1; colOffset++) {
             const sampleRow = clamp(rowIndex + rowOffset, 0, source.length - 1);
             const sampleCol = clamp(colIndex + colOffset, 0, row.length - 1);
+            const sample = source[sampleRow][sampleCol];
+            if (!isFiniteNumber(sample)) continue;
             const weight = (rowOffset === 0 ? 2 : 1) * (colOffset === 0 ? 2 : 1);
-            weightedSum += source[sampleRow][sampleCol] * weight;
+            weightedSum += sample * weight;
             weightTotal += weight;
           }
         }
 
-        return Math.round(weightedSum / weightTotal * 1000) / 1000;
+        return weightTotal ? Math.round(weightedSum / weightTotal * 1000) / 1000 : null;
       })
     );
   }
@@ -362,6 +368,7 @@ function smoothNdviGridForRender(grid, passes) {
 }
 
 function addContourIntersection(points, a, b, level) {
+  if (!isFiniteNumber(a.value) || !isFiniteNumber(b.value)) return;
   if (a.value === b.value) return;
 
   const crosses = (a.value < level && b.value >= level) || (b.value < level && a.value >= level);
@@ -450,7 +457,13 @@ function decodeNdviPng(base64) {
       for (let r = 0; r < img.height; r++) {
         const row = [];
         for (let c = 0; c < img.width; c++) {
-          const byte = pixels[(r * img.width + c) * 4]; // R channel = grayscale value
+          const pixelIndex = (r * img.width + c) * 4;
+          const byte = pixels[pixelIndex]; // R channel = grayscale value
+          const alpha = pixels[pixelIndex + 3];
+          if (alpha === 0) {
+            row.push(null);
+            continue;
+          }
           const ndvi = byte / 255 * (NDVI_ENCODE_MAX - NDVI_ENCODE_MIN) + NDVI_ENCODE_MIN;
           row.push(Math.round(clamp(ndvi, NDVI_ENCODE_MIN, NDVI_ENCODE_MAX) * 1000) / 1000);
         }
@@ -480,18 +493,28 @@ function decodeRgbToLuminance(base64) {
         const row = [];
         for (let c = 0; c < img.width; c++) {
           const i = (r * img.width + c) * 4;
+          if (pixels[i + 3] === 0) {
+            row.push(null);
+            continue;
+          }
           row.push((0.299 * pixels[i] + 0.587 * pixels[i + 1] + 0.114 * pixels[i + 2]) / 255);
         }
         grid.push(row);
       }
 
       // Percentile stretch: clip 2nd–98th, expand to full 0–1 range
-      const flat  = grid.flat().sort((a, b) => a - b);
+      const flat  = grid.flat().filter(isFiniteNumber).sort((a, b) => a - b);
+      if (!flat.length) {
+        resolve(grid.reverse());
+        return;
+      }
       const p2    = flat[Math.floor(flat.length * 0.02)];
       const p98   = flat[Math.floor(flat.length * 0.98)];
       const range = p98 - p2 || 1;
       const stretched = grid.map(row =>
-        row.map(v => Math.round(Math.max(0, Math.min(1, (v - p2) / range)) * 1000) / 1000)
+        row.map(v => isFiniteNumber(v)
+          ? Math.round(Math.max(0, Math.min(1, (v - p2) / range)) * 1000) / 1000
+          : null)
       );
 
       resolve(stretched.reverse()); // PNG row 0 = north; Plotly expects row 0 = south
@@ -516,7 +539,13 @@ function decodeIndexPng(base64, encMin, encMax) {
       for (let r = 0; r < img.height; r++) {
         const row = [];
         for (let c = 0; c < img.width; c++) {
-          const byte = pixels[(r * img.width + c) * 4];
+          const pixelIndex = (r * img.width + c) * 4;
+          const byte = pixels[pixelIndex];
+          const alpha = pixels[pixelIndex + 3];
+          if (alpha === 0) {
+            row.push(null);
+            continue;
+          }
           const val = byte / 255 * (encMax - encMin) + encMin;
           row.push(Math.round(clamp(val, encMin, encMax) * 1000) / 1000);
         }
@@ -539,7 +568,7 @@ function renderSurface(ndviGrid, imageGrid, axes, showBase) {
   const surfaceAxes = axes || buildLocalAxes({ widthKm: 1, heightKm: 1 }, ndviGrid);
 
   if (imageGrid) {
-    const zFlat = imageGrid.map(row => row.map(() => NDVI_BASE_PLANE_Z));
+    const zFlat = imageGrid.map(row => row.map(v => isFiniteNumber(v) ? NDVI_BASE_PLANE_Z : null));
     traces.push({
       type: 'surface',
       x: surfaceAxes.x,
@@ -856,30 +885,18 @@ async function runAnalysis() {
       const payload = JSON.stringify({ bounds, date, width: gridSize, height: gridSize });
       const headers = { 'Content-Type': 'application/json', 'X-API-Key': WORKER_API_KEY };
 
-      const [ndviRes, imageRes, ...idxResults] = await Promise.all([
-        fetch(WORKER_URL + '/ndvi',  { method: 'POST', headers, body: payload }),
-        fetch(WORKER_URL + '/image', { method: 'POST', headers, body: payload }),
-        ...INDEX_DEFS.map(def => fetch(WORKER_URL + def.endpoint, { method: 'POST', headers, body: payload })),
-      ]);
+      const analysisRes = await fetch(WORKER_URL + '/analysis', { method: 'POST', headers, body: payload });
 
-      if (ndviRes.ok) {
-        const data = await ndviRes.json();
-        grid  = await decodeNdviPng(data.png);
+      if (analysisRes.ok) {
+        const data = await analysisRes.json();
+        grid = await decodeNdviPng(data.ndvi);
+        imageGrid = data.image ? await decodeRgbToLuminance(data.image) : null;
         scene = data.scene;
-      }
 
-      if (imageRes.ok) {
-        const data = await imageRes.json();
-        imageGrid = await decodeRgbToLuminance(data.png);
-      }
-
-      for (let i = 0; i < INDEX_DEFS.length; i++) {
-        const def = INDEX_DEFS[i];
-        if (idxResults[i].ok) {
-          try {
-            const data = await idxResults[i].json();
-            rawIndexGrids[def.id] = await decodeIndexPng(data.png, def.encMin, def.encMax);
-          } catch (_) {}
+        for (const def of INDEX_DEFS) {
+          if (data.indices && data.indices[def.id]) {
+            rawIndexGrids[def.id] = await decodeIndexPng(data.indices[def.id], def.encMin, def.encMax);
+          }
         }
       }
     } catch (_) {

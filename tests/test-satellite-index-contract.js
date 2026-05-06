@@ -87,8 +87,8 @@ assertNotMatches(moduleRouteData, /cases\/|satellite-index/, 'Cases should stay 
 assertIncludes(demoJs, "const WORKER_URL     = 'https://satellite-worker.platoscave.workers.dev';", 'Worker URL contract changed');
 assertIncludes(demoJs, "const WORKER_API_KEY = '__WORKER_API_KEY__';", 'WORKER_API_KEY must use placeholder — real key is injected by GitHub Actions at deploy time');
 assertIncludes(demoJs, "'X-API-Key': WORKER_API_KEY", 'X-API-Key header must be sent on all Worker requests');
-assertIncludes(demoJs, "fetch(WORKER_URL + '/ndvi'", 'NDVI endpoint should be fetched');
-assertIncludes(demoJs, "fetch(WORKER_URL + '/image'", 'Image endpoint should be fetched');
+assertIncludes(demoJs, "fetch(WORKER_URL + '/analysis'", 'Combined analysis endpoint should be fetched');
+assertNotMatches(demoJs, /fetch\(WORKER_URL \+ '\/ndvi'|fetch\(WORKER_URL \+ '\/image'|\.\.\.INDEX_DEFS\.map\(def => fetch/, 'Frontend should not fan out separate Worker requests for one analysis');
 assertIncludes(demoJs, 'const SMALL_VIEWPORT_GRID_SIZE = 512;', 'Small viewport adaptive grid size changed');
 assertIncludes(demoJs, 'const MEDIUM_VIEWPORT_GRID_SIZE = 256;', 'Medium viewport adaptive grid size changed');
 assertIncludes(demoJs, 'const SMALL_VIEWPORT_AREA_KM2 = 0.1;', '10 hectare small-viewport threshold changed');
@@ -103,31 +103,36 @@ assertIncludes(demoJs, 'const INDEX_CONTOUR_STEP = 0.2;', 'Index contour interva
 assertIncludes(demoJs, 'const INDEX_CONTOUR_MAX_GRID_SIZE = 160;', 'Index contour sampling guard changed');
 assertIncludes(demoJs, 'const INDEX_CONTOUR_TOP_OFFSET = 0.02;', 'Index contours should sit just above the positive z axis cap');
 assertIncludes(demoJs, "const INDEX_CONTOUR_COLOR = '#123D1E';", 'Index contours should use a dark high-contrast green');
-assertIncludes(demoJs, 'const zFlat = imageGrid.map(row => row.map(() => NDVI_BASE_PLANE_Z));', 'Satellite base plane should use named z offset below full NDVI range');
+assertIncludes(demoJs, 'const zFlat = imageGrid.map(row => row.map(v => isFiniteNumber(v) ? NDVI_BASE_PLANE_Z : null));', 'Satellite base plane should preserve masked pixels as gaps');
 assertIncludes(demoJs, 'range: [NDVI_BASE_PLANE_Z, NDVI_DISPLAY_MAX + INDEX_CONTOUR_TOP_OFFSET]', 'Plotly z-axis should include the top NDVI contour plane');
 assertIncludes(demoJs, 'function getViewportMetrics(bounds)', 'Viewport metrics helper missing');
 assertIncludes(demoJs, 'function getAdaptiveGridSize(metrics)', 'Adaptive grid helper missing');
 assertIncludes(demoJs, 'function buildLocalAxes(metrics, grid)', 'Local E/N axis helper missing');
+assertIncludes(demoJs, 'function isFiniteNumber(value)', 'Masked pixel helper missing');
 assertIncludes(demoJs, 'function canRequestLive(metrics)', 'Live request guard helper missing');
 assertIncludes(demoJs, 'return metrics.areaKm2 <= MAX_LIVE_VIEWPORT_AREA_KM2;', 'Live viewport guard should allow requests exactly at the configured area limit');
 assertIncludes(demoJs, 'function updateViewportReadout()', 'Live viewport readout updater missing');
 assertIncludes(demoJs, 'function formatArea(metrics)', 'Area formatting helper missing');
 assertIncludes(demoJs, "const SENTINEL_SOURCE_RESOLUTION_LABEL = 'source 10-20 m';", 'Scene metadata should state Sentinel-2 source scale range');
 assertIncludes(demoJs, 'function smoothNdviGridForRender(grid, passes)', 'Render-only NDVI smoothing helper missing');
+assertIncludes(demoJs, 'if (!isFiniteNumber(sample)) continue;', 'NDVI smoothing should preserve Worker mask gaps');
 assertIncludes(demoJs, 'function buildIndexContourTraces(grid, axes, minValue, maxValue, step)', 'Shared index contour trace helper missing');
+assertIncludes(demoJs, 'if (!isFiniteNumber(a.value) || !isFiniteNumber(b.value)) return;', 'Index contours should skip masked pixels');
 assertIncludes(demoJs, "type: 'scatter3d'", 'Index isolines should be explicit scatter3d traces');
 assertIncludes(demoJs, 'const contourPlaneZ = maxValue + INDEX_CONTOUR_TOP_OFFSET;', 'Index isolines should be projected to the top positive z plane');
 assertIncludes(demoJs, 'z.push(contourPlaneZ, contourPlaneZ, null);', 'Index isolines should be drawn only on the top contour plane');
 assertIncludes(demoJs, 'contours: { x: { show: false }, y: { show: false }, z: { show: false } }', 'Plotly surface contours should be disabled on the NDVI surface');
 assertIncludes(demoJs, 'lastRenderNdviGrid = smoothNdviGridForRender(grid, NDVI_RENDER_SMOOTHING_PASSES);', 'NDVI render smoothing should be cached after raw grid capture');
 assertIncludes(demoJs, 'byte / 255 * (NDVI_ENCODE_MAX - NDVI_ENCODE_MIN) + NDVI_ENCODE_MIN', 'NDVI PNG decode should use full-range transport scaling');
+assertIncludes(demoJs, 'const alpha = pixels[pixelIndex + 3];', 'PNG decoders should read Worker alpha masks');
+assertIncludes(demoJs, 'if (alpha === 0) {\n            row.push(null);', 'Masked Worker pixels should decode to null gaps');
 assertNotMatches(demoJs, /byte \/ 255 \* 1\.05 - 0\.2|Math\.max\(-0\.15, Math\.min\(0\.82|cmin: -0\.2|cmax: 0\.85|range: \[-0\.5, 0\.85\]/, 'Old clipped NDVI transport/display bounds should not return');
 assertNotMatches(demoJs, /project: \{ z: true \}|usecolormap: false/, 'Plotly built-in surface contour projection should not return');
 assertNotMatches(demoJs, /NDVI_CONTOUR_PLANE_Z|#8B3A2A|buildNdviContourTraces/, 'Old rust base-plane NDVI-only contours should not return');
 assertIncludes(demoJs, 'const liveAllowed = canRequestLive(metrics);', 'Live request guard should be evaluated before fetch');
 assertIncludes(demoJs, "btnEl.disabled = busy || !liveAllowed;", 'Analyze button should disable beyond live viewport limit');
 assertIncludes(demoJs, "map.on('move', updateViewportReadout);", 'Viewport readout should update while the map moves');
-assert(demoJs.indexOf('if (!liveAllowed)') < demoJs.indexOf("fetch(WORKER_URL + '/ndvi'"), 'Worker fetches must be guarded by the live viewport limit');
+assert(demoJs.indexOf('if (!liveAllowed)') < demoJs.indexOf("fetch(WORKER_URL + '/analysis'"), 'Worker fetches must be guarded by the live viewport limit');
 assertIncludes(demoJs, 'width: gridSize, height: gridSize', 'Worker request should use adaptive grid size');
 assertNotMatches(demoJs, /lastLiveSkipped|fixture · live skipped/, 'Live-skipped fixture mode should not remain after disabling analysis above 200 ha');
 assertIncludes(demoJs, 'function canUseMapLibre()', 'MapLibre dependency guard missing');
@@ -194,6 +199,8 @@ for (const pair of ["ndre', label: 'NDRE', desc: 'Red-edge chlorophyll',\n    so
 for (const id of ['ndre', 'ndwi', 'ndmi', 'evi', 'savi', 'cire']) {
   assertIncludes(demoJs, "endpoint: '/" + id + "'", 'Worker endpoint missing for index: ' + id);
 }
+assertIncludes(demoJs, "endpoint: '/evi', encMin: -1, encMax: 1, displayMin: -1, displayMax: 1", 'EVI should use the full encoded index range');
+assertIncludes(demoJs, "endpoint: '/cire', encMin: 0, encMax: 6, displayMin: 0, displayMax: 6", 'CIre should avoid the old low analytical cap');
 assertIncludes(demoJs, "sourceEl.className = 'satellite-index-source';", 'Index panels should render source-resolution badges');
 assertIncludes(demoJs, "sourceEl.textContent = def.sourceResolution + ' source';", 'Index source badges should identify source resolution');
 assertIncludes(demoJs, 'function decodeIndexPng(base64, encMin, encMax)', 'General index PNG decoder missing');
@@ -209,7 +216,7 @@ assertIncludes(demoJs, 'lastIndexGrids = indexGrids;', 'Index grids should be st
 assertIncludes(demoJs, 'lastIndexRenderGrids = {};', 'Index render grids should be cached separately');
 assertIncludes(demoJs, 'renderAllIndexSurfaces();', 'runAnalysis should call renderAllIndexSurfaces');
 assertIncludes(demoJs, 'initIndexGrid();', 'initMap should call initIndexGrid');
-assertIncludes(demoJs, "...INDEX_DEFS.map(def => fetch(WORKER_URL + def.endpoint", 'Index endpoints should be fetched in parallel');
+assertIncludes(demoJs, "rawIndexGrids[def.id] = await decodeIndexPng(data.indices[def.id], def.encMin, def.encMax);", 'Index grids should decode from the combined analysis payload');
 assertIncludes(demoJs, 'rawIndexGrids[def.id] || def.generate(bounds, gridSize)', 'Index fixture fallback per def missing');
 assertIncludes(css, '.satellite-indices-grid', 'Index grid CSS missing');
 assertIncludes(css, '.satellite-index-surface-wrap', 'Index surface wrap CSS missing');

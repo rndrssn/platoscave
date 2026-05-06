@@ -18,7 +18,7 @@ const NDVI_BASE_PLANE_Z = -1.1;
 const INDEX_CONTOUR_STEP = 0.2;
 const INDEX_CONTOUR_MAX_GRID_SIZE = 160;
 const INDEX_CONTOUR_TOP_OFFSET = 0.02;
-const INDEX_CONTOUR_COLOR = '#4F8F45';
+const INDEX_CONTOUR_COLOR = '#123D1E';
 const SENTINEL_SOURCE_RESOLUTION_LABEL = 'source 10-20 m';
 
 // Brightened Platoscave palette — copper → ochre → gold → fresh sage → green

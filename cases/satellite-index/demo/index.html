@@ -52,7 +52,7 @@
         <h1 class="module-header-title">Spectral Index Demo</h1>
         <p class="module-header-body">
           The demo requests Sentinel-derived NDVI, RGB context, and six companion spectral indices for the visible
-          viewport through a Cloudflare Worker. Each surface uses index value as analytical height — not elevation.
+          viewport through a Cloudflare Worker. Each surface uses index value as analytical height.
         </p>
       </header>
 
@@ -77,7 +77,7 @@
         </p>
         <p class="satellite-receipt-line satellite-receipt-line--scene" data-satellite-scene-meta>
           <span class="satellite-receipt-label">Scene</span>
-          <span class="satellite-receipt-value satellite-receipt-value--empty">Run analysis</span>
+          <span class="satellite-receipt-value satellite-receipt-value--empty">Pending</span>
         </p>
       </div>
 
@@ -89,7 +89,7 @@
         </div>
         <div>
           <div class="satellite-surface-wrap" id="satellite-surface-wrap" aria-label="NDVI 3D surface">
-            <p class="satellite-surface-placeholder">Navigate to an area<br>and get NDVI</p>
+            <p class="satellite-surface-placeholder">Run analysis to view</p>
             <div id="satellite-surface"></div>
           </div>
         </div>
@@ -100,8 +100,8 @@
       <p class="satellite-demo-note">
         This demo first requests live Sentinel-derived NDVI and RGB context from a Cloudflare Worker. The browser
         sends only viewport bounds and an analysis date; Sentinel credentials stay outside the client. If the
-        viewport is too large, the Worker is unavailable, or the imagery request fails, the surface falls back to a
-        synthetic fixture seeded by the same viewport and analysis date.
+        viewport exceeds the live request limit, the action asks you to zoom in. If the Worker is unavailable or the
+        imagery request fails, the surface falls back to a synthetic fixture seeded by the same viewport and analysis date.
       </p>
 
       <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">

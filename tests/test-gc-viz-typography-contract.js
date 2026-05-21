@@ -1,3 +1,4 @@
+// Contract tests: verifies GC viz uses the correct font tokens and typographic CSS variables.
 'use strict';
 
 const fs = require('fs');

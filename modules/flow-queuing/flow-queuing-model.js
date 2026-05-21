@@ -1,3 +1,4 @@
+// M/M/1 queueing model calculations: Little's Law, utilization, and variability-adjusted lead time.
 'use strict';
 
 (function initQueueMachineModel(root) {

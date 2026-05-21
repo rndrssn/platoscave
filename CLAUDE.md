@@ -59,6 +59,8 @@ Three-branch flow: `sandbox` → `develop` → `main`
 - `release to main` → merge `develop` → `main`, push both
 - `commit and release to main` → commit on `sandbox` → merge to `develop` → merge to `main`, push all three
 
+**Shorthand script:** `scripts/release-all.sh` — accepts an optional commit message argument; runs `node tests/run-all.js`, commits any staged changes on `sandbox`, merges sandbox→develop→main, pushes all three, and returns to `sandbox`. Equivalent to `commit and release to main`. Skips the commit step if nothing is staged.
+
 **Rules:**
 - Never commit directly to `develop` or `main`
 - Always switch back to `sandbox` after any release
@@ -78,12 +80,13 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | Task involves | Load |
 |---------------|------|
 | GC simulation, scoring, diagnosis, viz | `modules/garbage-can/runtime/gc-simulation.js`, `modules/garbage-can/runtime/gc-viz.js`, `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js` |
+| Emergence module | `modules/emergence/emergence-primer.js`, `modules/emergence/emergence-primer-gantt.js`, `modules/emergence/index.html`, `modules/emergence/ganttgol/index.html` |
 | Module 06 Ambiguous Documents | `modules/ambiguity-clarity/index.html`, `modules/ambiguity-clarity/section-map/index.html`, `modules/ambiguity-clarity/section-map/section-map.js`, `css/pages/the-descent.css` |
 | UI, CSS, navigation, IA | `docs/10-guides/GUIDE-architecture.md`, `docs/40-principles/PRINCIPLE-coding-standards.md`, `docs/20-reference/REFERENCE-css-architecture.md`, `docs/20-reference/navigation-patterns.md` |
 | Module 04 Learning & Feedback | All files in `modules/learning-feedback/*` + relevant contract tests in `tests/` |
 | Products Over Projects module | `modules/products-over-projects/index.html`, `modules/products-over-projects/taxonomy/index.html`, `modules/products-over-projects/assessment/index.html`, `modules/products-over-projects/assessment/products-over-projects-assessment.js`, `css/pages/products-over-projects.css`, `tests/test-products-over-projects-assessment.js` |
 | Flow & Queuing module | `modules/flow-queuing/index.html`, `modules/flow-queuing/taxonomy/index.html`, `modules/flow-queuing/explore/index.html`, `modules/flow-queuing/concept-graph/index.html`, `modules/flow-queuing/derivation/index.html`, `modules/flow-queuing/flow-queuing-model.js`, `modules/flow-queuing/flow-queuing.js`, `modules/flow-queuing/concept-graph/concept-graph.js`, `css/pages/flow-queuing.css`, `docs/20-reference/REFERENCE-flow-queuing-semantics.md`, `tests/test-flow-queuing-explore-contract.js` |
-| Force graph (Skills, Concept Map) | `modules/experience-skill-graph/index.html`, `modules/flow-queuing/concept-graph/concept-graph.js`, `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
+| Force graph (Skills, Concept Map) | `modules/experience-skill-graph/index.html`, `modules/experience-skill-graph/cv/index.html`, `modules/flow-queuing/concept-graph/concept-graph.js`, `js/force-graph-utils.js`, `css/components/force-graph-states.css`, `css/components/force-graph-chrome.css` |
 | Cases / Satellite Index | `cases/satellite-index/index.html`, `cases/satellite-index/demo/index.html`, `cases/satellite-index/demo/satellite-index.js`, `css/pages/satellite-index.css`, `tests/test-satellite-index-contract.js` |
 | Semantics and labels | Treat implementation and tests as canonical; align across UI, summaries, legends |
 
@@ -117,6 +120,7 @@ Includes navigation link checks and notes build checks.
 | `CLAUDE.md` | `AGENTS.md` must remain byte-for-byte identical (enforced by `scripts/check-claude-links.js`) |
 | Vendored library version bumped (D3, KaTeX) | `colophon/index.html`, `docs/10-guides/GUIDE-vendor-dependency-review.md` |
 | Cases landing or satellite-index framing changed | `cases/index.html`, `cases/satellite-index/index.html` — keep IA and back-links consistent |
+| Articles content or IA changed | `articles/index.html` — keep consistent with notes/ IA pattern |
 
 ## Module IA Contract
 
@@ -148,7 +152,8 @@ Tests enforcing this contract:
 | Products Over Projects runtime | `modules/products-over-projects/index.html`, `modules/products-over-projects/taxonomy/index.html`, `modules/products-over-projects/assessment/index.html`, `modules/products-over-projects/assessment/products-over-projects-assessment.js`, `css/pages/products-over-projects.css` |
 | Flow & Queuing runtime | `modules/flow-queuing/index.html`, `modules/flow-queuing/taxonomy/index.html`, `modules/flow-queuing/explore/index.html`, `modules/flow-queuing/derivation/index.html`, `modules/flow-queuing/flow-queuing-model.js`, `modules/flow-queuing/flow-queuing.js`, `modules/flow-queuing/concept-graph/concept-graph.js` |
 | Flow & Queuing math rendering | `assets/vendor/katex/katex.min.css`, `assets/vendor/katex/katex.min.js`, `js/katex-render.js` |
-| Force-graph shared layer | `js/force-graph-utils.js`, `css/components/force-graph-states.css` |
+| Emergence runtime | `modules/emergence/emergence-primer.js`, `modules/emergence/emergence-primer-gantt.js` |
+| Force-graph shared layer | `js/force-graph-utils.js`, `css/components/force-graph-states.css`, `css/components/force-graph-chrome.css` |
 | Cases / Satellite Index | `cases/index.html`, `cases/satellite-index/index.html`, `cases/satellite-index/demo/index.html`, `cases/satellite-index/demo/satellite-index.js`, `css/pages/satellite-index.css` |
 | Tests | `tests/run-all.js` |
 
@@ -157,6 +162,8 @@ Tests enforcing this contract:
 - Assess path fixes problemInflow to 'moderate' — survey does not capture inflow timing. Explorer exposes all four parameters. See `docs/10-guides/GUIDE-architecture.md`.
 - Page wiring calls window.buildGcPressureNarrative and window.getDiagnosisPreview as globals — both set by gc-pressure-narrative.js and gc-diagnosis.js before page wiring runs.
 - Use simResult.meta.problems (not a hardcoded constant) when computing problem proportions.
+- Emergence module (Module 01) root is canonical local section `01` at `modules/emergence/`. Section `02` (GANTT meets Game of Life) is at `modules/emergence/ganttgol/`. Legacy paths under `modules/emergence-primer/` redirect to these and must never be the canonical destination.
+- Experience/Skills Graph has two sections: section `01` (Skills Graph) at `modules/experience-skill-graph/` and a CV subpage at `modules/experience-skill-graph/cv/`. Both must carry a module-back-link pointing up to the modules catalogue.
 - Module 06 root is canonical local section `01` at `modules/ambiguity-clarity/`; Document Map is local section `02` at `modules/ambiguity-clarity/section-map/`.
 - Document Map anchor switch behavior is part of the feature contract: anchor-type buttons set the active mode and must stay keyboard-accessible with synchronized `aria-pressed` state.
 - Module 04 root is canonical local section `01` at `modules/learning-feedback/`, titled "Epistemic Bets" under "Learning & Feedback".

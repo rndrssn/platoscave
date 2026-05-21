@@ -1,3 +1,4 @@
+// Layout metric factory for Mix Mapper: lane sizing, node positions, and CSS variable reading.
 'use strict';
 
 (function initMixMapperLayoutUtils(root, factory) {

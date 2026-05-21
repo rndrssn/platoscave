@@ -1,3 +1,4 @@
+// Mouse and keyboard interaction bindings for Mix Mapper nodes and links.
 'use strict';
 
 (function initMixMapperInteractions(root, factory) {

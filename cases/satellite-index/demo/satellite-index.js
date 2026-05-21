@@ -1,3 +1,5 @@
+// Satellite NDVI demo: MapLibre map, live Sentinel Hub data via Cloudflare Worker, and Plotly 3D surface.
+
 // ─── Config ───────────────────────────────────────────────
 const WORKER_URL     = 'https://satellite-worker.platoscave.workers.dev';
 const WORKER_API_KEY = '__WORKER_API_KEY__';

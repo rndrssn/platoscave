@@ -1,3 +1,4 @@
+// Contract tests: verifies required CSS custom properties are defined across theme stylesheets.
 'use strict';
 
 const fs = require('fs');

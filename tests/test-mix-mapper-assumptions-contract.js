@@ -1,3 +1,4 @@
+// Contract tests: verifies assumption arcs are correctly defined in mix-mapper-data.
 'use strict';
 
 const data = require('../modules/learning-feedback/mix-mapper-data.js');

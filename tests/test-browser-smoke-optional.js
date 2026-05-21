@@ -1,3 +1,4 @@
+// Optional Playwright smoke tests for browser rendering; auto-skips when Playwright is not installed.
 'use strict';
 
 const assert = require('assert');

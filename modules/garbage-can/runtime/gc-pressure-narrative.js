@@ -1,3 +1,4 @@
+// Generates human-readable narrative strings describing Garbage Can pressure and structural configuration.
 'use strict';
 
 (function(factory) {

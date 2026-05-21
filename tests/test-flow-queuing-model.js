@@ -1,3 +1,4 @@
+// Unit tests for QueueMachineModel: Little's Law, utilization, and variability calculations.
 'use strict';
 
 const assert = require('assert');

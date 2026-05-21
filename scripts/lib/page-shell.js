@@ -1,3 +1,4 @@
+// HTML generation helpers for the build pipeline: nav markup and full page shell used by build-notes.
 'use strict';
 
 function escapeHtml(value) {

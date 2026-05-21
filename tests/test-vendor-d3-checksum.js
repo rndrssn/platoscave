@@ -1,3 +1,4 @@
+// Verifies the vendored D3 library against a known checksum to detect unauthorized modifications.
 'use strict';
 
 const fs = require('fs');

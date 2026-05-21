@@ -1,3 +1,4 @@
+// Flow & Queuing Explore page: D3 bar charts and preset scenarios for arrival and backlog visualization.
 'use strict';
 
 (function initQueueMachinePage() {

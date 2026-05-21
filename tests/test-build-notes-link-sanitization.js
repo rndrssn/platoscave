@@ -1,3 +1,4 @@
+// Tests link sanitization and inline-markdown rendering in the build-notes pipeline.
 'use strict';
 
 const path = require('path');

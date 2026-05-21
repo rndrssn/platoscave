@@ -1,3 +1,4 @@
+// Verifies that backtick file paths in CLAUDE.md and AGENTS.md exist in the repo, and that both files are identical.
 'use strict';
 
 const fs = require('fs');

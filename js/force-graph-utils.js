@@ -1,3 +1,4 @@
+// Shared interaction helpers for D3 force-directed graphs: link index, highlight state, and legend-filter.
 'use strict';
 
 (function initForceGraphUtils(root) {

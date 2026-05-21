@@ -1,3 +1,4 @@
+// Contract tests: verifies gc-viz.js exposes the required public API surface (drawPositioning, drawViz, C).
 'use strict';
 
 const fs = require('fs');

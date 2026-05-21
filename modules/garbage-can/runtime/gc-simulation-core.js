@@ -1,3 +1,4 @@
+// Core Garbage Can Model simulation: Cohen, March & Olsen (1972) Monte Carlo implementation.
 'use strict';
 
 (function(factory) {

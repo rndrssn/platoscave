@@ -1,3 +1,4 @@
+// Products vs Projects risk classifier: scores slider responses into product, execution, or hybrid governance.
 'use strict';
 
 (function initProductsOverProjectsAssessment(root, factory) {

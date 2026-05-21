@@ -1,3 +1,4 @@
+// Maps decision/access structure combinations to organisational diagnosis clusters and descriptive text.
 'use strict';
 
 /**

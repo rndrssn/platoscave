@@ -1,3 +1,4 @@
+// Explorer page wiring: parameter controls and simulation trigger for the Garbage Can module.
 'use strict';
 
 /**

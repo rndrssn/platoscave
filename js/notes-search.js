@@ -1,3 +1,4 @@
+// Client-side keyword filter for the notes index page.
 'use strict';
 
 (function initNotesSearch() {

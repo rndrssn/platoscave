@@ -1,3 +1,4 @@
+// Recursively resolves CSS @import chains into a single string for use in contract tests.
 'use strict';
 
 const fs = require('fs');

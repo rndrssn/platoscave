@@ -1,3 +1,4 @@
+// Integration tests for build-notes: verifies output HTML structure and tag index generation.
 'use strict';
 
 const assert = require('assert');

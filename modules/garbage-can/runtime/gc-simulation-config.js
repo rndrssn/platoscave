@@ -1,3 +1,4 @@
+// Simulation constants for the Garbage Can Model: agent counts, energy loads, and problem-inflow schedules.
 'use strict';
 
 (function(factory) {

@@ -1,3 +1,4 @@
+// D3 force-directed concept map for the Flow & Queuing module (section 04).
 'use strict';
 
 (function initConceptGraph() {

@@ -1,3 +1,4 @@
+// Contract tests for Mix Mapper link anchor points and SVG marker invariants.
 'use strict';
 
 const fs = require('fs');

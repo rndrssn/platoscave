@@ -1,3 +1,4 @@
+// Contract tests for satellite-index.js: constants, function exports, and structural requirements.
 'use strict';
 
 const fs = require('fs');

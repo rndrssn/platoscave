@@ -1,3 +1,4 @@
+// Contract tests for the Flow & Queuing concept graph: required nodes, groups, and link kinds.
 'use strict';
 
 const assert = require('assert');

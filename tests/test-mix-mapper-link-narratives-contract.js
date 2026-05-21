@@ -1,3 +1,4 @@
+// Contract tests: verifies all Mix Mapper links have valid semantic narrative text.
 'use strict';
 
 const data = require('../modules/learning-feedback/mix-mapper-data.js');

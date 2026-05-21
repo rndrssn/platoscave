@@ -1,3 +1,4 @@
+// Contract tests: checks security hardening patterns (CSP, referrer policy, sandbox) across HTML pages.
 'use strict';
 
 const fs = require('fs');

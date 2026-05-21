@@ -1,3 +1,4 @@
+// Minimal fake DOM (FakeClassList, FakeElement) for unit-testing browser-dependent code under Node.js.
 'use strict';
 
 class FakeClassList {

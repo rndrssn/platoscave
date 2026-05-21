@@ -1,3 +1,4 @@
+// Checks that GC simulation summary totals are consistent with per-tick resolution counts.
 'use strict';
 
 const assert = require('assert');

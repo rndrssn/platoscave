@@ -1,3 +1,4 @@
+// Contract tests: verifies nav-specific CSS tokens are defined in theme stylesheets.
 'use strict';
 
 const fs = require('fs');

@@ -1,3 +1,4 @@
+// Contract tests for mix-mapper-geometry arc routing: correct path calculations.
 'use strict';
 
 const geometry = require('../modules/learning-feedback/mix-mapper-geometry.js');

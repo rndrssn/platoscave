@@ -1,3 +1,4 @@
+// Interactive section map (Document Map) for Module 06: per-concern readiness across PM, UX, and Eng tracks.
 (function () {
   'use strict';
 

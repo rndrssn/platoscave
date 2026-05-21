@@ -1,3 +1,4 @@
+// D3 visualization for the Garbage Can Model: positioning diagram and animated simulation with summary.
 'use strict';
 
 /**

@@ -1,3 +1,4 @@
+// Contract tests: verifies that simResult.meta fields are present and correctly typed.
 'use strict';
 
 const assert = require('assert');

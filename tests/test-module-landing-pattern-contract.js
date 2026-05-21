@@ -1,3 +1,4 @@
+// Contract tests enforcing module IA: back-link, sub-nav, and active section-01 link on all module root pages.
 'use strict';
 
 const fs = require('fs');

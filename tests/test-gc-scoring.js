@@ -1,3 +1,4 @@
+// Unit tests for gc-scoring: survey response to parameter conversion for known archetypes.
 'use strict';
 var assert = require('assert');
 var scoring = require('../modules/garbage-can/runtime/gc-scoring.js');

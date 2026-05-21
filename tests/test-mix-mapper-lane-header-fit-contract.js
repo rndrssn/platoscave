@@ -1,3 +1,4 @@
+// Contract tests: verifies lane header sizing fits within lane boundaries in Mix Mapper.
 'use strict';
 
 const fs = require('fs');

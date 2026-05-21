@@ -1,3 +1,4 @@
+// Test runner: executes all test suites and script checks, reporting pass/fail counts.
 'use strict';
 
 const { spawnSync } = require('child_process');

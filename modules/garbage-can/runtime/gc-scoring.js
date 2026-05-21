@@ -1,3 +1,4 @@
+// Converts 12 survey responses into Garbage Can Model simulation parameters (energy load, access structure, decision structure).
 'use strict';
 
 /**

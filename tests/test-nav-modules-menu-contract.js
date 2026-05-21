@@ -1,3 +1,4 @@
+// Contract tests: verifies the modules mega-menu contains all registered module routes.
 'use strict';
 
 const fs = require('fs');

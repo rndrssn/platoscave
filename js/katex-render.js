@@ -1,3 +1,4 @@
+// Renders all [data-formula] elements on the page using KaTeX in display mode.
 'use strict';
 
 (function renderKaTeXFormulas() {

@@ -1,3 +1,4 @@
+// Accessibility contract tests: checks aria attributes, roles, and alt text on critical pages.
 'use strict';
 
 const assert = require('assert');

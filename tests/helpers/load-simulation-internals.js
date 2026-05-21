@@ -1,3 +1,4 @@
+// Loads GC simulation internals into a vm.Script context, exposing private functions for unit tests.
 'use strict';
 
 const fs = require('fs');

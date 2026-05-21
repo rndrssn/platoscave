@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Optional AI writing-polish step (spelling and punctuation only) for notes and articles.
 'use strict';
 
 /**

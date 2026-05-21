@@ -1,3 +1,4 @@
+// Client-side keyword filter for the articles index page.
 'use strict';
 
 (function initArticlesSearch() {

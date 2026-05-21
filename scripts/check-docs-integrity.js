@@ -1,3 +1,4 @@
+// Scans docs/ markdown for broken internal cross-references and link integrity violations.
 'use strict';
 
 const fs = require('fs');

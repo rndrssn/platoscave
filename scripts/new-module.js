@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Scaffold generator: creates a new module index.html following the canonical section-01 landing pattern.
 'use strict';
 
 const fs = require('fs');

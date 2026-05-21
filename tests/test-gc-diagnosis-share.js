@@ -1,3 +1,4 @@
+// Tests that all GC diagnosis cluster combinations return well-formed title and body text.
 'use strict';
 
 const assert = require('assert');

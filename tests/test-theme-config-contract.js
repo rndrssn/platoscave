@@ -1,3 +1,4 @@
+// Contract tests: verifies theme.config.js sets a valid, known PLATOSCAVE_THEME value.
 'use strict';
 
 const fs = require('fs');

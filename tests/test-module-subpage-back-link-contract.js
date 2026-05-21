@@ -1,3 +1,4 @@
+// Contract tests: verifies module sub-pages have correct back-links pointing to the module root.
 'use strict';
 
 const fs = require('fs');

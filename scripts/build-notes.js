@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Build pipeline: converts published notes/articles from markdown to HTML, and builds tag index and search data.
 'use strict';
 
 const fs = require('fs');

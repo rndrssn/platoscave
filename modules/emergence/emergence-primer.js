@@ -1,3 +1,4 @@
+// Conway's Game of Life canvas simulation for the Emergence module primer.
 'use strict';
 
 (function initEmergencePrimer() {

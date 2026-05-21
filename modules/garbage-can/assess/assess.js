@@ -1,3 +1,4 @@
+// Assess page wiring: questionnaire flow, scoring, and simulation trigger for the Garbage Can module.
 'use strict';
 
 /**

@@ -1,3 +1,4 @@
+// Arc geometry calculations for Mix Mapper: path routing, control points, and link-span computation.
 'use strict';
 
 (function initMixMapperGeometry(root, factory) {

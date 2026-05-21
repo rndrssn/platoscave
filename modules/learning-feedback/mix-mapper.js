@@ -1,3 +1,4 @@
+// Top-level orchestrator for the Mix Mapper visualization: wires all sub-modules and bootstraps the SVG.
 'use strict';
 
 (function initMixMapper() {

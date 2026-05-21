@@ -1,3 +1,4 @@
+// D3 rendering engine for Mix Mapper: draws lanes, nodes, arcs, animated dots, and comparison rows.
 'use strict';
 
 (function initMixMapperRenderer(root, factory) {

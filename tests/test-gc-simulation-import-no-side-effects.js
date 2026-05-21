@@ -1,3 +1,4 @@
+// Verifies that requiring gc-simulation.js produces no global side effects.
 'use strict';
 
 const assert = require('assert');

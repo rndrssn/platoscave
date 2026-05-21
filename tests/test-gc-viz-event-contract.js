@@ -1,3 +1,4 @@
+// Contract tests for GC viz event callbacks: correct firing order and argument shapes.
 'use strict';
 
 const fs = require('fs');

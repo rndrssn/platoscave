@@ -1,3 +1,4 @@
+// Loads and validates skill/experience graph data from markdown frontmatter for the force-directed Skills graph.
 (function initExperienceSkillGraphDataLoader() {
   'use strict';
 

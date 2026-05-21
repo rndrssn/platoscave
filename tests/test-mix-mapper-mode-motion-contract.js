@@ -1,3 +1,4 @@
+// Contract tests: verifies animated dot motion is correctly configured per Mix Mapper mode.
 'use strict';
 
 const fs = require('fs');

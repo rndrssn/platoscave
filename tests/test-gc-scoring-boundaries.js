@@ -1,3 +1,4 @@
+// Tests gc-scoring boundary conditions: minimum/maximum survey responses and parameter edge cases.
 'use strict';
 
 const assert = require('assert');

@@ -1,3 +1,4 @@
+// Tests the Products vs Projects risk classifier for all residual-risk family and scorecard combinations.
 'use strict';
 
 const assert = require('assert');

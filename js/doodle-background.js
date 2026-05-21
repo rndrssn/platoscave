@@ -1,3 +1,4 @@
+// Injects decorative SVG doodles behind page content for pages with the doodle-bg-page body class.
 'use strict';
 
 (function initDoodleBackground() {

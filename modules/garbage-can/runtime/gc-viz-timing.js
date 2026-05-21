@@ -1,3 +1,4 @@
+// Animation timing constants for the GC simulation visualization.
 'use strict';
 
 (function(factory) {

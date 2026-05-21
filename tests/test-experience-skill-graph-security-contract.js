@@ -1,3 +1,4 @@
+// Security contract tests: verifies the skill graph data loader sanitizes user-supplied content.
 'use strict';
 
 const fs = require('fs');

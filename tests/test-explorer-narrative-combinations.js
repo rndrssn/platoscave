@@ -1,3 +1,4 @@
+// Tests all pressure/structure parameter combinations for the GC pressure narrative generator.
 'use strict';
 
 const assert = require('assert');

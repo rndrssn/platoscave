@@ -1,3 +1,4 @@
+// Node and link data for the Mix Mapper: process steps, complexity flows, assumption arcs, and learning connections.
 'use strict';
 
 (function initMixMapperData(root, factory) {

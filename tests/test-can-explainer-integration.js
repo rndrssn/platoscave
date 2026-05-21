@@ -1,3 +1,4 @@
+// Integration tests for the Garbage Can can-explainer animated diagram.
 'use strict';
 
 const assert = require('assert');

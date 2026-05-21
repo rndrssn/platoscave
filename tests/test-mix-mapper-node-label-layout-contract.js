@@ -1,3 +1,4 @@
+// Contract tests: verifies Mix Mapper node labels stay within lane bounds.
 'use strict';
 
 const fs = require('fs');

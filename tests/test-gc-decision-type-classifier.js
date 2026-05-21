@@ -1,3 +1,4 @@
+// Unit tests for the GC decision-type classifier: resolution, oversight, and flight against known inputs.
 'use strict';
 
 const assert = require('assert');

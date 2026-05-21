@@ -1,3 +1,4 @@
+// Negative tests for build-notes: verifies correct rejection of malformed or invalid content.
 'use strict';
 
 const assert = require('assert');

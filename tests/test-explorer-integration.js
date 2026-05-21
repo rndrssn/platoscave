@@ -1,3 +1,4 @@
+// Integration tests for the GC Explorer page: parameter controls and simulation wiring.
 'use strict';
 
 const assert = require('assert');

@@ -815,8 +815,11 @@ function setMeta(bounds, date, scene) {
   const sceneEl = document.querySelector('[data-satellite-scene-meta]');
   if (!sceneEl) return;
 
+  const validPixelText = scene && isFiniteNumber(scene.validPixelPct)
+    ? ' / valid pixels ' + Math.round(scene.validPixelPct) + '%'
+    : '';
   const sceneValue = scene
-    ? scene.constellation + ' / ' + scene.date + ' / ' + SENTINEL_SOURCE_RESOLUTION_LABEL + ' / cloud ' + Math.round(scene.cloudCover) + '%'
+    ? 'most recent valid biomass map / ' + scene.constellation + ' / ' + scene.date + ' / ' + SENTINEL_SOURCE_RESOLUTION_LABEL + ' / cloud ' + Math.round(scene.cloudCover) + '%' + validPixelText
     : 'fixture fallback / ' + (date || getAnalysisDate());
 
   sceneEl.textContent = '';

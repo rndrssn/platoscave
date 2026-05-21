@@ -1,3 +1,4 @@
+// Global nav controller: active-link highlighting, modules mega-menu, and nav swatch theming.
 'use strict';
 
 (function initGlobalNavController() {

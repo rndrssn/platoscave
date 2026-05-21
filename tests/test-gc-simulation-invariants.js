@@ -1,3 +1,4 @@
+// Tests GC simulation statistical invariants across a parameter sweep.
 'use strict';
 
 const assert = require('assert');

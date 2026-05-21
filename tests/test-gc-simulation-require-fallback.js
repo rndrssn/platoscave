@@ -1,3 +1,4 @@
+// Verifies that gc-simulation.js resolves gc-simulation-core.js via the cwd-based fallback when primary require paths fail.
 'use strict';
 
 /**

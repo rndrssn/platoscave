@@ -1,3 +1,4 @@
+// Contract tests for the Flow & Queuing Explore page: fallback element, preset buttons, and chart containers.
 'use strict';
 
 const assert = require('assert');

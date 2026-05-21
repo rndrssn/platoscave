@@ -1,3 +1,4 @@
+// Node utility factory for Mix Mapper: label sizing, lane grouping, and node-by-id lookup.
 'use strict';
 
 (function initMixMapperNodeUtils(root, factory) {

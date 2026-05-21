@@ -1,3 +1,4 @@
+// Mode-specific visual policy for Mix Mapper: colors, opacity, and animation behavior per active mode.
 'use strict';
 
 (function initMixMapperModePolicy(root, factory) {

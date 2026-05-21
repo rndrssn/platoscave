@@ -1,3 +1,4 @@
+// Contract tests: checks that link text avoids anti-patterns like "click here" or "read more".
 'use strict';
 
 const fs = require('fs');

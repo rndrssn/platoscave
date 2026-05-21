@@ -1,3 +1,4 @@
+// Low-level rendering utilities for GC viz: CSS variable reading, label formatters, and SVG path helpers.
 'use strict';
 
 (function(factory) {

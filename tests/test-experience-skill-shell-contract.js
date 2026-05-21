@@ -1,3 +1,4 @@
+// Contract tests for the HTML shell structure of the Experience/Skills graph page.
 'use strict';
 
 const fs = require('fs');

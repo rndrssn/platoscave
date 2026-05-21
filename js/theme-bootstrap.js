@@ -1,3 +1,4 @@
+// Reads PLATOSCAVE_THEME config and applies the active theme stylesheet and data-theme attribute on page load.
 'use strict';
 
 (function applyConfiguredTheme() {

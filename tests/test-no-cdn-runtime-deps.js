@@ -1,3 +1,4 @@
+// Enforces that no production HTML pages load scripts from external CDNs at runtime.
 'use strict';
 
 const assert = require('assert');

@@ -1,3 +1,4 @@
+// Audits source files for unsafe innerHTML assignments to enforce XSS hygiene.
 'use strict';
 
 const fs = require('fs');

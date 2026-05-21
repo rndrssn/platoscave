@@ -1,3 +1,4 @@
+// Animated D3 explainer diagram illustrating the Garbage Can Model concept.
 'use strict';
 
 (function initGarbageCanExplainer() {

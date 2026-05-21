@@ -1,3 +1,4 @@
+// Public API wrapper for gc-simulation-core.js; resolves the core module in browser and Node.js environments.
 'use strict';
 
 /**

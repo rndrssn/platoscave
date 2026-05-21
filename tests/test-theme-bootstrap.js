@@ -1,3 +1,4 @@
+// Unit tests for theme-bootstrap.js: theme application, alias resolution, and stylesheet injection.
 'use strict';
 
 const fs = require('fs');

@@ -1,3 +1,4 @@
+// Integration tests for the Garbage Can assess page: questionnaire scoring and simulation trigger.
 'use strict';
 
 const assert = require('assert');

@@ -1,3 +1,4 @@
+// Shared layout and sizing configuration for the GC simulation visualization.
 'use strict';
 
 // Shared configuration for GC visualization sizing and behavior.

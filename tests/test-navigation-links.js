@@ -1,3 +1,4 @@
+// Checks that all internal href links in HTML files resolve to existing paths.
 'use strict';
 
 const assert = require('assert');

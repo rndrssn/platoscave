@@ -1,3 +1,4 @@
+// Unit tests for gc-diagnosis: cluster mapping and getDiagnosis output for all structure combinations.
 'use strict';
 var assert = require('assert');
 var diag = require('../modules/garbage-can/runtime/gc-diagnosis.js');

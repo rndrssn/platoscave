@@ -1,3 +1,4 @@
+// Unit tests for the GC access and decision matrix builder functions.
 'use strict';
 
 const assert = require('assert');

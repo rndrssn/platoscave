@@ -1,3 +1,4 @@
+// Contract tests for Emergence primer jump-anchor markup.
 'use strict';
 
 const fs = require('fs');

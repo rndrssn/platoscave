@@ -1,3 +1,4 @@
+// Contract tests for the Emergence Gantt model: correct row/column layout output.
 'use strict';
 
 const fs = require('fs');

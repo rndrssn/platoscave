@@ -1,3 +1,4 @@
+// Loads the GC simulation module into a vm.Script context for integration tests.
 'use strict';
 
 const fs = require('fs');

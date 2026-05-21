@@ -1,3 +1,4 @@
+// Validates gc-scoring.js (12-question spec) against known survey archetypes.
 'use strict';
 
 /**

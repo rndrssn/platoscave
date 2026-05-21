@@ -1,3 +1,4 @@
+// Game-of-Life–driven Gantt model for the Emergence GANTT meets Game of Life visualization.
 'use strict';
 
 (function registerEmergenceGanttModel(root, factory) {

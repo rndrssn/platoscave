@@ -1,3 +1,4 @@
+// Registry of all module routes used by the nav mega-menu and module-navigation UI.
 'use strict';
 
 (function initModuleRouteData(root, factory) {

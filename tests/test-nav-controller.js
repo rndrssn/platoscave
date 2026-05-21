@@ -1,3 +1,4 @@
+// Unit tests for nav-controller.js: active link detection and nav swatch application.
 'use strict';
 
 const fs = require('fs');

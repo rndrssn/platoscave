@@ -1,3 +1,4 @@
+// Semantic helpers for Mix Mapper: mode labels, link keys, narrative text, and process/assumption role lookups.
 'use strict';
 
 (function initMixMapperSemantics(root, factory) {

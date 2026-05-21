@@ -1,3 +1,4 @@
+// Contract tests for the Document Map section in Module 06 (The Descent / Ambiguity & Clarity).
 'use strict';
 
 const fs = require('fs');

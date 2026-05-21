@@ -1,3 +1,4 @@
+// Tooltip content factory for Mix Mapper: HTML generation for node and link hover states.
 'use strict';
 
 (function initMixMapperTooltip(root, factory) {

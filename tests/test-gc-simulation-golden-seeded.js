@@ -1,3 +1,4 @@
+// Golden-value tests for GC simulation output using a seeded random number generator.
 'use strict';
 
 const assert = require('assert');

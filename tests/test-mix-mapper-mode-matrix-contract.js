@@ -1,3 +1,4 @@
+// Contract tests for the Mix Mapper mode-to-visibility matrix across all modes.
 'use strict';
 
 const semantics = require('../modules/learning-feedback/mix-mapper-semantics.js');

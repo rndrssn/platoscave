@@ -1,3 +1,4 @@
+// Tests that concurrent simulation requests in the GC Explorer are correctly serialized.
 'use strict';
 
 const assert = require('assert');

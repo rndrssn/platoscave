@@ -1,3 +1,4 @@
+// Contract tests for Mix Mapper tooltip HTML structure and content.
 'use strict';
 
 const fs = require('fs');

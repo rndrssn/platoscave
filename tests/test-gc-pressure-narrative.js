@@ -1,3 +1,4 @@
+// Tests buildGcPressureNarrative across all pressure, structure, and diagnosis parameter combinations.
 'use strict';
 
 const assert = require('assert');

@@ -48,7 +48,7 @@ Read ALL of these before forming opinions.
 ### Docs
 - `CLAUDE.md`
 - `docs/10-guides/GUIDE-architecture.md`
-- `docs/50-vision/VISION-product.md`
+- `README.md`
 
 ---
 

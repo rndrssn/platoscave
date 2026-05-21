@@ -72,8 +72,6 @@ Three-branch flow: `sandbox` → `develop` → `main`
 ### Foundation pack (always load)
 
 1. `README.md`
-2. `docs/00-core/CORE.md`
-3. `docs/00-core/CORE-loading-rules.md`
 
 ### Conditional (load when relevant)
 
@@ -82,15 +80,13 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | GC simulation, scoring, diagnosis, viz | `modules/garbage-can/runtime/gc-simulation.js`, `modules/garbage-can/runtime/gc-viz.js`, `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js` |
 | Emergence module | `modules/emergence/emergence-primer.js`, `modules/emergence/emergence-primer-gantt.js`, `modules/emergence/index.html`, `modules/emergence/ganttgol/index.html` |
 | Module 06 Ambiguous Documents | `modules/ambiguity-clarity/index.html`, `modules/ambiguity-clarity/section-map/index.html`, `modules/ambiguity-clarity/section-map/section-map.js`, `css/pages/the-descent.css` |
-| UI, CSS, navigation, IA | `docs/10-guides/GUIDE-architecture.md`, `docs/40-principles/PRINCIPLE-coding-standards.md`, `docs/20-reference/REFERENCE-css-architecture.md`, `docs/20-reference/navigation-patterns.md` |
+| UI, CSS, navigation, IA | `docs/10-guides/GUIDE-architecture.md` |
 | Module 04 Learning & Feedback | All files in `modules/learning-feedback/*` + relevant contract tests in `tests/` |
 | Products Over Projects module | `modules/products-over-projects/index.html`, `modules/products-over-projects/taxonomy/index.html`, `modules/products-over-projects/assessment/index.html`, `modules/products-over-projects/assessment/products-over-projects-assessment.js`, `css/pages/products-over-projects.css`, `tests/test-products-over-projects-assessment.js` |
-| Flow & Queuing module | `modules/flow-queuing/index.html`, `modules/flow-queuing/taxonomy/index.html`, `modules/flow-queuing/explore/index.html`, `modules/flow-queuing/concept-graph/index.html`, `modules/flow-queuing/derivation/index.html`, `modules/flow-queuing/flow-queuing-model.js`, `modules/flow-queuing/flow-queuing.js`, `modules/flow-queuing/concept-graph/concept-graph.js`, `css/pages/flow-queuing.css`, `docs/20-reference/REFERENCE-flow-queuing-semantics.md`, `tests/test-flow-queuing-explore-contract.js` |
+| Flow & Queuing module | `modules/flow-queuing/index.html`, `modules/flow-queuing/taxonomy/index.html`, `modules/flow-queuing/explore/index.html`, `modules/flow-queuing/concept-graph/index.html`, `modules/flow-queuing/derivation/index.html`, `modules/flow-queuing/flow-queuing-model.js`, `modules/flow-queuing/flow-queuing.js`, `modules/flow-queuing/concept-graph/concept-graph.js`, `css/pages/flow-queuing.css`, `tests/test-flow-queuing-explore-contract.js` |
 | Force graph (Skills, Concept Map) | `modules/experience-skill-graph/index.html`, `modules/experience-skill-graph/cv/index.html`, `modules/flow-queuing/concept-graph/concept-graph.js`, `js/force-graph-utils.js`, `css/components/force-graph-states.css`, `css/components/force-graph-chrome.css` |
 | Cases / Satellite Index | `cases/satellite-index/index.html`, `cases/satellite-index/demo/index.html`, `cases/satellite-index/demo/satellite-index.js`, `css/pages/satellite-index.css`, `tests/test-satellite-index-contract.js` |
 | Semantics and labels | Treat implementation and tests as canonical; align across UI, summaries, legends |
-
-Full rules: `docs/00-core/CORE-loading-rules.md`.
 
 Profiles:
 - `fast`: foundation pack + one conditional doc max
@@ -104,7 +100,7 @@ Includes navigation link checks and notes build checks.
 
 **Optional** (auto-skips without Playwright): `node tests/test-browser-smoke-optional.js`
 
-**Semantics/copy changes:** keep terms aligned with `docs/20-reference/REFERENCE-gc-model-semantics.md` (GC) and `docs/20-reference/REFERENCE-flow-queuing-semantics.md` (Flow & Queuing); update relevant docs in the same change.
+**Semantics/copy changes:** keep GC and Flow & Queuing terms aligned with implementation and tests as canonical; update relevant docs in the same change.
 
 **Merge readiness:** tests pass, no docs integrity errors, no known mismatch between code behavior and documented semantics.
 
@@ -113,12 +109,12 @@ Includes navigation link checks and notes build checks.
 | Changed | Also update |
 |---------|-------------|
 | GC model math or outputs | Tests + user-facing summary logic/copy |
-| Flow & Queuing model math, symbols, or labels | Tests + `docs/20-reference/REFERENCE-flow-queuing-semantics.md` |
+| Flow & Queuing model math, symbols, or labels | Tests + any affected user-facing docs |
 | UI labels/readouts | All affected surfaces (legend, runtime text, summary) |
 | Module title, section name, or IA label | `modules/index.html`, `js/nav-controller.js`, module page labels, redirect copy |
 | Contributor or release workflow | `README.md` + tracked workflow docs |
 | `CLAUDE.md` | `AGENTS.md` must remain byte-for-byte identical (enforced by `scripts/check-claude-links.js`) |
-| Vendored library version bumped (D3, KaTeX) | `colophon/index.html`, `docs/10-guides/GUIDE-vendor-dependency-review.md` |
+| Vendored library version bumped (D3, KaTeX) | `colophon/index.html` |
 | Cases landing or satellite-index framing changed | `cases/index.html`, `cases/satellite-index/index.html` — keep IA and back-links consistent |
 | Articles content or IA changed | `articles/index.html` — keep consistent with notes/ IA pattern |
 

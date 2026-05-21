@@ -33,21 +33,3 @@ Thumbs.db
 # Obsidian
 .obsidian/
 
-#Handoff
-HANDOFF*.md
-
-#Docs
-docs/*
-!docs/README.md
-!docs/10-guides/
-docs/10-guides/*
-!docs/10-guides/review-playbooks/
-docs/10-guides/review-playbooks/*
-!docs/10-guides/review-playbooks/*.md
-
-#LLM
-CLAUDE.md
-
-
-# Local scratch artifacts
-sandbox/

@@ -155,7 +155,8 @@ assertIncludes(demoJs, "baseToggleEl.setAttribute('aria-pressed', String(showSat
 assertNotMatches(demoJs, /CONTROL_STYLE_OPTIONS|initControlStyleSwitcher|setControlStyle|controlStyleRootEl|controlStyleOptionEls/, 'Temporary control style switcher JS should not remain');
 assertNotMatches(demoJs, /META_STYLE|metaStyle|data-meta-style|localStorage/, 'Metadata style selector JS should be removed after choosing Bar');
 assertNotMatches(demoJs, /buildPlotAnnotationText|annotations: annotationText/, 'Scene metadata should stay in the shared metadata readout, not repeated inside Plotly charts');
-assertIncludes(demoJs, "scene.constellation + ' / ' + scene.date + ' / ' + SENTINEL_SOURCE_RESOLUTION_LABEL + ' / cloud ' + Math.round(scene.cloudCover) + '%'", 'Live acquisition should render scene source range and cloud in the receipt line');
+assertIncludes(demoJs, "const validPixelText = scene && isFiniteNumber(scene.validPixelPct)", 'Live acquisition should expose valid-pixel metadata when provided by the Worker');
+assertIncludes(demoJs, "'most recent valid biomass map / ' + scene.constellation + ' / ' + scene.date + ' / ' + SENTINEL_SOURCE_RESOLUTION_LABEL + ' / cloud ' + Math.round(scene.cloudCover) + '%' + validPixelText", 'Live acquisition should render as the most recent valid biomass map with source, date, cloud, and valid-pixel context');
 assertIncludes(demoJs, "'fixture fallback / ' + (date || getAnalysisDate())", 'Fixture fallback should render as a receipt scene line');
 assertIncludes(demoJs, "document.querySelector('[data-satellite-scene-meta]')", 'Acquisition metadata should render into its dedicated receipt line');
 assert(!/label: 'area'[\s\S]*label: 'source'/.test(demoJs), 'Acquisition metadata should not duplicate viewport area/grid values');

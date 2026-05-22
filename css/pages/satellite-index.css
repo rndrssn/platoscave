@@ -611,3 +611,44 @@
   max-width: 52rem;
   line-height: 1.65;
 }
+
+.satellite-gap-note {
+  margin: 0 0 0.5rem;
+}
+
+.satellite-gap-note summary {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.satellite-gap-note summary::-webkit-details-marker { display: none; }
+
+.satellite-gap-note summary .satellite-receipt-label {
+  cursor: pointer;
+}
+
+.satellite-gap-note summary::after {
+  content: '▶';
+  font-family: var(--mono);
+  font-size: 0.45rem;
+  letter-spacing: 0;
+  color: var(--ink-ghost);
+}
+
+.satellite-gap-note[open] summary::after {
+  content: '▼';
+}
+
+.satellite-gap-note__body {
+  margin: 0.4rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-faint);
+  line-height: 1.6;
+  max-width: 28rem;
+}

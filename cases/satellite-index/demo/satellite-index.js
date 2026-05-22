@@ -817,6 +817,12 @@ function setMeta(bounds, date, scene) {
   const sceneEl = document.querySelector('[data-satellite-scene-meta]');
   if (!sceneEl) return;
 
+  const gapNote = document.getElementById('satellite-gap-note');
+  if (gapNote) {
+    const hasGaps = scene && isFiniteNumber(scene.validPixelPct) && scene.validPixelPct < 100;
+    gapNote.hidden = !hasGaps;
+  }
+
   const validPixelText = scene && isFiniteNumber(scene.validPixelPct)
     ? ' / valid pixels ' + Math.round(scene.validPixelPct) + '%'
     : '';

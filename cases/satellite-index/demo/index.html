@@ -89,6 +89,14 @@
           </div>
         </div>
         <div>
+          <details class="satellite-gap-note" id="satellite-gap-note" hidden>
+            <summary><span class="satellite-receipt-label">Surface gaps</span></summary>
+            <p class="satellite-gap-note__body">
+              Pixels classified as cloud, cirrus, snow, or satellite hardware defects are masked and rendered as gaps.
+              Shadow and ambiguous terrain pixels are kept — they carry real surface signal even if dimmed.
+              Gaps are a direct spatial readout of cloud cover on the acquisition date.
+            </p>
+          </details>
           <div class="satellite-surface-wrap" id="satellite-surface-wrap" aria-label="NDVI 3D surface">
             <p class="satellite-surface-placeholder">Run analysis to view</p>
             <div id="satellite-surface"></div>

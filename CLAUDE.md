@@ -1,4 +1,4 @@
-# CLAUDE.md
+# Agent Contract
 
 <!--
 agent_contract_version: 3
@@ -15,7 +15,7 @@ Operational contract for AI coding agents in this repository. Read this file at 
 ## Instruction Precedence
 
 1. Explicit user task in the current chat
-2. This `CLAUDE.md`
+2. This agent contract (`AGENTS.md` / `CLAUDE.md`)
 3. Tracked repository sources (`README.md`, code, tests)
 4. Local/private docs only if explicitly provided by the user in-session
 
@@ -89,8 +89,16 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | Semantics and labels | Treat implementation and tests as canonical; align across UI, summaries, legends |
 
 Profiles:
-- `fast`: foundation pack + one conditional doc max
+- `fast`: foundation pack + one relevant conditional row/set max
 - `deep`: foundation pack + all relevant conditional docs up to 8k token budget
+
+### Repository map hygiene
+
+`REPO_MAP.md` is an auto-generated structural index of JavaScript symbols, HTML pages, and script loading relationships. Use it to orient before broad repo exploration or cross-module work, but treat tracked source, tests, and `README.md` as canonical.
+
+For new JavaScript files, or files whose primary responsibility changes significantly, add or update a brief top-of-file purpose comment. Keep it factual and one sentence long so the repository map can describe the file accurately when regenerated. Do not add noisy boilerplate comments inside functions only for the map; the map reads the leading file comment and top-level symbols.
+
+For new HTML pages, or pages whose purpose/title changes significantly, keep the `<title>`, primary `<h1>`, and `<meta name="description">` aligned with the page's actual role. `REPO_MAP.md` uses title/H1/script references for HTML orientation; metadata should remain factual and specific for source readers, generated pages, search, and sharing.
 
 ## Hard Gates (pre-commit)
 
@@ -112,8 +120,9 @@ Includes navigation link checks and notes build checks.
 | Flow & Queuing model math, symbols, or labels | Tests + any affected user-facing docs |
 | UI labels/readouts | All affected surfaces (legend, runtime text, summary) |
 | Module title, section name, or IA label | `modules/index.html`, `js/nav-controller.js`, module page labels, redirect copy |
+| New JS/HTML file or major responsibility change | JS top-of-file purpose comment for `REPO_MAP.md`; HTML title/H1 and meta description kept aligned |
 | Contributor or release workflow | `README.md` + tracked workflow docs |
-| `CLAUDE.md` | `AGENTS.md` must remain byte-for-byte identical (enforced by `scripts/check-claude-links.js`) |
+| `AGENTS.md` or `CLAUDE.md` | Both files must remain byte-for-byte identical (enforced by `scripts/check-claude-links.js`) |
 | Vendored library version bumped (D3, KaTeX) | `colophon/index.html` |
 | Cases landing or satellite-index framing changed | `cases/index.html`, `cases/satellite-index/index.html` — keep IA and back-links consistent |
 | Articles content or IA changed | `articles/index.html` — keep consistent with notes/ IA pattern |
@@ -237,7 +246,7 @@ Stop feature work and produce a `HANDOFF.md` update when any of these fire:
 - The user reports context usage at or above 80% (checked via the /context slash command).
 - The user explicitly asks for a handoff.
 
-Handoff structure (keep consistent with prior `HANDOFF.md`):
+Handoff structure (keep consistent with prior `HANDOFF.md` if present; otherwise create it with this structure):
 
 1. Session summary — what this session was about
 2. Repository + branch state

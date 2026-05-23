@@ -38,10 +38,10 @@ const staleFixtureOnlyCopy = /No external API calls are made|not yet connected|s
 assertNotMatches(overviewHtml, staleFixtureOnlyCopy, 'Overview must not describe the demo as fixture-only');
 assertNotMatches(demoHtml, staleFixtureOnlyCopy, 'Demo must not describe the pipeline as disconnected');
 
-assertIncludes(overviewHtml, 'live-first, with a fixture fallback', 'Overview should state live-first/fallback behavior');
+assertIncludes(overviewHtml, 'procedural fixture preserves the interaction model', 'Overview should state fixture fallback behavior');
 assertIncludes(overviewHtml, 'Analyse viewport', 'Overview try-it copy should match demo action wording');
-assertIncludes(overviewHtml, '<span class="module-sub-nav-number">03</span> Terrain renderer', 'Overview should link to the terrain renderer section');
-assertIncludes(overviewHtml, 'higher-resolution MapTiler satellite tile mosaic', 'Overview should explain the Three.js base-plane experiment');
+assertIncludes(overviewHtml, '<span class="module-sub-nav-number">02</span> Explorer', 'Overview sub-nav should link to Explorer as section 02');
+assertIncludes(overviewHtml, 'Seven-index spectral terrain', 'Overview try-it link should describe the Explorer');
 assertIncludes(overviewHtml, 'Three.js — terrain renderer and satellite tile base plane', 'Technical stack should mention the terrain renderer');
 assertNotMatches(overviewHtml, /select a date|Analyse visible area/, 'Overview should not reference removed date picker or old action copy');
 assertIncludes(demoHtml, 'Spectral Index Demo', 'Demo heading should describe the multi-index surface set');
@@ -91,7 +91,7 @@ assertNotMatches(demoHtml, /maplibre-gl@4\/|plotly\.js-dist-min@2\//, 'Satellite
 
 assertNotMatches(moduleRouteData, /cases\/|satellite-index/, 'Cases should stay out of module route data');
 
-assertIncludes(threeHtml, 'Terrain renderer', 'Terrain renderer page heading missing');
+assertIncludes(threeHtml, 'Explorer', 'Explorer page heading missing');
 assertIncludes(threeHtml, 'id="satellite-three-map"', 'Three.js prototype should keep its own map container');
 assertIncludes(threeHtml, 'id="satellite-three-surface"', 'Three.js prototype should keep its own canvas');
 assertIncludes(threeHtml, 'id="satellite-three-stage" data-view="selecting"', 'Three.js prototype should start in map-selection mode');
@@ -134,11 +134,25 @@ assertIncludes(threeJs, "return 'https://api.maptiler.com/tiles/satellite-v2/'",
 assertIncludes(threeJs, 'const texture = new THREE.CanvasTexture(canvas);', 'Three.js prototype should convert the tile mosaic canvas to a texture');
 assertIncludes(threeJs, 'if (!response.ok) throw new Error', 'Three.js prototype should reject MapTiler error responses instead of rendering error images');
 assertIncludes(threeJs, 'new THREE.MeshBasicMaterial({ map: texture', 'Three.js prototype should map the satellite texture onto the base plane');
-assertIncludes(threeJs, 'const terrainGeometry = buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset);', 'Three.js prototype should pass height scale and surface offset into terrain geometry builder');
+assertIncludes(threeJs, 'const terrainGeometry = buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn);', 'Three.js prototype should pass height scale, surface offset, colorFn, and heightFn into terrain geometry builder');
+assertIncludes(threeJs, 'const t = clamp((v - def.displayMin) / (def.displayMax - def.displayMin), 0, 1);', 'Three.js heightFn should normalise each index value within its own display range');
+assertIncludes(threeJs, 'const INDEX_DEFS = [', 'Three.js prototype should define INDEX_DEFS for all seven indices');
+assertIncludes(threeJs, "id: 'ndvi'", 'Three.js INDEX_DEFS should include the NDVI entry');
+assertIncludes(threeJs, "id: 'cire'", 'Three.js INDEX_DEFS should include the CIre entry');
+assertIncludes(threeJs, 'function colorForIndex(value, def)', 'Three.js prototype should use a shared colorForIndex function');
+assertIncludes(threeJs, 'function decodeIndexPng(base64, encMin, encMax)', 'Three.js prototype should decode index PNGs with parameterised range');
+assertIncludes(threeJs, 'function rebuildTerrain(indexId)', 'Three.js prototype should rebuild terrain without refetching on index switch');
+assertIncludes(threeJs, 'function updateIndexLegend(def)', 'Three.js prototype should update the legend when switching indices');
+assertIncludes(threeHtml, 'data-index="ndvi"', 'Terrain renderer HTML should have an NDVI tab button');
+assertIncludes(threeHtml, 'data-index="cire"', 'Terrain renderer HTML should have a CIre tab button');
+assertIncludes(threeHtml, 'satellite-three-index-tabs', 'Terrain renderer HTML should have the index tab strip');
+assertIncludes(threeHtml, 'satellite-three-index-tab', 'Terrain renderer HTML should have index tab buttons');
+assertIncludes(threeHtml, 'id="satellite-three-legend-label"', 'Terrain renderer legend label must be addressable for dynamic updates');
+assertIncludes(threeHtml, 'id="satellite-three-legend-ramp"', 'Terrain renderer legend ramp must be addressable for dynamic gradient updates');
 assertIncludes(threeJs, 'const z = (row / Math.max(1, rows - 1) - 0.5) * depth;', 'Three.js prototype should use local northing on the ground-plane z axis');
-assertIncludes(threeJs, 'const heightScale = span * 0.035;', 'Three.js prototype should derive height scale proportionally from scene span');
-assertIncludes(threeJs, 'const surfaceOffset = span * 0.25;', 'Three.js prototype should derive surface offset proportionally from scene span');
-assertIncludes(threeJs, 'value * heightScale + surfaceOffset', 'Three.js prototype should use proportional NDVI scale plus proportional surface offset');
+assertIncludes(threeJs, 'const heightScale = span * 0.4;', 'Three.js prototype should derive height scale proportionally from scene span');
+assertIncludes(threeJs, 'const surfaceOffset = span * 0.02;', 'Three.js prototype should derive surface offset proportionally from scene span');
+assertIncludes(threeJs, 'return (t * 2 - 1) * heightScale + surfaceOffset;', 'Three.js heightFn should map normalised index value to the full vertical stage');
 assertIncludes(threeJs, 'const verticalMax = NDVI_DISPLAY_MAX * heightScale + surfaceOffset;', 'Three.js camera framing should include the proportionally scaled NDVI domain');
 assertIncludes(threeJs, 'controls.target.set(0, verticalCenter, 0);', 'Three.js camera should orbit around the lifted scene volume');
 assertIncludes(threeJs, 'baseMesh.rotation.x = Math.PI / 2;', 'Three.js base plane should be rotated from XY into the X/Z ground plane');

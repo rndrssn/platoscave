@@ -9,7 +9,10 @@
 
 set -euo pipefail
 
-TARGET="cases/satellite-index/demo/satellite-index.js"
+TARGETS=(
+  "cases/satellite-index/demo/satellite-index.js"
+  "cases/satellite-index/three/satellite-index-three.js"
+)
 PLACEHOLDER="__WORKER_API_KEY__"
 
 cmd="${1:-}"
@@ -28,17 +31,27 @@ if [[ "$cmd" == "inject" ]]; then
     exit 1
   fi
 
-  if ! grep -q "$PLACEHOLDER" "$TARGET"; then
-    echo "Already injected — run 'scripts/dev-satellite.sh restore' first." >&2
-    exit 1
-  fi
+  for target in "${TARGETS[@]}"; do
+    if ! grep -q "$PLACEHOLDER" "$target"; then
+      echo "Already injected or placeholder missing in $target — run 'scripts/dev-satellite.sh restore' first." >&2
+      exit 1
+    fi
+  done
 
-  sed -i '' "s/${PLACEHOLDER}/${KEY}/g" "$TARGET"
-  echo "Key injected into $TARGET. Run 'scripts/dev-satellite.sh restore' before committing."
+  for target in "${TARGETS[@]}"; do
+    sed -i '' "s/${PLACEHOLDER}/${KEY}/g" "$target"
+  done
+  echo "Key injected into Satellite Index demo scripts. Run 'scripts/dev-satellite.sh restore' before committing."
 
 elif [[ "$cmd" == "restore" ]]; then
-  git restore "$TARGET"
-  echo "Restored $TARGET to placeholder."
+  for target in "${TARGETS[@]}"; do
+    if git ls-files --error-unmatch "$target" >/dev/null 2>&1; then
+      git restore "$target"
+    else
+      sed -i '' "s/[0-9a-f]\{64\}/${PLACEHOLDER}/g" "$target"
+    fi
+  done
+  echo "Restored Satellite Index demo scripts to placeholder."
 
 else
   echo "Usage: scripts/dev-satellite.sh inject|restore" >&2

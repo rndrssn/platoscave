@@ -28,7 +28,9 @@ function selectorBlock(source, selector) {
 
 const overviewHtml = read('cases/satellite-index/index.html');
 const demoHtml = read('cases/satellite-index/demo/index.html');
+const threeHtml = read('cases/satellite-index/three/index.html');
 const demoJs = read('cases/satellite-index/demo/satellite-index.js');
+const threeJs = read('cases/satellite-index/three/satellite-index-three.js');
 const css = read('css/pages/satellite-index.css');
 const moduleRouteData = read('js/module-route-data.js');
 
@@ -38,12 +40,16 @@ assertNotMatches(demoHtml, staleFixtureOnlyCopy, 'Demo must not describe the pip
 
 assertIncludes(overviewHtml, 'live-first, with a fixture fallback', 'Overview should state live-first/fallback behavior');
 assertIncludes(overviewHtml, 'Analyse viewport', 'Overview try-it copy should match demo action wording');
+assertIncludes(overviewHtml, '<span class="module-sub-nav-number">03</span> Three.js Prototype', 'Overview should link to the parallel Three.js prototype');
+assertIncludes(overviewHtml, 'higher-resolution MapTiler satellite tile mosaic', 'Overview should explain the Three.js base-plane experiment');
+assertIncludes(overviewHtml, 'Three.js — experimental terrain renderer and high-resolution base texture', 'Technical stack should mention the prototype renderer');
 assertNotMatches(overviewHtml, /select a date|Analyse visible area/, 'Overview should not reference removed date picker or old action copy');
 assertIncludes(demoHtml, 'Spectral Index Demo', 'Demo heading should describe the multi-index surface set');
 assertIncludes(demoHtml, 'six companion spectral indices', 'Demo intro should not frame the page as NDVI-only');
 assertIncludes(demoHtml, 'Each surface uses index value as analytical height', 'Demo intro should explain surface-height semantics across all indices');
 assertNotMatches(demoHtml, /<h1 class="module-header-title">NDVI Demo<\/h1>|Surface height represents NDVI/, 'Demo intro should not use stale NDVI-only framing');
 assertIncludes(demoHtml, 'first requests live Sentinel-derived NDVI', 'Demo note should state live data path');
+assertIncludes(demoHtml, '<span class="module-sub-nav-number">03</span> Three.js Prototype', 'Plotly demo should link to the parallel Three.js prototype');
 assertIncludes(demoHtml, 'synthetic fixture seeded by the same', 'Demo note should state fallback path');
 assertIncludes(demoHtml, 'Sentinel credentials stay outside the client', 'Demo should preserve credential boundary copy');
 assertIncludes(demoHtml, 'viewport exceeds the live request limit', 'Demo should disclose viewport-size request limiting');
@@ -85,8 +91,60 @@ assertNotMatches(demoHtml, /maplibre-gl@4\/|plotly\.js-dist-min@2\//, 'Satellite
 
 assertNotMatches(moduleRouteData, /cases\/|satellite-index/, 'Cases should stay out of module route data');
 
+assertIncludes(threeHtml, 'Three.js Surface Prototype', 'Three.js prototype page heading missing');
+assertIncludes(threeHtml, 'id="satellite-three-map"', 'Three.js prototype should keep its own map container');
+assertIncludes(threeHtml, 'id="satellite-three-surface"', 'Three.js prototype should keep its own canvas');
+assertIncludes(threeHtml, 'id="satellite-three-stage" data-view="selecting"', 'Three.js prototype should start in map-selection mode');
+assertIncludes(threeHtml, 'id="satellite-three-select-btn" type="button" hidden', 'Three.js prototype should expose a hidden select-new-area control after rendering');
+assertIncludes(threeHtml, 'class="satellite-three-legend"', 'Three.js prototype should expose an NDVI color legend overlay');
+assertIncludes(threeHtml, 'class="satellite-three-north"', 'Three.js prototype should expose a north indicator overlay');
+assertNotMatches(threeHtml, /satellite-three-north-label|>N<\/span>/, 'Three.js north indicator should not include a text label');
+assertIncludes(selectorBlock(css, '.satellite-three-stage'), 'margin-bottom: 1.75rem;', 'Three.js viewer should leave room before following text');
+assertIncludes(selectorBlock(css, '.satellite-three-viewer'), 'height: clamp(420px, 66vw, 680px);', 'Three.js viewer should reserve explicit height to avoid overlapping following text');
+assertIncludes(selectorBlock(css, '.satellite-three-surface-wrap'), 'position: absolute;', 'Three.js surface layer should remain contained inside the fixed viewer');
+assertIncludes(selectorBlock(css, '.satellite-three-surface-wrap'), 'inset: 0;', 'Three.js surface layer should not escape the viewer box');
+assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'background: transparent;', 'Three.js NDVI legend should be transparent');
+assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'border: 0;', 'Three.js NDVI legend should not have a bounding box');
+assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'top: 0.85rem;', 'Three.js NDVI legend should sit at the top edge');
+assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'right: 0.85rem;', 'Three.js NDVI legend should sit at the right edge');
+assertIncludes(selectorBlock(css, '.satellite-three-north'), 'background: transparent;', 'Three.js north indicator should be transparent');
+assertIncludes(selectorBlock(css, '.satellite-three-north'), 'border: 0;', 'Three.js north indicator should not have a bounding box');
+assertIncludes(selectorBlock(css, '.satellite-three-legend-label'), 'writing-mode: vertical-rl;', 'Three.js NDVI legend label should be vertical');
+assertIncludes(selectorBlock(css, '.satellite-three-legend-ramp'), 'height: 7.8rem;', 'Three.js NDVI legend ramp should be vertical');
+assertIncludes(selectorBlock(css, '.satellite-three-legend-scale'), 'flex-direction: column-reverse;', 'Three.js NDVI legend values should follow the vertical ramp');
+assertIncludes(threeHtml, 'https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js', 'Three.js module must be exact-pinned');
+assertIncludes(threeHtml, 'https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/', 'Three.js add-ons import path must be exact-pinned');
+assertIncludes(threeHtml, 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js', 'Three.js prototype should use the same exact-pinned MapLibre runtime');
+assertIncludes(threeHtml, '<script type="module" src="./satellite-index-three.js?v=20260523-1"></script>', 'Three.js prototype should load its separate implementation with a cache-busting query');
+assertIncludes(threeJs, "const WORKER_URL = 'https://satellite-worker.platoscave.workers.dev';", 'Three.js prototype should use the deployed Worker');
+assertIncludes(threeJs, "const WORKER_API_KEY = '__WORKER_API_KEY__';", 'Three.js prototype must keep the API key placeholder in source');
+assertNotMatches(threeJs, /const WORKER_API_KEY = '[0-9a-f]{64}';/, 'Three.js prototype source must not contain an injected Worker key');
+assertIncludes(threeJs, "const WORKER_API_KEY_PLACEHOLDER = '__WORKER_' + 'API_KEY__';", 'Three.js prototype should keep placeholder detection injection-proof');
+assertIncludes(threeJs, "'X-API-Key': WORKER_API_KEY", 'Three.js prototype Worker requests must include X-API-Key');
+assertIncludes(threeJs, 'function isWorkerKeyConfigured()', 'Three.js prototype should explicitly detect local Worker-key injection');
+assertIncludes(threeJs, "fallbackReason = 'Worker key not injected';", 'Three.js prototype should explain fixture fallback when the local key is missing');
+assertIncludes(threeJs, "fallbackReason = 'Worker HTTP ' + analysisRes.status;", 'Three.js prototype should expose Worker HTTP fallback status');
+assertIncludes(threeJs, "fetch(WORKER_URL + '/analysis'", 'Three.js prototype should use the combined analysis endpoint');
+assertIncludes(threeJs, "return 'https://api.maptiler.com/tiles/satellite-v2/'", 'Three.js prototype should compose a base texture from satellite raster tiles');
+assertIncludes(threeJs, 'const texture = new THREE.CanvasTexture(canvas);', 'Three.js prototype should convert the tile mosaic canvas to a texture');
+assertIncludes(threeJs, 'if (!response.ok) throw new Error', 'Three.js prototype should reject MapTiler error responses instead of rendering error images');
+assertIncludes(threeJs, 'new THREE.MeshBasicMaterial({ map: texture', 'Three.js prototype should map the satellite texture onto the base plane');
+assertIncludes(threeJs, 'const terrainGeometry = buildTerrainGeometry(grid, metrics);', 'Three.js prototype should build terrain geometry from the NDVI grid');
+assertIncludes(threeJs, 'const z = (row / Math.max(1, rows - 1) - 0.5) * depth;', 'Three.js prototype should use local northing on the ground-plane z axis');
+assertIncludes(threeJs, 'const y = isFiniteNumber(value) ? value * HEIGHT_SCALE_METERS', 'Three.js prototype should use y as analytical height');
+assertIncludes(threeJs, 'baseMesh.rotation.x = Math.PI / 2;', 'Three.js base plane should be rotated from XY into the X/Z ground plane');
+assertIncludes(threeJs, "setViewerMode('rendered');", 'Three.js prototype should replace the selection map with the rendered surface after analysis');
+assertIncludes(threeJs, "setViewerMode('selecting');", 'Three.js prototype should allow returning to map-selection mode');
+assertIncludes(threeJs, 'function updateNorthIndicator()', 'Three.js prototype should keep the north indicator aligned to the camera');
+assertIncludes(threeJs, 'const radius = Math.sqrt(width * width + depth * depth + verticalSpan * verticalSpan) / 2;', 'Three.js prototype should frame the full surface bounds');
+assertIncludes(threeJs, 'const fitDistance = radius / Math.sin(fov / 2) * 0.86;', 'Three.js prototype should default to a tighter fit distance');
+assertNotMatches(threeJs, /createAxisLabel|createAxisLine|buildAxisGroup|axisGroup/, 'Three.js prototype should not render axis lines or labels');
+assertIncludes(threeJs, 'baseMesh.visible = showSatelliteBase;', 'Three.js base toggle should control the cached base mesh without refetching');
+assertNotMatches(threeJs, /Plotly\./, 'Three.js prototype must not use Plotly');
+
 assertIncludes(demoJs, "const WORKER_URL     = 'https://satellite-worker.platoscave.workers.dev';", 'Worker URL contract changed');
 assertIncludes(demoJs, "const WORKER_API_KEY = '__WORKER_API_KEY__';", 'WORKER_API_KEY must use placeholder — real key is injected by GitHub Actions at deploy time');
+assertNotMatches(demoJs, /const WORKER_API_KEY = '[0-9a-f]{64}';/, 'Demo source must not contain an injected Worker key');
 assertIncludes(demoJs, "'X-API-Key': WORKER_API_KEY", 'X-API-Key header must be sent on all Worker requests');
 assertIncludes(demoJs, "fetch(WORKER_URL + '/analysis'", 'Combined analysis endpoint should be fetched');
 assertNotMatches(demoJs, /fetch\(WORKER_URL \+ '\/ndvi'|fetch\(WORKER_URL \+ '\/image'|\.\.\.INDEX_DEFS\.map\(def => fetch/, 'Frontend should not fan out separate Worker requests for one analysis');

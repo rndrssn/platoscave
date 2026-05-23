@@ -47,6 +47,8 @@
         <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01</span> Overview</a>
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="demo/"><span class="module-sub-nav-number">02</span> Demo</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="three/"><span class="module-sub-nav-number">03</span> Three.js Prototype</a>
       </nav>
 
       <header class="module-header">
@@ -83,6 +85,11 @@
             as Plotly.js 3D visualisations for the visible map viewport. Surface height represents the index value.
             Contour lines mark NDVI isolines on the primary surface. A MapLibre map with a MapTiler basemap
             provides spatial context.
+          </p>
+          <p class="essay-body">
+            A separate Three.js prototype explores the same viewport-driven NDVI request with a different rendering
+            strategy: the analytical surface remains Sentinel-derived, while the base plane is textured from a
+            higher-resolution MapTiler satellite tile mosaic fitted to the current bounds.
           </p>
           <p class="essay-body">
             The demo first requests Sentinel-2 L2A-derived data via the Sentinel Hub Process API, routed through
@@ -247,6 +254,7 @@
             <span>MapLibre GL JS — interactive map rendering</span>
             <span>MapTiler Cloud — basemap and terrain tile provider</span>
             <span>Plotly.js — 3D analytical surface visualisation</span>
+            <span>Three.js — experimental terrain renderer and high-resolution base texture</span>
             <span>Sentinel-2 L2A — satellite imagery source (production path)</span>
             <span>Sentinel Hub Process API — RGB and index products (production path)</span>
             <span>Sentinel Hub Catalog API — scene search and selection (production path)</span>
@@ -265,6 +273,10 @@
             <a class="essay-link" href="demo/">
               <span class="essay-link-label">Demo</span>
               <span class="essay-link-desc">Interactive NDVI surface for the current map viewport</span>
+            </a>
+            <a class="essay-link" href="three/">
+              <span class="essay-link-label">Three.js Prototype</span>
+              <span class="essay-link-desc">Experimental terrain renderer with a high-resolution satellite tile base plane</span>
             </a>
           </div>
         </section>

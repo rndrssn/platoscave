@@ -228,6 +228,12 @@
   padding: 0.34rem 1rem;
 }
 
+.satellite-secondary-btn {
+  background: transparent;
+  color: var(--ink-mid);
+  box-shadow: inset 0 0 0 1px var(--ink-ghost);
+}
+
 .satellite-toggle-control {
   padding: 0.34rem 0.7rem;
 }
@@ -310,6 +316,51 @@
   position: relative;
 }
 
+.satellite-three-stage {
+  margin-bottom: 1.75rem;
+  position: relative;
+  z-index: 0;
+}
+
+.satellite-three-viewer {
+  position: relative;
+  width: min(100%, 980px);
+  height: clamp(420px, 66vw, 680px);
+  margin: 0 auto 1.4rem;
+}
+
+@media (max-width: 700px) {
+  .satellite-three-viewer {
+    height: min(92vw, 520px);
+    min-height: 320px;
+  }
+}
+
+.satellite-three-map-container,
+.satellite-three-surface-wrap {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  min-height: 0;
+}
+
+.satellite-three-map-container {
+  border: 1px solid var(--ink-ghost);
+}
+
+.satellite-three-stage[data-view="selecting"] .satellite-three-surface-wrap,
+.satellite-three-stage[data-view="selecting"] .satellite-three-overlay {
+  display: none;
+}
+
+.satellite-three-stage[data-view="rendered"] .satellite-three-map-container {
+  display: none;
+}
+
+.satellite-three-stage[data-view="rendered"] .satellite-three-surface-wrap {
+  display: flex;
+}
+
 .satellite-surface-tools {
   min-height: 44px;
   display: flex;
@@ -347,7 +398,26 @@
   height: 100%;
 }
 
+#satellite-three-map {
+  width: 100%;
+  height: 100%;
+}
+
 #satellite-map.satellite-map-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  text-align: center;
+  background: var(--paper);
+}
+
+#satellite-three-map.satellite-map-fallback {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -396,6 +466,118 @@
 
 .satellite-surface-wrap.has-surface #satellite-surface {
   display: block;
+}
+
+.satellite-three-surface-wrap {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  overflow: hidden;
+  min-height: 0;
+}
+
+#satellite-three-surface {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  cursor: grab;
+}
+
+#satellite-three-surface:active {
+  cursor: grabbing;
+}
+
+.satellite-surface-wrap.has-surface #satellite-three-surface {
+  display: block;
+}
+
+.satellite-three-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.satellite-three-north {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  width: 1.6rem;
+  height: 1.9rem;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  filter: drop-shadow(0 1px 2px var(--paper)) drop-shadow(0 -1px 2px var(--paper));
+}
+
+.satellite-three-north-arrow {
+  position: relative;
+  width: 1px;
+  height: 1.65rem;
+  display: block;
+  background: currentColor;
+  transform-origin: 50% 72%;
+  transform: rotate(var(--north-angle, 0rad));
+}
+
+.satellite-three-north-arrow::before {
+  content: "";
+  position: absolute;
+  top: -0.05rem;
+  left: 50%;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-top: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.satellite-three-legend {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0;
+  color: var(--ink-mid);
+  background: transparent;
+  border: 0;
+  text-shadow: 0 1px 2px var(--paper), 0 -1px 2px var(--paper);
+}
+
+.satellite-three-legend-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.satellite-three-legend-ramp {
+  display: block;
+  width: 0.56rem;
+  height: 7.8rem;
+  background: linear-gradient(0deg, #B84F35 0%, #C98B2E 20%, #E1BA45 45%, #88B96B 65%, #4F8F45 100%);
+}
+
+.satellite-three-legend-scale {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  align-self: stretch;
+  font-family: var(--mono);
+  font-size: 0.54rem;
+  font-weight: 300;
+  color: var(--ink-mid);
 }
 
 .satellite-meta {

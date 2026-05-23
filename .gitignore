@@ -33,3 +33,7 @@ Thumbs.db
 # Obsidian
 .obsidian/
 
+
+# Python virtual environments
+.venv
+venv

@@ -110,7 +110,7 @@ assertIncludes(selectorBlock(css, '.satellite-three-surface-wrap'), 'position: a
 assertIncludes(selectorBlock(css, '.satellite-three-surface-wrap'), 'inset: 0;', 'Three.js surface layer should not escape the viewer box');
 assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'background: transparent;', 'Three.js NDVI legend should be transparent');
 assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'border: 0;', 'Three.js NDVI legend should not have a bounding box');
-assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'top: 0.85rem;', 'Three.js NDVI legend should sit at the top edge');
+assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'top: 3.5rem;', 'Three.js NDVI legend should sit below the north arrow');
 assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'right: 0.85rem;', 'Three.js NDVI legend should sit at the right edge');
 assertIncludes(selectorBlock(css, '.satellite-three-north'), 'background: transparent;', 'Three.js north indicator should be transparent');
 assertIncludes(selectorBlock(css, '.satellite-three-north'), 'border: 0;', 'Three.js north indicator should not have a bounding box');
@@ -127,7 +127,7 @@ assertNotMatches(threeJs, /const WORKER_API_KEY = '[0-9a-f]{64}';/, 'Three.js pr
 assertIncludes(threeJs, "const WORKER_API_KEY_PLACEHOLDER = '__WORKER_' + 'API_KEY__';", 'Three.js prototype should keep placeholder detection injection-proof');
 assertIncludes(threeJs, "'X-API-Key': WORKER_API_KEY", 'Three.js prototype Worker requests must include X-API-Key');
 assertIncludes(threeJs, 'function isWorkerKeyConfigured()', 'Three.js prototype should explicitly detect local Worker-key injection');
-assertIncludes(threeJs, "fallbackReason = 'Worker key not injected';", 'Three.js prototype should explain fixture fallback when the local key is missing');
+assertIncludes(threeJs, "fallbackReason = 'live imagery unavailable';", 'Three.js prototype should explain fixture fallback when the live data path is unavailable');
 assertIncludes(threeJs, "fallbackReason = 'Worker HTTP ' + analysisRes.status;", 'Three.js prototype should expose Worker HTTP fallback status');
 assertIncludes(threeJs, "fetch(WORKER_URL + '/analysis'", 'Three.js prototype should use the combined analysis endpoint');
 assertIncludes(threeJs, "return 'https://api.maptiler.com/tiles/satellite-v2/'", 'Three.js prototype should compose a base texture from satellite raster tiles');
@@ -158,7 +158,7 @@ assertIncludes(threeJs, 'controls.target.set(0, verticalCenter, 0);', 'Three.js 
 assertIncludes(threeJs, 'baseMesh.rotation.x = Math.PI / 2;', 'Three.js base plane should be rotated from XY into the X/Z ground plane');
 assertIncludes(threeJs, "setViewerMode('rendered');", 'Three.js prototype should replace the selection map with the rendered surface after analysis');
 assertIncludes(threeJs, "setViewerMode('selecting');", 'Three.js prototype should allow returning to map-selection mode');
-assertIncludes(threeJs, "btnEl.textContent = rendered ? 'Clear / reset' : 'Analyse viewport →';", 'Three.js primary button should switch to reset semantics after rendering');
+assertIncludes(threeJs, "btnEl.textContent = rendered ? 'New viewport' : 'Analyse viewport →';", 'Three.js primary button should switch to new-viewport semantics after rendering');
 assertIncludes(threeJs, 'function resetToSelection()', 'Three.js prototype should reset the rendered view through the primary button');
 assertIncludes(threeJs, 'function prefersReducedMotion()', 'Three.js prototype should respect reduced-motion preferences');
 assertIncludes(threeJs, "controls.enableDamping = !prefersReducedMotion();", 'Three.js controls should disable damping for reduced motion');

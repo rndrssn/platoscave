@@ -522,7 +522,7 @@ function setSurfacePlaceholder(msg) {
 function resetAnalysisButton() {
   if (btnEl) {
     const rendered = stageEl && stageEl.dataset.view === 'rendered';
-    btnEl.textContent = rendered ? 'Clear / reset' : 'Analyse viewport →';
+    btnEl.textContent = rendered ? 'New viewport' : 'Analyse viewport →';
     btnEl.disabled = false;
   }
   busy = false;
@@ -536,7 +536,7 @@ function resetToSelection() {
 function setViewerMode(mode) {
   if (!stageEl) return;
   stageEl.dataset.view = mode;
-  if (btnEl) btnEl.textContent = mode === 'rendered' ? 'Clear / reset' : 'Analyse viewport →';
+  if (btnEl) btnEl.textContent = mode === 'rendered' ? 'New viewport' : 'Analyse viewport →';
   const tabsEl = document.getElementById('satellite-three-index-tabs');
   if (tabsEl) tabsEl.hidden = mode !== 'rendered';
   if (map && mode === 'selecting') {
@@ -961,7 +961,7 @@ async function runAnalysis() {
         fallbackReason = 'Worker request failed';
       }
     } else {
-      fallbackReason = 'Worker key not injected';
+      fallbackReason = 'live imagery unavailable';
     }
 
     setStatus('Generating fixture surfaces…', 'working');

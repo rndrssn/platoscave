@@ -25,12 +25,214 @@ const BASE_TILE_MIN_ZOOM = 10;
 const BASE_TILE_MAX_ZOOM = 18;
 // HEIGHT_SCALE and surface offset are computed per-render from scene span — see renderThreeSurface.
 
-const NDVI_STOPS = [
-  { t: 0, color: new THREE.Color('#B84F35') },
-  { t: 0.2, color: new THREE.Color('#C98B2E') },
-  { t: 0.45, color: new THREE.Color('#E1BA45') },
-  { t: 0.65, color: new THREE.Color('#88B96B') },
-  { t: 1, color: new THREE.Color('#4F8F45') },
+const INDEX_DEFS = [
+  {
+    id: 'ndvi', label: 'NDVI', desc: 'Vegetation density',
+    encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
+    colorStops: [
+      { t: 0, color: new THREE.Color('#B84F35') },
+      { t: 0.2, color: new THREE.Color('#C98B2E') },
+      { t: 0.45, color: new THREE.Color('#E1BA45') },
+      { t: 0.65, color: new THREE.Color('#88B96B') },
+      { t: 1, color: new THREE.Color('#4F8F45') },
+    ],
+    generate(bounds, size) { return generateNdviGrid(bounds, size); },
+  },
+  {
+    id: 'ndre', label: 'NDRE', desc: 'Red-edge chlorophyll',
+    encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
+    colorStops: [
+      { t: 0, color: new THREE.Color('#6B7E7A') },
+      { t: 0.35, color: new THREE.Color('#7EA898') },
+      { t: 0.55, color: new THREE.Color('#88B96B') },
+      { t: 0.75, color: new THREE.Color('#5A9A4A') },
+      { t: 1, color: new THREE.Color('#2A6A28') },
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = 0.18
+            + 0.16 * Math.sin(lon * 85  + lat * 67)
+            + 0.10 * Math.cos(lon * 160 - lat * 95)
+            + 0.07 * Math.sin(lon * 240 + lat * 200)
+            + 0.04 * Math.cos(lon * 380 - lat * 310)
+            - 0.34 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, -1, 1) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
+  {
+    id: 'ndwi', label: 'NDWI', desc: 'Water content',
+    encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
+    colorStops: [
+      { t: 0, color: new THREE.Color('#C98B2E') },
+      { t: 0.4, color: new THREE.Color('#C4BAB0') },
+      { t: 0.6, color: new THREE.Color('#7AAABF') },
+      { t: 0.8, color: new THREE.Color('#3A7A9A') },
+      { t: 1, color: new THREE.Color('#0A4A6A') },
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = -0.12
+            - 0.16 * Math.sin(lon * 85  + lat * 67)
+            + 0.12 * Math.cos(lon * 110 + lat * 80)
+            + 0.08 * Math.sin(lon * 200 - lat * 140)
+            + 0.38 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, -1, 1) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
+  {
+    id: 'ndmi', label: 'NDMI', desc: 'Canopy moisture',
+    encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
+    colorStops: [
+      { t: 0, color: new THREE.Color('#B84F35') },
+      { t: 0.3, color: new THREE.Color('#C4BAB0') },
+      { t: 0.55, color: new THREE.Color('#6ABAA0') },
+      { t: 0.75, color: new THREE.Color('#3A8A78') },
+      { t: 1, color: new THREE.Color('#0A5A50') },
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = 0.10
+            + 0.14 * Math.sin(lon * 85  + lat * 67)
+            + 0.09 * Math.cos(lon * 130 - lat * 100)
+            + 0.06 * Math.sin(lon * 270 + lat * 180)
+            - 0.24 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, -1, 1) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
+  {
+    id: 'evi', label: 'EVI', desc: 'Enhanced vegetation',
+    encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
+    colorStops: [
+      { t: 0, color: new THREE.Color('#7A5A4A') },
+      { t: 0.2, color: new THREE.Color('#B88A5A') },
+      { t: 0.45, color: new THREE.Color('#D4B86A') },
+      { t: 0.65, color: new THREE.Color('#88B96B') },
+      { t: 1, color: new THREE.Color('#2A6A28') },
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = 0.30
+            + 0.18 * Math.sin(lon * 85  + lat * 67)
+            + 0.11 * Math.cos(lon * 155 - lat * 90)
+            + 0.08 * Math.sin(lon * 230 + lat * 195)
+            + 0.05 * Math.cos(lon * 370 - lat * 300)
+            - 0.36 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, -1, 1) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
+  {
+    id: 'savi', label: 'SAVI', desc: 'Soil-adjusted vegetation',
+    encMin: -1, encMax: 1, displayMin: -1, displayMax: 1,
+    colorStops: [
+      { t: 0, color: new THREE.Color('#8A5E3A') },
+      { t: 0.35, color: new THREE.Color('#C4A060') },
+      { t: 0.55, color: new THREE.Color('#C4C870') },
+      { t: 0.72, color: new THREE.Color('#78A85A') },
+      { t: 1, color: new THREE.Color('#2A5E28') },
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = 0.24
+            + 0.17 * Math.sin(lon * 85  + lat * 67)
+            + 0.11 * Math.cos(lon * 160 - lat * 95)
+            + 0.08 * Math.sin(lon * 240 + lat * 200)
+            + 0.05 * Math.cos(lon * 375 - lat * 305)
+            - 0.42 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, -1, 1) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
+  {
+    id: 'cire', label: 'CIre', desc: 'Chlorophyll index',
+    encMin: 0, encMax: 6, displayMin: 0, displayMax: 6,
+    colorStops: [
+      { t: 0, color: new THREE.Color('#E8E4D0') },
+      { t: 0.25, color: new THREE.Color('#B8D48A') },
+      { t: 0.5, color: new THREE.Color('#78B45A') },
+      { t: 0.75, color: new THREE.Color('#3A8A35') },
+      { t: 1, color: new THREE.Color('#0A5A15') },
+    ],
+    generate(bounds, size) {
+      const { west, south, east, north } = bounds;
+      const lonStep = (east - west) / (size - 1);
+      const latStep = (north - south) / (size - 1);
+      const grid = [];
+      for (let row = 0; row < size; row++) {
+        const rowArr = [];
+        const lat = south + latStep * row;
+        for (let col = 0; col < size; col++) {
+          const lon = west + lonStep * col;
+          const v = 0.85
+            + 0.55 * Math.sin(lon * 85  + lat * 67)
+            + 0.35 * Math.cos(lon * 160 - lat * 95)
+            + 0.25 * Math.sin(lon * 240 + lat * 200)
+            - 0.90 * Math.max(0, Math.sin(lon * 18 + lat * 13));
+          rowArr.push(Math.round(clamp(v, 0, 3) * 1000) / 1000);
+        }
+        grid.push(rowArr);
+      }
+      return grid;
+    },
+  },
 ];
 
 let map = null;
@@ -54,6 +256,9 @@ let lastDate = null;
 let lastScene = null;
 let lastTextureLoaded = false;
 let lastFallbackReason = '';
+let lastMetrics = null;
+let lastIndexGrids = {};
+let activeIndexId = 'ndvi';
 
 function canUseMapLibre() {
   return typeof maplibregl !== 'undefined' && typeof maplibregl.Map === 'function';
@@ -332,6 +537,8 @@ function setViewerMode(mode) {
   if (!stageEl) return;
   stageEl.dataset.view = mode;
   if (btnEl) btnEl.textContent = mode === 'rendered' ? 'Clear / reset' : 'Analyse viewport →';
+  const tabsEl = document.getElementById('satellite-three-index-tabs');
+  if (tabsEl) tabsEl.hidden = mode !== 'rendered';
   if (map && mode === 'selecting') {
     window.setTimeout(() => {
       map.resize();
@@ -378,20 +585,49 @@ function updateViewportReadout() {
   btnEl.setAttribute('aria-disabled', String(!liveAllowed));
 }
 
-function colorForNdvi(value) {
-  const t = clamp((value - NDVI_DISPLAY_MIN) / (NDVI_DISPLAY_MAX - NDVI_DISPLAY_MIN), 0, 1);
-  for (let i = 1; i < NDVI_STOPS.length; i++) {
-    const previous = NDVI_STOPS[i - 1];
-    const next = NDVI_STOPS[i];
-    if (t <= next.t) {
-      const localT = (t - previous.t) / (next.t - previous.t || 1);
-      return previous.color.clone().lerp(next.color, localT);
+function colorForIndex(value, def) {
+  const t = clamp((value - def.displayMin) / (def.displayMax - def.displayMin), 0, 1);
+  const stops = def.colorStops;
+  for (let i = 1; i < stops.length; i++) {
+    if (t <= stops[i].t) {
+      const localT = (t - stops[i - 1].t) / (stops[i].t - stops[i - 1].t || 1);
+      return stops[i - 1].color.clone().lerp(stops[i].color, localT);
     }
   }
-  return NDVI_STOPS[NDVI_STOPS.length - 1].color.clone();
+  return stops[stops.length - 1].color.clone();
 }
 
-function buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset) {
+function decodeIndexPng(base64, encMin, encMax) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const pixels = ctx.getImageData(0, 0, img.width, img.height).data;
+      const grid = [];
+      for (let r = 0; r < img.height; r++) {
+        const row = [];
+        for (let c = 0; c < img.width; c++) {
+          const pixelIndex = (r * img.width + c) * 4;
+          const byte = pixels[pixelIndex];
+          const alpha = pixels[pixelIndex + 3];
+          if (alpha === 0) { row.push(null); continue; }
+          const val = byte / 255 * (encMax - encMin) + encMin;
+          row.push(Math.round(clamp(val, encMin, encMax) * 1000) / 1000);
+        }
+        grid.push(row);
+      }
+      resolve(grid.reverse());
+    };
+    img.onerror = reject;
+    img.src = 'data:image/png;base64,' + base64;
+  });
+}
+
+function buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn) {
   const rows = grid.length;
   const cols = grid[0] ? grid[0].length : 0;
   const width = metrics.widthKm * 1000;
@@ -406,8 +642,8 @@ function buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset) {
     for (let col = 0; col < cols; col++) {
       const x = (col / Math.max(1, cols - 1) - 0.5) * width;
       const value = grid[row][col];
-      const y = isFiniteNumber(value) ? value * heightScale + surfaceOffset : NDVI_BASE_PLANE_Z * heightScale;
-      const color = isFiniteNumber(value) ? colorForNdvi(value) : new THREE.Color('#C4BAB0');
+      const y = isFiniteNumber(value) ? heightFn(value) : NDVI_BASE_PLANE_Z * heightScale;
+      const color = isFiniteNumber(value) ? colorFn(value) : new THREE.Color('#C4BAB0');
       vertices.push(x, y, z);
       colors.push(color.r, color.g, color.b);
       uvs.push(col / Math.max(1, cols - 1), row / Math.max(1, rows - 1));
@@ -555,7 +791,7 @@ function frameCamera(metrics, heightScale, surfaceOffset) {
   controls.update();
 }
 
-async function renderThreeSurface(grid, metrics, bounds) {
+async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn) {
   if (!renderer && !initThreeScene()) {
     throw new Error('Three.js surface unavailable');
   }
@@ -573,8 +809,8 @@ async function renderThreeSurface(grid, metrics, bounds) {
   const width = metrics.widthKm * 1000;
   const depth = metrics.heightKm * 1000;
   const span = Math.max(width, depth);
-  const heightScale = span * 0.035;
-  const surfaceOffset = span * 0.25;
+  const heightScale = span * 0.4;
+  const surfaceOffset = span * 0.02;
   const baseGeometry = new THREE.PlaneGeometry(width, depth);
   const baseMaterial = texture
     ? new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.95, side: THREE.DoubleSide })
@@ -585,7 +821,7 @@ async function renderThreeSurface(grid, metrics, bounds) {
   baseMesh.visible = showSatelliteBase;
   scene.add(baseMesh);
 
-  const terrainGeometry = buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset);
+  const terrainGeometry = buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn);
   const terrainMaterial = new THREE.MeshPhongMaterial({
     vertexColors: true,
     transparent: true,
@@ -600,6 +836,75 @@ async function renderThreeSurface(grid, metrics, bounds) {
   updateRendererSize();
   if (wrap) wrap.classList.add('has-surface');
   return Boolean(texture);
+}
+
+function updateIndexLegend(def) {
+  const labelEl = document.getElementById('satellite-three-legend-label');
+  const rampEl = document.getElementById('satellite-three-legend-ramp');
+  const scaleEl = document.getElementById('satellite-three-legend-scale');
+  if (labelEl) labelEl.textContent = def.label;
+  if (rampEl) {
+    const stops = def.colorStops.map(s => '#' + s.color.getHexString() + ' ' + Math.round(s.t * 100) + '%').join(', ');
+    rampEl.style.background = 'linear-gradient(to top, ' + stops + ')';
+  }
+  if (scaleEl) {
+    const lo = def.displayMin;
+    const hi = def.displayMax;
+    const mid = Math.round((lo + hi) / 2 * 10) / 10;
+    const spans = scaleEl.querySelectorAll('span');
+    if (spans[0]) spans[0].textContent = lo;
+    if (spans[1]) spans[1].textContent = mid;
+    if (spans[2]) spans[2].textContent = '+' + hi;
+  }
+}
+
+function updateIndexTabs(indexId) {
+  const tabsEl = document.getElementById('satellite-three-index-tabs');
+  if (!tabsEl) return;
+  tabsEl.querySelectorAll('.satellite-three-index-tab').forEach(btn => {
+    const active = btn.dataset.index === indexId;
+    btn.classList.toggle('satellite-three-index-tab--active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
+}
+
+async function rebuildTerrain(indexId) {
+  if (!lastMetrics || !lastIndexGrids[indexId]) return;
+  const def = INDEX_DEFS.find(d => d.id === indexId);
+  if (!def) return;
+  activeIndexId = indexId;
+
+  if (terrainMesh) {
+    scene.remove(terrainMesh);
+    terrainMesh.geometry.dispose();
+    terrainMesh.material.dispose();
+    terrainMesh = null;
+  }
+
+  const width = lastMetrics.widthKm * 1000;
+  const depth = lastMetrics.heightKm * 1000;
+  const span = Math.max(width, depth);
+  const heightScale = span * 0.4;
+  const surfaceOffset = span * 0.02;
+  const colorFn = v => colorForIndex(v, def);
+  const heightFn = v => {
+    const t = clamp((v - def.displayMin) / (def.displayMax - def.displayMin), 0, 1);
+    return (t * 2 - 1) * heightScale + surfaceOffset;
+  };
+  const renderGrid = smoothNdviGridForRender(lastIndexGrids[indexId], NDVI_RENDER_SMOOTHING_PASSES);
+  const terrainGeometry = buildTerrainGeometry(renderGrid, lastMetrics, heightScale, surfaceOffset, colorFn, heightFn);
+  const terrainMaterial = new THREE.MeshPhongMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.88,
+    shininess: 8,
+    side: THREE.DoubleSide,
+  });
+  terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
+  scene.add(terrainMesh);
+  updateIndexTabs(indexId);
+  updateIndexLegend(def);
+  renderOnce(true);
 }
 
 async function runAnalysis() {
@@ -627,10 +932,9 @@ async function runAnalysis() {
       return;
     }
 
-    let grid = null;
     let sceneData = null;
-
     let fallbackReason = '';
+    const rawIndexGrids = {};
 
     if (isWorkerKeyConfigured()) {
       setStatus('Fetching satellite data…', 'working');
@@ -642,8 +946,14 @@ async function runAnalysis() {
 
         if (analysisRes.ok) {
           const data = await analysisRes.json();
-          grid = await decodeNdviPng(data.ndvi);
+          rawIndexGrids['ndvi'] = await decodeNdviPng(data.ndvi);
           sceneData = data.scene;
+          for (const def of INDEX_DEFS) {
+            if (def.id === 'ndvi') continue;
+            if (data.indices && data.indices[def.id]) {
+              rawIndexGrids[def.id] = await decodeIndexPng(data.indices[def.id], def.encMin, def.encMax);
+            }
+          }
         } else {
           fallbackReason = 'Worker HTTP ' + analysisRes.status;
         }
@@ -654,21 +964,38 @@ async function runAnalysis() {
       fallbackReason = 'Worker key not injected';
     }
 
-    if (!grid) {
-      setStatus('Generating fixture surface…', 'working');
-      await new Promise(resolve => setTimeout(resolve, 0));
-      grid = generateNdviGrid(bounds, gridSize);
+    setStatus('Generating fixture surfaces…', 'working');
+    await new Promise(resolve => setTimeout(resolve, 0));
+    for (const def of INDEX_DEFS) {
+      if (!rawIndexGrids[def.id]) {
+        rawIndexGrids[def.id] = def.generate(bounds, gridSize);
+      }
     }
 
+    lastIndexGrids = rawIndexGrids;
+    lastMetrics = metrics;
+    activeIndexId = 'ndvi';
+
+    const activeDef = INDEX_DEFS[0];
+    const colorFn = v => colorForIndex(v, activeDef);
+    const span = Math.max(metrics.widthKm * 1000, metrics.heightKm * 1000);
+    const heightScale = span * 0.4;
+    const surfaceOffset = span * 0.02;
+    const heightFn = v => {
+      const t = clamp((v - activeDef.displayMin) / (activeDef.displayMax - activeDef.displayMin), 0, 1);
+      return (t * 2 - 1) * heightScale + surfaceOffset;
+    };
     setStatus('Rendering Three.js surface…', 'working');
-    const renderGrid = smoothNdviGridForRender(grid, NDVI_RENDER_SMOOTHING_PASSES);
-    const textureLoaded = await renderThreeSurface(renderGrid, metrics, bounds);
+    const renderGrid = smoothNdviGridForRender(rawIndexGrids['ndvi'], NDVI_RENDER_SMOOTHING_PASSES);
+    const textureLoaded = await renderThreeSurface(renderGrid, metrics, bounds, colorFn, heightFn);
     lastBounds = bounds;
     lastDate = date;
     lastScene = sceneData;
     lastTextureLoaded = textureLoaded;
     lastFallbackReason = fallbackReason;
     setMeta(date, sceneData, textureLoaded, fallbackReason);
+    updateIndexTabs('ndvi');
+    updateIndexLegend(activeDef);
     setViewerMode('rendered');
     setStatus(sceneData ? '' : 'Using fixture surface · ' + fallbackReason, sceneData ? null : 'working');
   } catch (_) {
@@ -729,6 +1056,15 @@ function initMap() {
       runAnalysis();
     }
   });
+
+  const tabsEl = document.getElementById('satellite-three-index-tabs');
+  if (tabsEl) {
+    tabsEl.addEventListener('click', e => {
+      const tab = e.target.closest('.satellite-three-index-tab');
+      if (!tab) return;
+      rebuildTerrain(tab.dataset.index);
+    });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', initMap);

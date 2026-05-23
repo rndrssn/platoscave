@@ -1,11 +1,11 @@
-<!-- Satellite Index case overview: background and links to the live NDVI demo. -->
+<!-- Boundary-free monitoring case overview: precision agriculture vegetation-index inspection without field boundary registration. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Testing whether the current map viewport is a sufficient area of interest for satellite vegetation-index inspection — no polygon drawing required." />
-  <title>Viewport as AOI · Satellite Index · To the Bedrock</title>
+  <meta name="description" content="Precision agriculture vegetation-index inspection without boundary registration — pan to a field, click once, and get a seven-index spectral terrain for whatever is visible." />
+  <title>Boundary-free monitoring · Satellite Index · To the Bedrock</title>
   <script src="../../theme.config.js"></script>
   <script src="../../js/theme-bootstrap.js"></script>
   <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
@@ -41,68 +41,66 @@
   <main id="main-content" class="main--narrow">
     <div class="module-page satellite-index-page">
       <a class="module-back-link" href="../" aria-label="Back to Cases"></a>
-      <a class="module-header-number module-context-number module-context-link" href="./">Satellite Index</a>
+      <a class="module-header-number module-context-number module-context-link" href="./">Boundary-free monitoring</a>
 
       <nav class="module-sub-nav" aria-label="Case sections">
         <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">01</span> Overview</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link" href="demo/"><span class="module-sub-nav-number">02</span> Demo</a>
-        <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link" href="three/"><span class="module-sub-nav-number">03</span> Terrain renderer</a>
+        <a class="module-sub-nav-link" href="three/"><span class="module-sub-nav-number">02</span> Explorer</a>
       </nav>
 
       <header class="module-header">
-        <h1 class="module-header-title">Viewport as AOI</h1>
+        <h1 class="module-header-title">Boundary-free monitoring</h1>
         <p class="module-header-body">
-          Standard remote-sensing tools ask users to define an area of interest before returning data — draw a polygon,
-          upload a shapefile, or enter bounding-box coordinates. This proof of concept tests a simpler premise: a user
-          who has navigated a map to an area they care about has already implicitly defined their AOI. Formalising that
-          selection adds friction without adding analytical clarity for a first-pass inspection.
+          Precision agriculture tools typically require field boundary registration before returning any data —
+          upload a shapefile, draw a polygon, or enter parcel coordinates. This proof of concept tests whether
+          that step is necessary for first-pass crop inspection. A farmer who has navigated a map to their field
+          has already defined an area of interest. Capturing that implicitly removes a registration barrier that
+          excludes the users with the least administrative infrastructure.
         </p>
       </header>
 
       <article class="module-essay">
         <section class="essay-section">
-          <h2 class="essay-heading">Hypothesis</h2>
+          <h2 class="essay-heading">The premise</h2>
           <p class="essay-body">
-            The current map viewport is a sufficient area of interest for vegetation-index inspection at typical
-            inspection zoom levels. The user's navigation act — panning to a farm, a watershed, a landscape of
-            interest — is itself an implicit AOI declaration. Capturing that implicitly, rather than requiring an
-            explicit drawing step, reduces the interaction cost to near zero.
+            Field boundary registration is the first gate in most precision agriculture platforms. Before a
+            farmer can see any data about their land, they must supply a digital boundary — a GIS file,
+            a drawn polygon, or a parcel identifier from a cadastral registry. For operations with existing
+            spatial infrastructure this is routine; for smallholders, tenant farmers, or anyone monitoring
+            an unfamiliar area, it is a meaningful barrier.
           </p>
           <p class="essay-body">
-            The test: build a browser tool that returns an NDVI surface for whatever the user currently sees on
-            the map, with no drawing, uploading, or coordinate entry required. If the result is analytically useful
-            and the interaction feels natural, the hypothesis holds. If the viewport proves too coarse or too
-            variable to be useful, the hypothesis fails and polygon-drawing becomes justified.
+            The premise here is that the map is already the boundary. A user who has navigated to a field
+            and zoomed in to a working inspection level has expressed a spatial intent as clearly as a drawn
+            polygon would. Treating the visible viewport as the area of interest eliminates registration
+            without sacrificing the ability to read crop health, moisture, and chlorophyll status across
+            that area.
           </p>
         </section>
 
         <section class="essay-section">
-          <h2 class="essay-heading">What the demo shows</h2>
+          <h2 class="essay-heading">The explorer</h2>
           <p class="essay-body">
-            The demo renders seven vegetation index surfaces — NDVI, NDRE, NDWI, NDMI, EVI, SAVI, and CIre —
-            as Plotly.js 3D visualisations for the visible map viewport. Surface height represents the index value.
-            Contour lines mark isolines on the primary surface. A MapLibre map with a MapTiler basemap
-            provides spatial context.
+            Pan to any agricultural area, zoom to field scale, and click <strong>Analyse viewport</strong>.
+            The explorer requests seven Sentinel-2 derived spectral indices for the current viewport bounds —
+            NDVI, NDRE, NDWI, NDMI, EVI, SAVI, and CIre — and renders each as a Three.js terrain mesh above
+            a high-resolution satellite tile base. Surface height maps the index value; the satellite imagery
+            below provides spatial orientation against field boundaries, roads, and hedgerows. Switching between
+            indices rebuilds only the terrain mesh — the base layer and camera position remain fixed.
           </p>
           <p class="essay-body">
-            The demo first requests Sentinel-2 L2A-derived data via the Sentinel Hub Process API, routed through
-            a Cloudflare Worker that handles OAuth credentials securely. All seven index requests are dispatched
-            in parallel for the same viewport and date. If the live imagery path is unavailable, the browser
-            falls back to procedural fixtures — spatially coherent synthetic grids seeded by the viewport bounds
-            and analysis date. The interaction model is identical in both modes.
+            Data arrives from a Cloudflare Worker that proxies Sentinel Hub requests. All seven indices are
+            fetched in a single call for the current viewport and the most recent cloud-free scene. If the
+            live path is unavailable, a procedural fixture preserves the interaction model with spatially
+            coherent synthetic data. The fixture is not real crop data and should not be read as such.
           </p>
           <aside class="satellite-poc-card" aria-label="Proof of concept scope">
             <p>
-              This demo is live-first, with a fixture fallback. The browser sends viewport bounds and an analysis
-              date to a Cloudflare Worker, which proxies the Sentinel Hub request without exposing satellite
-              credentials to the client.
-            </p>
-            <p>
-              The fallback fixture produces plausible spatial variation across the viewport when the Worker,
-              imagery request, or render path is unavailable, or when the viewport-size guard skips the live
-              request. It demonstrates the interaction model; it should not be read as real vegetation conditions.
+              Sentinel-2 has a nominal 10&thinsp;m ground-sample distance for its primary spectral bands.
+              The explorer enforces a 200-hectare viewport cap: above that threshold the data cost and
+              spatial averaging would reduce the result to a landscape summary rather than a field inspection.
+              Zoom in until the area indicator drops below 200&thinsp;ha to unlock the analysis.
             </p>
           </aside>
         </section>
@@ -110,11 +108,12 @@
         <section class="essay-section">
           <h2 class="essay-heading">Spectral indices</h2>
           <p class="essay-body">
-            Each index exploits a specific feature of the electromagnetic reflectance spectrum of vegetation,
-            soil, or water. Sentinel-2 is particularly suited to crop monitoring because it carries three
-            red-edge bands (B05, B06, B07) absent from most earlier sensors, enabling direct measurement of
-            the chlorophyll absorption edge — the primary indicator of plant nitrogen status and photosynthetic
-            capacity. In the formulas below, &rho; denotes surface reflectance in the named spectral band.
+            Each index targets a different agronomic signal: canopy density, nitrogen and chlorophyll status,
+            plant water stress, canopy moisture, or soil background. Sentinel-2 is particularly suited to
+            crop monitoring because it carries three red-edge bands (B05, B06, B07) absent from most earlier
+            sensors, enabling direct measurement of the chlorophyll absorption edge — the primary indicator of
+            nitrogen status and photosynthetic capacity. In the formulas below, &rho; denotes surface
+            reflectance in the named spectral band.
           </p>
 
           <details class="satellite-indices-detail">
@@ -227,20 +226,18 @@
         </section>
 
         <section class="essay-section">
-          <h2 class="essay-heading">Design decisions</h2>
+          <h2 class="essay-heading">Approach</h2>
           <p class="essay-body">
-            Several decisions were made deliberately to keep the interaction model minimal.
+            The area of interest is always the current viewport. There is no draw tool, no saved boundary,
+            and no coordinate input. A farmer who wants to inspect a different field moves the map to it.
+            This removes the registration step that most PA platforms place at the front of every workflow.
           </p>
           <p class="essay-body">
-            The AOI is always the current viewport. There is no draw tool, no saved area, and no coordinate input.
-            If a user wants a different area they move the map. This removes an entire class of UX complexity while
-            preserving the core analytical value: spatial vegetation-index inspection.
-          </p>
-          <p class="essay-body">
-            Seven indices are computed simultaneously for the same viewport and date. NDVI serves as the primary
-            surface; the remaining six appear in a secondary grid below. Each surface uses an index-appropriate
-            colorscale and z-axis range. Adding further indices requires only a new evalscript on the Worker
-            and a definition entry in the client config.
+            Seven indices are requested in a single Worker call for the same viewport and scene date.
+            All are cached client-side; switching between them rebuilds only the terrain mesh without
+            a new network request. Each index uses its own colorscale and normalised height range so
+            that the terrain surface is visually comparable across indices regardless of their absolute scales —
+            NDVI in [&minus;1,&thinsp;1] and CIre in [0,&thinsp;6] both occupy the same vertical stage.
           </p>
           <p class="essay-body">
             Surface height represents the index value, not terrain elevation.
@@ -250,20 +247,22 @@
         <section class="essay-section">
           <h2 class="essay-heading">Findings</h2>
           <p class="essay-body">
-            The hypothesis holds at typical inspection zoom levels. A user who has navigated to a farm,
-            watershed, or landscape of interest has already defined a workable area of interest — the
-            interaction cost reduces to a single click.
+            The interaction model holds at field-inspection zoom levels. A farmer who has navigated to their
+            land has already defined a workable area of interest — the cost to first data reduces to a single
+            click, with no registration, no polygon, and no shapefile to prepare or maintain.
           </p>
           <p class="essay-body">
-            The approach has limits. Viewports larger than roughly 200 hectares cover too much area to
-            request cost-effectively from a satellite data provider, so the demo enforces a size guard
-            and asks the user to zoom in rather than silently falling back to fixtures. Users who need
-            precise polygon boundaries, saved areas of interest, or multi-date comparison need tooling
-            beyond what this interaction model offers.
+            The multi-index terrain view confirms that different agronomic questions are legible from the same
+            viewport: NDVI and EVI for canopy density, NDRE and CIre for nitrogen and chlorophyll status,
+            NDWI and NDMI for water and moisture, SAVI for low-cover or early-season fields. Switching between
+            them while the satellite base stays fixed makes the relationships between indices spatially obvious
+            — the same hedgerow, drainage channel, or bare patch reads consistently across all seven surfaces.
           </p>
           <p class="essay-body">
-            For initial inspection — confirming crop health, spotting anomalies, orienting a field
-            survey — the viewport is sufficient.
+            The model has clear scope limits. The 200-hectare cap keeps data cost and spatial resolution within
+            a useful range but excludes large-scale landscape analysis. There is no temporal comparison, no
+            saved boundary for repeat visits, and no field-level statistics. For initial inspection — confirming
+            crop health, spotting anomalies, orienting a site visit — the viewport is sufficient.
           </p>
         </section>
 
@@ -271,8 +270,7 @@
           <h2 class="essay-heading">Technical stack</h2>
           <div class="tech-stack-list">
             <span>MapLibre GL JS — interactive map rendering</span>
-            <span>MapTiler Cloud — basemap and terrain tile provider</span>
-            <span>Plotly.js — 3D analytical surface visualisation</span>
+            <span>MapTiler Cloud — basemap and satellite tile provider</span>
             <span>Three.js — terrain renderer and satellite tile base plane</span>
             <span>Sentinel-2 L2A — satellite imagery source (production path)</span>
             <span>Sentinel Hub Process API — RGB and index products (production path)</span>
@@ -285,23 +283,15 @@
         <section class="essay-section">
           <h2 class="essay-heading">Try it</h2>
           <p class="essay-body">
-            Navigate to an area and click <strong>Analyse viewport</strong>. The demo returns seven
-            spectral index surfaces for the current viewport in a single request — NDVI as the primary
-            surface, six companions below.
-          </p>
-          <p class="essay-body">
-            A separate terrain renderer explores the same live data with a different visual treatment:
-            the NDVI surface rises above a higher-resolution MapTiler satellite tile mosaic fitted to
-            the current bounds.
+            Pan to an agricultural area, zoom to field scale, and click <strong>Analyse viewport</strong>.
+            No boundary registration required — the visible viewport is your area of interest. Seven
+            Sentinel-2 spectral indices render as a terrain mesh above a satellite tile base, with index
+            tabs to switch between them without a new request.
           </p>
           <div class="essay-links">
-            <a class="essay-link" href="demo/">
-              <span class="essay-link-label">Index surfaces</span>
-              <span class="essay-link-desc">Seven spectral index surfaces for the current viewport — NDVI primary, six companions below</span>
-            </a>
             <a class="essay-link" href="three/">
-              <span class="essay-link-label">Terrain renderer</span>
-              <span class="essay-link-desc">NDVI surface over a satellite tile base plane — index height and aerial context in one view</span>
+              <span class="essay-link-label">Open the Explorer</span>
+              <span class="essay-link-desc">Seven-index spectral terrain for the current viewport — pan to any field and analyse</span>
             </a>
           </div>
         </section>
@@ -312,8 +302,8 @@
           <span class="footer-nav-label-full">&larr; Back to Cases</span>
           <span class="footer-nav-label-short">&larr; Cases</span>
         </a>
-        <a class="footer-nav-link" href="demo/" aria-label="Next: Demo">
-          <span class="footer-nav-label-full">Next: Demo &rarr;</span>
+        <a class="footer-nav-link" href="three/" aria-label="Next: Explorer">
+          <span class="footer-nav-label-full">Next: Explorer &rarr;</span>
           <span class="footer-nav-label-short">Next &rarr;</span>
         </a>
       </nav>

@@ -273,8 +273,11 @@ assertIncludes(selectorBlock(css, '.satellite-toggle-track'), 'width: 2.1rem;', 
 assertIncludes(selectorBlock(css, '.satellite-analyse-btn'), 'min-height: 44px;', 'Analyze button should meet mobile touch-target minimum');
 assertIncludes(css, 'box-shadow: 0.32rem 0.32rem 0 var(--experience-switch-shadow);', 'Experience control option should inherit the offset-shadow switch language');
 assertIncludes(selectorBlock(css, '.satellite-three-hud'), 'background: rgba(250, 248, 241, 0.94);', 'Three.js HUD should have a paper backing over map imagery');
-assertIncludes(css, '.satellite-three-hud .satellite-analyse-btn,\n.satellite-three-hud .satellite-toggle-control {\n  border: 1px solid var(--ink);\n  background: var(--ink);', 'Three.js analyze button should stay obvious over the map without using gold');
-assertNotMatches(css, /\.satellite-three-hud \.satellite-analyse-btn[\s\S]*?var\(--gold\)|\.satellite-three-hud \.satellite-analyse-btn[\s\S]*?rgba\(255,\s*255,\s*255/, 'Three.js analyze button should not use gold or translucent white overlay styling');
+assertIncludes(css, '.satellite-three-hud .satellite-analyse-btn,\n.satellite-three-hud .satellite-toggle-control {\n  border: 1px solid var(--sage);\n  background: var(--sage);', 'Three.js HUD controls should use sage for inactive or untoggled state');
+assertIncludes(css, '.satellite-three-hud .satellite-analyse-btn:not(:disabled),\n.satellite-three-hud .satellite-toggle-control[aria-pressed="true"] {\n  border-color: var(--gold);\n  background: var(--gold);', 'Three.js HUD controls should use gold for active or toggled state');
+assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-viewport-readout'), 'background: var(--sage);', 'Three.js viewport readout should use sage for blocked/inactive state');
+assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-viewport-readout:not(.satellite-viewport-readout--blocked)'), 'background: var(--gold);', 'Three.js viewport readout should use gold for live/active state');
+assertNotMatches(css, /\.satellite-three-hud \.satellite-analyse-btn[\s\S]*?rgba\(255,\s*255,\s*255/, 'Three.js analyze button should not use translucent white overlay styling');
 assertNotMatches(css, /data-control-style|satellite-control-style|border-style: dashed|content: ">"|0\.28rem 0\.28rem 0 var\(--rust\)/, 'Temporary control style variants should not remain in CSS');
 assertNotMatches(selectorBlock(css, '.satellite-meta'), /border: 2px solid var\(--ink\)|box-shadow:/, 'Metadata base block should be quieter than the old brutalist receipt');
 assertIncludes(selectorBlock(css, '.satellite-meta'), 'padding: 0.2rem 0;', 'Permanent Bar metadata should keep only slim vertical breathing room');

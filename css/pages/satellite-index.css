@@ -823,14 +823,14 @@
 .satellite-three-hud .satellite-viewport-readout {
   padding: 0.22rem 0.45rem;
   border-radius: 2px;
-  background: var(--paper-dark);
-  color: var(--ink-mid);
+  background: var(--sage);
+  color: var(--paper);
   text-shadow: none;
 }
 
 .satellite-three-hud .satellite-viewport-readout:not(.satellite-viewport-readout--blocked) {
-  background: var(--paper-dark);
-  color: var(--ink);
+  background: var(--gold);
+  color: var(--paper);
 }
 
 .satellite-three-hud .satellite-receipt-value--empty {
@@ -849,23 +849,30 @@
 
 .satellite-three-hud .satellite-analyse-btn,
 .satellite-three-hud .satellite-toggle-control {
-  border: 1px solid var(--ink);
-  background: var(--ink);
+  border: 1px solid var(--sage);
+  background: var(--sage);
   color: var(--paper);
   box-shadow: none;
 }
 
 .satellite-three-hud .satellite-analyse-btn:not(:disabled),
-.satellite-three-hud .satellite-toggle-control:not(:disabled) {
-  background: var(--ink);
+.satellite-three-hud .satellite-toggle-control[aria-pressed="true"] {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: var(--paper);
+}
+
+.satellite-three-hud .satellite-toggle-control[aria-pressed="false"] {
+  border-color: var(--sage);
+  background: var(--sage);
   color: var(--paper);
 }
 
 .satellite-three-hud .satellite-analyse-btn:disabled,
 .satellite-three-hud .satellite-toggle-control:disabled {
-  border-color: var(--paper-deep);
-  background: var(--paper-dark);
-  color: var(--ink-faint);
+  border-color: var(--sage);
+  background: var(--sage);
+  color: var(--paper);
   cursor: default;
   opacity: 1;
 }

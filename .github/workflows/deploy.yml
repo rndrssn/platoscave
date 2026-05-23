@@ -57,8 +57,8 @@ jobs:
         env:
           WORKER_API_KEY: ${{ secrets.WORKER_API_KEY }}
         run: |
-          sed -i "s/__WORKER_API_KEY__/${WORKER_API_KEY}/g" cases/satellite-index/demo/satellite-index.js
-          sed -i "s/__WORKER_API_KEY__/${WORKER_API_KEY}/g" cases/satellite-index/three/satellite-index-three.js
+          sed -i "s/__WORKER_API_KEY__/${WORKER_API_KEY}/g" modules/satellite-index/demo/satellite-index.js
+          sed -i "s/__WORKER_API_KEY__/${WORKER_API_KEY}/g" modules/satellite-index/three/satellite-index-three.js
 
       - name: Setup Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5

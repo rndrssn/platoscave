@@ -1,11 +1,11 @@
-<!-- Satellite Index Three.js prototype: NDVI terrain surface with a high-resolution satellite tile texture base plane. -->
+<!-- Boundary-free monitoring explorer: seven-index Sentinel-2 terrain renderer with satellite tile base plane, no field boundary required. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Three.js prototype for rendering a satellite-index surface with a high-resolution satellite map texture on the base plane." />
-  <title>Three.js Prototype · Satellite Index · To the Bedrock</title>
+  <meta name="description" content="Boundary-free crop monitoring explorer — pan to any field, click once, and get seven Sentinel-2 spectral-index terrain surfaces with no boundary registration required." />
+  <title>Explorer · Boundary-free monitoring · To the Bedrock</title>
   <script src="../../../theme.config.js"></script>
   <script src="../../../js/theme-bootstrap.js"></script>
   <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
@@ -41,23 +41,21 @@
   <main id="main-content" class="satellite-demo-main">
     <div class="module-page satellite-demo-page satellite-three-page">
       <a class="module-back-link" href="../" aria-label="Back to Overview"></a>
-      <a class="module-header-number module-context-number module-context-link" href="../">Satellite Index</a>
+      <a class="module-header-number module-context-number module-context-link" href="../">Boundary-free monitoring</a>
 
       <nav class="module-sub-nav" aria-label="Case sections">
         <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Overview</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link" href="../demo/"><span class="module-sub-nav-number">02</span> Demo</a>
-        <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">03</span> Terrain renderer</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">02</span> Explorer</a>
       </nav>
 
       <header class="module-header">
-        <h1 class="module-header-title">Terrain renderer</h1>
+        <h1 class="module-header-title">Explorer</h1>
         <p class="module-header-body">
-          The same live NDVI data, rendered as terrain. The analytical surface rises above a satellite imagery
-          base plane assembled from map tiles for the current bounds — vegetation index height and aerial context
-          in one view. Orbit controls let you rotate and inspect from any angle; the base map toggle removes the
-          satellite texture.
+          Pan to any agricultural area, zoom to field scale, and click <strong>Analyse viewport</strong> — no
+          boundary registration required. Seven Sentinel-2 spectral indices render as terrain above a
+          satellite tile base fitted to the current bounds. Select an index to swap the surface; the imagery
+          and camera position stay fixed. Orbit controls let you inspect from any angle.
         </p>
       </header>
 
@@ -100,9 +98,9 @@
               <span class="satellite-three-north-arrow"></span>
             </div>
             <div class="satellite-three-legend">
-              <span class="satellite-three-legend-label">NDVI</span>
-              <span class="satellite-three-legend-ramp"></span>
-              <span class="satellite-three-legend-scale">
+              <span class="satellite-three-legend-label" id="satellite-three-legend-label">NDVI</span>
+              <span class="satellite-three-legend-ramp" id="satellite-three-legend-ramp"></span>
+              <span class="satellite-three-legend-scale" id="satellite-three-legend-scale">
                 <span>-1</span>
                 <span>0</span>
                 <span>+1</span>
@@ -112,16 +110,49 @@
         </div>
       </div>
 
+      <div class="satellite-three-index-tabs" id="satellite-three-index-tabs" role="group" aria-label="Index selector" hidden>
+        <button class="satellite-three-index-tab satellite-three-index-tab--active" data-index="ndvi" type="button" aria-pressed="true">
+          <span class="satellite-three-index-tab-label">NDVI</span>
+          <span class="satellite-three-index-tab-desc">Vegetation density</span>
+        </button>
+        <button class="satellite-three-index-tab" data-index="ndre" type="button" aria-pressed="false">
+          <span class="satellite-three-index-tab-label">NDRE</span>
+          <span class="satellite-three-index-tab-desc">Red-edge chlorophyll</span>
+        </button>
+        <button class="satellite-three-index-tab" data-index="ndwi" type="button" aria-pressed="false">
+          <span class="satellite-three-index-tab-label">NDWI</span>
+          <span class="satellite-three-index-tab-desc">Water content</span>
+        </button>
+        <button class="satellite-three-index-tab" data-index="ndmi" type="button" aria-pressed="false">
+          <span class="satellite-three-index-tab-label">NDMI</span>
+          <span class="satellite-three-index-tab-desc">Canopy moisture</span>
+        </button>
+        <button class="satellite-three-index-tab" data-index="evi" type="button" aria-pressed="false">
+          <span class="satellite-three-index-tab-label">EVI</span>
+          <span class="satellite-three-index-tab-desc">Enhanced vegetation</span>
+        </button>
+        <button class="satellite-three-index-tab" data-index="savi" type="button" aria-pressed="false">
+          <span class="satellite-three-index-tab-label">SAVI</span>
+          <span class="satellite-three-index-tab-desc">Soil-adjusted vegetation</span>
+        </button>
+        <button class="satellite-three-index-tab" data-index="cire" type="button" aria-pressed="false">
+          <span class="satellite-three-index-tab-label">CIre</span>
+          <span class="satellite-three-index-tab-desc">Chlorophyll index</span>
+        </button>
+      </div>
+
       <p class="satellite-demo-note">
-        This renderer uses the same live data path as the Plotly demo — same Cloudflare Worker, same Sentinel-2
-        source — but renders through Three.js rather than Plotly. The map selects the area; the rendered view
-        replaces it with a terrain mesh above a satellite tile composite for the same bounds.
+        Data arrives from a Cloudflare Worker proxying Sentinel Hub. All seven indices are fetched in a single
+        request for the current viewport and the most recent cloud-free Sentinel-2 L2A scene, then cached
+        client-side. Switching between indices rebuilds only the terrain mesh — no new network request.
+        Sentinel-2 has a nominal 10&thinsp;m ground-sample distance; the explorer enforces a 200-hectare
+        viewport cap to keep spatial resolution and data cost within a useful range.
       </p>
 
       <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
-        <a class="footer-nav-link" href="../demo/" aria-label="Back to Plotly Demo">
-          <span class="footer-nav-label-full">&larr; Back to Plotly Demo</span>
-          <span class="footer-nav-label-short">&larr; Demo</span>
+        <a class="footer-nav-link" href="../" aria-label="Back to Overview">
+          <span class="footer-nav-label-full">&larr; Back to Overview</span>
+          <span class="footer-nav-label-short">&larr; Overview</span>
         </a>
       </nav>
     </div>

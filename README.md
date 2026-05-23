@@ -54,6 +54,10 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
     - D3 force-directed graph showing how queueing theory, complexity science, and modern agile practice connect; observations they predict; folklore intuitions and the counter-intuitive surprises that contradict them.
   - **05 M/M/1 Derivation** (`/modules/flow-queuing/derivation/`)
     - Mathematical appendix deriving the M/M/1 queueing formula from Poisson arrivals, exponential service, and steady-state balance equations.
+- **Boundary-free monitoring** — Viewport-as-AOI remote-sensing proof of concept.
+  - **01 Overview** (`/modules/satellite-index/`)
+  - **02 Explorer** (`/modules/satellite-index/three/`) — Three.js seven-index Sentinel-2 terrain renderer with satellite tile base plane.
+  - **Archived Demo** (`/modules/satellite-index/demo/`) — Plotly.js multi-index surfaces with Sentinel-derived RGB context; URL preserved but unlinked from the module sub-nav.
 - **Ambiguous Documents** — How ambiguous product documentation becomes precise enough to test and build. Paired narratively with Module 04 (same epistemic bet, at unit scale).
   - **01 Ambiguous Documents** (`/modules/ambiguity-clarity/`)
   - **02 Document Map** (`/modules/ambiguity-clarity/section-map/`)
@@ -62,10 +66,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 - **My Experience (Skills + CV)** — force-directed skills graph plus CV. Reachable via the footer and the shortcut URLs `/skills/` → `/modules/experience-skill-graph/` and `/cv/` → `/modules/experience-skill-graph/cv/`.
   - Uses a dedicated CV/Skills shell with a local view switcher (`Skills Graph` ↔ `CV`) rather than the standard module breadcrumb/sub-nav pattern.
-- **Cases / Satellite Index** — viewport-as-AOI remote-sensing proof of concept.
-  - **01 Overview** (`/cases/satellite-index/`)
-  - **02 Demo** (`/cases/satellite-index/demo/`) — Plotly.js multi-index surfaces with Sentinel-derived RGB context.
-  - **03 Three.js Prototype** (`/cases/satellite-index/three/`) — parallel terrain renderer experiment with a high-resolution MapTiler satellite tile texture on the base plane.
+- **Legacy Cases URLs** — old `/cases/` paths redirect to the promoted Boundary-free monitoring module.
 
 ### Module 06 Contract (Minimal)
 

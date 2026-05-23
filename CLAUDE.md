@@ -217,6 +217,13 @@ Tests enforcing this contract:
 - Satellite Index index isolines are explicit top-plane `scatter3d` traces from `buildIndexContourTraces()`, not Plotly surface contours. Keep surface `contours` disabled so isolines do not appear on every height level. Isolines use dark green `#123D1E`, interval 0.2 index units, and `INDEX_CONTOUR_TOP_OFFSET`.
 - Sentinel Hub PNG orientation: row 0 = northernmost latitude. Both `decodeNdviPng` and `decodeRgbToLuminance` call grid.reverse() before returning so row 0 = southernmost, matching Plotly's y=0=south convention and `generateNdviGrid`'s own ordering.
 - Satellite Index demo layout: map and NDVI surface side-by-side at ≥900px (1fr 1fr grid); both panels use aspect-ratio 1 (square). On mobile they stack full-width.
+- Explorer HUD structure: the satellite-three-hud overlay is positioned top-left inside the satellite-three-viewer. Element order (top to bottom): controls row, status, meta receipt. It is promoted to its own GPU compositing layer with transform translateZ(0) and will-change transform to prevent WebGL canvas compositing blur on the overlaid text. Do not move controls outside the viewer or change the GPU promotion.
+- Explorer HUD colour scheme: the HUD uses a light paper background with dark ink tokens so the controls and metadata read on both the map and the rendered canvas. The Analyse button uses ink on paper, not gold or translucent white-on-dark styling.
+- Explorer overlay colour scheme: the rendered-canvas north arrow and colorscale legend use ink tokens with no text shadow, glow, or white overlay text. Keep them transparent and unboxed.
+- Explorer overlay positions: north arrow stays at the top-right; colorscale legend stays below it at the same right edge to clear the arrow. Do not return either to the left edge.
+- Explorer primary button label: "Analyse viewport →" before analysis, "New viewport" after a surface is rendered. Do not revert to "Clear / reset".
+- Explorer map has no MapLibre `NavigationControl`. Do not add one.
+- Explorer fallback copy: `fallbackReason` uses the user-facing string `'live imagery unavailable'`. Never use technical strings like `'Worker key not injected'` in user-facing copy.
 
 ## Task Templates
 

@@ -6,6 +6,9 @@ MSG="${1:-Update all changes}"
 git checkout sandbox
 git pull --ff-only origin sandbox
 
+echo "==> Restoring API key placeholders (strips any local dev injection)..."
+bash scripts/dev-satellite.sh restore
+
 echo "==> Running tests..."
 node tests/run-all.js
 

@@ -1,6 +1,6 @@
 # platoscave — Repository Map
 
-*Auto-generated. 113 JS files · 394 symbols · 63 HTML pages · 335,043 total tokens. Excludes vendor and minified files.*
+*Auto-generated. 114 JS files · 437 symbols · 64 HTML pages · 351,832 total tokens. Excludes vendor and minified files.*
 
 This is a structural index of the repository. JS files list top-level functions; HTML pages list which scripts they load. Use this to orient before reading source.
 
@@ -11,9 +11,9 @@ This is a structural index of the repository. JS files list top-level functions;
 | Group | Files | Symbols | Tokens |
 |-------|------:|--------:|-------:|
 | Modules | 32 | 40 | 97,952 |
-| Cases | 1 | 30 | 10,202 |
+| Cases | 2 | 73 | 20,979 |
 | Build scripts | 6 | 63 | 15,828 |
-| Contract tests | 65 | 261 | 67,517 |
+| Contract tests | 65 | 261 | 70,311 |
 | Page-level scripts | 8 | 0 | 10,227 |
 | Root-level files | 1 | 0 | 301 |
 
@@ -22,8 +22,8 @@ This is a structural index of the repository. JS files list top-level functions;
 | Group | Pages | Script refs | Tokens |
 |-------|------:|------------:|-------:|
 | Articles | 2 | 9 | 11,682 |
-| Case pages | 3 | 15 | 7,467 |
-| Module pages | 36 | 149 | 83,237 |
+| Case pages | 4 | 20 | 10,679 |
+| Module pages | 36 | 149 | 83,243 |
 | Root-level pages | 1 | 5 | 1,272 |
 | colophon | 1 | 4 | 1,352 |
 | tests | 2 | 7 | 7,121 |
@@ -213,11 +213,11 @@ Products vs Projects risk classifier: scores slider responses into product, exec
 *0 symbols · 128 lines · 1,232 tokens*
 
 ### Cases
-*1 files · 30 symbols · 10,202 tokens*
+*2 files · 73 symbols · 20,979 tokens*
 
 ### `cases/satellite-index/demo/satellite-index.js`
 Satellite NDVI demo: MapLibre map, live Sentinel Hub data via Cloudflare Worker, and Plotly 3D surface.
-*30 symbols · 1010 lines · 10,202 tokens*
+*30 symbols · 1016 lines · 10,229 tokens*
 
   - `canUseMapLibre()` (L235)
   - `canUsePlotly()` (L239)
@@ -246,9 +246,57 @@ Satellite NDVI demo: MapLibre map, live Sentinel Hub data via Cloudflare Worker,
   - `setSurfacePlaceholder(msg)` (L800)
   - `resetAnalysisButton()` (L808)
   - `setMeta(bounds, date, scene)` (L816)
-  - `updateViewportReadout()` (L838)
-  - `runAnalysis()` (L855)
-  - `initMap()` (L951)
+  - `updateViewportReadout()` (L844)
+  - `runAnalysis()` (L861)
+  - `initMap()` (L957)
+
+### `cases/satellite-index/three/satellite-index-three.js`
+Satellite Index Three.js prototype: renders Worker NDVI as terrain over a high-resolution MapTiler satellite tile texture.
+*43 symbols · 1071 lines · 10,750 tokens*
+
+  - `canUseMapLibre()` (L263)
+  - `isWorkerKeyConfigured()` (L267)
+  - `clamp(value, min, max)` (L271)
+  - `isFiniteNumber(value)` (L275)
+  - `getAnalysisDate()` (L279)
+  - `getViewportMetrics(bounds)` (L283)
+  - `getAdaptiveGridSize(metrics)` (L291)
+  - `canRequestLive(metrics)` (L297)
+  - `getLiveLimitLabel()` (L301)
+  - `formatArea(metrics)` (L305)
+  - `generateNdviGrid(bounds, size)` (L318)
+  - `smoothNdviGridForRender(grid, passes)` (L343)
+  - `decodeNdviPng(base64)` (L372)
+  - `lonToTileX(lon, zoom)` (L407)
+  - `latToTileY(lat, zoom)` (L411)
+  - `chooseBaseTileZoom(bounds)` (L417)
+  - `buildTileUrl(x, y, zoom)` (L425)
+  - `loadImageBlob(url)` (L436)
+  - `loadBaseTexture(bounds)` (L457)
+  - `setStatus(msg, variant)` (L508)
+  - `setSurfacePlaceholder(msg)` (L515)
+  - `resetAnalysisButton()` (L522)
+  - `resetToSelection()` (L531)
+  - `setViewerMode(mode)` (L536)
+  - `setMeta(date, sceneData, textureLoaded, fallbackReason)` (L550)
+  - `updateViewportReadout()` (L572)
+  - `colorForIndex(value, def)` (L588)
+  - `decodeIndexPng(base64, encMin, encMax)` (L600)
+  - `buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn)` (L630)
+  - `clearSceneMeshes()` (L677)
+  - `updateRendererSize()` (L693)
+  - `prefersReducedMotion()` (L704)
+  - `renderOnce(force)` (L708)
+  - `startRenderLoop()` (L716)
+  - `updateNorthIndicator()` (L727)
+  - `initThreeScene()` (L738)
+  - `frameCamera(metrics, heightScale, surfaceOffset)` (L773)
+  - `renderThreeSurface(grid, metrics, bounds, colorFn, heightFn)` (L794)
+  - `updateIndexLegend(def)` (L841)
+  - `updateIndexTabs(indexId)` (L861)
+  - `rebuildTerrain(indexId)` (L871)
+  - `runAnalysis()` (L910)
+  - `initMap()` (L1010)
 
 ### Build scripts
 *6 files · 63 symbols · 15,828 tokens*
@@ -347,7 +395,7 @@ Optional AI writing-polish step (spelling and punctuation only) for notes and ar
   - `main()` (L267)
 
 ### Contract tests
-*65 files · 261 symbols · 67,517 tokens*
+*65 files · 261 symbols · 70,311 tokens*
 
 ### `tests/helpers/fake-dom.js`
 Minimal fake DOM (FakeClassList, FakeElement) for unit-testing browser-dependent code under Node.js.
@@ -864,7 +912,7 @@ Tests the Products vs Projects risk classifier for all residual-risk family and 
 
 ### `tests/test-satellite-index-contract.js`
 Contract tests for satellite-index.js: constants, function exports, and structural requirements.
-*4 symbols · 228 lines · 6,278 tokens*
+*4 symbols · 315 lines · 9,072 tokens*
 
   - `read(relPath)` (L10)
   - `assertIncludes(source, needle, label)` (L14)
@@ -997,7 +1045,7 @@ Scripts loaded:
   - `../../js/nav-controller.js`
 
 ### Case pages
-*3 pages · 15 script refs · 7,467 tokens*
+*4 pages · 20 script refs · 10,679 tokens*
 
 ### `cases/index.html`
 **Title:** Cases · To the Bedrock
@@ -1013,7 +1061,7 @@ Scripts loaded:
 ### `cases/satellite-index/demo/index.html`
 **Title:** Demo · Satellite Index · To the Bedrock
 **H1:** Spectral Index Demo
-*128 lines · 1,703 tokens*
+*143 lines · 1,949 tokens*
 
 Scripts loaded:
   - `../../../theme.config.js`
@@ -1027,9 +1075,9 @@ External scripts:
   - `https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.3/plotly.min.js`
 
 ### `cases/satellite-index/index.html`
-**Title:** Viewport as AOI · Satellite Index · To the Bedrock
-**H1:** Viewport as AOI
-*296 lines · 4,906 tokens*
+**Title:** Boundary-free monitoring · Satellite Index · To the Bedrock
+**H1:** Boundary-free monitoring
+*323 lines · 5,340 tokens*
 
 Scripts loaded:
   - `../../theme.config.js`
@@ -1039,8 +1087,23 @@ Scripts loaded:
   - `../../assets/vendor/katex/katex.min.js`
   - `../../js/katex-render.js`
 
+### `cases/satellite-index/three/index.html`
+**Title:** Explorer · Boundary-free monitoring · To the Bedrock
+**H1:** Explorer
+*179 lines · 2,532 tokens*
+
+Scripts loaded:
+  - `../../../theme.config.js`
+  - `../../../js/theme-bootstrap.js`
+  - `../../../js/module-route-data.js`
+  - `../../../js/nav-controller.js`
+  - `satellite-index-three.js`
+
+External scripts:
+  - `https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js`
+
 ### Module pages
-*36 pages · 149 script refs · 83,237 tokens*
+*36 pages · 149 script refs · 83,243 tokens*
 
 ### `modules/ambiguity-clarity/index.html`
 **Title:** Ambiguous Documents · To the Bedrock
@@ -1103,7 +1166,7 @@ Scripts loaded:
 ### `modules/experience-skill-graph/cv/index.html`
 **Title:** CV · Experience-Skill Graph · To the Bedrock
 **H1:** CV
-*159 lines · 2,493 tokens*
+*160 lines · 2,499 tokens*
 
 Scripts loaded:
   - `../../../theme.config.js`

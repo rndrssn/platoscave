@@ -1037,7 +1037,6 @@ function initMap() {
     zoom: DEFAULT_ZOOM,
   });
 
-  map.addControl(new maplibregl.NavigationControl(), 'top-right');
   map.on('load', updateViewportReadout);
   map.on('move', updateViewportReadout);
   updateViewportReadout();

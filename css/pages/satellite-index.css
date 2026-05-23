@@ -183,6 +183,10 @@
   }
 }
 
+.satellite-three-page .module-header-body {
+  max-width: 1120px;
+}
+
 .satellite-controls {
   display: flex;
   flex-wrap: wrap;
@@ -546,7 +550,7 @@
 .satellite-three-north {
   position: absolute;
   top: 0.85rem;
-  left: 0.85rem;
+  right: 0.85rem;
   width: 1.6rem;
   height: 1.9rem;
   display: grid;
@@ -581,7 +585,7 @@
 
 .satellite-three-legend {
   position: absolute;
-  top: 0.85rem;
+  top: 3.5rem;
   right: 0.85rem;
   display: grid;
   grid-template-columns: auto auto auto;
@@ -765,6 +769,83 @@
   .satellite-receipt-line--scene::before {
     display: none;
   }
+}
+
+/* ─── Terrain renderer — HUD overlay ─────────────────────── */
+
+.satellite-three-hud {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 10;
+  max-width: calc(100% - 1.5rem);
+  background: none;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.satellite-three-hud > * {
+  pointer-events: auto;
+}
+
+.satellite-three-hud .satellite-status {
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.satellite-three-hud .satellite-status--working { color: var(--ochre); }
+.satellite-three-hud .satellite-status--ready   { color: var(--sage);  }
+.satellite-three-hud .satellite-status--error   { color: var(--rust);  }
+
+.satellite-three-hud .satellite-meta {
+  margin-bottom: 0;
+  border-top: 0;
+  padding: 0;
+  max-width: none;
+}
+
+.satellite-three-hud .satellite-receipt-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.satellite-three-hud .satellite-receipt-value {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.satellite-three-hud .satellite-viewport-readout {
+  padding: 0.18rem 0.45rem;
+  border-radius: 2px;
+  background: rgba(40, 40, 40, 0.78);
+  color: rgba(255, 255, 255, 0.62);
+  text-shadow: none;
+}
+
+.satellite-three-hud .satellite-viewport-readout:not(.satellite-viewport-readout--blocked) {
+  background: rgba(184, 148, 58, 0.88);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.satellite-three-hud .satellite-receipt-value--empty {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.satellite-three-hud .satellite-receipt-line--scene::before {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.satellite-three-hud .satellite-controls {
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.satellite-three-hud .satellite-analyse-btn:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: default;
 }
 
 #satellite-surface,

@@ -1,11 +1,11 @@
-<!-- Satellite NDVI live demo: MapLibre map and Plotly 3D NDVI surface powered by Sentinel Hub. -->
+<!-- Satellite Index Three.js prototype: NDVI terrain surface with a high-resolution satellite tile texture base plane. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Interactive NDVI surface for the current map viewport — viewport as AOI proof of concept." />
-  <title>Demo · Satellite Index · To the Bedrock</title>
+  <meta name="description" content="Three.js prototype for rendering a satellite-index surface with a high-resolution satellite map texture on the base plane." />
+  <title>Three.js Prototype · Satellite Index · To the Bedrock</title>
   <script src="../../../theme.config.js"></script>
   <script src="../../../js/theme-bootstrap.js"></script>
   <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
@@ -39,32 +39,33 @@
   </header>
 
   <main id="main-content" class="satellite-demo-main">
-    <div class="module-page satellite-demo-page">
+    <div class="module-page satellite-demo-page satellite-three-page">
       <a class="module-back-link" href="../" aria-label="Back to Overview"></a>
       <a class="module-header-number module-context-number module-context-link" href="../">Satellite Index</a>
 
       <nav class="module-sub-nav" aria-label="Case sections">
         <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Overview</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">02</span> Demo</a>
+        <a class="module-sub-nav-link" href="../demo/"><span class="module-sub-nav-number">02</span> Demo</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link" href="../three/"><span class="module-sub-nav-number">03</span> Terrain renderer</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">03</span> Terrain renderer</a>
       </nav>
 
       <header class="module-header">
-        <h1 class="module-header-title">Spectral Index Demo</h1>
+        <h1 class="module-header-title">Terrain renderer</h1>
         <p class="module-header-body">
-          Navigate to a location and click once — the current map view is the area of interest. The demo
-          requests Sentinel-derived NDVI, RGB context, and six companion spectral indices for the visible
-          viewport through a Cloudflare Worker. Each surface uses index value as analytical height.
+          The same live NDVI data, rendered as terrain. The analytical surface rises above a satellite imagery
+          base plane assembled from map tiles for the current bounds — vegetation index height and aerial context
+          in one view. Orbit controls let you rotate and inspect from any angle; the base map toggle removes the
+          satellite texture.
         </p>
       </header>
 
       <div class="satellite-controls" role="toolbar" aria-label="Analysis controls">
-        <button class="satellite-analyse-btn" id="satellite-analyse-btn" type="button">
+        <button class="satellite-analyse-btn" id="satellite-three-analyse-btn" type="button">
           Analyse viewport &rarr;
         </button>
-        <button class="satellite-toggle-control" id="satellite-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map">
+        <button class="satellite-toggle-control" id="satellite-three-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map" hidden>
           <span class="satellite-control-label">Base map</span>
           <span class="satellite-toggle-track" aria-hidden="true">
             <span class="satellite-toggle-thumb"></span>
@@ -72,58 +73,55 @@
         </button>
       </div>
 
-      <p class="satellite-status" id="satellite-status" aria-live="polite"></p>
+      <p class="satellite-status" id="satellite-three-status" aria-live="polite"></p>
 
-      <div class="satellite-meta" id="satellite-meta" aria-label="Analysis metadata">
+      <div class="satellite-meta" id="satellite-three-meta" aria-label="Analysis metadata">
         <p class="satellite-receipt-line satellite-receipt-line--request">
           <span class="satellite-receipt-label">Request</span>
-          <span class="satellite-viewport-readout" id="satellite-viewport-readout" aria-live="polite"></span>
+          <span class="satellite-viewport-readout" id="satellite-three-viewport-readout" aria-live="polite"></span>
         </p>
-        <p class="satellite-receipt-line satellite-receipt-line--scene" data-satellite-scene-meta>
+        <p class="satellite-receipt-line satellite-receipt-line--scene" data-satellite-three-scene-meta>
           <span class="satellite-receipt-label">Scene</span>
           <span class="satellite-receipt-value satellite-receipt-value--empty">Pending</span>
         </p>
       </div>
 
-      <div class="satellite-demo-stage">
-        <div>
-          <div class="satellite-map-container">
-            <div id="satellite-map" role="application" aria-label="Interactive map — navigate to area of interest"></div>
+      <div class="satellite-three-stage" id="satellite-three-stage" data-view="selecting">
+        <div class="satellite-three-viewer">
+          <div class="satellite-map-container satellite-three-map-container">
+            <div id="satellite-three-map" role="application" aria-label="Interactive map — navigate to area of interest"></div>
           </div>
-        </div>
-        <div>
-          <details class="satellite-gap-note" id="satellite-gap-note" hidden>
-            <summary><span class="satellite-receipt-label">Surface gaps</span></summary>
-            <p class="satellite-gap-note__body">
-              Pixels classified as cloud, cirrus, snow, or satellite hardware defects are masked and rendered as gaps.
-              Shadow and ambiguous terrain pixels are kept — they carry real surface signal even if dimmed.
-              Gaps are a direct spatial readout of cloud cover on the acquisition date.
-            </p>
-          </details>
-          <div class="satellite-surface-wrap" id="satellite-surface-wrap" aria-label="NDVI 3D surface">
+          <div class="satellite-surface-wrap satellite-three-surface-wrap" id="satellite-three-surface-wrap" aria-label="NDVI Three.js 3D surface">
             <p class="satellite-surface-placeholder">Run analysis to view</p>
-            <div id="satellite-surface"></div>
+            <canvas id="satellite-three-surface" tabindex="0" aria-label="Interactive NDVI terrain surface"></canvas>
+          </div>
+          <div class="satellite-three-overlay" aria-hidden="true">
+            <div class="satellite-three-north" id="satellite-three-north">
+              <span class="satellite-three-north-arrow"></span>
+            </div>
+            <div class="satellite-three-legend">
+              <span class="satellite-three-legend-label">NDVI</span>
+              <span class="satellite-three-legend-ramp"></span>
+              <span class="satellite-three-legend-scale">
+                <span>-1</span>
+                <span>0</span>
+                <span>+1</span>
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="satellite-indices-grid" id="satellite-indices-grid" aria-label="Additional vegetation indices"></div>
-
       <p class="satellite-demo-note">
-        This demo first requests live Sentinel-derived NDVI and RGB context from a Cloudflare Worker. The browser
-        sends only viewport bounds and an analysis date; Sentinel credentials stay outside the client. If the
-        viewport exceeds the live request limit, the action asks you to zoom in. If the Worker is unavailable or the
-        imagery request fails, the surface falls back to a synthetic fixture seeded by the same viewport and analysis date.
+        This renderer uses the same live data path as the Plotly demo — same Cloudflare Worker, same Sentinel-2
+        source — but renders through Three.js rather than Plotly. The map selects the area; the rendered view
+        replaces it with a terrain mesh above a satellite tile composite for the same bounds.
       </p>
 
       <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
-        <a class="footer-nav-link" href="../" aria-label="Back to Overview">
-          <span class="footer-nav-label-full">&larr; Back to Overview</span>
-          <span class="footer-nav-label-short">&larr; Overview</span>
-        </a>
-        <a class="footer-nav-link" href="../three/" aria-label="Next: Terrain renderer">
-          <span class="footer-nav-label-full">Next: Terrain renderer &rarr;</span>
-          <span class="footer-nav-label-short">Next &rarr;</span>
+        <a class="footer-nav-link" href="../demo/" aria-label="Back to Plotly Demo">
+          <span class="footer-nav-label-full">&larr; Back to Plotly Demo</span>
+          <span class="footer-nav-label-short">&larr; Demo</span>
         </a>
       </nav>
     </div>
@@ -136,7 +134,14 @@
   <script src="../../../js/module-route-data.js"></script>
   <script src="../../../js/nav-controller.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.3/plotly.min.js"></script>
-  <script src="./satellite-index.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="./satellite-index-three.js?v=20260523-1"></script>
 </body>
 </html>

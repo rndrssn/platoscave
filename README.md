@@ -62,6 +62,10 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 - **My Experience (Skills + CV)** — force-directed skills graph plus CV. Reachable via the footer and the shortcut URLs `/skills/` → `/modules/experience-skill-graph/` and `/cv/` → `/modules/experience-skill-graph/cv/`.
   - Uses a dedicated CV/Skills shell with a local view switcher (`Skills Graph` ↔ `CV`) rather than the standard module breadcrumb/sub-nav pattern.
+- **Cases / Satellite Index** — viewport-as-AOI remote-sensing proof of concept.
+  - **01 Overview** (`/cases/satellite-index/`)
+  - **02 Demo** (`/cases/satellite-index/demo/`) — Plotly.js multi-index surfaces with Sentinel-derived RGB context.
+  - **03 Three.js Prototype** (`/cases/satellite-index/three/`) — parallel terrain renderer experiment with a high-resolution MapTiler satellite tile texture on the base plane.
 
 ### Module 06 Contract (Minimal)
 

@@ -45,11 +45,7 @@ if [[ "$cmd" == "inject" ]]; then
 
 elif [[ "$cmd" == "restore" ]]; then
   for target in "${TARGETS[@]}"; do
-    if git ls-files --error-unmatch "$target" >/dev/null 2>&1; then
-      git restore "$target"
-    else
-      sed -i '' "s/[0-9a-f]\{64\}/${PLACEHOLDER}/g" "$target"
-    fi
+    sed -i '' "s/[0-9a-f]\{64\}/${PLACEHOLDER}/g" "$target"
   done
   echo "Restored Satellite Index demo scripts to placeholder."
 

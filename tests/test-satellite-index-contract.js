@@ -40,16 +40,16 @@ assertNotMatches(demoHtml, staleFixtureOnlyCopy, 'Demo must not describe the pip
 
 assertIncludes(overviewHtml, 'live-first, with a fixture fallback', 'Overview should state live-first/fallback behavior');
 assertIncludes(overviewHtml, 'Analyse viewport', 'Overview try-it copy should match demo action wording');
-assertIncludes(overviewHtml, '<span class="module-sub-nav-number">03</span> Three.js Prototype', 'Overview should link to the parallel Three.js prototype');
+assertIncludes(overviewHtml, '<span class="module-sub-nav-number">03</span> Terrain renderer', 'Overview should link to the terrain renderer section');
 assertIncludes(overviewHtml, 'higher-resolution MapTiler satellite tile mosaic', 'Overview should explain the Three.js base-plane experiment');
-assertIncludes(overviewHtml, 'Three.js — experimental terrain renderer and high-resolution base texture', 'Technical stack should mention the prototype renderer');
+assertIncludes(overviewHtml, 'Three.js — terrain renderer and satellite tile base plane', 'Technical stack should mention the terrain renderer');
 assertNotMatches(overviewHtml, /select a date|Analyse visible area/, 'Overview should not reference removed date picker or old action copy');
 assertIncludes(demoHtml, 'Spectral Index Demo', 'Demo heading should describe the multi-index surface set');
 assertIncludes(demoHtml, 'six companion spectral indices', 'Demo intro should not frame the page as NDVI-only');
 assertIncludes(demoHtml, 'Each surface uses index value as analytical height', 'Demo intro should explain surface-height semantics across all indices');
 assertNotMatches(demoHtml, /<h1 class="module-header-title">NDVI Demo<\/h1>|Surface height represents NDVI/, 'Demo intro should not use stale NDVI-only framing');
 assertIncludes(demoHtml, 'first requests live Sentinel-derived NDVI', 'Demo note should state live data path');
-assertIncludes(demoHtml, '<span class="module-sub-nav-number">03</span> Three.js Prototype', 'Plotly demo should link to the parallel Three.js prototype');
+assertIncludes(demoHtml, '<span class="module-sub-nav-number">03</span> Terrain renderer', 'Plotly demo should link to the terrain renderer section');
 assertIncludes(demoHtml, 'synthetic fixture seeded by the same', 'Demo note should state fallback path');
 assertIncludes(demoHtml, 'Sentinel credentials stay outside the client', 'Demo should preserve credential boundary copy');
 assertIncludes(demoHtml, 'viewport exceeds the live request limit', 'Demo should disclose viewport-size request limiting');
@@ -91,16 +91,21 @@ assertNotMatches(demoHtml, /maplibre-gl@4\/|plotly\.js-dist-min@2\//, 'Satellite
 
 assertNotMatches(moduleRouteData, /cases\/|satellite-index/, 'Cases should stay out of module route data');
 
-assertIncludes(threeHtml, 'Three.js Surface Prototype', 'Three.js prototype page heading missing');
+assertIncludes(threeHtml, 'Terrain renderer', 'Terrain renderer page heading missing');
 assertIncludes(threeHtml, 'id="satellite-three-map"', 'Three.js prototype should keep its own map container');
 assertIncludes(threeHtml, 'id="satellite-three-surface"', 'Three.js prototype should keep its own canvas');
 assertIncludes(threeHtml, 'id="satellite-three-stage" data-view="selecting"', 'Three.js prototype should start in map-selection mode');
-assertIncludes(threeHtml, 'id="satellite-three-select-btn" type="button" hidden', 'Three.js prototype should expose a hidden select-new-area control after rendering');
+assertIncludes(threeHtml, 'id="satellite-three-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map" hidden', 'Three.js base toggle should stay hidden until a surface exists');
+assertIncludes(threeHtml, '<canvas id="satellite-three-surface" tabindex="0" aria-label="Interactive NDVI terrain surface"></canvas>', 'Three.js surface canvas should be keyboard focusable');
+assertNotMatches(threeHtml, /satellite-three-select-btn|Select new area/, 'Three.js prototype should use one analyse/reset button instead of a separate select-new-area action');
 assertIncludes(threeHtml, 'class="satellite-three-legend"', 'Three.js prototype should expose an NDVI color legend overlay');
 assertIncludes(threeHtml, 'class="satellite-three-north"', 'Three.js prototype should expose a north indicator overlay');
 assertNotMatches(threeHtml, /satellite-three-north-label|>N<\/span>/, 'Three.js north indicator should not include a text label');
 assertIncludes(selectorBlock(css, '.satellite-three-stage'), 'margin-bottom: 1.75rem;', 'Three.js viewer should leave room before following text');
+assertIncludes(selectorBlock(css, '.satellite-three-viewer'), 'width: 100%;', 'Three.js viewer should use the available case width');
+assertIncludes(selectorBlock(css, '.satellite-three-viewer'), 'max-width: 1120px;', 'Three.js viewer width should remain bounded on wide screens');
 assertIncludes(selectorBlock(css, '.satellite-three-viewer'), 'height: clamp(420px, 66vw, 680px);', 'Three.js viewer should reserve explicit height to avoid overlapping following text');
+assertIncludes(selectorBlock(css, '#satellite-three-surface:focus-visible'), 'outline: 3px solid var(--ink);', 'Three.js canvas should expose a visible keyboard focus state');
 assertIncludes(selectorBlock(css, '.satellite-three-surface-wrap'), 'position: absolute;', 'Three.js surface layer should remain contained inside the fixed viewer');
 assertIncludes(selectorBlock(css, '.satellite-three-surface-wrap'), 'inset: 0;', 'Three.js surface layer should not escape the viewer box');
 assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'background: transparent;', 'Three.js NDVI legend should be transparent');
@@ -129,17 +134,27 @@ assertIncludes(threeJs, "return 'https://api.maptiler.com/tiles/satellite-v2/'",
 assertIncludes(threeJs, 'const texture = new THREE.CanvasTexture(canvas);', 'Three.js prototype should convert the tile mosaic canvas to a texture');
 assertIncludes(threeJs, 'if (!response.ok) throw new Error', 'Three.js prototype should reject MapTiler error responses instead of rendering error images');
 assertIncludes(threeJs, 'new THREE.MeshBasicMaterial({ map: texture', 'Three.js prototype should map the satellite texture onto the base plane');
-assertIncludes(threeJs, 'const terrainGeometry = buildTerrainGeometry(grid, metrics);', 'Three.js prototype should build terrain geometry from the NDVI grid');
+assertIncludes(threeJs, 'const terrainGeometry = buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset);', 'Three.js prototype should pass height scale and surface offset into terrain geometry builder');
 assertIncludes(threeJs, 'const z = (row / Math.max(1, rows - 1) - 0.5) * depth;', 'Three.js prototype should use local northing on the ground-plane z axis');
-assertIncludes(threeJs, 'const y = isFiniteNumber(value) ? value * HEIGHT_SCALE_METERS', 'Three.js prototype should use y as analytical height');
+assertIncludes(threeJs, 'const heightScale = span * 0.035;', 'Three.js prototype should derive height scale proportionally from scene span');
+assertIncludes(threeJs, 'const surfaceOffset = span * 0.25;', 'Three.js prototype should derive surface offset proportionally from scene span');
+assertIncludes(threeJs, 'value * heightScale + surfaceOffset', 'Three.js prototype should use proportional NDVI scale plus proportional surface offset');
+assertIncludes(threeJs, 'const verticalMax = NDVI_DISPLAY_MAX * heightScale + surfaceOffset;', 'Three.js camera framing should include the proportionally scaled NDVI domain');
+assertIncludes(threeJs, 'controls.target.set(0, verticalCenter, 0);', 'Three.js camera should orbit around the lifted scene volume');
 assertIncludes(threeJs, 'baseMesh.rotation.x = Math.PI / 2;', 'Three.js base plane should be rotated from XY into the X/Z ground plane');
 assertIncludes(threeJs, "setViewerMode('rendered');", 'Three.js prototype should replace the selection map with the rendered surface after analysis');
 assertIncludes(threeJs, "setViewerMode('selecting');", 'Three.js prototype should allow returning to map-selection mode');
+assertIncludes(threeJs, "btnEl.textContent = rendered ? 'Clear / reset' : 'Analyse viewport →';", 'Three.js primary button should switch to reset semantics after rendering');
+assertIncludes(threeJs, 'function resetToSelection()', 'Three.js prototype should reset the rendered view through the primary button');
+assertIncludes(threeJs, 'function prefersReducedMotion()', 'Three.js prototype should respect reduced-motion preferences');
+assertIncludes(threeJs, "controls.enableDamping = !prefersReducedMotion();", 'Three.js controls should disable damping for reduced motion');
+assertIncludes(threeJs, "controls.addEventListener('change', () => renderOnce(true));", 'Three.js reduced-motion path should still render user-driven camera changes');
 assertIncludes(threeJs, 'function updateNorthIndicator()', 'Three.js prototype should keep the north indicator aligned to the camera');
 assertIncludes(threeJs, 'const radius = Math.sqrt(width * width + depth * depth + verticalSpan * verticalSpan) / 2;', 'Three.js prototype should frame the full surface bounds');
 assertIncludes(threeJs, 'const fitDistance = radius / Math.sin(fov / 2) * 0.86;', 'Three.js prototype should default to a tighter fit distance');
 assertNotMatches(threeJs, /createAxisLabel|createAxisLine|buildAxisGroup|axisGroup/, 'Three.js prototype should not render axis lines or labels');
 assertIncludes(threeJs, 'baseMesh.visible = showSatelliteBase;', 'Three.js base toggle should control the cached base mesh without refetching');
+assertNotMatches(threeJs, /base texture MapTiler satellite tiles|base texture unavailable|SENTINEL_SOURCE_RESOLUTION_LABEL|sceneData\.constellation/, 'Three.js metadata should stay compact and avoid source/base-texture telemetry');
 assertNotMatches(threeJs, /Plotly\./, 'Three.js prototype must not use Plotly');
 
 assertIncludes(demoJs, "const WORKER_URL     = 'https://satellite-worker.platoscave.workers.dev';", 'Worker URL contract changed');

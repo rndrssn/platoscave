@@ -48,15 +48,16 @@
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="../demo/"><span class="module-sub-nav-number">02</span> Demo</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">03</span> Three.js Prototype</a>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">03</span> Terrain renderer</a>
       </nav>
 
       <header class="module-header">
-        <h1 class="module-header-title">Three.js Surface Prototype</h1>
+        <h1 class="module-header-title">Terrain renderer</h1>
         <p class="module-header-body">
-          A parallel renderer experiment for the same viewport-driven NDVI request. The analytical surface still
-          comes from the live Worker path, while the base plane uses a high-resolution MapTiler satellite tile
-          mosaic fitted to the current map bounds.
+          The same live NDVI data, rendered as terrain. The analytical surface rises above a satellite imagery
+          base plane assembled from map tiles for the current bounds — vegetation index height and aerial context
+          in one view. Orbit controls let you rotate and inspect from any angle; the base map toggle removes the
+          satellite texture.
         </p>
       </header>
 
@@ -64,10 +65,7 @@
         <button class="satellite-analyse-btn" id="satellite-three-analyse-btn" type="button">
           Analyse viewport &rarr;
         </button>
-        <button class="satellite-analyse-btn satellite-secondary-btn" id="satellite-three-select-btn" type="button" hidden>
-          Select new area
-        </button>
-        <button class="satellite-toggle-control" id="satellite-three-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map">
+        <button class="satellite-toggle-control" id="satellite-three-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map" hidden>
           <span class="satellite-control-label">Base map</span>
           <span class="satellite-toggle-track" aria-hidden="true">
             <span class="satellite-toggle-thumb"></span>
@@ -95,7 +93,7 @@
           </div>
           <div class="satellite-surface-wrap satellite-three-surface-wrap" id="satellite-three-surface-wrap" aria-label="NDVI Three.js 3D surface">
             <p class="satellite-surface-placeholder">Run analysis to view</p>
-            <canvas id="satellite-three-surface"></canvas>
+            <canvas id="satellite-three-surface" tabindex="0" aria-label="Interactive NDVI terrain surface"></canvas>
           </div>
           <div class="satellite-three-overlay" aria-hidden="true">
             <div class="satellite-three-north" id="satellite-three-north">
@@ -115,9 +113,9 @@
       </div>
 
       <p class="satellite-demo-note">
-        This prototype is intentionally separate from the Plotly demo. It keeps the live NDVI request contract but
-        tests a different rendering path: the map is the area selector first, then the same viewport is replaced by
-        a Three.js terrain mesh above a browser-composited satellite tile texture for the current bbox.
+        This renderer uses the same live data path as the Plotly demo — same Cloudflare Worker, same Sentinel-2
+        source — but renders through Three.js rather than Plotly. The map selects the area; the rendered view
+        replaces it with a terrain mesh above a satellite tile composite for the same bounds.
       </p>
 
       <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">

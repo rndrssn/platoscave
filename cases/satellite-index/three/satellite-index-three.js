@@ -23,8 +23,7 @@ const BASE_TEXTURE_SIZE = 1024;
 const BASE_TILE_SIZE = 256;
 const BASE_TILE_MIN_ZOOM = 10;
 const BASE_TILE_MAX_ZOOM = 18;
-const HEIGHT_SCALE_METERS = 70;
-const SENTINEL_SOURCE_RESOLUTION_LABEL = 'source 10-20 m';
+// HEIGHT_SCALE and surface offset are computed per-render from scene span — see renderThreeSurface.
 
 const NDVI_STOPS = [
   { t: 0, color: new THREE.Color('#B84F35') },
@@ -37,7 +36,6 @@ const NDVI_STOPS = [
 let map = null;
 let busy = false;
 let btnEl = null;
-let selectBtnEl = null;
 let baseToggleEl = null;
 let viewportReadoutEl = null;
 let stageEl = null;
@@ -318,19 +316,22 @@ function setSurfacePlaceholder(msg) {
 
 function resetAnalysisButton() {
   if (btnEl) {
-    btnEl.textContent = stageEl && stageEl.dataset.view === 'rendered'
-      ? 'Redo analysis →'
-      : 'Analyse viewport →';
+    const rendered = stageEl && stageEl.dataset.view === 'rendered';
+    btnEl.textContent = rendered ? 'Clear / reset' : 'Analyse viewport →';
     btnEl.disabled = false;
   }
   busy = false;
 }
 
+function resetToSelection() {
+  setViewerMode('selecting');
+  setStatus('', null);
+}
+
 function setViewerMode(mode) {
   if (!stageEl) return;
   stageEl.dataset.view = mode;
-  if (selectBtnEl) selectBtnEl.hidden = mode !== 'rendered';
-  if (btnEl) btnEl.textContent = mode === 'rendered' ? 'Redo analysis →' : 'Analyse viewport →';
+  if (btnEl) btnEl.textContent = mode === 'rendered' ? 'Clear / reset' : 'Analyse viewport →';
   if (map && mode === 'selecting') {
     window.setTimeout(() => {
       map.resize();
@@ -347,9 +348,8 @@ function setMeta(date, sceneData, textureLoaded, fallbackReason) {
     ? ' / valid pixels ' + Math.round(sceneData.validPixelPct) + '%'
     : '';
   const sourceText = sceneData
-    ? 'most recent valid biomass map / ' + sceneData.constellation + ' / ' + sceneData.date + ' / ' + SENTINEL_SOURCE_RESOLUTION_LABEL + ' / cloud ' + Math.round(sceneData.cloudCover) + '%' + validPixelText
+    ? 'most recent valid biomass map / ' + sceneData.date + ' / cloud ' + Math.round(sceneData.cloudCover) + '%' + validPixelText
     : 'fixture fallback / ' + (date || getAnalysisDate()) + (fallbackReason ? ' / ' + fallbackReason : '');
-  const textureText = textureLoaded ? ' / base texture MapTiler satellite tiles' : ' / base texture unavailable';
 
   sceneEl.textContent = '';
   const label = document.createElement('span');
@@ -357,7 +357,7 @@ function setMeta(date, sceneData, textureLoaded, fallbackReason) {
   label.className = 'satellite-receipt-label';
   value.className = 'satellite-receipt-value' + (sceneData ? '' : ' satellite-receipt-value--demo');
   label.textContent = 'Scene';
-  value.textContent = sourceText + textureText;
+  value.textContent = sourceText;
   sceneEl.appendChild(label);
   sceneEl.appendChild(value);
 }
@@ -391,7 +391,7 @@ function colorForNdvi(value) {
   return NDVI_STOPS[NDVI_STOPS.length - 1].color.clone();
 }
 
-function buildTerrainGeometry(grid, metrics) {
+function buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset) {
   const rows = grid.length;
   const cols = grid[0] ? grid[0].length : 0;
   const width = metrics.widthKm * 1000;
@@ -406,7 +406,7 @@ function buildTerrainGeometry(grid, metrics) {
     for (let col = 0; col < cols; col++) {
       const x = (col / Math.max(1, cols - 1) - 0.5) * width;
       const value = grid[row][col];
-      const y = isFiniteNumber(value) ? value * HEIGHT_SCALE_METERS : NDVI_BASE_PLANE_Z * HEIGHT_SCALE_METERS;
+      const y = isFiniteNumber(value) ? value * heightScale + surfaceOffset : NDVI_BASE_PLANE_Z * heightScale;
       const color = isFiniteNumber(value) ? colorForNdvi(value) : new THREE.Color('#C4BAB0');
       vertices.push(x, y, z);
       colors.push(color.r, color.g, color.b);
@@ -465,6 +465,18 @@ function updateRendererSize() {
   camera.updateProjectionMatrix();
 }
 
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function renderOnce(force) {
+  if (!renderer || !scene || !camera) return;
+  if (force || !animationFrame) {
+    updateNorthIndicator();
+    renderer.render(scene, camera);
+  }
+}
+
 function startRenderLoop() {
   if (animationFrame) return;
   const tick = () => {
@@ -501,8 +513,9 @@ function initThreeScene() {
   camera.position.set(520, 500, -760);
 
   controls = new OrbitControls(camera, canvas);
-  controls.enableDamping = true;
+  controls.enableDamping = !prefersReducedMotion();
   controls.dampingFactor = 0.08;
+  controls.addEventListener('change', () => renderOnce(true));
   controls.target.set(0, 0, 0);
   controls.maxPolarAngle = Math.PI * 0.49;
   controls.minDistance = 160;
@@ -521,20 +534,22 @@ function initThreeScene() {
   return true;
 }
 
-function frameCamera(metrics) {
+function frameCamera(metrics, heightScale, surfaceOffset) {
   const width = metrics.widthKm * 1000;
   const depth = metrics.heightKm * 1000;
   const span = Math.max(width, depth, 1);
-  const verticalSpan = (NDVI_DISPLAY_MAX - NDVI_BASE_PLANE_Z) * HEIGHT_SCALE_METERS;
+  const verticalMax = NDVI_DISPLAY_MAX * heightScale + surfaceOffset;
+  const verticalCenter = (NDVI_BASE_PLANE_Z * heightScale + verticalMax) / 2;
+  const verticalSpan = verticalMax - NDVI_BASE_PLANE_Z * heightScale;
   const radius = Math.sqrt(width * width + depth * depth + verticalSpan * verticalSpan) / 2;
   const fov = camera.fov * Math.PI / 180;
   const fitDistance = radius / Math.sin(fov / 2) * 0.86;
   const direction = new THREE.Vector3(0.58, 0.52, -0.62).normalize();
-  camera.position.copy(direction.multiplyScalar(fitDistance));
+  camera.position.copy(direction.multiplyScalar(fitDistance).add(new THREE.Vector3(0, verticalCenter, 0)));
   camera.near = Math.max(0.1, span / 1000);
   camera.far = Math.max(5000, fitDistance * 4);
   camera.updateProjectionMatrix();
-  controls.target.set(0, 0, 0);
+  controls.target.set(0, verticalCenter, 0);
   controls.minDistance = Math.max(50, radius * 0.35);
   controls.maxDistance = Math.max(1200, fitDistance * 2.5);
   controls.update();
@@ -557,17 +572,20 @@ async function renderThreeSurface(grid, metrics, bounds) {
 
   const width = metrics.widthKm * 1000;
   const depth = metrics.heightKm * 1000;
+  const span = Math.max(width, depth);
+  const heightScale = span * 0.035;
+  const surfaceOffset = span * 0.25;
   const baseGeometry = new THREE.PlaneGeometry(width, depth);
   const baseMaterial = texture
     ? new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.95, side: THREE.DoubleSide })
     : new THREE.MeshBasicMaterial({ color: '#C4BAB0', transparent: true, opacity: 0.5, side: THREE.DoubleSide });
   baseMesh = new THREE.Mesh(baseGeometry, baseMaterial);
   baseMesh.rotation.x = Math.PI / 2;
-  baseMesh.position.y = NDVI_BASE_PLANE_Z * HEIGHT_SCALE_METERS;
+  baseMesh.position.y = NDVI_BASE_PLANE_Z * heightScale;
   baseMesh.visible = showSatelliteBase;
   scene.add(baseMesh);
 
-  const terrainGeometry = buildTerrainGeometry(grid, metrics);
+  const terrainGeometry = buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset);
   const terrainMaterial = new THREE.MeshPhongMaterial({
     vertexColors: true,
     transparent: true,
@@ -578,7 +596,7 @@ async function renderThreeSurface(grid, metrics, bounds) {
   terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
   scene.add(terrainMesh);
 
-  frameCamera(metrics);
+  frameCamera(metrics, heightScale, surfaceOffset);
   updateRendererSize();
   if (wrap) wrap.classList.add('has-surface');
   return Boolean(texture);
@@ -664,13 +682,12 @@ async function runAnalysis() {
 
 function initMap() {
   btnEl = document.getElementById('satellite-three-analyse-btn');
-  selectBtnEl = document.getElementById('satellite-three-select-btn');
   baseToggleEl = document.getElementById('satellite-three-base-toggle');
   viewportReadoutEl = document.getElementById('satellite-three-viewport-readout');
   stageEl = document.getElementById('satellite-three-stage');
   northEl = document.getElementById('satellite-three-north');
 
-  if (!btnEl || !selectBtnEl || !baseToggleEl || !viewportReadoutEl || !stageEl) return;
+  if (!btnEl || !baseToggleEl || !viewportReadoutEl || !stageEl) return;
 
   showSatelliteBase = baseToggleEl.getAttribute('aria-pressed') === 'true';
 
@@ -705,12 +722,13 @@ function initMap() {
     if (lastBounds) setMeta(lastDate, lastScene, lastTextureLoaded, lastFallbackReason);
   });
 
-  selectBtnEl.addEventListener('click', () => {
-    setViewerMode('selecting');
-    setStatus('', null);
+  btnEl.addEventListener('click', () => {
+    if (stageEl && stageEl.dataset.view === 'rendered') {
+      resetToSelection();
+    } else {
+      runAnalysis();
+    }
   });
-
-  btnEl.addEventListener('click', runAnalysis);
 }
 
 document.addEventListener('DOMContentLoaded', initMap);

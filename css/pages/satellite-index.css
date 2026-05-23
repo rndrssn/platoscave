@@ -108,6 +108,42 @@
   margin-top: 0.65rem;
 }
 
+/* ─── Satellite Index — spectral indices collapsible ─── */
+.satellite-indices-detail {
+  margin-top: 1.5rem;
+}
+
+.satellite-indices-detail > summary {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 300;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 0.3rem 0;
+}
+
+.satellite-indices-detail > summary::-webkit-details-marker {
+  display: none;
+}
+
+.satellite-indices-detail > summary::after {
+  content: '\25B6';
+  font-size: 0.45rem;
+  letter-spacing: 0;
+  color: var(--ink-ghost);
+}
+
+.satellite-indices-detail[open] > summary::after {
+  content: '\25BC';
+}
+
 /* ─── Satellite Index — spectral indices section ─────── */
 .satellite-index-page .essay-subheading {
   font-family: var(--serif-alt);
@@ -324,7 +360,8 @@
 
 .satellite-three-viewer {
   position: relative;
-  width: min(100%, 980px);
+  width: 100%;
+  max-width: 1120px;
   height: clamp(420px, 66vw, 680px);
   margin: 0 auto 1.4rem;
 }
@@ -488,6 +525,11 @@
 
 #satellite-three-surface:active {
   cursor: grabbing;
+}
+
+#satellite-three-surface:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: -6px;
 }
 
 .satellite-surface-wrap.has-surface #satellite-three-surface {

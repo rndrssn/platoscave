@@ -48,7 +48,7 @@
         <span class="module-sub-nav-dot">&middot;</span>
         <a class="module-sub-nav-link" href="demo/"><span class="module-sub-nav-number">02</span> Demo</a>
         <span class="module-sub-nav-dot">&middot;</span>
-        <a class="module-sub-nav-link" href="three/"><span class="module-sub-nav-number">03</span> Three.js Prototype</a>
+        <a class="module-sub-nav-link" href="three/"><span class="module-sub-nav-number">03</span> Terrain renderer</a>
       </nav>
 
       <header class="module-header">
@@ -83,13 +83,8 @@
           <p class="essay-body">
             The demo renders seven vegetation index surfaces — NDVI, NDRE, NDWI, NDMI, EVI, SAVI, and CIre —
             as Plotly.js 3D visualisations for the visible map viewport. Surface height represents the index value.
-            Contour lines mark NDVI isolines on the primary surface. A MapLibre map with a MapTiler basemap
+            Contour lines mark isolines on the primary surface. A MapLibre map with a MapTiler basemap
             provides spatial context.
-          </p>
-          <p class="essay-body">
-            A separate Three.js prototype explores the same viewport-driven NDVI request with a different rendering
-            strategy: the analytical surface remains Sentinel-derived, while the base plane is textured from a
-            higher-resolution MapTiler satellite tile mosaic fitted to the current bounds.
           </p>
           <p class="essay-body">
             The demo first requests Sentinel-2 L2A-derived data via the Sentinel Hub Process API, routed through
@@ -121,6 +116,9 @@
             the chlorophyll absorption edge — the primary indicator of plant nitrogen status and photosynthetic
             capacity. In the formulas below, &rho; denotes surface reflectance in the named spectral band.
           </p>
+
+          <details class="satellite-indices-detail">
+          <summary>Index reference</summary>
 
           <h3 class="essay-subheading">NDVI &mdash; Normalized Difference Vegetation Index</h3>
           <figure class="index-equation" data-formula="\text{NDVI} = \frac{\rho_\text{NIR} - \rho_\text{Red}}{\rho_\text{NIR} + \rho_\text{Red}}"></figure>
@@ -225,6 +223,7 @@
             values of 0.5&ndash;2.5; values above 2 indicate dense, well-nourished canopies with high
             photosynthetic capacity.
           </p>
+          </details>
         </section>
 
         <section class="essay-section">
@@ -249,12 +248,32 @@
         </section>
 
         <section class="essay-section">
+          <h2 class="essay-heading">Findings</h2>
+          <p class="essay-body">
+            The hypothesis holds at typical inspection zoom levels. A user who has navigated to a farm,
+            watershed, or landscape of interest has already defined a workable area of interest — the
+            interaction cost reduces to a single click.
+          </p>
+          <p class="essay-body">
+            The approach has limits. Viewports larger than roughly 200 hectares cover too much area to
+            request cost-effectively from a satellite data provider, so the demo enforces a size guard
+            and asks the user to zoom in rather than silently falling back to fixtures. Users who need
+            precise polygon boundaries, saved areas of interest, or multi-date comparison need tooling
+            beyond what this interaction model offers.
+          </p>
+          <p class="essay-body">
+            For initial inspection — confirming crop health, spotting anomalies, orienting a field
+            survey — the viewport is sufficient.
+          </p>
+        </section>
+
+        <section class="essay-section">
           <h2 class="essay-heading">Technical stack</h2>
           <div class="tech-stack-list">
             <span>MapLibre GL JS — interactive map rendering</span>
             <span>MapTiler Cloud — basemap and terrain tile provider</span>
             <span>Plotly.js — 3D analytical surface visualisation</span>
-            <span>Three.js — experimental terrain renderer and high-resolution base texture</span>
+            <span>Three.js — terrain renderer and satellite tile base plane</span>
             <span>Sentinel-2 L2A — satellite imagery source (production path)</span>
             <span>Sentinel Hub Process API — RGB and index products (production path)</span>
             <span>Sentinel Hub Catalog API — scene search and selection (production path)</span>
@@ -266,17 +285,23 @@
         <section class="essay-section">
           <h2 class="essay-heading">Try it</h2>
           <p class="essay-body">
-            Navigate to an area on the map and click Analyse viewport. The NDVI surface
-            updates for the current viewport.
+            Navigate to an area and click <strong>Analyse viewport</strong>. The demo returns seven
+            spectral index surfaces for the current viewport in a single request — NDVI as the primary
+            surface, six companions below.
+          </p>
+          <p class="essay-body">
+            A separate terrain renderer explores the same live data with a different visual treatment:
+            the NDVI surface rises above a higher-resolution MapTiler satellite tile mosaic fitted to
+            the current bounds.
           </p>
           <div class="essay-links">
             <a class="essay-link" href="demo/">
-              <span class="essay-link-label">Demo</span>
-              <span class="essay-link-desc">Interactive NDVI surface for the current map viewport</span>
+              <span class="essay-link-label">Index surfaces</span>
+              <span class="essay-link-desc">Seven spectral index surfaces for the current viewport — NDVI primary, six companions below</span>
             </a>
             <a class="essay-link" href="three/">
-              <span class="essay-link-label">Three.js Prototype</span>
-              <span class="essay-link-desc">Experimental terrain renderer with a high-resolution satellite tile base plane</span>
+              <span class="essay-link-label">Terrain renderer</span>
+              <span class="essay-link-desc">NDVI surface over a satellite tile base plane — index height and aerial context in one view</span>
             </a>
           </div>
         </section>

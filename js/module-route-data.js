@@ -58,6 +58,14 @@
       sections: 'Flow and Waiting / Taxonomy / Explore / Concept Map / Appendix'
     },
     {
+      title: 'Boundary-free monitoring',
+      slug: 'satellite-index',
+      path: 'satellite-index/',
+      status: '',
+      descriptor: 'Viewport-as-area-of-interest remote-sensing proof of concept.',
+      sections: 'Overview / Explorer'
+    },
+    {
       title: 'Ambiguous Documents',
       slug: 'ambiguity-clarity',
       path: 'ambiguity-clarity/',

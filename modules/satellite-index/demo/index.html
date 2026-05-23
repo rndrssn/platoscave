@@ -1,0 +1,142 @@
+<!-- Satellite NDVI live demo: MapLibre map and Plotly 3D NDVI surface powered by Sentinel Hub. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive NDVI surface for the current map viewport — viewport as AOI proof of concept." />
+  <title>Demo · Satellite Index · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../../css/fonts.css" />
+  <link rel="stylesheet" href="../../../css/tokens.css" />
+  <link rel="stylesheet" href="../../../css/base.css" />
+  <link rel="stylesheet" href="../../../css/layout.css" />
+  <link rel="stylesheet" href="../../../css/components.css" />
+  <link rel="stylesheet" href="../../../css/utilities.css" />
+  <link rel="stylesheet" href="../../../css/themes.css" />
+  <link rel="stylesheet" href="../../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../../css/pages.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+  <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../../">To the Bedrock</a>
+    <nav class="main-nav">
+      <div class="nav-links" id="primary-nav">
+        <a class="nav-link" href="../../../">Home</a>
+        <a class="nav-link" href="../../../notes/">Notes</a>
+        <a class="nav-link nav-link--catalogue" href="../../../modules/">Catalogue</a>
+      </div>
+      <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="satellite-demo-main">
+    <div class="module-page satellite-demo-page">
+      <a class="module-back-link" href="../" aria-label="Back to Overview"></a>
+      <a class="module-header-number module-context-number module-context-link" href="../">Satellite Index</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Overview</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">02</span> Demo</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../three/"><span class="module-sub-nav-number">03</span> Terrain renderer</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Spectral Index Demo</h1>
+        <p class="module-header-body">
+          Navigate to a location and click once — the current map view is the area of interest. The demo
+          requests Sentinel-derived NDVI, RGB context, and six companion spectral indices for the visible
+          viewport through a Cloudflare Worker. Each surface uses index value as analytical height.
+        </p>
+      </header>
+
+      <div class="satellite-controls" role="toolbar" aria-label="Analysis controls">
+        <button class="satellite-analyse-btn" id="satellite-analyse-btn" type="button">
+          Analyse viewport &rarr;
+        </button>
+        <button class="satellite-toggle-control" id="satellite-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map">
+          <span class="satellite-control-label">Base map</span>
+          <span class="satellite-toggle-track" aria-hidden="true">
+            <span class="satellite-toggle-thumb"></span>
+          </span>
+        </button>
+      </div>
+
+      <p class="satellite-status" id="satellite-status" aria-live="polite"></p>
+
+      <div class="satellite-meta" id="satellite-meta" aria-label="Analysis metadata">
+        <p class="satellite-receipt-line satellite-receipt-line--request">
+          <span class="satellite-receipt-label">Request</span>
+          <span class="satellite-viewport-readout" id="satellite-viewport-readout" aria-live="polite"></span>
+        </p>
+        <p class="satellite-receipt-line satellite-receipt-line--scene" data-satellite-scene-meta>
+          <span class="satellite-receipt-label">Scene</span>
+          <span class="satellite-receipt-value satellite-receipt-value--empty">Pending</span>
+        </p>
+      </div>
+
+      <div class="satellite-demo-stage">
+        <div>
+          <div class="satellite-map-container">
+            <div id="satellite-map" role="application" aria-label="Interactive map — navigate to area of interest"></div>
+          </div>
+        </div>
+        <div>
+          <details class="satellite-gap-note" id="satellite-gap-note" hidden>
+            <summary><span class="satellite-receipt-label">Surface gaps</span></summary>
+            <p class="satellite-gap-note__body">
+              Pixels classified as cloud, cirrus, snow, or satellite hardware defects are masked and rendered as gaps.
+              Shadow and ambiguous terrain pixels are kept — they carry real surface signal even if dimmed.
+              Gaps are a direct spatial readout of cloud cover on the acquisition date.
+            </p>
+          </details>
+          <div class="satellite-surface-wrap" id="satellite-surface-wrap" aria-label="NDVI 3D surface">
+            <p class="satellite-surface-placeholder">Run analysis to view</p>
+            <div id="satellite-surface"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="satellite-indices-grid" id="satellite-indices-grid" aria-label="Additional vegetation indices"></div>
+
+      <p class="satellite-demo-note">
+        This demo first requests live Sentinel-derived NDVI and RGB context from a Cloudflare Worker. The browser
+        sends only viewport bounds and an analysis date; Sentinel credentials stay outside the client. If the
+        viewport exceeds the live request limit, the action asks you to zoom in. If the Worker is unavailable or the
+        imagery request fails, the surface falls back to a synthetic fixture seeded by the same viewport and analysis date.
+      </p>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../" aria-label="Back to Overview">
+          <span class="footer-nav-label-full">&larr; Back to Overview</span>
+          <span class="footer-nav-label-short">&larr; Overview</span>
+        </a>
+        <a class="footer-nav-link" href="../three/" aria-label="Next: Terrain renderer">
+          <span class="footer-nav-label-full">Next: Terrain renderer &rarr;</span>
+          <span class="footer-nav-label-short">Next &rarr;</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../../js/module-route-data.js"></script>
+  <script src="../../../js/nav-controller.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.3/plotly.min.js"></script>
+  <script src="./satellite-index.js"></script>
+</body>
+</html>

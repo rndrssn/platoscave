@@ -1,0 +1,2 @@
+# Exclude tooling notebooks from GitHub Linguist language stats
+repo/*.ipynb linguist-detectable=false

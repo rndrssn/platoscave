@@ -303,16 +303,10 @@ function getLiveLimitLabel() {
 }
 
 function formatArea(metrics) {
-  if (metrics.areaKm2 >= 1) {
-    return metrics.areaKm2.toFixed(metrics.areaKm2 >= 10 ? 0 : 1) + ' km²';
-  }
-
   const hectares = metrics.areaKm2 * 100;
-  if (hectares >= 0.1) {
-    return hectares.toFixed(hectares >= 10 ? 0 : 1) + ' ha';
-  }
-
-  return Math.max(1, Math.round(metrics.areaKm2 * 1000000)) + ' m²';
+  if (hectares >= 100) return hectares.toFixed(0) + ' ha';
+  if (hectares >= 10) return hectares.toFixed(1) + ' ha';
+  return hectares.toFixed(2) + ' ha';
 }
 
 function generateNdviGrid(bounds, size) {
@@ -510,6 +504,11 @@ function setStatus(msg, variant) {
   if (!el) return;
   el.textContent = msg;
   el.className = 'satellite-status' + (variant ? ' satellite-status--' + variant : '');
+  if (variant === 'loading') {
+    el.setAttribute('aria-label', 'Loading');
+  } else {
+    el.removeAttribute('aria-label');
+  }
 }
 
 function setSurfacePlaceholder(msg) {
@@ -519,11 +518,20 @@ function setSurfacePlaceholder(msg) {
   if (placeholder) placeholder.textContent = msg;
 }
 
+function updateAnalysisButtonLabel(liveAllowed) {
+  if (!btnEl) return;
+  const rendered = stageEl && stageEl.dataset.view === 'rendered';
+  if (rendered) {
+    btnEl.textContent = 'New viewport';
+    return;
+  }
+  btnEl.textContent = liveAllowed === false ? 'Zoom in' : 'Analyse viewport →';
+}
+
 function resetAnalysisButton() {
   if (btnEl) {
-    const rendered = stageEl && stageEl.dataset.view === 'rendered';
-    btnEl.textContent = rendered ? 'New viewport' : 'Analyse viewport →';
     btnEl.disabled = false;
+    updateAnalysisButtonLabel();
   }
   busy = false;
 }
@@ -531,14 +539,16 @@ function resetAnalysisButton() {
 function resetToSelection() {
   setViewerMode('selecting');
   setStatus('', null);
+  const sceneMetaWrap = document.querySelector('.satellite-three-scene-meta');
+  if (sceneMetaWrap) sceneMetaWrap.hidden = true;
 }
 
 function setViewerMode(mode) {
   if (!stageEl) return;
   stageEl.dataset.view = mode;
-  if (btnEl) btnEl.textContent = mode === 'rendered' ? 'New viewport' : 'Analyse viewport →';
-  const tabsEl = document.getElementById('satellite-three-index-tabs');
-  if (tabsEl) tabsEl.hidden = mode !== 'rendered';
+  updateAnalysisButtonLabel();
+  const guideEl = document.getElementById('satellite-three-index-guide');
+  if (guideEl) guideEl.hidden = mode !== 'rendered';
   if (map && mode === 'selecting') {
     window.setTimeout(() => {
       map.resize();
@@ -550,6 +560,8 @@ function setViewerMode(mode) {
 function setMeta(date, sceneData, textureLoaded, fallbackReason) {
   const sceneEl = document.querySelector('[data-satellite-three-scene-meta]');
   if (!sceneEl) return;
+  const sceneMetaWrap = sceneEl.closest('.satellite-three-scene-meta');
+  if (sceneMetaWrap) sceneMetaWrap.hidden = false;
 
   const validPixelText = sceneData && isFiniteNumber(sceneData.validPixelPct)
     ? ' / valid pixels ' + Math.round(sceneData.validPixelPct) + '%'
@@ -581,6 +593,7 @@ function updateViewportReadout() {
     ? formatArea(metrics)
     : formatArea(metrics) + ' / zoom in below ' + getLiveLimitLabel();
   viewportReadoutEl.classList.toggle('satellite-viewport-readout--blocked', !liveAllowed);
+  updateAnalysisButtonLabel(liveAllowed);
   btnEl.disabled = busy || !liveAllowed;
   btnEl.setAttribute('aria-disabled', String(!liveAllowed));
 }
@@ -858,13 +871,14 @@ function updateIndexLegend(def) {
   }
 }
 
-function updateIndexTabs(indexId) {
-  const tabsEl = document.getElementById('satellite-three-index-tabs');
-  if (!tabsEl) return;
-  tabsEl.querySelectorAll('.satellite-three-index-tab').forEach(btn => {
-    const active = btn.dataset.index === indexId;
-    btn.classList.toggle('satellite-three-index-tab--active', active);
-    btn.setAttribute('aria-pressed', String(active));
+function updateIndexGuide(indexId) {
+  const guideEl = document.getElementById('satellite-three-index-guide');
+  if (!guideEl) return;
+  guideEl.querySelectorAll('.satellite-three-index-link').forEach(link => {
+    link.classList.toggle('satellite-three-index-link--active', link.dataset.index === indexId);
+  });
+  guideEl.querySelectorAll('.satellite-three-index-note').forEach(note => {
+    note.classList.toggle('satellite-three-index-note--active', note.dataset.indexNote === indexId);
   });
 }
 
@@ -902,7 +916,7 @@ async function rebuildTerrain(indexId) {
   });
   terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
   scene.add(terrainMesh);
-  updateIndexTabs(indexId);
+  updateIndexGuide(indexId);
   updateIndexLegend(def);
   renderOnce(true);
 }
@@ -985,7 +999,7 @@ async function runAnalysis() {
       const t = clamp((v - activeDef.displayMin) / (activeDef.displayMax - activeDef.displayMin), 0, 1);
       return (t * 2 - 1) * heightScale + surfaceOffset;
     };
-    setStatus('Rendering Three.js surface…', 'working');
+    setStatus('', 'loading');
     const renderGrid = smoothNdviGridForRender(rawIndexGrids['ndvi'], NDVI_RENDER_SMOOTHING_PASSES);
     const textureLoaded = await renderThreeSurface(renderGrid, metrics, bounds, colorFn, heightFn);
     lastBounds = bounds;
@@ -994,7 +1008,7 @@ async function runAnalysis() {
     lastTextureLoaded = textureLoaded;
     lastFallbackReason = fallbackReason;
     setMeta(date, sceneData, textureLoaded, fallbackReason);
-    updateIndexTabs('ndvi');
+    updateIndexGuide('ndvi');
     updateIndexLegend(activeDef);
     setViewerMode('rendered');
     setStatus(sceneData ? '' : 'Using fixture surface · ' + fallbackReason, sceneData ? null : 'working');
@@ -1056,12 +1070,14 @@ function initMap() {
     }
   });
 
-  const tabsEl = document.getElementById('satellite-three-index-tabs');
-  if (tabsEl) {
-    tabsEl.addEventListener('click', e => {
-      const tab = e.target.closest('.satellite-three-index-tab');
-      if (!tab) return;
-      rebuildTerrain(tab.dataset.index);
+  const guideEl = document.getElementById('satellite-three-index-guide');
+  if (guideEl) {
+    guideEl.addEventListener('click', e => {
+      const link = e.target.closest('[data-index]');
+      if (!link) return;
+      e.preventDefault();
+      rebuildTerrain(link.dataset.index);
+      if (stageEl) stageEl.scrollIntoView({ block: 'start', behavior: 'smooth' });
     });
   }
 }

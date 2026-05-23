@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Local dev helper for the Satellite Index demo.
+# Local dev helper for the Boundary-free monitoring module.
 #
 # Usage:
 #   scripts/dev-satellite.sh inject   — substitute __WORKER_API_KEY__ from .env (for local testing)
@@ -10,8 +10,8 @@
 set -euo pipefail
 
 TARGETS=(
-  "cases/satellite-index/demo/satellite-index.js"
-  "cases/satellite-index/three/satellite-index-three.js"
+  "modules/satellite-index/demo/satellite-index.js"
+  "modules/satellite-index/three/satellite-index-three.js"
 )
 PLACEHOLDER="__WORKER_API_KEY__"
 
@@ -32,6 +32,10 @@ if [[ "$cmd" == "inject" ]]; then
   fi
 
   for target in "${TARGETS[@]}"; do
+    if [[ ! -f "$target" ]]; then
+      echo "Missing Satellite module script: $target" >&2
+      exit 1
+    fi
     if ! grep -q "$PLACEHOLDER" "$target"; then
       echo "Already injected or placeholder missing in $target — run 'scripts/dev-satellite.sh restore' first." >&2
       exit 1
@@ -45,6 +49,7 @@ if [[ "$cmd" == "inject" ]]; then
 
 elif [[ "$cmd" == "restore" ]]; then
   for target in "${TARGETS[@]}"; do
+    [[ -f "$target" ]] || continue
     sed -i '' "s/[0-9a-f]\{64\}/${PLACEHOLDER}/g" "$target"
   done
   echo "Restored Satellite Index demo scripts to placeholder."

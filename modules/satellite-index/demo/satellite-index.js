@@ -281,16 +281,10 @@ function getLiveLimitLabel() {
 }
 
 function formatArea(metrics) {
-  if (metrics.areaKm2 >= 1) {
-    return metrics.areaKm2.toFixed(metrics.areaKm2 >= 10 ? 0 : 1) + ' km²';
-  }
-
   const hectares = metrics.areaKm2 * 100;
-  if (hectares >= 0.1) {
-    return hectares.toFixed(hectares >= 10 ? 0 : 1) + ' ha';
-  }
-
-  return Math.max(1, Math.round(metrics.areaKm2 * 1000000)) + ' m²';
+  if (hectares >= 100) return hectares.toFixed(0) + ' ha';
+  if (hectares >= 10) return hectares.toFixed(1) + ' ha';
+  return hectares.toFixed(2) + ' ha';
 }
 
 function buildLocalAxes(metrics, grid) {

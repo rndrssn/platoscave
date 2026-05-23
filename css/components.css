@@ -116,6 +116,22 @@
 
 .module-entry--coming .module-title { color: var(--ink-faint); }
 
+.module-demo-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid var(--experience-switch-ink);
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--experience-switch-ink);
+  background: var(--experience-switch-surface);
+}
+
 /* Mobile: smaller descriptor */
 .module-descriptor {
   font-family: var(--serif);

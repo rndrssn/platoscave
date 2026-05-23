@@ -1,0 +1,200 @@
+<!-- Boundary-free monitoring explorer: seven-index Sentinel-2 terrain renderer with satellite tile base plane, no field boundary required. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Boundary-free crop monitoring explorer — pan to any field, click once, and get seven Sentinel-2 spectral-index terrain surfaces with no boundary registration required." />
+  <title>Explorer · Boundary-free monitoring · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../../css/fonts.css" />
+  <link rel="stylesheet" href="../../../css/tokens.css" />
+  <link rel="stylesheet" href="../../../css/base.css" />
+  <link rel="stylesheet" href="../../../css/layout.css" />
+  <link rel="stylesheet" href="../../../css/components.css" />
+  <link rel="stylesheet" href="../../../css/utilities.css" />
+  <link rel="stylesheet" href="../../../css/themes.css" />
+  <link rel="stylesheet" href="../../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../../css/pages.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+  <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../../">To the Bedrock</a>
+    <nav class="main-nav">
+      <div class="nav-links" id="primary-nav">
+        <a class="nav-link" href="../../../">Home</a>
+        <a class="nav-link" href="../../../notes/">Notes</a>
+        <a class="nav-link nav-link--catalogue" href="../../../modules/">Catalogue</a>
+      </div>
+      <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="satellite-demo-main">
+    <div class="module-page satellite-demo-page satellite-three-page">
+      <a class="module-back-link" href="../" aria-label="Back to Overview"></a>
+      <a class="module-header-number module-context-number module-context-link" href="../">Boundary-free monitoring</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> Overview</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">02</span> Explorer</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Explorer</h1>
+        <p class="module-header-body">
+          Pan to any agricultural area, zoom to field scale, and click <strong>Analyse viewport</strong> — no
+          boundary registration required. Seven Sentinel-2 spectral indices render as terrain above a
+          satellite tile base fitted to the current bounds. Select an index to swap the surface; the imagery
+          and camera position stay fixed. Orbit controls let you inspect from any angle.
+        </p>
+      </header>
+
+      <div class="satellite-three-stage" id="satellite-three-stage" data-view="selecting">
+        <div class="satellite-three-viewer">
+          <div class="satellite-map-container satellite-three-map-container">
+            <div id="satellite-three-map" role="application" aria-label="Interactive map — navigate to area of interest"></div>
+          </div>
+          <div class="satellite-surface-wrap satellite-three-surface-wrap" id="satellite-three-surface-wrap" aria-label="NDVI Three.js 3D surface">
+            <p class="satellite-surface-placeholder">Run analysis to view</p>
+            <canvas id="satellite-three-surface" tabindex="0" aria-label="Interactive NDVI terrain surface"></canvas>
+          </div>
+          <div class="satellite-three-overlay" aria-hidden="true">
+            <div class="satellite-three-north" id="satellite-three-north">
+              <span class="satellite-three-north-arrow"></span>
+            </div>
+            <div class="satellite-three-legend">
+              <span class="satellite-three-legend-label" id="satellite-three-legend-label">NDVI</span>
+              <span class="satellite-three-legend-ramp" id="satellite-three-legend-ramp"></span>
+              <span class="satellite-three-legend-scale" id="satellite-three-legend-scale">
+                <span>-1</span>
+                <span>0</span>
+                <span>+1</span>
+              </span>
+            </div>
+          </div>
+          <div class="satellite-three-hud">
+            <div class="satellite-controls" role="toolbar" aria-label="Analysis controls">
+              <button class="satellite-analyse-btn" id="satellite-three-analyse-btn" type="button">
+                Analyse viewport &rarr;
+              </button>
+              <button class="satellite-toggle-control" id="satellite-three-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map" hidden>
+                <span class="satellite-control-label">Base map</span>
+                <span class="satellite-toggle-track" aria-hidden="true">
+                  <span class="satellite-toggle-thumb"></span>
+                </span>
+              </button>
+            </div>
+            <p class="satellite-status" id="satellite-three-status" aria-live="polite"></p>
+            <div class="satellite-meta" id="satellite-three-meta" aria-label="Request metadata">
+              <p class="satellite-receipt-line satellite-receipt-line--request">
+                <span class="satellite-receipt-label">Request</span>
+                <span class="satellite-viewport-readout" id="satellite-three-viewport-readout" aria-live="polite"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="satellite-three-scene-meta" hidden>
+        <div class="satellite-meta" aria-label="Scene metadata">
+          <p class="satellite-receipt-line satellite-receipt-line--scene" data-satellite-three-scene-meta>
+            <span class="satellite-receipt-label">Scene</span>
+            <span class="satellite-receipt-value satellite-receipt-value--empty">Pending</span>
+          </p>
+        </div>
+        <p class="satellite-demo-note">
+          Use this as a field-scale inspection surface, not a map of legal boundaries or ground elevation.
+          Sentinel-2 has a nominal 10&thinsp;m ground-sample distance; the 200-hectare viewport cap keeps the
+          view in the range where patterns remain useful. If live imagery is unavailable, the fallback fixture
+          preserves the interaction model but is not real crop data.
+        </p>
+      </div>
+
+      <section class="satellite-three-index-guide" id="satellite-three-index-guide" aria-label="Index guide" hidden>
+        <p class="satellite-three-index-cue">
+          View indices:
+          <a class="satellite-three-index-link satellite-three-index-link--active" href="#satellite-three-stage" data-index="ndvi">NDVI</a>
+          <a class="satellite-three-index-link" href="#satellite-three-stage" data-index="ndre">NDRE</a>
+          <a class="satellite-three-index-link" href="#satellite-three-stage" data-index="ndwi">NDWI</a>
+          <a class="satellite-three-index-link" href="#satellite-three-stage" data-index="ndmi">NDMI</a>
+          <a class="satellite-three-index-link" href="#satellite-three-stage" data-index="evi">EVI</a>
+          <a class="satellite-three-index-link" href="#satellite-three-stage" data-index="savi">SAVI</a>
+          <a class="satellite-three-index-link" href="#satellite-three-stage" data-index="cire">CIre</a>
+        </p>
+
+        <div class="satellite-three-index-notes">
+          <article class="satellite-three-index-note satellite-three-index-note--active" data-index-note="ndvi">
+            <h2>NDVI — Vegetation density</h2>
+            <p>Normalised red and near-infrared contrast. Useful for a first read of canopy density and broad vegetation vigour.</p>
+            <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="ndvi">View on terrain &uarr;</a>
+          </article>
+          <article class="satellite-three-index-note" data-index-note="ndre">
+            <h2>NDRE — Red-edge chlorophyll</h2>
+            <p>Uses the red-edge band to stay sensitive in dense canopy where NDVI can saturate. Useful for chlorophyll and nitrogen-related patterns.</p>
+            <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="ndre">View on terrain &uarr;</a>
+          </article>
+          <article class="satellite-three-index-note" data-index-note="ndwi">
+            <h2>NDWI — Water content</h2>
+            <p>Highlights water and wetness contrasts in the visible and near-infrared bands. Useful for drainage, inundation, and surface water signals.</p>
+            <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="ndwi">View on terrain &uarr;</a>
+          </article>
+          <article class="satellite-three-index-note" data-index-note="ndmi">
+            <h2>NDMI — Canopy moisture</h2>
+            <p>Compares near-infrared and short-wave infrared response. Useful for moisture stress and canopy hydration patterns.</p>
+            <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="ndmi">View on terrain &uarr;</a>
+          </article>
+          <article class="satellite-three-index-note" data-index-note="evi">
+            <h2>EVI — Enhanced vegetation</h2>
+            <p>Reduces atmospheric and soil-background effects compared with NDVI. Useful when dense vegetation or haze makes simple contrast less stable.</p>
+            <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="evi">View on terrain &uarr;</a>
+          </article>
+          <article class="satellite-three-index-note" data-index-note="savi">
+            <h2>SAVI — Soil-adjusted vegetation</h2>
+            <p>Compensates for exposed soil brightness. Useful for sparse canopy, early growth, dry fields, or mixed bare-soil scenes.</p>
+            <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="savi">View on terrain &uarr;</a>
+          </article>
+          <article class="satellite-three-index-note" data-index-note="cire">
+            <h2>CIre — Chlorophyll index</h2>
+            <p>Expresses near-infrared to red-edge contrast as a chlorophyll-oriented ratio. Useful for within-field nutrition and canopy status variation.</p>
+            <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="cire">View on terrain &uarr;</a>
+          </article>
+        </div>
+      </section>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../" aria-label="Back to Overview">
+          <span class="footer-nav-label-full">&larr; Back to Overview</span>
+          <span class="footer-nav-label-short">&larr; Overview</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../../../js/module-route-data.js"></script>
+  <script src="../../../js/nav-controller.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="./satellite-index-three.js?v=20260523-1"></script>
+</body>
+</html>

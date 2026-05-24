@@ -1,4 +1,4 @@
-<!-- Boundary-free monitoring explorer: seven-index Sentinel-2 terrain renderer with satellite tile base plane, no field boundary required. -->
+<!-- Boundary-free monitoring Explorer: seven-index Sentinel-2 terrain renderer with Basemap/Terrain context and no field boundary required. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,12 +87,10 @@
               <button class="satellite-analyse-btn" id="satellite-three-analyse-btn" type="button">
                 Analyse viewport &rarr;
               </button>
-              <button class="satellite-toggle-control" id="satellite-three-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map" hidden>
-                <span class="satellite-control-label">Base map</span>
-                <span class="satellite-toggle-track" aria-hidden="true">
-                  <span class="satellite-toggle-thumb"></span>
-                </span>
-              </button>
+              <div class="satellite-base-mode-switch" id="satellite-three-base-mode" role="group" aria-label="Base context" hidden>
+                <button class="satellite-base-mode-option satellite-base-mode-option--active" type="button" data-base-context="satellite" aria-pressed="true">Basemap</button>
+                <button class="satellite-base-mode-option" type="button" data-base-context="terrain" aria-pressed="false">Terrain</button>
+              </div>
             </div>
             <p class="satellite-status" id="satellite-three-status" aria-live="polite"></p>
             <div class="satellite-meta" id="satellite-three-meta" aria-label="Request metadata">

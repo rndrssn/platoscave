@@ -1,4 +1,4 @@
-// Satellite Index Three.js prototype: renders Worker NDVI as terrain over a high-resolution MapTiler satellite tile texture.
+// Boundary-free monitoring Explorer: renders Sentinel-derived spectral surfaces with satellite basemap and optional MapTiler contours-v2 isolines.
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -23,6 +23,7 @@ const BASE_TEXTURE_SIZE = 1024;
 const BASE_TILE_SIZE = 256;
 const BASE_TILE_MIN_ZOOM = 10;
 const BASE_TILE_MAX_ZOOM = 18;
+const CONTOUR_TEXTURE_TIMEOUT_MS = 6000;
 // HEIGHT_SCALE and surface offset are computed per-render from scene span — see renderThreeSurface.
 
 const INDEX_DEFS = [
@@ -238,11 +239,12 @@ const INDEX_DEFS = [
 let map = null;
 let busy = false;
 let btnEl = null;
-let baseToggleEl = null;
+let baseModeEl = null;
+let baseModeButtons = [];
 let viewportReadoutEl = null;
 let stageEl = null;
 let northEl = null;
-let showSatelliteBase = true;
+let baseContextMode = 'satellite';
 let renderer = null;
 let scene = null;
 let camera = null;
@@ -258,6 +260,8 @@ let lastTextureLoaded = false;
 let lastFallbackReason = '';
 let lastMetrics = null;
 let lastIndexGrids = {};
+let lastBaseTextures = { satellite: null, terrain: null };
+let lastBasePlaneY = 0;
 let activeIndexId = 'ndvi';
 
 function canUseMapLibre() {
@@ -416,7 +420,7 @@ function chooseBaseTileZoom(bounds) {
   return clamp(desiredZoom, BASE_TILE_MIN_ZOOM, BASE_TILE_MAX_ZOOM);
 }
 
-function buildTileUrl(x, y, zoom) {
+function buildSatelliteTileUrl(x, y, zoom) {
   return 'https://api.maptiler.com/tiles/satellite-v2/'
     + zoom
     + '/'
@@ -425,6 +429,10 @@ function buildTileUrl(x, y, zoom) {
     + y
     + '.jpg?key='
     + MAPTILER_API_KEY;
+}
+
+function buildContourTileJsonUrl() {
+  return 'https://api.maptiler.com/tiles/contours-v2/tiles.json?key=' + MAPTILER_API_KEY;
 }
 
 function loadImageBlob(url) {
@@ -448,8 +456,15 @@ function loadImageBlob(url) {
     }));
 }
 
-async function loadBaseTexture(bounds) {
-  const zoom = chooseBaseTileZoom(bounds);
+function makeThreeTexture(canvas) {
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = renderer ? renderer.capabilities.getMaxAnisotropy() : 1;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+async function drawTileMosaic(bounds, zoom, buildUrl, drawTile) {
   const westPx = lonToTileX(bounds.west, zoom) * BASE_TILE_SIZE;
   const eastPx = lonToTileX(bounds.east, zoom) * BASE_TILE_SIZE;
   const northPx = latToTileY(bounds.north, zoom) * BASE_TILE_SIZE;
@@ -466,14 +481,11 @@ async function loadBaseTexture(bounds) {
   const ctx = canvas.getContext('2d');
   let loadedTiles = 0;
 
-  ctx.fillStyle = '#C4BAB0';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
   const tasks = [];
   for (let tileY = tileMinY; tileY <= tileMaxY; tileY++) {
     for (let tileX = tileMinX; tileX <= tileMaxX; tileX++) {
       tasks.push(
-        loadImageBlob(buildTileUrl(tileX, tileY, zoom))
+        loadImageBlob(buildUrl(tileX, tileY, zoom))
           .then(img => {
             const tileLeft = tileX * BASE_TILE_SIZE;
             const tileTop = tileY * BASE_TILE_SIZE;
@@ -481,7 +493,7 @@ async function loadBaseTexture(bounds) {
             const destY = (tileTop - northPx) / sourceHeight * BASE_TEXTURE_SIZE;
             const destSizeX = BASE_TILE_SIZE / sourceWidth * BASE_TEXTURE_SIZE;
             const destSizeY = BASE_TILE_SIZE / sourceHeight * BASE_TEXTURE_SIZE;
-            ctx.drawImage(img, destX, destY, destSizeX, destSizeY);
+            drawTile(ctx, img, destX, destY, destSizeX, destSizeY);
             loadedTiles += 1;
           })
           .catch(() => {})
@@ -490,13 +502,128 @@ async function loadBaseTexture(bounds) {
   }
 
   await Promise.all(tasks);
-  if (!loadedTiles) return null;
+  return loadedTiles ? canvas : null;
+}
 
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = renderer ? renderer.capabilities.getMaxAnisotropy() : 1;
-  texture.needsUpdate = true;
-  return texture;
+async function loadSatelliteBaseTexture(bounds) {
+  const zoom = chooseBaseTileZoom(bounds);
+  const canvas = await drawTileMosaic(bounds, zoom, buildSatelliteTileUrl, (ctx, img, destX, destY, destSizeX, destSizeY) => {
+    ctx.drawImage(img, destX, destY, destSizeX, destSizeY);
+  });
+  return canvas ? makeThreeTexture(canvas) : null;
+}
+
+function buildContourStyle() {
+  return {
+    version: 8,
+    sources: {
+      contours: {
+        type: 'vector',
+        url: buildContourTileJsonUrl(),
+      },
+    },
+    layers: [
+      {
+        id: 'contour-background',
+        type: 'background',
+        paint: { 'background-color': '#FAFCFF' },
+      },
+      {
+        id: 'contour-lines',
+        type: 'line',
+        source: 'contours',
+        'source-layer': 'contour',
+        filter: ['!=', ['get', 'glacier'], 1],
+        paint: {
+          'line-color': [
+            'match',
+            ['get', 'nth_line'],
+            10, '#1D463D',
+            5, '#2F5F54',
+            2, '#6C8E83',
+            '#93AAA2',
+          ],
+          'line-opacity': [
+            'match',
+            ['get', 'nth_line'],
+            10, 0.88,
+            5, 0.7,
+            2, 0.5,
+            0.32,
+          ],
+          'line-width': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            9,
+            ['match', ['get', 'nth_line'], 10, 1.2, 5, 0.9, 2, 0.6, 0.35],
+            14,
+            ['match', ['get', 'nth_line'], 10, 2.1, 5, 1.45, 2, 0.9, 0.55],
+          ],
+        },
+      },
+    ],
+  };
+}
+
+function snapshotMapCanvas(mapInstance) {
+  const sourceCanvas = mapInstance.getCanvas();
+  const canvas = document.createElement('canvas');
+  canvas.width = BASE_TEXTURE_SIZE;
+  canvas.height = BASE_TEXTURE_SIZE;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(sourceCanvas, 0, 0, BASE_TEXTURE_SIZE, BASE_TEXTURE_SIZE);
+  return makeThreeTexture(canvas);
+}
+
+function loadContourBaseTexture(bounds) {
+  if (!window.maplibregl || !document.body) return Promise.resolve(null);
+  return new Promise(resolve => {
+    const container = document.createElement('div');
+    container.setAttribute('aria-hidden', 'true');
+    container.style.position = 'fixed';
+    container.style.left = '-200vw';
+    container.style.top = '0';
+    container.style.width = BASE_TEXTURE_SIZE + 'px';
+    container.style.height = BASE_TEXTURE_SIZE + 'px';
+    container.style.pointerEvents = 'none';
+    document.body.appendChild(container);
+
+    let contourMap = null;
+    let settled = false;
+    let timeoutId = 0;
+
+    function cleanup(texture) {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeoutId);
+      if (contourMap) contourMap.remove();
+      container.remove();
+      resolve(texture || null);
+    }
+
+    try {
+      contourMap = new maplibregl.Map({
+        container,
+        style: buildContourStyle(),
+        interactive: false,
+        attributionControl: false,
+        preserveDrawingBuffer: true,
+        fadeDuration: 0,
+      });
+
+      timeoutId = window.setTimeout(() => cleanup(null), CONTOUR_TEXTURE_TIMEOUT_MS);
+      contourMap.on('load', () => {
+        contourMap.fitBounds(
+          [[bounds.west, bounds.south], [bounds.east, bounds.north]],
+          { padding: 0, duration: 0 }
+        );
+        contourMap.once('idle', () => cleanup(snapshotMapCanvas(contourMap)));
+      });
+    } catch (_) {
+      cleanup(null);
+    }
+  });
 }
 
 function setStatus(msg, variant) {
@@ -541,6 +668,7 @@ function resetToSelection() {
   setStatus('', null);
   const sceneMetaWrap = document.querySelector('.satellite-three-scene-meta');
   if (sceneMetaWrap) sceneMetaWrap.hidden = true;
+  if (baseModeEl) baseModeEl.hidden = true;
 }
 
 function setViewerMode(mode) {
@@ -683,6 +811,41 @@ function buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn
   return geometry;
 }
 
+function updateTerrainContextVisibility() {
+  const terrainActive = baseContextMode === 'terrain';
+  baseModeButtons.forEach(button => {
+    const active = button.dataset.baseContext === baseContextMode;
+    button.classList.toggle('satellite-base-mode-option--active', active);
+    button.setAttribute('aria-pressed', String(active));
+    if (button.dataset.baseContext === 'terrain') {
+      button.disabled = !lastBaseTextures.terrain;
+    }
+  });
+}
+
+function applyBaseContextMode(mode) {
+  const requestedMode = mode === 'terrain' && lastBaseTextures.terrain ? 'terrain' : 'satellite';
+  baseContextMode = requestedMode;
+  if (baseModeEl) baseModeEl.hidden = !lastBaseTextures.satellite && !lastBaseTextures.terrain;
+  if (!baseMesh || !baseMesh.material) {
+    updateTerrainContextVisibility();
+    return;
+  }
+  const nextTexture = requestedMode === 'terrain' ? lastBaseTextures.terrain : lastBaseTextures.satellite;
+  if (nextTexture) {
+    baseMesh.material.map = nextTexture;
+    baseMesh.material.color.set('#ffffff');
+    baseMesh.material.opacity = 0.95;
+  } else {
+    baseMesh.material.map = null;
+    baseMesh.material.color.set(requestedMode === 'terrain' ? '#FAFCFF' : '#C4BAB0');
+    baseMesh.material.opacity = requestedMode === 'terrain' ? 0.96 : 0.5;
+  }
+  baseMesh.material.needsUpdate = true;
+  updateTerrainContextVisibility();
+  renderOnce();
+}
+
 function clearSceneMeshes() {
   for (const mesh of [terrainMesh, baseMesh]) {
     if (!mesh) continue;
@@ -690,7 +853,6 @@ function clearSceneMeshes() {
     mesh.traverse(child => {
       if (child.geometry) child.geometry.dispose();
       if (child.material) {
-        if (child.material.map) child.material.map.dispose();
         child.material.dispose();
       }
     });
@@ -806,12 +968,23 @@ async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn) {
   }
 
   const wrap = document.getElementById('satellite-three-surface-wrap');
-  let texture = null;
+  let satelliteTexture = null;
+  let contourTexture = null;
   try {
-    texture = await loadBaseTexture(bounds);
+    const results = await Promise.allSettled([
+      loadSatelliteBaseTexture(bounds),
+      loadContourBaseTexture(bounds),
+    ]);
+    satelliteTexture = results[0].status === 'fulfilled' ? results[0].value : null;
+    contourTexture = results[1].status === 'fulfilled' ? results[1].value : null;
   } catch (_) {
-    texture = null;
+    satelliteTexture = null;
+    contourTexture = null;
   }
+  lastBaseTextures = {
+    satellite: satelliteTexture,
+    terrain: contourTexture,
+  };
 
   clearSceneMeshes();
 
@@ -821,14 +994,18 @@ async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn) {
   const heightScale = span * 0.4;
   const surfaceOffset = span * 0.02;
   const baseGeometry = new THREE.PlaneGeometry(width, depth);
-  const baseMaterial = texture
-    ? new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.95, side: THREE.DoubleSide })
+  const activeBaseTexture = baseContextMode === 'satellite' ? lastBaseTextures.satellite : null;
+  const baseMaterial = activeBaseTexture
+    ? new THREE.MeshBasicMaterial({ map: activeBaseTexture, transparent: true, opacity: 0.95, side: THREE.DoubleSide })
     : new THREE.MeshBasicMaterial({ color: '#C4BAB0', transparent: true, opacity: 0.5, side: THREE.DoubleSide });
   baseMesh = new THREE.Mesh(baseGeometry, baseMaterial);
   baseMesh.rotation.x = Math.PI / 2;
-  baseMesh.position.y = NDVI_BASE_PLANE_Z * heightScale;
-  baseMesh.visible = showSatelliteBase;
+  lastBasePlaneY = NDVI_BASE_PLANE_Z * heightScale;
+  baseMesh.position.y = lastBasePlaneY;
+  baseMesh.visible = true;
   scene.add(baseMesh);
+  if (baseModeEl) baseModeEl.hidden = false;
+  applyBaseContextMode(baseContextMode);
 
   const terrainGeometry = buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn);
   const terrainMaterial = new THREE.MeshPhongMaterial({
@@ -844,7 +1021,7 @@ async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn) {
   frameCamera(metrics, heightScale, surfaceOffset);
   updateRendererSize();
   if (wrap) wrap.classList.add('has-surface');
-  return Boolean(texture);
+  return Boolean(lastBaseTextures.satellite);
 }
 
 function updateIndexLegend(def) {
@@ -1016,14 +1193,16 @@ async function runAnalysis() {
 
 function initMap() {
   btnEl = document.getElementById('satellite-three-analyse-btn');
-  baseToggleEl = document.getElementById('satellite-three-base-toggle');
+  baseModeEl = document.getElementById('satellite-three-base-mode');
+  baseModeButtons = baseModeEl ? Array.from(baseModeEl.querySelectorAll('[data-base-context]')) : [];
   viewportReadoutEl = document.getElementById('satellite-three-viewport-readout');
   stageEl = document.getElementById('satellite-three-stage');
   northEl = document.getElementById('satellite-three-north');
 
-  if (!btnEl || !baseToggleEl || !viewportReadoutEl || !stageEl) return;
+  if (!btnEl || !baseModeEl || !baseModeButtons.length || !viewportReadoutEl || !stageEl) return;
 
-  showSatelliteBase = baseToggleEl.getAttribute('aria-pressed') === 'true';
+  const activeBaseButton = baseModeButtons.find(button => button.getAttribute('aria-pressed') === 'true');
+  baseContextMode = activeBaseButton && activeBaseButton.dataset.baseContext === 'terrain' ? 'terrain' : 'satellite';
 
   if (!canUseMapLibre()) {
     const mapEl = document.getElementById('satellite-three-map');
@@ -1032,7 +1211,7 @@ function initMap() {
       mapEl.textContent = 'Map unavailable';
     }
     btnEl.disabled = true;
-    baseToggleEl.disabled = true;
+    baseModeButtons.forEach(button => { button.disabled = true; });
     setStatus('Map library unavailable · refresh and try again', 'error');
     return;
   }
@@ -1048,11 +1227,10 @@ function initMap() {
   map.on('move', updateViewportReadout);
   updateViewportReadout();
 
-  baseToggleEl.addEventListener('click', () => {
-    showSatelliteBase = !showSatelliteBase;
-    baseToggleEl.setAttribute('aria-pressed', String(showSatelliteBase));
-    if (baseMesh) baseMesh.visible = showSatelliteBase;
-    if (lastBounds) setMeta(lastDate, lastScene, lastTextureLoaded, lastFallbackReason);
+  baseModeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      applyBaseContextMode(button.dataset.baseContext);
+    });
   });
 
   btnEl.addEventListener('click', () => {

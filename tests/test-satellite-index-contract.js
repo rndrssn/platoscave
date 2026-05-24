@@ -114,7 +114,9 @@ assertNotMatches(threeHtml, /Use this as a field-scale inspection surface|not re
 assertIncludes(threeHtml, 'id="satellite-three-map"', 'Three.js prototype should keep its own map container');
 assertIncludes(threeHtml, 'id="satellite-three-surface"', 'Three.js prototype should keep its own canvas');
 assertIncludes(threeHtml, 'id="satellite-three-stage" data-view="selecting"', 'Three.js prototype should start in map-selection mode');
-assertIncludes(threeHtml, 'id="satellite-three-base-toggle" type="button" aria-pressed="true" aria-label="Toggle satellite base map" hidden', 'Three.js base toggle should stay hidden until a surface exists');
+assertIncludes(threeHtml, 'id="satellite-three-base-mode" role="group" aria-label="Base context" hidden', 'Three.js base context switch should stay hidden until a surface exists');
+assertIncludes(threeHtml, 'data-base-context="satellite" aria-pressed="true">Basemap</button>', 'Three.js base context switch should expose Basemap as the default active option');
+assertIncludes(threeHtml, 'data-base-context="terrain" aria-pressed="false">Terrain</button>', 'Three.js base context switch should expose Terrain as the alternate option');
 assertIncludes(threeHtml, '<canvas id="satellite-three-surface" tabindex="0" aria-label="Interactive NDVI terrain surface"></canvas>', 'Three.js surface canvas should be keyboard focusable');
 assertNotMatches(threeHtml, /satellite-three-select-btn|Select new area/, 'Three.js prototype should use one analyse/reset button instead of a separate select-new-area action');
 assertIncludes(threeHtml, 'id="satellite-three-meta" aria-label="Request metadata"', 'Three.js HUD should keep only compact request metadata in the viewer overlay');
@@ -133,6 +135,8 @@ assertIncludes(selectorBlock(css, '.satellite-three-viewer'), 'height: clamp(420
 assertIncludes(selectorBlock(css, '#satellite-three-surface:focus-visible'), 'outline: 3px solid var(--ink);', 'Three.js canvas should expose a visible keyboard focus state');
 assertIncludes(selectorBlock(css, '.satellite-three-surface-wrap'), 'position: absolute;', 'Three.js surface layer should remain contained inside the fixed viewer');
 assertIncludes(selectorBlock(css, '.satellite-three-surface-wrap'), 'inset: 0;', 'Three.js surface layer should not escape the viewer box');
+assertIncludes(selectorBlock(css, '.satellite-base-mode-switch'), 'background: var(--experience-switch-surface);', 'Three.js base context switch should use the CV/Skills switch surface token');
+assertIncludes(selectorBlock(css, '.satellite-base-mode-option--active'), 'background: var(--experience-switch-active-surface);', 'Three.js active base context option should use the CV/Skills active token');
 assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'background: transparent;', 'Three.js NDVI legend should be transparent');
 assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'border: 0;', 'Three.js NDVI legend should not have a bounding box');
 assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'top: 3.5rem;', 'Three.js NDVI legend should sit below the north arrow');
@@ -161,9 +165,17 @@ assertIncludes(threeJs, "fallbackReason = 'live imagery unavailable';", 'Three.j
 assertIncludes(threeJs, "fallbackReason = 'Worker HTTP ' + analysisRes.status;", 'Three.js prototype should expose Worker HTTP fallback status');
 assertIncludes(threeJs, "fetch(WORKER_URL + '/analysis'", 'Three.js prototype should use the combined analysis endpoint');
 assertIncludes(threeJs, "return 'https://api.maptiler.com/tiles/satellite-v2/'", 'Three.js prototype should compose a base texture from satellite raster tiles');
+assertIncludes(threeJs, "return 'https://api.maptiler.com/tiles/contours-v2/tiles.json?key=' + MAPTILER_API_KEY;", 'Three.js prototype should compose terrain context from MapTiler contours-v2');
 assertIncludes(threeJs, 'const texture = new THREE.CanvasTexture(canvas);', 'Three.js prototype should convert the tile mosaic canvas to a texture');
 assertIncludes(threeJs, 'if (!response.ok) throw new Error', 'Three.js prototype should reject MapTiler error responses instead of rendering error images');
-assertIncludes(threeJs, 'new THREE.MeshBasicMaterial({ map: texture', 'Three.js prototype should map the satellite texture onto the base plane');
+assertIncludes(threeJs, 'new THREE.MeshBasicMaterial({ map: activeBaseTexture', 'Three.js prototype should map the satellite context texture onto the base plane');
+assertIncludes(threeJs, "'source-layer': 'contour'", 'Three.js terrain context should use the contours-v2 contour source layer');
+assertIncludes(threeJs, "['get', 'nth_line']", 'Three.js terrain context should style MapTiler contour index lines from nth_line');
+assertIncludes(threeJs, 'preserveDrawingBuffer: true', 'Three.js terrain context should snapshot the MapLibre contour canvas into a Three texture');
+assertIncludes(threeJs, 'function loadContourBaseTexture(bounds)', 'Three.js prototype should render MapTiler contour tiles into the terrain base texture');
+assertIncludes(threeJs, "baseMesh.material.color.set(requestedMode === 'terrain' ? '#FAFCFF' : '#C4BAB0');", 'Three.js terrain context should use a clean white base behind elevation isolines');
+assertIncludes(threeJs, "const nextTexture = requestedMode === 'terrain' ? lastBaseTextures.terrain : lastBaseTextures.satellite;", 'Three.js base context switch should use cached basemap or contour textures without rerunning analysis');
+assertNotMatches(threeJs, /terrain-rgb-v2|decodeTerrainRgb|buildTerrainContourGroup|terrainContourGroup|lastTerrainGrid|buildTerrainVisualCanvas|texture:\s*makeThreeTexture\(terrain\.canvas\)/, 'Three.js terrain context should not decode Terrain RGB or generate client-side elevation contours');
 assertIncludes(threeJs, 'const terrainGeometry = buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn);', 'Three.js prototype should pass height scale, surface offset, colorFn, and heightFn into terrain geometry builder');
 assertIncludes(threeJs, 'const t = clamp((v - def.displayMin) / (def.displayMax - def.displayMin), 0, 1);', 'Three.js heightFn should normalise each index value within its own display range');
 assertIncludes(threeJs, 'const INDEX_DEFS = [', 'Three.js prototype should define INDEX_DEFS for all seven indices');
@@ -213,7 +225,12 @@ assertIncludes(threeJs, 'function updateNorthIndicator()', 'Three.js prototype s
 assertIncludes(threeJs, 'const radius = Math.sqrt(width * width + depth * depth + verticalSpan * verticalSpan) / 2;', 'Three.js prototype should frame the full surface bounds');
 assertIncludes(threeJs, 'const fitDistance = radius / Math.sin(fov / 2) * 0.86;', 'Three.js prototype should default to a tighter fit distance');
 assertNotMatches(threeJs, /createAxisLabel|createAxisLine|buildAxisGroup|axisGroup/, 'Three.js prototype should not render axis lines or labels');
-assertIncludes(threeJs, 'baseMesh.visible = showSatelliteBase;', 'Three.js base toggle should control the cached base mesh without refetching');
+assertIncludes(threeJs, 'baseMesh.visible = true;', 'Three.js base plane should remain visible for both Basemap and Terrain contexts');
+assertIncludes(threeJs, "let lastBaseTextures = { satellite: null, terrain: null };", 'Three.js satellite and contour base texture caches should be preserved after analysis');
+assertIncludes(threeJs, "baseContextMode = requestedMode;", 'Three.js terrain switch should change base context without rerunning analysis');
+assertIncludes(threeJs, "baseModeButtons = baseModeEl ? Array.from(baseModeEl.querySelectorAll('[data-base-context]')) : [];", 'Three.js base context switch should wire both mode buttons');
+assertIncludes(threeJs, 'applyBaseContextMode(button.dataset.baseContext);', 'Three.js base context switch should update cached rendering without rerunning analysis');
+assertNotMatches(threeJs, /showSatelliteBase|satellite-three-base-toggle|satellite-three-terrain-toggle/, 'Three.js Explorer should not keep the old separate base/terrain toggle wiring');
 assertNotMatches(threeJs, /base texture MapTiler satellite tiles|base texture unavailable|SENTINEL_SOURCE_RESOLUTION_LABEL|sceneData\.constellation/, 'Three.js metadata should stay compact and avoid source/base-texture telemetry');
 assertNotMatches(threeJs, /Plotly\./, 'Three.js prototype must not use Plotly');
 

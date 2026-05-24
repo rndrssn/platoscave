@@ -268,6 +268,62 @@
   padding: 0.34rem 1rem;
 }
 
+.satellite-base-mode-switch[hidden] {
+  display: none;
+}
+
+.satellite-base-mode-switch {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 0.14rem;
+  border-radius: 0.5rem;
+  background: var(--experience-switch-surface);
+  box-shadow: 0.28rem 0.28rem 0 var(--experience-switch-shadow);
+}
+
+.satellite-base-mode-option {
+  min-height: 2rem;
+  padding: 0.16rem 0.58rem;
+  border: 0;
+  border-radius: 0.34rem;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--experience-switch-ink);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.satellite-base-mode-option:hover {
+  background: color-mix(in srgb, var(--paper) 42%, transparent 58%);
+}
+
+.satellite-base-mode-option:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.satellite-base-mode-option--active {
+  background: var(--experience-switch-active-surface);
+  box-shadow:
+    inset 0 0 0 2px var(--experience-switch-active-ring),
+    0.14rem 0.14rem 0 var(--experience-switch-shadow);
+}
+
+.satellite-base-mode-option:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.satellite-base-mode-option:disabled:hover {
+  background: transparent;
+}
+
 .satellite-secondary-btn {
   background: transparent;
   color: var(--ink-mid);
@@ -926,6 +982,15 @@
   background: var(--ink-ghost);
   color: var(--ink);
   box-shadow: none;
+}
+
+.satellite-three-hud .satellite-base-mode-switch {
+  box-shadow: 0.14rem 0.14rem 0 var(--experience-switch-shadow);
+}
+
+.satellite-three-hud .satellite-base-mode-option {
+  min-height: 1.9rem;
+  padding-inline: 0.52rem;
 }
 
 .satellite-three-hud .satellite-analyse-btn:not(:disabled),

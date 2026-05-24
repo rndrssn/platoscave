@@ -1,4 +1,4 @@
-// Contract tests: checks that link text avoids anti-patterns like "click here" or "read more".
+// Contract tests: checks the site-wide link language stays centralized and quiet.
 'use strict';
 
 const fs = require('fs');
@@ -9,6 +9,7 @@ const pagesSource = fs.readFileSync(path.join(__dirname, '..', 'css', 'pages.css
 const componentsSource = readCssWithImports(path.join(__dirname, '..', 'css', 'components.css'));
 const contentCardsSource = fs.readFileSync(path.join(__dirname, '..', 'css', 'pages', 'content-cards.css'), 'utf8');
 const linkLanguageSource = fs.readFileSync(path.join(__dirname, '..', 'css', 'pages', 'link-language.css'), 'utf8');
+const tokensSource = fs.readFileSync(path.join(__dirname, '..', 'css', 'tokens.css'), 'utf8');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -60,6 +61,7 @@ function testCanonicalLinkLayerCoverage() {
   const requiredSnippets = [
     '.js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle)',
     '.nav-modules-submenu .nav-sublink',
+    '.module-back-link',
     '.module-sub-nav .module-sub-nav-link',
     '.module-context-link',
     '.essay-link-label',
@@ -67,7 +69,9 @@ function testCanonicalLinkLayerCoverage() {
     '.note-index-more',
     '.footer-socials .footer-social-link--cv',
     '.ep-jump',
-    ':is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a'
+    '.satellite-three-index-link',
+    'a.eq-ref',
+    ':is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a'
   ];
 
   for (const snippet of requiredSnippets) {
@@ -78,14 +82,43 @@ function testCanonicalLinkLayerCoverage() {
   }
 }
 
-function testNoUnderlineOrThemeSelectorInCanonicalLayer() {
+function testQuietCanonicalLinkLayer() {
   assert(
-    !/text-decoration\s*:\s*underline/i.test(linkLanguageSource),
-    'css/pages/link-language.css should avoid underline-based affordance'
+    /text-decoration-line\s*:\s*underline/i.test(linkLanguageSource),
+    'css/pages/link-language.css should use a restrained underline affordance for prose links'
+  );
+  assert(
+    !/--link-surface-(inline|nav|cta|footer)-visited/.test(linkLanguageSource),
+    'css/pages/link-language.css should not reintroduce visually distinct visited link surfaces'
+  );
+  assert(
+    !/background\s*:\s*var\(--link-surface-(inline|cta|footer)/.test(linkLanguageSource),
+    'css/pages/link-language.css should avoid bright chip backgrounds for prose, CTA, or footer links'
   );
   assert(
     !/\[data-theme\]/.test(linkLanguageSource),
     'css/pages/link-language.css should be theme-agnostic (tokens only, no [data-theme] selectors)'
+  );
+}
+
+function testNeutralLinkTokens() {
+  const requiredTokens = [
+    '--link-text:',
+    '--link-text-hover:',
+    '--link-text-muted:',
+    '--link-underline:',
+    '--link-underline-hover:',
+    '--link-surface-subtle:',
+    '--link-surface-active:'
+  ];
+
+  for (const token of requiredTokens) {
+    assert(tokensSource.includes(token), 'css/tokens.css missing quiet link token: ' + token);
+  }
+
+  assert(
+    !/--tag-chip:\s*#[fF]{2}/.test(tokensSource),
+    'Tag chips should not use hot accent color as the default link treatment'
   );
 }
 
@@ -95,7 +128,8 @@ function run() {
   testThemeScopedContentLinkOverridesRemoved();
   testLegacyNotesUnderlineRulesRemoved();
   testCanonicalLinkLayerCoverage();
-  testNoUnderlineOrThemeSelectorInCanonicalLayer();
+  testQuietCanonicalLinkLayer();
+  testNeutralLinkTokens();
   console.log('PASS: tests/test-link-language-contract.js');
 }
 

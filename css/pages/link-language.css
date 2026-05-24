@@ -1,22 +1,57 @@
 /* Canonical link language layer.
- * Loaded last from css/pages.css so it wins the cascade without !important.
+ * Loaded last from css/pages.css so link affordances stay consistent across pages.
  */
+
+/* ─── Shared link primitives ─────────────────────────────── */
+.nav-title,
+.nav-link,
+.nav-sublink,
+.module-back-link,
+.module-context-link,
+.module-sub-nav .module-sub-nav-link,
+.footer-nav-link,
+.diagnosis-link,
+.essay-link,
+.note-index-link,
+.footer-link,
+.satellite-three-index-link,
+.satellite-three-index-return,
+a.eq-ref {
+  transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease, text-decoration-color 140ms ease;
+}
+
+.nav-title,
+.nav-link,
+.nav-sublink,
+.module-back-link,
+.module-context-link,
+.module-sub-nav .module-sub-nav-link,
+.footer-nav-link,
+.diagnosis-link,
+.essay-link,
+.note-index-link,
+.footer-link,
+.footer-socials .contact-social-link,
+.footer-socials .footer-social-link,
+.footer-socials .footer-social-link--cv,
+.satellite-three-index-link,
+.satellite-three-index-return,
+a.eq-ref {
+  text-decoration: none;
+}
 
 /* ─── Shell links: title + primary nav ───────────────────── */
 .nav-title {
-  color: var(--link-text-strong);
-  text-decoration: none;
-  transition: none;
+  color: var(--ink);
 }
 
 .nav-title:hover,
 .nav-title:focus-visible {
-  color: var(--link-text-strong);
-  box-shadow: inset 0 -0.2rem 0 var(--link-surface-nav-hover);
+  color: var(--link-text-hover);
 }
 
 .nav-title:active {
-  box-shadow: inset 0 -0.2rem 0 var(--link-surface-nav-active);
+  color: var(--ink);
 }
 
 .nav-link--active::before,
@@ -30,41 +65,38 @@
 
 .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle),
 .js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle) {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip);
-  text-decoration: none;
-  border-radius: 0.14rem;
-  padding: 0.02em 0.14em;
-  display: inline-block;
+  color: var(--link-text);
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  display: inline-flex;
   min-height: auto;
   line-height: 1.1;
-  margin-right: 0.56rem;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  transition: none;
+  margin-right: 0.7rem;
+  box-shadow: inset 0 -1px 0 var(--link-underline);
 }
 
 .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle):hover,
 .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle):focus-visible,
 .js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle):hover,
 .js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle):focus-visible {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip-hover);
-  text-decoration: none;
+  color: var(--link-text-hover);
+  background: transparent;
+  box-shadow: inset 0 -2px 0 var(--link-underline-hover);
 }
 
 .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle):active,
 .js-enabled .nav-links .nav-link.nav-link--editorial.nav-link--active:not(.nav-modules-toggle),
 .js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle):active,
 .js-enabled .nav-links.is-open .nav-link.nav-link--editorial.nav-link--active:not(.nav-modules-toggle) {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip-active);
+  color: var(--ink);
+  background: transparent;
+  box-shadow: inset 0 -2px 0 var(--ink);
 }
 
 .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle):visited,
 .js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle):visited {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip-visited);
+  color: var(--link-text);
 }
 
 .js-enabled .nav-links > .nav-link.nav-link--editorial:not(.nav-modules-toggle)::after,
@@ -80,256 +112,265 @@
 
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav);
-  text-decoration: none;
-  border-radius: 0.14rem;
-  padding: 0.07rem 0.28rem;
-  transition: none;
+  color: var(--link-text);
+  background: transparent;
+  border-radius: 0;
+  padding: 0.08rem 0;
+  box-shadow: none;
 }
 
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink:hover,
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink:focus-visible,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:hover,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:focus-visible {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-hover);
+  color: var(--link-text-hover);
+  background: transparent;
+  box-shadow: inset 0 -1px 0 var(--link-underline-hover);
 }
 
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink:active,
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink.nav-sublink--active,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:active,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink.nav-sublink--active {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-active);
+  color: var(--ink);
+  background: transparent;
+  box-shadow: inset 0 -2px 0 var(--ink);
 }
 
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink:visited,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:visited {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav);
+  color: var(--link-text);
 }
 
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink.nav-sublink--coming,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink.nav-sublink--coming {
   color: var(--ink-ghost);
   background: transparent;
+  box-shadow: none;
 }
 
 /* ─── Module breadcrumb + local section links ─────────────── */
+.module-back-link,
+.module-context-link,
 .module-sub-nav .module-sub-nav-link {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip);
-  text-decoration: none;
-  border-radius: 0.14rem;
-  padding: 0.02em 0.16em;
-  transition: none;
+  color: var(--link-text-muted);
+  background: transparent;
 }
 
+.module-back-link:hover,
+.module-back-link:focus-visible,
+.module-context-link:hover,
+.module-context-link:focus-visible,
 .module-sub-nav .module-sub-nav-link:hover,
 .module-sub-nav .module-sub-nav-link:focus-visible {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip-hover);
-  text-decoration: none;
+  color: var(--link-text-hover);
+  background: transparent;
 }
 
+.module-back-link:active,
+.module-context-link:active,
 .module-sub-nav .module-sub-nav-link:active,
 .module-sub-nav .module-sub-nav-link.module-sub-nav-link--active {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip-active);
+  color: var(--ink);
+  background: transparent;
 }
 
+.module-back-link:visited,
+.module-context-link:visited,
 .module-sub-nav .module-sub-nav-link:visited {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip-visited);
-}
-
-.module-context-link {
-  color: var(--ink-mid);
-  background: var(--link-surface-context);
-  text-decoration: none;
-  border-radius: 0.14rem;
-  padding: 0.03em 0.2em;
-  transition: none;
-}
-
-.module-context-link:hover,
-.module-context-link:focus-visible {
-  color: var(--ink);
-  background: var(--link-surface-context-hover);
-  text-decoration: none;
-}
-
-.module-context-link:active {
-  color: var(--ink);
-  background: var(--link-surface-context-active);
-}
-
-.module-context-link:visited {
-  color: var(--ink-mid);
-  background: var(--link-surface-context-visited);
+  color: var(--link-text-muted);
 }
 
 .module-sub-nav .module-sub-nav-link.module-sub-nav-link--active .module-sub-nav-number,
-.module-sub-nav .module-sub-nav-link:focus-visible .module-sub-nav-number {
+.module-sub-nav .module-sub-nav-link:focus-visible .module-sub-nav-number,
+.module-context-link::before,
+.module-back-link::before,
+.module-back-link::after {
   color: inherit;
 }
 
-/* ─── Content links: prose + CTA ─────────────────────────── */
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a {
-  color: var(--link-text-strong);
-  background: var(--link-surface-inline);
-  text-decoration: none;
-  border-radius: 0.14rem;
-  padding: 0.02em 0.14em;
+.module-context-link::after {
+  background: var(--ink-ghost);
+}
+
+/* ─── Content links: prose + references ──────────────────── */
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a,
+a.eq-ref {
+  color: var(--link-text);
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  text-decoration-line: underline;
+  text-decoration-color: var(--link-underline);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  transition: none;
 }
 
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a:hover,
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a:focus-visible {
-  color: var(--link-text-strong);
-  background: var(--link-surface-inline-hover);
-  text-decoration: none;
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a:hover,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a:focus-visible,
+a.eq-ref:hover,
+a.eq-ref:focus-visible {
+  color: var(--link-text-hover);
+  background: transparent;
+  text-decoration-color: var(--link-underline-hover);
 }
 
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a:active {
-  color: var(--link-text-strong);
-  background: var(--link-surface-inline-active);
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a:active,
+a.eq-ref:active {
+  color: var(--ink);
+  text-decoration-color: var(--ink);
 }
 
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a:visited {
-  color: var(--link-text-strong);
-  background: var(--link-surface-inline-visited);
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a:visited,
+a.eq-ref:visited {
+  color: var(--link-text);
+  background: transparent;
 }
 
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='experience-skill-graph/'] {
-  background: var(--link-surface-cta);
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a[href*='experience-skill-graph/'] {
   font-weight: 500;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
 }
 
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='experience-skill-graph/']:hover,
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='experience-skill-graph/']:focus-visible {
-  background: var(--link-surface-cta-hover);
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a[href*='/tags/'],
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a[href^='tags/'] {
+  color: var(--link-text-muted);
+  background: transparent;
+  text-decoration-color: color-mix(in srgb, var(--ink-faint) 36%, transparent 64%);
 }
 
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='experience-skill-graph/']:active {
-  background: var(--link-surface-cta-active);
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a[href*='/tags/']:hover,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a[href^='tags/']:hover,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a[href*='/tags/']:focus-visible,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a[href^='tags/']:focus-visible {
+  color: var(--link-text-hover);
+  background: transparent;
+  text-decoration-color: var(--link-underline-hover);
 }
 
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='experience-skill-graph/']:visited {
-  background: var(--link-surface-cta-visited);
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a[href*='/tags/']:visited,
+:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content, .experience-skill-body) a[href^='tags/']:visited {
+  color: var(--link-text-muted);
 }
 
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/'],
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/'] {
-  color: var(--tag-chip);
+/* ─── Card and action links ──────────────────────────────── */
+.essay-link-label,
+.module-entry--live .module-title {
+  color: var(--ink);
   background: transparent;
   text-decoration: none;
   border-radius: 0;
   padding: 0;
 }
 
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/']:hover,
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/']:hover,
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/']:focus-visible,
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/']:focus-visible {
-  color: var(--tag-chip-hover);
-  background: transparent;
-}
-
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href*='/tags/']:visited,
-:is(.essay-body, .module-header-body, .hero-body, .field-notes-body, .diagnosis-body, .note-content) a[href^='tags/']:visited {
-  color: var(--tag-chip);
-  background: transparent;
-}
-
-/* Taxonomy/modules card entry labels remain card-first, with chip accent */
-.essay-link-label,
-.module-entry--live .module-title {
-  color: var(--link-text-strong);
-  background: transparent;
-  text-decoration: none;
-  border-radius: 0.14rem;
-  padding: 0.01em 0.12em;
-}
-
 .essay-link:hover .essay-link-label,
 .essay-link:focus-visible .essay-link-label,
 .module-entry--live:hover .module-title,
 .module-entry--live:focus-within .module-title {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip-hover);
+  color: var(--link-text-hover);
+  background: transparent;
+  box-shadow: inset 0 -1px 0 var(--link-underline-hover);
   text-decoration: none;
 }
 
-/* ─── In-page navigation links (Game of Life jumps etc.) ─── */
-.ep-jump {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav);
+.experience-skill-switch-link {
   text-decoration: none;
-  border: none;
-  border-radius: 0.14rem;
-  padding: 0.04em 0.16em;
-  transition: none;
+}
+
+/* ─── In-page navigation links ───────────────────────────── */
+.ep-jump,
+.satellite-three-index-link,
+.satellite-three-index-return {
+  color: var(--link-text);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--link-underline);
+  border-radius: 0;
+  padding: 0 0 0.03em;
+}
+
+.satellite-three-index-link {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--link-underline);
+  border-radius: 0;
+  padding: 0 0 0.04rem;
 }
 
 .ep-jump:hover,
-.ep-jump:focus-visible {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-hover);
-  text-decoration: none;
+.ep-jump:focus-visible,
+.satellite-three-index-link:hover,
+.satellite-three-index-link:focus-visible,
+.satellite-three-index-return:hover,
+.satellite-three-index-return:focus-visible {
+  color: var(--link-text-hover);
+  background: transparent;
+  border-bottom-color: var(--link-underline-hover);
   outline: none;
 }
 
-.ep-jump:active {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-active);
+.satellite-three-index-link:hover,
+.satellite-three-index-link:focus-visible {
+  background: transparent;
+  border-bottom-color: var(--link-underline-hover);
 }
 
-.ep-jump:visited {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-visited);
+.ep-jump:active,
+.satellite-three-index-link:active,
+.satellite-three-index-return:active,
+.satellite-three-index-link--active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
 }
 
-/* ─── Section/page progression links ──────────────────────── */
+.satellite-three-index-link:active,
+.satellite-three-index-link--active {
+  background: transparent;
+  border-bottom-color: var(--ink);
+}
+
+.ep-jump:visited,
+.satellite-three-index-link:visited,
+.satellite-three-index-return:visited {
+  color: var(--link-text);
+}
+
+/* ─── Section/page progression links ─────────────────────── */
 .footer-nav-link,
 .diagnosis-link {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip);
-  text-decoration: none;
-  border-radius: 0.14rem;
-  padding: 0.04em 0.16em;
-  transition: none;
+  color: var(--link-text);
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: inset 0 -1px 0 var(--link-underline);
 }
 
 .footer-nav-link:hover,
 .footer-nav-link:focus-visible,
 .diagnosis-link:hover,
 .diagnosis-link:focus-visible {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip-hover);
-  text-decoration: none;
+  color: var(--link-text-hover);
+  background: transparent;
+  box-shadow: inset 0 -2px 0 var(--link-underline-hover);
 }
 
 .footer-nav-link:active,
 .diagnosis-link:active {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip-active);
+  color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--ink);
 }
 
 .footer-nav-link:visited,
 .diagnosis-link:visited {
-  color: var(--link-text-strong);
-  background: var(--link-surface-nav-chip-visited);
+  color: var(--link-text);
 }
 
-/* ─── Notes tags + supporting micro-labels ────────────────── */
+/* ─── Notes tags + supporting micro-labels ───────────────── */
 .note-index-tags .module-tag,
 .note-page-tags .module-tag {
-  color: var(--tag-chip);
+  color: var(--link-text-muted);
   background: transparent;
   text-decoration: none;
 }
@@ -338,63 +379,56 @@
 .note-index-tags .module-tag:focus-visible,
 .note-page-tags .module-tag:hover,
 .note-page-tags .module-tag:focus-visible {
-  color: var(--tag-chip-hover);
+  color: var(--link-text-hover);
   background: transparent;
   text-decoration: none;
 }
 
 .note-index-tags .module-tag:visited,
 .note-page-tags .module-tag:visited {
-  color: var(--tag-chip);
-  background: transparent;
+  color: var(--link-text-muted);
   text-decoration: none;
 }
 
 .note-index-more {
-  color: var(--ink-faint);
+  color: var(--link-text-muted);
   text-decoration: none;
 }
 
 .note-index-link:hover .note-index-more,
 .note-index-link:focus-visible .note-index-more {
-  color: var(--ink-mid);
+  color: var(--link-text-hover);
   text-decoration: none;
 }
 
-/* ─── Footer utility/social links ─────────────────────────── */
+/* ─── Footer utility/social links ────────────────────────── */
 .footer-link {
-  color: var(--ink-faint);
+  color: var(--link-text-muted);
   background: transparent;
-  text-decoration: none;
   border-radius: 0;
   border: 0;
   padding: 0;
-  transition: none;
 }
 
 .footer-link:hover,
 .footer-link:focus-visible {
-  color: var(--ink-mid);
+  color: var(--link-text-hover);
   background: transparent;
 }
 
 .footer-link:active {
   color: var(--ink);
-  background: transparent;
 }
 
 .footer-link:visited {
-  color: var(--ink-faint);
-  background: transparent;
+  color: var(--link-text-muted);
 }
 
 .footer-socials .contact-social-link,
 .footer-socials .footer-social-link,
 .footer-socials .footer-social-link--cv {
   color: var(--link-ui);
-  text-decoration: none;
   background: transparent;
-  transition: none;
 }
 
 .footer-socials .contact-social-link:hover,
@@ -404,13 +438,11 @@
 .footer-socials .footer-social-link--cv:hover,
 .footer-socials .footer-social-link--cv:focus-visible {
   color: var(--link-ui-hover);
-  text-decoration: none;
   background: transparent;
 }
 
 .footer-socials .footer-social-link--cv:active,
 .footer-socials .footer-social-link--cv:visited {
   color: var(--link-ui);
-  text-decoration: none;
   background: transparent;
 }

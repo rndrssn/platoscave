@@ -634,17 +634,21 @@
 
 .satellite-three-index-guide {
   max-width: 1120px;
-  margin: 0.25rem auto 1.5rem;
+  margin: 0.4rem auto 1.8rem;
 }
 
 .satellite-three-index-cue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.38rem 0.72rem;
   font-family: var(--mono);
-  font-size: 0.66rem;
-  font-weight: 300;
-  letter-spacing: 0.05em;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.055em;
   text-transform: uppercase;
   color: var(--ink-faint);
-  margin: 0 0 1rem;
+  margin: 0 0 1.15rem;
 }
 
 .satellite-three-index-link,
@@ -656,7 +660,14 @@
 }
 
 .satellite-three-index-link {
-  margin-left: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.35rem;
+  padding: 0 0 0.04rem;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink-mid) 34%, transparent 66%);
+  border-radius: 0;
+  background: transparent;
 }
 
 .satellite-three-index-link:hover,
@@ -664,13 +675,15 @@
 .satellite-three-index-return:hover,
 .satellite-three-index-return:focus-visible,
 .satellite-three-index-link--active {
-  color: var(--ochre);
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+  background: transparent;
 }
 
 .satellite-three-index-notes {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.85rem 1.2rem;
+  gap: 1rem 1.3rem;
 }
 
 @media (min-width: 720px) {
@@ -680,34 +693,36 @@
 }
 
 .satellite-three-index-note {
-  border-left: 2px solid var(--ink-ghost);
-  padding-left: 0.85rem;
+  border-left: 3px solid var(--ink-ghost);
+  padding: 0.1rem 0 0.15rem 1rem;
+  background: transparent;
 }
 
 .satellite-three-index-note--active {
-  border-left-color: var(--ochre);
+  border-left-color: var(--sage-light);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--sage-light) 14%, transparent 86%), transparent 74%);
 }
 
 .satellite-three-index-note h2 {
   font-family: var(--serif-alt);
-  font-size: 1.02rem;
+  font-size: 1.22rem;
   font-style: italic;
   font-weight: 300;
   color: var(--ink);
-  margin: 0 0 0.25rem;
+  margin: 0 0 0.35rem;
 }
 
 .satellite-three-index-note p {
   font-family: var(--serif);
-  font-size: 0.9rem;
-  line-height: 1.55;
+  font-size: 0.98rem;
+  line-height: 1.6;
   color: var(--ink-mid);
-  margin: 0 0 0.45rem;
+  margin: 0 0 0.55rem;
 }
 
 .satellite-three-index-return {
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.68rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -838,12 +853,17 @@
 .satellite-three-hud .satellite-status--error   { color: var(--rust);  }
 
 .satellite-three-hud .satellite-status--loading {
+  display: inline-block;
   width: 1.05rem;
   height: 1.05rem;
-  margin-top: 0.1rem;
+  flex: 0 0 auto;
+  align-self: flex-start;
+  box-sizing: border-box;
+  margin: 0.1rem 0 0;
   border: 2px solid color-mix(in srgb, var(--experience-switch-surface) 36%, transparent 64%);
   border-top-color: var(--experience-switch-surface);
   border-radius: 50%;
+  background: color-mix(in srgb, var(--experience-switch-surface) 16%, transparent 84%);
   animation: satellite-three-spin 0.82s linear infinite;
 }
 

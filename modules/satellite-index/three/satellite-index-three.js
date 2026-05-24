@@ -23,7 +23,7 @@ const BASE_TEXTURE_SIZE = 1024;
 const BASE_TILE_SIZE = 256;
 const BASE_TILE_MIN_ZOOM = 10;
 const BASE_TILE_MAX_ZOOM = 18;
-const CONTOUR_TEXTURE_TIMEOUT_MS = 6000;
+const CONTOUR_TEXTURE_TIMEOUT_MS = 12000;
 // HEIGHT_SCALE and surface offset are computed per-render from scene span — see renderThreeSurface.
 
 const INDEX_DEFS = [
@@ -533,23 +533,23 @@ function buildContourStyle() {
         type: 'line',
         source: 'contours',
         'source-layer': 'contour',
-        filter: ['!=', ['get', 'glacier'], 1],
+        filter: ['any', ['!', ['has', 'glacier']], ['!=', ['get', 'glacier'], 1]],
         paint: {
           'line-color': [
             'match',
             ['get', 'nth_line'],
-            10, '#1D463D',
-            5, '#2F5F54',
-            2, '#6C8E83',
-            '#93AAA2',
+            10, '#0D3028',
+            5, '#1A4A3E',
+            2, '#4A7870',
+            '#7AAAA4',
           ],
           'line-opacity': [
             'match',
             ['get', 'nth_line'],
-            10, 0.88,
-            5, 0.7,
-            2, 0.5,
-            0.32,
+            10, 1.0,
+            5, 0.92,
+            2, 0.75,
+            0.55,
           ],
           'line-width': [
             'interpolate',
@@ -559,6 +559,8 @@ function buildContourStyle() {
             ['match', ['get', 'nth_line'], 10, 1.2, 5, 0.9, 2, 0.6, 0.35],
             14,
             ['match', ['get', 'nth_line'], 10, 2.1, 5, 1.45, 2, 0.9, 0.55],
+            16,
+            ['match', ['get', 'nth_line'], 10, 3.2, 5, 2.2, 2, 1.5, 0.95],
           ],
         },
       },
@@ -591,7 +593,7 @@ function loadContourBaseTexture(bounds) {
 
     let contourMap = null;
     let settled = false;
-    let timeoutId = 0;
+    let timeoutId = null;
 
     function cleanup(texture) {
       if (settled) return;
@@ -618,7 +620,16 @@ function loadContourBaseTexture(bounds) {
           [[bounds.west, bounds.south], [bounds.east, bounds.north]],
           { padding: 0, duration: 0 }
         );
+        // Primary: full idle means both contour and hillshade tiles rendered.
         contourMap.once('idle', () => cleanup(snapshotMapCanvas(contourMap)));
+        // Fallback: snapshot as soon as contour tiles are ready without waiting for hillshade.
+        const onSourceData = (e) => {
+          if (e.sourceId === 'contours' && e.isSourceLoaded) {
+            contourMap.off('sourcedata', onSourceData);
+            window.requestAnimationFrame(() => cleanup(snapshotMapCanvas(contourMap)));
+          }
+        };
+        contourMap.on('sourcedata', onSourceData);
       });
     } catch (_) {
       cleanup(null);
@@ -981,6 +992,8 @@ async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn) {
     satelliteTexture = null;
     contourTexture = null;
   }
+  lastBaseTextures.satellite?.dispose();
+  lastBaseTextures.terrain?.dispose();
   lastBaseTextures = {
     satellite: satelliteTexture,
     terrain: contourTexture,
@@ -994,10 +1007,7 @@ async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn) {
   const heightScale = span * 0.4;
   const surfaceOffset = span * 0.02;
   const baseGeometry = new THREE.PlaneGeometry(width, depth);
-  const activeBaseTexture = baseContextMode === 'satellite' ? lastBaseTextures.satellite : null;
-  const baseMaterial = activeBaseTexture
-    ? new THREE.MeshBasicMaterial({ map: activeBaseTexture, transparent: true, opacity: 0.95, side: THREE.DoubleSide })
-    : new THREE.MeshBasicMaterial({ color: '#C4BAB0', transparent: true, opacity: 0.5, side: THREE.DoubleSide });
+  const baseMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, side: THREE.DoubleSide });
   baseMesh = new THREE.Mesh(baseGeometry, baseMaterial);
   baseMesh.rotation.x = Math.PI / 2;
   lastBasePlaneY = NDVI_BASE_PLANE_Z * heightScale;

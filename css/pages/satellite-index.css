@@ -418,6 +418,14 @@
   z-index: 0;
 }
 
+@media (min-width: 701px) {
+  .satellite-three-stage {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+}
+
 .satellite-three-viewer {
   position: relative;
   width: 100%;

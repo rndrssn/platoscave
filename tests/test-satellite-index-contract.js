@@ -168,7 +168,7 @@ assertIncludes(threeJs, "return 'https://api.maptiler.com/tiles/satellite-v2/'",
 assertIncludes(threeJs, "return 'https://api.maptiler.com/tiles/contours-v2/tiles.json?key=' + MAPTILER_API_KEY;", 'Three.js prototype should compose terrain context from MapTiler contours-v2');
 assertIncludes(threeJs, 'const texture = new THREE.CanvasTexture(canvas);', 'Three.js prototype should convert the tile mosaic canvas to a texture');
 assertIncludes(threeJs, 'if (!response.ok) throw new Error', 'Three.js prototype should reject MapTiler error responses instead of rendering error images');
-assertIncludes(threeJs, 'new THREE.MeshBasicMaterial({ map: activeBaseTexture', 'Three.js prototype should map the satellite context texture onto the base plane');
+assertIncludes(threeJs, 'baseMesh.material.map = nextTexture;', 'Three.js prototype should map the satellite context texture onto the base plane via applyBaseContextMode');
 assertIncludes(threeJs, "'source-layer': 'contour'", 'Three.js terrain context should use the contours-v2 contour source layer');
 assertIncludes(threeJs, "['get', 'nth_line']", 'Three.js terrain context should style MapTiler contour index lines from nth_line');
 assertIncludes(threeJs, 'preserveDrawingBuffer: true', 'Three.js terrain context should snapshot the MapLibre contour canvas into a Three texture');

@@ -419,10 +419,15 @@
 }
 
 @media (min-width: 701px) {
-  .satellite-three-stage {
-    position: sticky;
+  .satellite-three-stage--stuck {
+    position: fixed;
     top: 0;
-    z-index: 2;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 100;
+    margin-bottom: 0;
+    background-color: var(--paper);
   }
 }
 

@@ -571,13 +571,9 @@ function setMeta(date, sceneData, textureLoaded, fallbackReason) {
     : 'fixture fallback / ' + (date || getAnalysisDate()) + (fallbackReason ? ' / ' + fallbackReason : '');
 
   sceneEl.textContent = '';
-  const label = document.createElement('span');
   const value = document.createElement('span');
-  label.className = 'satellite-receipt-label';
   value.className = 'satellite-receipt-value' + (sceneData ? '' : ' satellite-receipt-value--demo');
-  label.textContent = 'Scene';
   value.textContent = sourceText;
-  sceneEl.appendChild(label);
   sceneEl.appendChild(value);
 }
 
@@ -946,13 +942,12 @@ async function runAnalysis() {
       return;
     }
 
+    setStatus('', 'loading');
     let sceneData = null;
     let fallbackReason = '';
     const rawIndexGrids = {};
 
     if (isWorkerKeyConfigured()) {
-      setStatus('Fetching satellite data…', 'working');
-
       try {
         const payload = JSON.stringify({ bounds, date, width: gridSize, height: gridSize });
         const headers = { 'Content-Type': 'application/json', 'X-API-Key': WORKER_API_KEY };
@@ -978,7 +973,6 @@ async function runAnalysis() {
       fallbackReason = 'live imagery unavailable';
     }
 
-    setStatus('Generating fixture surfaces…', 'working');
     await new Promise(resolve => setTimeout(resolve, 0));
     for (const def of INDEX_DEFS) {
       if (!rawIndexGrids[def.id]) {
@@ -999,7 +993,6 @@ async function runAnalysis() {
       const t = clamp((v - activeDef.displayMin) / (activeDef.displayMax - activeDef.displayMin), 0, 1);
       return (t * 2 - 1) * heightScale + surfaceOffset;
     };
-    setStatus('', 'loading');
     const renderGrid = smoothNdviGridForRender(rawIndexGrids['ndvi'], NDVI_RENDER_SMOOTHING_PASSES);
     const textureLoaded = await renderThreeSurface(renderGrid, metrics, bounds, colorFn, heightFn);
     lastBounds = bounds;

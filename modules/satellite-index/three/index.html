@@ -106,23 +106,15 @@
       </div>
 
       <div class="satellite-three-scene-meta" hidden>
-        <div class="satellite-meta" aria-label="Scene metadata">
-          <p class="satellite-receipt-line satellite-receipt-line--scene" data-satellite-three-scene-meta>
-            <span class="satellite-receipt-label">Scene</span>
+        <div class="satellite-meta">
+          <p class="satellite-receipt-line satellite-receipt-line--scene" data-satellite-three-scene-meta aria-label="Scene metadata">
             <span class="satellite-receipt-value satellite-receipt-value--empty">Pending</span>
           </p>
         </div>
-        <p class="satellite-demo-note">
-          Use this as a field-scale inspection surface, not a map of legal boundaries or ground elevation.
-          Sentinel-2 has a nominal 10&thinsp;m ground-sample distance; the 200-hectare viewport cap keeps the
-          view in the range where patterns remain useful. If live imagery is unavailable, the fallback fixture
-          preserves the interaction model but is not real crop data.
-        </p>
       </div>
 
       <section class="satellite-three-index-guide" id="satellite-three-index-guide" aria-label="Index guide" hidden>
-        <p class="satellite-three-index-cue">
-          View indices:
+        <nav class="satellite-three-index-cue" aria-label="Spectral index surface">
           <a class="satellite-three-index-link satellite-three-index-link--active" href="#satellite-three-stage" data-index="ndvi">NDVI</a>
           <a class="satellite-three-index-link" href="#satellite-three-stage" data-index="ndre">NDRE</a>
           <a class="satellite-three-index-link" href="#satellite-three-stage" data-index="ndwi">NDWI</a>
@@ -130,7 +122,7 @@
           <a class="satellite-three-index-link" href="#satellite-three-stage" data-index="evi">EVI</a>
           <a class="satellite-three-index-link" href="#satellite-three-stage" data-index="savi">SAVI</a>
           <a class="satellite-three-index-link" href="#satellite-three-stage" data-index="cire">CIre</a>
-        </p>
+        </nav>
 
         <div class="satellite-three-index-notes">
           <article class="satellite-three-index-note satellite-three-index-note--active" data-index-note="ndvi">

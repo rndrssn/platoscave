@@ -109,8 +109,8 @@ assertIncludes(devSatelliteScript, 'modules/satellite-index/three/satellite-inde
 assertNotMatches(devSatelliteScript, /cases\/satellite-index\/(?:demo|three)\/satellite-index/, 'Satellite dev helper should not target deleted legacy case scripts');
 
 assertIncludes(threeHtml, 'Explorer', 'Explorer page heading missing');
-assertIncludes(threeHtml, 'not real crop data', 'Explorer copy should state that fallback fixture data is not real crop data');
 assertNotMatches(threeHtml, /Data arrives from a Cloudflare Worker proxying Sentinel Hub|cached\s+client-side|no new network request/, 'Explorer note should stay focused on field-use caveats, not backend plumbing');
+assertNotMatches(threeHtml, /Use this as a field-scale inspection surface|not real crop data|Sentinel-2 has a nominal 10/, 'Explorer should not repeat the old caveat paragraph below the viewer');
 assertIncludes(threeHtml, 'id="satellite-three-map"', 'Three.js prototype should keep its own map container');
 assertIncludes(threeHtml, 'id="satellite-three-surface"', 'Three.js prototype should keep its own canvas');
 assertIncludes(threeHtml, 'id="satellite-three-stage" data-view="selecting"', 'Three.js prototype should start in map-selection mode');
@@ -121,8 +121,8 @@ assertIncludes(threeHtml, 'id="satellite-three-meta" aria-label="Request metadat
 assertIncludes(threeHtml, 'class="satellite-three-scene-meta" hidden', 'Three.js scene metadata should live below the viewer and stay hidden until analysis');
 assert(threeHtml.indexOf('id="satellite-three-meta"') < threeHtml.indexOf('class="satellite-three-scene-meta"'), 'Scene metadata should be outside and below the HUD request metadata');
 assert(threeHtml.indexOf('class="satellite-three-scene-meta"') < threeHtml.indexOf('id="satellite-three-index-guide"'), 'Scene metadata should appear before the index guide');
-assert(threeHtml.indexOf('class="satellite-three-scene-meta"') < threeHtml.indexOf('not real crop data'), 'Explorer caveat note should live with the below-viewer scene metadata');
-assert(threeHtml.indexOf('not real crop data') < threeHtml.indexOf('id="satellite-three-index-guide"'), 'Explorer caveat note should appear before the index guide');
+assertIncludes(threeHtml, 'data-satellite-three-scene-meta aria-label="Scene metadata"', 'Three.js scene metadata should use an accessible label instead of a visible redundant header');
+assertNotMatches(threeHtml, /data-satellite-three-scene-meta[\s\S]*?<span class="satellite-receipt-label">Scene<\/span>/, 'Three.js scene metadata should not repeat a visible Scene label');
 assertIncludes(threeHtml, 'class="satellite-three-legend"', 'Three.js prototype should expose an NDVI color legend overlay');
 assertIncludes(threeHtml, 'class="satellite-three-north"', 'Three.js prototype should expose a north indicator overlay');
 assertNotMatches(threeHtml, /satellite-three-north-label|>N<\/span>/, 'Three.js north indicator should not include a text label');
@@ -174,10 +174,11 @@ assertIncludes(threeJs, 'function decodeIndexPng(base64, encMin, encMax)', 'Thre
 assertIncludes(threeJs, 'function rebuildTerrain(indexId)', 'Three.js prototype should rebuild terrain without refetching on index switch');
 assertIncludes(threeJs, 'function updateIndexLegend(def)', 'Three.js prototype should update the legend when switching indices');
 assertIncludes(threeJs, 'function updateIndexGuide(indexId)', 'Three.js prototype should update the drawn-out index guide when switching indices');
-assertIncludes(threeJs, "setStatus('', 'loading');", 'Three.js render step should use the spinner status instead of redundant render copy');
-assertNotMatches(threeJs, /Rendering Three\.js surface/, 'Three.js render status text should not return');
+assertIncludes(threeJs, "setStatus('', 'loading');", 'Three.js busy phase should use the spinner status instead of redundant progress copy');
+assertNotMatches(threeJs, /Rendering Three\.js surface|Fetching satellite data|Generating fixture surfaces/, 'Three.js progress status text should not return');
 assertIncludes(threeHtml, 'id="satellite-three-index-guide"', 'Terrain renderer HTML should have the drawn-out index guide');
-assertIncludes(threeHtml, 'View indices:', 'Terrain renderer index guide should use lightweight jump-link copy');
+assertIncludes(threeHtml, '<nav class="satellite-three-index-cue" aria-label="Spectral index surface">', 'Terrain renderer index guide should expose an accessible selector label');
+assertNotMatches(threeHtml, /View indices:/, 'Terrain renderer index guide should not add a redundant visible heading before the index controls');
 assertIncludes(threeHtml, 'data-index="ndvi"', 'Terrain renderer HTML should have an NDVI guide link');
 assertIncludes(threeHtml, 'data-index="cire"', 'Terrain renderer HTML should have a CIre guide link');
 assertIncludes(threeHtml, 'data-index-note="ndvi"', 'Terrain renderer HTML should draw out NDVI explanatory notes');
@@ -321,10 +322,18 @@ assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-receipt-label
 assertIncludes(selectorBlock(css, '.satellite-three-scene-meta'), 'max-width: 1120px;', 'Three.js scene metadata should align below the viewer instead of sitting in the overlay');
 assertIncludes(selectorBlock(css, '.satellite-three-scene-meta'), 'margin: -0.65rem auto 1rem;', 'Three.js scene metadata should sit close to the viewer without covering it');
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-status--loading'), 'border-top-color: var(--experience-switch-surface);', 'Three.js loading status should render as a compact spinner');
+assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-status--loading'), 'display: inline-block;', 'Three.js loading spinner should keep visible layout dimensions');
+assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-status--loading'), 'background: color-mix(in srgb, var(--experience-switch-surface) 16%, transparent 84%);', 'Three.js loading spinner should remain visible on map imagery');
 assertIncludes(css, '@keyframes satellite-three-spin', 'Three.js loading spinner animation missing');
 assertIncludes(selectorBlock(css, '.satellite-three-index-guide'), 'max-width: 1120px;', 'Three.js index guide should align with the viewer');
-assertIncludes(selectorBlock(css, '.satellite-three-index-note'), 'border-left: 2px solid var(--ink-ghost);', 'Three.js index guide notes should use quiet text panels instead of cards');
-assertIncludes(selectorBlock(css, '.satellite-three-index-note--active'), 'border-left-color: var(--ochre);', 'Three.js active index note should use a subtle accent');
+assertIncludes(selectorBlock(css, '.satellite-three-index-cue'), 'font-size: 0.78rem;', 'Three.js index controls should stay legible without becoming a dominant button strip');
+assertIncludes(selectorBlock(css, '.satellite-three-index-link'), 'min-height: 1.35rem;', 'Three.js index controls should remain readable while staying visually quiet');
+assertIncludes(selectorBlock(css, '.satellite-three-index-link'), 'background: transparent;', 'Three.js index controls should stay less prominent than the explanatory text');
+assertIncludes(selectorBlock(css, '.satellite-three-index-link'), 'border-bottom: 1px solid color-mix(in srgb, var(--ink-mid) 34%, transparent 66%);', 'Three.js index controls should use quiet underline affordance');
+assertIncludes(selectorBlock(css, '.satellite-three-index-note'), 'border-left: 3px solid var(--ink-ghost);', 'Three.js index guide notes should use prominent quiet text panels instead of cards');
+assertIncludes(selectorBlock(css, '.satellite-three-index-note--active'), 'border-left-color: var(--sage-light);', 'Three.js active index note should carry the index highlight');
+assertIncludes(selectorBlock(css, '.satellite-three-index-note--active'), 'background: linear-gradient(90deg, color-mix(in srgb, var(--sage-light) 14%, transparent 86%), transparent 74%);', 'Three.js active index note should highlight the explanatory text area');
+assertIncludes(selectorBlock(css, '.satellite-three-index-note h2'), 'font-size: 1.22rem;', 'Three.js index note headings should be more legible');
 assertIncludes(css, '.satellite-three-hud .satellite-analyse-btn:disabled {\n  border-color: color-mix(in srgb, var(--experience-switch-surface) 68%, transparent 32%);\n  background: color-mix(in srgb, var(--experience-switch-surface) 42%, transparent 58%);', 'Three.js zoom-needed button should use a transparent CV switch yellow state');
 assertIncludes(css, '.satellite-three-hud .satellite-analyse-btn:not(:disabled),\n.satellite-three-hud .satellite-toggle-control[aria-pressed="true"] {\n  border-color: var(--experience-switch-surface);\n  background: var(--experience-switch-surface);', 'Three.js HUD controls should use the CV switch yellow for active or enabled state');
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-viewport-readout'), 'background: color-mix(in srgb, var(--experience-switch-surface) 42%, transparent 58%);', 'Three.js blocked viewport readout should match the transparent CV switch yellow zoom-needed state');

@@ -24,6 +24,7 @@ const BASE_TILE_SIZE = 256;
 const BASE_TILE_MIN_ZOOM = 10;
 const BASE_TILE_MAX_ZOOM = 18;
 const CONTOUR_TEXTURE_TIMEOUT_MS = 12000;
+const CONTOUR_TEXTURE_SIZE = 2048;
 // HEIGHT_SCALE and surface offset are computed per-render from scene span — see renderThreeSurface.
 
 const INDEX_DEFS = [
@@ -561,6 +562,8 @@ function buildContourStyle() {
             ['match', ['get', 'nth_line'], 10, 2.1, 5, 1.45, 2, 0.9, 0.55],
             16,
             ['match', ['get', 'nth_line'], 10, 3.2, 5, 2.2, 2, 1.5, 0.95],
+            19,
+            ['match', ['get', 'nth_line'], 10, 18, 5, 12, 2, 7, 4],
           ],
         },
       },
@@ -568,13 +571,14 @@ function buildContourStyle() {
   };
 }
 
-function snapshotMapCanvas(mapInstance) {
+function snapshotMapCanvas(mapInstance, size) {
+  const outputSize = size || BASE_TEXTURE_SIZE;
   const sourceCanvas = mapInstance.getCanvas();
   const canvas = document.createElement('canvas');
-  canvas.width = BASE_TEXTURE_SIZE;
-  canvas.height = BASE_TEXTURE_SIZE;
+  canvas.width = outputSize;
+  canvas.height = outputSize;
   const ctx = canvas.getContext('2d');
-  ctx.drawImage(sourceCanvas, 0, 0, BASE_TEXTURE_SIZE, BASE_TEXTURE_SIZE);
+  ctx.drawImage(sourceCanvas, 0, 0, outputSize, outputSize);
   return makeThreeTexture(canvas);
 }
 
@@ -586,8 +590,8 @@ function loadContourBaseTexture(bounds) {
     container.style.position = 'fixed';
     container.style.left = '-200vw';
     container.style.top = '0';
-    container.style.width = BASE_TEXTURE_SIZE + 'px';
-    container.style.height = BASE_TEXTURE_SIZE + 'px';
+    container.style.width = CONTOUR_TEXTURE_SIZE + 'px';
+    container.style.height = CONTOUR_TEXTURE_SIZE + 'px';
     container.style.pointerEvents = 'none';
     document.body.appendChild(container);
 
@@ -621,12 +625,12 @@ function loadContourBaseTexture(bounds) {
           { padding: 0, duration: 0 }
         );
         // Primary: full idle means both contour and hillshade tiles rendered.
-        contourMap.once('idle', () => cleanup(snapshotMapCanvas(contourMap)));
-        // Fallback: snapshot as soon as contour tiles are ready without waiting for hillshade.
+        contourMap.once('idle', () => cleanup(snapshotMapCanvas(contourMap, CONTOUR_TEXTURE_SIZE)));
+        // Fallback: snapshot as soon as contour tiles are ready without waiting for any slow source.
         const onSourceData = (e) => {
           if (e.sourceId === 'contours' && e.isSourceLoaded) {
             contourMap.off('sourcedata', onSourceData);
-            window.requestAnimationFrame(() => cleanup(snapshotMapCanvas(contourMap)));
+            window.requestAnimationFrame(() => cleanup(snapshotMapCanvas(contourMap, CONTOUR_TEXTURE_SIZE)));
           }
         };
         contourMap.on('sourcedata', onSourceData);

@@ -68,7 +68,7 @@
 
       <!-- Stage 1 — The questionnaire -->
       <section id="stage-1" class="stage is-visible">
-        <button class="collapsible-toggle" id="questionnaire-toggle" type="button" hidden>Retake assessment</button>
+        <button class="collapsible-toggle control-disclosure" id="questionnaire-toggle" type="button" hidden>Retake assessment</button>
         <div id="questionnaire-content">
           <p class="q-step-indicator" id="q-step">1 of 3</p>
           <form id="questionnaire" novalidate>
@@ -151,7 +151,7 @@
               </div>
             </fieldset>
             <div class="submit-row">
-              <button type="button" class="submit-btn" id="q-continue-1" disabled>Continue</button>
+              <button type="button" class="submit-btn control-action control-action--primary" id="q-continue-1" disabled>Continue</button>
               <p class="form-error" id="form-error-1" hidden>Please answer all questions in this section.</p>
             </div>
           </div>
@@ -204,7 +204,7 @@
               </div>
             </fieldset>
             <div class="submit-row">
-              <button type="button" class="submit-btn" id="q-continue-2" disabled>Continue</button>
+              <button type="button" class="submit-btn control-action control-action--primary" id="q-continue-2" disabled>Continue</button>
               <p class="form-error" id="form-error-2" hidden>Please answer all questions in this section.</p>
             </div>
           </div>
@@ -273,7 +273,7 @@
             </fieldset>
 
             <div class="submit-row">
-              <button type="submit" class="submit-btn" id="submit-btn" disabled>Diagnose this organisation</button>
+              <button type="submit" class="submit-btn control-action control-action--primary" id="submit-btn" disabled>Diagnose this organisation</button>
               <p class="form-error" id="form-error" hidden>Please answer all questions before continuing.</p>
             </div>
           </div>
@@ -352,10 +352,10 @@
 
             <!-- Trigger button — visible with empty state, hidden on click -->
             <div class="submit-row">
-              <button class="submit-btn" id="run-sim-btn">See how decisions play out</button>
+              <button class="submit-btn control-action control-action--primary" id="run-sim-btn">See how decisions play out</button>
             </div>
             <div class="submit-row">
-              <button class="submit-btn replay-btn" id="replay-btn" hidden>Run simulation again</button>
+              <button class="submit-btn control-action control-action--primary replay-btn" id="replay-btn" hidden>Run simulation again</button>
             </div>
             <p class="form-error" id="sim-error" hidden aria-live="polite"></p>
 

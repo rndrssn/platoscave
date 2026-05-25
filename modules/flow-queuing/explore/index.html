@@ -64,11 +64,11 @@
       <section class="queue-machine-lab" aria-label="Queue and utilization demonstration">
         <p class="force-graph-helper queue-machine-lab-helper">Select a scenario preset or adjust arrival rate, service capacity, and variability coefficients &mdash; then observe how the charts and readouts change together.</p>
         <div class="queue-machine-presets">
-          <div class="queue-machine-preset-group" role="group" aria-label="Scenario presets">
-            <button type="button" data-queue-preset="bursty">Bursty product work</button>
-            <button type="button" data-queue-preset="breathing">Slack absorbs variation</button>
-            <button type="button" data-queue-preset="strained">Strained but stable</button>
-            <button type="button" data-queue-preset="saturated">Near saturation</button>
+          <div class="queue-machine-preset-group control-segmented" role="group" aria-label="Scenario presets">
+            <button type="button" data-queue-preset="bursty" class="control-segmented-option">Bursty product work</button>
+            <button type="button" data-queue-preset="breathing" class="control-segmented-option">Slack absorbs variation</button>
+            <button type="button" data-queue-preset="strained" class="control-segmented-option">Strained but stable</button>
+            <button type="button" data-queue-preset="saturated" class="control-segmented-option">Near saturation</button>
           </div>
         </div>
         <p class="queue-machine-preset-note">(Presets set all sliders together. Press the active preset again to reseed the local variability pattern while keeping the same averages.)</p>

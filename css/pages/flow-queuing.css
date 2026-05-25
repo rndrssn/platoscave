@@ -132,22 +132,11 @@
 }
 
 .queue-machine-preset-group [data-queue-preset] {
-  border: 0;
   border-right: 1px solid var(--ink-ghost);
   border-radius: 0;
   padding: 0.48rem 0.72rem;
-  background: transparent;
   color: var(--ink-faint);
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  font-weight: 300;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  transition: background 120ms ease, color 120ms ease;
   white-space: normal;
-  text-align: center;
-  line-height: 1.25;
 }
 
 .queue-machine-preset-group [data-queue-preset]:last-child {

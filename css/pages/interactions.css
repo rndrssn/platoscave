@@ -1,16 +1,5 @@
 /* ─── Collapsible toggle ─────────────────────────────── */
 .collapsible-toggle {
-  font-family: var(--mono);
-  font-size: var(--fs-button-action);
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ink-faint);
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: color 0.2s ease;
   margin-bottom: 1.5rem;
 }
 

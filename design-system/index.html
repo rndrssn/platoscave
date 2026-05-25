@@ -522,7 +522,7 @@
             <div class="ds-role-row">
               <p class="ds-role-name">Segmented mode switch</p>
               <p class="ds-role-use">Use for mutually exclusive view modes where one option is always active.</p>
-              <p class="ds-role-map">Shared classes: <code>.control-segmented</code> and <code>.control-segmented-option</code>; current examples include Basemap/Terrain and Flow preset groups</p>
+              <p class="ds-role-map">Shared classes: <code>.control-segmented</code> and <code>.control-segmented-option</code>; high-attention context switches may use <code>--control-attention-*</code> tokens</p>
             </div>
             <div class="ds-role-row">
               <p class="ds-role-name">Filter chip</p>
@@ -532,7 +532,7 @@
             <div class="ds-role-row">
               <p class="ds-role-name">Binary toggle</p>
               <p class="ds-role-use">Use for an independent on/off setting that can change without switching the whole mode.</p>
-              <p class="ds-role-map">Shared class: <code>.control-toggle</code>; current examples include Satellite Base map toggle</p>
+              <p class="ds-role-map">Shared class: <code>.control-toggle</code>; active high-attention toggles may use <code>--control-attention-*</code> tokens</p>
             </div>
             <div class="ds-role-row">
               <p class="ds-role-name">Text disclosure</p>
@@ -585,7 +585,7 @@
             <span class="ds-label">Binary toggle · independent on/off setting</span>
           </div>
         </div>
-        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets, Document Map anchors, risk chips, Satellite switches, and Satellite toggles now carry these shared role classes in production. The backlog tracks which should merge visually.</p>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets, Document Map anchors, risk chips, Satellite switches, and Satellite toggles now carry these shared role classes in production. The current theme renders high-attention context controls with a gold accent, but the design-system rule is token-based through <span class="ds-token">--control-attention-*</span>.</p>
       </section>
 
       <!-- ─── 4. Form elements ──────────────────────────────── -->

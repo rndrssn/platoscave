@@ -206,7 +206,28 @@
   white-space: nowrap;
 }
 
-.satellite-analyse-btn,
+.satellite-analyse-btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border: 1px solid var(--ink);
+  border-radius: 0.34rem;
+  padding: 0.34rem 1rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: none;
+  transition: background 140ms ease, color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
 .satellite-toggle-control {
   min-height: 44px;
   display: inline-flex;
@@ -220,11 +241,11 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--experience-switch-ink);
-  background: var(--experience-switch-surface);
+  color: var(--control-attention-ink);
+  background: var(--control-attention-surface);
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0.32rem 0.32rem 0 var(--experience-switch-shadow);
+  box-shadow: 0.32rem 0.32rem 0 var(--control-attention-shadow);
   transition: background 140ms ease, color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
 
@@ -253,19 +274,14 @@
 }
 
 .satellite-toggle-control[aria-pressed="true"] {
-  background: var(--experience-switch-active-surface);
+  background: var(--control-attention-active-surface);
   box-shadow:
-    inset 0 0 0 2px var(--experience-switch-active-ring),
-    0.24rem 0.24rem 0 var(--experience-switch-shadow);
+    inset 0 0 0 2px var(--control-attention-active-ring),
+    0.24rem 0.24rem 0 var(--control-attention-shadow);
 }
 
 .satellite-toggle-control[aria-pressed="true"] .satellite-toggle-thumb {
   transform: translateX(1.06rem);
-}
-
-.satellite-analyse-btn {
-  min-height: 44px;
-  padding: 0.34rem 1rem;
 }
 
 .satellite-base-mode-switch[hidden] {
@@ -278,8 +294,8 @@
   gap: 0;
   padding: 0.14rem;
   border-radius: 0.5rem;
-  background: var(--experience-switch-surface);
-  box-shadow: 0.28rem 0.28rem 0 var(--experience-switch-shadow);
+  background: var(--control-attention-surface);
+  box-shadow: 0.28rem 0.28rem 0 var(--control-attention-shadow);
 }
 
 .satellite-base-mode-option {
@@ -292,7 +308,7 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--experience-switch-ink);
+  color: var(--control-attention-ink);
   background: transparent;
   cursor: pointer;
   white-space: nowrap;
@@ -309,10 +325,10 @@
 }
 
 .satellite-base-mode-option--active {
-  background: var(--experience-switch-active-surface);
+  background: var(--control-attention-active-surface);
   box-shadow:
-    inset 0 0 0 2px var(--experience-switch-active-ring),
-    0.14rem 0.14rem 0 var(--experience-switch-shadow);
+    inset 0 0 0 2px var(--control-attention-active-ring),
+    0.14rem 0.14rem 0 var(--control-attention-shadow);
 }
 
 .satellite-base-mode-option:disabled {
@@ -337,6 +353,11 @@
 .satellite-analyse-btn:hover,
 .satellite-toggle-control:hover {
   transform: translate(-1px, -1px);
+}
+
+.satellite-analyse-btn:hover {
+  color: var(--ink);
+  background: transparent;
 }
 
 .satellite-analyse-btn:focus-visible,
@@ -416,19 +437,6 @@
   margin-bottom: 1.75rem;
   position: relative;
   z-index: 0;
-}
-
-@media (min-width: 701px) {
-  .satellite-three-stage--stuck {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 100;
-    margin-bottom: 0;
-    background-color: var(--paper);
-  }
 }
 
 .satellite-three-viewer {
@@ -929,10 +937,10 @@
   align-self: flex-start;
   box-sizing: border-box;
   margin: 0.1rem 0 0;
-  border: 2px solid color-mix(in srgb, var(--experience-switch-surface) 36%, transparent 64%);
-  border-top-color: var(--experience-switch-surface);
+  border: 2px solid color-mix(in srgb, var(--control-attention-surface) 36%, transparent 64%);
+  border-top-color: var(--control-attention-surface);
   border-radius: 50%;
-  background: color-mix(in srgb, var(--experience-switch-surface) 16%, transparent 84%);
+  background: color-mix(in srgb, var(--control-attention-surface) 16%, transparent 84%);
   animation: satellite-three-spin 0.82s linear infinite;
 }
 
@@ -965,14 +973,14 @@
 .satellite-three-hud .satellite-viewport-readout {
   padding: 0.22rem 0.45rem;
   border-radius: 2px;
-  background: color-mix(in srgb, var(--experience-switch-surface) 42%, transparent 58%);
-  color: var(--experience-switch-ink);
+  background: color-mix(in srgb, var(--control-attention-surface) 42%, transparent 58%);
+  color: var(--control-attention-ink);
   text-shadow: none;
 }
 
 .satellite-three-hud .satellite-viewport-readout:not(.satellite-viewport-readout--blocked) {
-  background: var(--experience-switch-surface);
-  color: var(--experience-switch-ink);
+  background: var(--control-attention-surface);
+  color: var(--control-attention-ink);
 }
 
 .satellite-three-hud .satellite-receipt-value--empty {
@@ -998,7 +1006,7 @@
 }
 
 .satellite-three-hud .satellite-base-mode-switch {
-  box-shadow: 0.14rem 0.14rem 0 var(--experience-switch-shadow);
+  box-shadow: 0.14rem 0.14rem 0 var(--control-attention-shadow);
 }
 
 .satellite-three-hud .satellite-base-mode-option {
@@ -1006,11 +1014,16 @@
   padding-inline: 0.52rem;
 }
 
-.satellite-three-hud .satellite-analyse-btn:not(:disabled),
 .satellite-three-hud .satellite-toggle-control[aria-pressed="true"] {
-  border-color: var(--experience-switch-surface);
-  background: var(--experience-switch-surface);
-  color: var(--experience-switch-ink);
+  border-color: var(--control-attention-surface);
+  background: var(--control-attention-surface);
+  color: var(--control-attention-ink);
+}
+
+.satellite-three-hud .satellite-analyse-btn:not(:disabled) {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
 }
 
 .satellite-three-hud .satellite-toggle-control[aria-pressed="false"] {
@@ -1020,9 +1033,9 @@
 }
 
 .satellite-three-hud .satellite-analyse-btn:disabled {
-  border-color: color-mix(in srgb, var(--experience-switch-surface) 68%, transparent 32%);
-  background: color-mix(in srgb, var(--experience-switch-surface) 42%, transparent 58%);
-  color: var(--experience-switch-ink);
+  border-color: color-mix(in srgb, var(--ink-ghost) 72%, transparent 28%);
+  background: color-mix(in srgb, var(--ink-ghost) 42%, transparent 58%);
+  color: var(--ink);
   cursor: default;
   opacity: 1;
 }

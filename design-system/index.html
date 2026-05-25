@@ -164,6 +164,73 @@
       border-top: none;
       margin-top: 0;
     }
+
+    .ds-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .ds-grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .ds-preview--wide {
+      width: 100%;
+      max-width: none;
+    }
+
+    .ds-mini-viz {
+      width: min(100%, 28rem);
+      min-height: 9rem;
+      border: 1px solid var(--paper-deep);
+      background: var(--paper);
+      padding: 1rem;
+      color: var(--ink-mid);
+    }
+
+    .ds-mini-viz svg {
+      width: 100%;
+      height: auto;
+    }
+
+    .ds-mini-swatch {
+      inline-size: 0.7rem;
+      block-size: 0.7rem;
+      border-radius: 999px;
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+
+    .ds-mini-swatch--rust { background: var(--rust-light); }
+    .ds-mini-swatch--gold { background: var(--gold); }
+    .ds-mini-swatch--sage { background: var(--sage-light); }
+    .ds-mini-swatch--slate { background: var(--slate-light); }
+
+    .ds-principle-list {
+      display: grid;
+      gap: 0.45rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-family: var(--serif);
+      font-size: var(--fs-body);
+      color: var(--ink-mid);
+      line-height: 1.58;
+    }
+
+    .ds-principle-list strong {
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      font-weight: 300;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
   </style>
 </head>
 <body>
@@ -188,7 +255,7 @@
         <p class="module-header-number">Internal reference</p>
         <h1 class="module-header-title">Design System</h1>
         <p class="module-header-body">
-          Live catalogue of design tokens and component patterns. Renders actual CSS — changes to the stylesheet update this page automatically.
+          Catalogue of design tokens, component patterns, visualisation chrome, and page-specific variants. Most specimens render actual site CSS; inline recreations are called out where no shared class exists yet.
         </p>
       </header>
 
@@ -401,13 +468,13 @@
         </div>
         <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">Defined in <span class="ds-token">css/pages/module-foundation.css</span> · disabled state in <span class="ds-token">css/components.css</span></p>
 
-        <p class="ds-subsection-heading">Drifted variants — same visual intent, independent definitions</p>
+        <p class="ds-subsection-heading">Variant audit — same visual intent, independent definitions</p>
         <div class="ds-preview">
           <div class="ds-item">
             <!-- Inline recreation of queue-machine-presets button active state -->
             <button style="font-family:var(--mono);font-size:0.6rem;font-weight:300;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-faint);background:transparent;border:1px solid var(--ink-ghost);padding:0.48rem 0.72rem;cursor:pointer">Steady load</button>
             <span class="ds-label">Flow &amp; Queuing preset</span>
-            <span class="ds-drift">⚠ .queue-machine-presets button</span>
+            <span class="ds-drift">Audit item: .queue-machine-presets button</span>
           </div>
           <div class="ds-item">
             <button style="font-family:var(--mono);font-size:0.6rem;font-weight:300;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink);background:var(--gold);border:1px solid var(--gold);padding:0.48rem 0.72rem;cursor:pointer">Spike</button>
@@ -418,14 +485,14 @@
             <!-- Inline recreation of section-map-anchor-button -->
             <button style="font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-mid);background:transparent;border:1px solid rgba(42,32,24,0.2);padding:0.45rem 0.62rem;border-radius:999px;cursor:pointer">Concept</button>
             <span class="ds-label">Document Map anchor</span>
-            <span class="ds-drift">⚠ .section-map-anchor-button</span>
+            <span class="ds-drift">Audit item: .section-map-anchor-button</span>
           </div>
           <div class="ds-item">
             <button style="font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--paper);background:var(--rust);border:1px solid var(--rust);padding:0.45rem 0.62rem;border-radius:999px;cursor:pointer">Concept</button>
             <span class="ds-label">Document Map anchor · active</span>
           </div>
         </div>
-        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">These should be consolidated into shared button variants. The ⚠ marks are intentional — this page surfaces the drift.</p>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">These are preserved as audit specimens. Do not treat them as canonical button guidance until the consolidation backlog resolves their shared role.</p>
 
         <p class="ds-subsection-heading">Ghost / icon buttons</p>
         <div class="ds-preview">
@@ -483,7 +550,7 @@
             <input type="range" min="0" max="100" value="40" style="width:100%;accent-color:var(--rust)" />
           </div>
         </div>
-        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--rust)">⚠ No shared range slider class — each module styles accent-color independently.</p>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--rust)">Audit item: no shared range slider class — each module styles accent-color independently.</p>
 
         <p class="ds-subsection-heading">Search input</p>
         <div class="ds-preview">
@@ -660,7 +727,7 @@
           </div>
         </div>
         <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.satellite-base-mode-switch · .satellite-base-mode-option--active — same yellow container as tab switch, smaller padding. Defined in <span class="ds-token">css/pages/satellite-index.css</span>
-          <span class="ds-drift" style="display:inline;margin-left:0.5rem">⚠ Same visual intent as tab switch — separate implementation</span></p>
+          <span class="ds-drift" style="display:inline;margin-left:0.5rem">Audit item: same visual intent as tab switch — separate implementation</span></p>
 
         <p class="ds-subsection-heading">Track toggle — on/off</p>
         <div class="ds-preview">
@@ -748,6 +815,304 @@
             <span class="ds-label">.satellite-status--error · --rust</span>
           </div>
         </div>
+      </section>
+
+      <!-- ─── 11. Global shell ──────────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-shell">
+        <p class="ds-section-label" id="ds-shell">11 · Global shell and home surface</p>
+
+        <p class="ds-subsection-heading">Main navigation states</p>
+        <div class="ds-preview ds-preview--column">
+          <div class="ds-item" style="width:100%">
+            <div class="nav-links" style="display:flex;position:relative;gap:1rem">
+              <a class="nav-link nav-link--active" href="#">Notes</a>
+              <a class="nav-link nav-link--editorial" href="#">Articles</a>
+              <a class="nav-link" href="#">My Experience</a>
+              <a class="nav-link nav-link--catalogue" href="#">Catalogue</a>
+            </div>
+            <span class="ds-label">.nav-link variants · active marker · editorial serif italic · catalogue rust</span>
+          </div>
+          <div class="ds-item" style="width:100%">
+            <div class="nav-links is-open" style="display:flex;position:relative;right:auto;top:auto;left:auto;width:max-content">
+              <a class="nav-link" href="#">Notes</a>
+              <a class="nav-link nav-link--editorial nav-link--active" href="#">Articles</a>
+              <a class="nav-link nav-link--catalogue" href="#">Catalogue</a>
+            </div>
+            <span class="ds-label">.nav-links.is-open · popover surface, slight rotation, animated links</span>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">Global shell details live in <span class="ds-token">css/components/nav.css</span>: sticky link row, mobile grid toggle, catalogue submenu, safe-area top offset, popover z-index tier.</p>
+
+        <p class="ds-subsection-heading">Homepage hero</p>
+        <div class="ds-preview ds-preview--column">
+          <p class="section-label" style="margin-bottom:0">To the Bedrock</p>
+          <h1 class="hero-title" style="margin-bottom:0">Complex systems, made inspectable.</h1>
+          <p class="hero-body">The home surface uses the largest serif-alt italic title, compact mono section label, and restrained EB Garamond body copy.</p>
+          <div class="hero-meta" style="margin-top:0">
+            <span class="hero-meta-name">Robert Andersson, PhD</span>
+            <span class="hero-meta-sep" aria-hidden="true">&middot;</span>
+            <span class="hero-meta-role">Thoughts, Notes &amp; Philosophy Loops</span>
+            <span class="contact-socials contact-socials--inline" aria-label="Social links example">
+              <a class="contact-social-link contact-social-link--linkedin" href="#" aria-label="LinkedIn"><span class="contact-social-icon"></span></a>
+              <a class="contact-social-link contact-social-link--github" href="#" aria-label="GitHub"><span class="contact-social-icon"></span></a>
+              <a class="contact-social-link contact-social-link--cv" href="#">CV</a>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 12. Editorial content ─────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-editorial">
+        <p class="ds-section-label" id="ds-editorial">12 · Editorial content and notes</p>
+
+        <p class="ds-subsection-heading">Markdown article body</p>
+        <div class="ds-preview ds-preview--column note-content">
+          <h2>Generated note heading</h2>
+          <p>Notes and articles use a slightly smaller prose rhythm than module essays, with compact line-height and low-contrast ink. Paragraph spacing stays quiet so long reading pages feel editorial rather than dashboard-like.</p>
+          <blockquote>Blockquotes use a pale left rule and inherited serif text rather than a decorative callout treatment.</blockquote>
+          <pre><code>const insight = "plain static pages, carefully styled";</code></pre>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.note-content h2/h3/p/li/blockquote/pre/code · defined in <span class="ds-token">css/pages/content-cards.css</span></p>
+
+        <p class="ds-subsection-heading">Catalogue row</p>
+        <div class="ds-preview ds-preview--column">
+          <article class="module-entry module-entry--live" style="width:100%;border-top:1px solid var(--ink-ghost)">
+            <a class="module-entry-link" href="#" style="width:100%">
+              <div class="module-entry-main">
+                <div class="module-entry-title-row">
+                  <span class="module-number">07</span>
+                  <h2 class="module-title">Boundary-free monitoring</h2>
+                  <span class="module-demo-tag">Demo</span>
+                </div>
+                <p class="module-descriptor">Viewport-as-AOI remote-sensing proof of concept.</p>
+                <p class="module-entry-sections">01 Overview · 02 Explorer</p>
+              </div>
+            </a>
+          </article>
+        </div>
+      </section>
+
+      <!-- ─── 13. Taxonomy and tables ───────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-taxonomy">
+        <p class="ds-section-label" id="ds-taxonomy">13 · Taxonomy, comparison, and matrix patterns</p>
+
+        <p class="ds-subsection-heading">Taxonomy dimension</p>
+        <div class="ds-preview ds-preview--column">
+          <div class="taxonomy-dimension" style="width:100%;margin-bottom:0">
+            <h2 class="taxonomy-dimension-title">Release discipline</h2>
+            <div class="taxonomy-values">
+              <p class="taxonomy-value"><strong>Pull-limited</strong> New work enters only when capacity is visibly available.</p>
+              <p class="taxonomy-value"><strong>Push-loaded</strong> Intake follows demand pressure rather than system readiness.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="ds-subsection-heading">Reference grid</p>
+        <div class="ds-preview ds-preview--column">
+          <div class="taxonomy-grid-wrapper" style="width:100%;margin:0">
+            <table class="taxonomy-grid taxonomy-grid--reference">
+              <thead>
+                <tr>
+                  <th class="taxonomy-grid-corner"></th>
+                  <th class="taxonomy-grid-header">Low variability</th>
+                  <th class="taxonomy-grid-header">High variability</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th class="taxonomy-grid-row-header">Low load</th>
+                  <td class="taxonomy-grid-cell">Stable flow</td>
+                  <td class="taxonomy-grid-cell">Bursty but recoverable</td>
+                </tr>
+                <tr>
+                  <th class="taxonomy-grid-row-header">High load</th>
+                  <td class="taxonomy-grid-cell">Brittle utilization</td>
+                  <td class="taxonomy-grid-cell">Queue amplification</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 14. Risk assessment ───────────────────────────── -->
+      <section class="ds-section products-over-projects-page" aria-labelledby="ds-risk">
+        <p class="ds-section-label" id="ds-risk">14 · Products Over Projects risk patterns</p>
+
+        <p class="ds-subsection-heading">Risk comparison cards</p>
+        <div class="ds-preview">
+          <div class="risk-comparison" style="margin:0;width:100%">
+            <article class="risk-comparison-column">
+              <p class="risk-comparison-label">Product-mode risk</p>
+              <h3 class="risk-comparison-body">Residual uncertainty lives in discovery and market learning.</h3>
+              <p class="risk-comparison-note">Use compact card framing with serif-alt italic claim and serif explanatory body.</p>
+            </article>
+            <article class="risk-comparison-column">
+              <p class="risk-comparison-label">Project-mode risk</p>
+              <h3 class="risk-comparison-body">Residual uncertainty lives in execution coordination.</h3>
+              <p class="risk-comparison-note">The card shape matches shared primitives but carries module-specific semantics.</p>
+            </article>
+          </div>
+        </div>
+
+        <p class="ds-subsection-heading">Assessment radio chips</p>
+        <div class="ds-preview ds-preview--column">
+          <fieldset class="risk-assessment-group" style="width:100%;margin:0">
+            <legend>Dominant residual risk</legend>
+            <div class="risk-item">
+              <p class="risk-item-label">Evidence stability</p>
+              <p class="risk-item-body">How likely is new evidence to change the choice?</p>
+              <div class="risk-options">
+                <label class="risk-option"><input type="radio" name="ds-risk" /><span class="risk-option-num">0</span><span class="risk-option-text">Low</span></label>
+                <label class="risk-option"><input type="radio" name="ds-risk" checked /><span class="risk-option-num">1</span><span class="risk-option-text">Medium</span></label>
+                <label class="risk-option"><input type="radio" name="ds-risk" /><span class="risk-option-num">2</span><span class="risk-option-text">High</span></label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </section>
+
+      <!-- ─── 15. Flow and math lab ─────────────────────────── -->
+      <section class="ds-section queue-machine-page" aria-labelledby="ds-flow">
+        <p class="ds-section-label" id="ds-flow">15 · Flow &amp; Queuing lab and math treatment</p>
+
+        <p class="ds-subsection-heading">Token tier policy</p>
+        <ul class="ds-principle-list">
+          <li><strong>Bar charts</strong> use the neutral UI tier <span class="ds-token">--ink-ghost</span>, with opacity carrying fit/spill/backlog differences.</li>
+          <li><strong>Capacity line</strong> uses <span class="ds-token">--rust</span>; force graph nodes use pastel accent tiers.</li>
+          <li><strong>Math letters</strong> use STIX/Cambria/Latin Modern/math fallback before the serif stack.</li>
+        </ul>
+
+        <p class="ds-subsection-heading">Preset segmented control</p>
+        <div class="ds-preview ds-preview--column">
+          <div class="queue-machine-preset-group">
+            <button data-queue-preset aria-pressed="true">Steady load</button>
+            <button data-queue-preset aria-pressed="false">Spike</button>
+            <button data-queue-preset aria-pressed="false">Variability</button>
+            <button data-queue-preset aria-pressed="false">Overload</button>
+          </div>
+          <p class="queue-machine-preset-note">Re-clicking the active preset reseeds local variability.</p>
+        </div>
+
+        <p class="ds-subsection-heading">Mini legend and math variable style</p>
+        <div class="ds-preview ds-preview--column">
+          <ul class="queue-machine-mini-legend">
+            <li><strong>WIP (<var>L</var>)</strong><span>work currently inside the system</span></li>
+            <li><strong>Lead time (<var>W</var>)</strong><span>elapsed time from arrival to completion</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── 16. Visualisation chrome ──────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-viz-chrome">
+        <p class="ds-section-label" id="ds-viz-chrome">16 · Visualisation chrome and graph states</p>
+
+        <p class="ds-subsection-heading">Force graph chrome</p>
+        <div class="ds-preview ds-preview--column">
+          <p class="force-graph-helper">Select a group to focus related nodes</p>
+          <ul class="force-graph-legend">
+            <li><button class="force-graph-legend-btn" aria-pressed="true"><span class="ds-mini-swatch ds-mini-swatch--rust"></span>Assumption</button></li>
+            <li><button class="force-graph-legend-btn" aria-pressed="false"><span class="ds-mini-swatch ds-mini-swatch--gold"></span>Theory</button></li>
+            <li><button class="force-graph-legend-btn" aria-pressed="false"><span class="ds-mini-swatch ds-mini-swatch--sage"></span>Practice</button></li>
+          </ul>
+          <p class="force-graph-detail is-visible"><span class="force-graph-detail-swatch ds-mini-swatch--slate"></span><span class="force-graph-detail-label">Highlighted relationship</span></p>
+          <div class="ds-mini-viz">
+            <svg viewBox="0 0 360 120" role="img" aria-label="Force graph state example">
+              <line class="force-graph-link is-related" x1="80" y1="58" x2="180" y2="36" stroke="var(--ink-faint)" stroke-width="1.2"></line>
+              <line class="force-graph-link is-dim" x1="180" y1="36" x2="280" y2="74" stroke="var(--ink-faint)" stroke-width="1.2"></line>
+              <circle class="force-graph-node is-group-focus" cx="80" cy="58" r="15" fill="var(--rust-light)"></circle>
+              <circle class="force-graph-node is-related" cx="180" cy="36" r="13" fill="var(--gold)"></circle>
+              <circle class="force-graph-node is-dim" cx="280" cy="74" r="13" fill="var(--sage-light)"></circle>
+              <text class="force-graph-label is-active" x="80" y="92">FOCUS</text>
+              <text class="force-graph-label is-related" x="180" y="68">RELATED</text>
+              <text class="force-graph-label is-dim" x="280" y="106">DIM</text>
+            </svg>
+          </div>
+        </div>
+
+        <p class="ds-subsection-heading">Mix Mapper legend</p>
+        <div class="ds-preview ds-preview--column">
+          <p class="mix-mapper-viz-hint">Hover or focus a node to inspect process/assumption/learning relationships.</p>
+          <div class="mix-mapper-legend">
+            <button class="mix-mapper-legend-btn is-active">
+              <span class="mix-mapper-legend-marker mix-mapper-legend-marker--dot mix-mapper-legend-marker--learning"></span>
+              <span class="mix-mapper-legend-label">Learning</span>
+            </button>
+            <button class="mix-mapper-legend-btn">
+              <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--process"></span>
+              <span class="mix-mapper-legend-label">Process</span>
+            </button>
+            <button class="mix-mapper-legend-btn">
+              <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--assumptions"></span>
+              <span class="mix-mapper-legend-label">Assumptions</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 17. Document map ──────────────────────────────── -->
+      <section class="ds-section the-descent-page" aria-labelledby="ds-doc-map">
+        <p class="ds-section-label" id="ds-doc-map">17 · Document Map visual language</p>
+
+        <p class="ds-subsection-heading">Legend, anchors, and tooltip</p>
+        <div class="ds-preview ds-preview--column">
+          <p class="section-map-caption">Readiness bars are neutral; anchor mode owns the rust emphasis.</p>
+          <div class="section-map-legend">
+            <span class="section-map-legend-item"><span class="section-map-legend-anchor">◆</span>Active anchor</span>
+            <span class="section-map-legend-item"><span class="section-map-legend-bar section-map-legend-bar--exploration"></span>Readiness</span>
+            <span class="section-map-legend-item"><span class="section-map-legend-dot section-map-legend-dot--home"></span>Home station</span>
+            <span class="section-map-legend-item"><span class="section-map-legend-dot section-map-legend-dot--restated"></span>Restated artifact</span>
+          </div>
+          <div class="section-map-anchor-control">
+            <span class="section-map-anchor-label">Anchor</span>
+            <button class="section-map-anchor-button is-active" aria-pressed="true">Concept</button>
+            <button class="section-map-anchor-button" aria-pressed="false">Decision</button>
+            <button class="section-map-anchor-button" aria-pressed="false">Evidence</button>
+          </div>
+          <div class="section-map-tooltip is-visible" style="position:relative;left:auto;top:auto;max-width:18rem">
+            <p class="section-map-tooltip-header">Station 04 · Concept</p>
+            <p class="section-map-tooltip-body">Tooltip copy uses mono microtype and restrained paper surface.</p>
+            <p class="section-map-tooltip-meta">PM · UX · Eng</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 18. Satellite explorer ────────────────────────── -->
+      <section class="ds-section satellite-three-page" aria-labelledby="ds-satellite">
+        <p class="ds-section-label" id="ds-satellite">18 · Boundary-free monitoring Explorer</p>
+
+        <p class="ds-subsection-heading">Control hierarchy</p>
+        <div class="ds-preview">
+          <div class="satellite-controls" style="margin:0;padding:0">
+            <button class="satellite-analyse-btn">Analyse viewport →</button>
+            <div class="satellite-base-mode-switch" role="group" aria-label="Base context example">
+              <button class="satellite-base-mode-option satellite-base-mode-option--active" aria-pressed="true">Basemap</button>
+              <button class="satellite-base-mode-option" aria-pressed="false">Terrain</button>
+            </div>
+            <span class="satellite-status satellite-status--working">Analysing…</span>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">Primary action is yellow/shadowed; base context is a compact two-option switch. This is a contextual module specimen; the backlog below decides which parts become canonical.</p>
+
+        <p class="ds-subsection-heading">Spectral index content</p>
+        <div class="ds-preview ds-preview--column satellite-index-page">
+          <details class="satellite-indices-detail" open>
+            <summary>Index formulas</summary>
+            <h3 class="essay-subheading">NDVI</h3>
+            <p class="essay-bands">NIR, red</p>
+            <figure class="index-equation">
+              <span class="ds-token">(NIR - Red) / (NIR + Red)</span>
+            </figure>
+          </details>
+        </div>
+      </section>
+
+      <!-- ─── 19. Maintenance ────────────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-rules">
+        <p class="ds-section-label" id="ds-rules">19 · Maintenance</p>
+        <p class="essay-body" style="max-width:60ch">
+          This page describes the current design reference. Design debt, open consolidation decisions, and proposed canonical directions live in <a href="./BACKLOG.md">the design-system backlog</a>.
+        </p>
       </section>
 
     </div>

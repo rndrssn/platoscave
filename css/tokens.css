@@ -64,6 +64,14 @@
   --experience-switch-active-ring: #141414;
   --experience-switch-focus-inner: color-mix(in srgb, #ffffff 74%, transparent 26%);
   --experience-switch-focus-outer: color-mix(in srgb, #141414 66%, transparent 34%);
+  --control-attention-surface: var(--experience-switch-surface);
+  --control-attention-shadow: var(--experience-switch-shadow);
+  --control-attention-ink: var(--experience-switch-ink);
+  --control-attention-hover-surface: var(--experience-switch-hover-surface);
+  --control-attention-active-surface: var(--experience-switch-active-surface);
+  --control-attention-active-ring: var(--experience-switch-active-ring);
+  --control-attention-focus-inner: var(--experience-switch-focus-inner);
+  --control-attention-focus-outer: var(--experience-switch-focus-outer);
 
   --serif:       'EB Garamond', Georgia, serif;
   --serif-alt:   'Cormorant Garamond', Georgia, serif;

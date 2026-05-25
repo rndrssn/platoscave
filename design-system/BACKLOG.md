@@ -18,15 +18,15 @@ The live design-system page is the current reference for what to use. When a bac
 
 **Do not break:** Flow preset reseeding, Document Map `aria-pressed` anchor switching, risk assessment radio semantics, and Satellite viewport-analysis state changes.
 
-### Yellow switch/action family
+### Attention control accent family
 
-**Status:** Open. The simplified control model names the roles, but yellow still needs a semantic owner before production styles are changed.
+**Status:** Resolved. The high-attention control accent now belongs to mode/context controls, not ordinary primary actions. The current theme renders this accent as yellow/gold, but the rule is token-driven and may render differently in another theme.
 
 **Current variants:** CV/Skills switch, Satellite Basemap/Terrain switch, Satellite Analyse viewport action, Satellite Base map toggle.
 
-**Problem:** Yellow currently signals both a strong primary action and a mode-switch surface. That makes the accent memorable, but semantically blurry.
+**Problem:** The same accent previously signalled both a strong primary action and a mode-switch surface. That made the accent memorable, but semantically blurry.
 
-**Direction:** Choose one semantic owner for yellow: either experience-mode controls or high-emphasis actions. If both remain yellow, document a shared "high-attention control" family with size/state variants.
+**Direction:** Use `--control-attention-*` tokens for high-attention mode/context controls, including segmented switches, active toggles, and compact HUD context readouts. Primary actions should use the primary action language for their surface and state, not the attention-control accent by default.
 
 **Do not break:** Satellite HUD contrast over imagery and the CV/Skills shell identity.
 

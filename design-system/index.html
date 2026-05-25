@@ -231,6 +231,61 @@
       color: var(--ink);
     }
 
+    .ds-role-table {
+      display: grid;
+      gap: 0;
+      width: 100%;
+      border-top: 1px solid var(--ink-ghost);
+    }
+
+    .ds-role-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--paper-deep);
+    }
+
+    @media (min-width: 720px) {
+      .ds-role-row {
+        grid-template-columns: minmax(8rem, 0.8fr) minmax(0, 1.2fr) minmax(9rem, 0.9fr);
+        gap: 1rem;
+      }
+    }
+
+    .ds-role-name,
+    .ds-role-use,
+    .ds-role-map {
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    .ds-role-name {
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .ds-role-use,
+    .ds-role-map {
+      font-family: var(--serif);
+      font-size: 0.76rem;
+      color: var(--ink-mid);
+    }
+
+    .ds-role-map {
+      color: var(--ink-faint);
+    }
+
+    .ds-role-map code {
+      font-family: var(--mono);
+      font-size: 0.82em;
+      color: var(--ink-mid);
+    }
+
   </style>
 </head>
 <body>
@@ -451,73 +506,86 @@
       <section class="ds-section" aria-labelledby="ds-buttons">
         <p class="ds-section-label" id="ds-buttons">03 · Buttons</p>
 
-        <p class="ds-subsection-heading">.submit-btn — primary action (shared component)</p>
+        <p class="ds-subsection-heading">Control role taxonomy</p>
+        <div class="ds-preview ds-preview--column">
+          <div class="ds-role-table" aria-label="Canonical control role taxonomy">
+            <div class="ds-role-row">
+              <p class="ds-role-name">Primary action</p>
+              <p class="ds-role-use">Use for the single action that starts or advances the main workflow on a surface.</p>
+              <p class="ds-role-map">Current examples: <code>.submit-btn</code>, contextual <code>.satellite-analyse-btn</code></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Secondary action</p>
+              <p class="ds-role-use">Use for lower-emphasis commands adjacent to a primary action, including reset/new-view affordances.</p>
+              <p class="ds-role-map">Current examples: <code>.satellite-secondary-btn</code>, footer progression links when navigational</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Segmented mode switch</p>
+              <p class="ds-role-use">Use for mutually exclusive view modes where one option is always active.</p>
+              <p class="ds-role-map">Current examples: CV/Skills switch, Basemap/Terrain switch, Flow preset group</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Filter chip</p>
+              <p class="ds-role-use">Use for local filtering or focus within a visualization or assessment, not for page navigation.</p>
+              <p class="ds-role-map">Current examples: Document Map anchors, force graph legend filters, risk chips</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Binary toggle</p>
+              <p class="ds-role-use">Use for an independent on/off setting that can change without switching the whole mode.</p>
+              <p class="ds-role-map">Current examples: Satellite Base map toggle</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Text disclosure</p>
+              <p class="ds-role-use">Use for expanding or revealing optional explanatory content without changing task state.</p>
+              <p class="ds-role-map">Current examples: collapsible toggles, details summaries, in-page jump links</p>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">This taxonomy is canonical guidance. The specimens below show current implementations; module-specific controls should be copied only when their context matches the role.</p>
+
+        <p class="ds-subsection-heading">Canonical control primitives</p>
         <div class="ds-preview">
           <div class="ds-item">
             <button class="submit-btn">Run simulation</button>
-            <span class="ds-label">Default</span>
-          </div>
-          <div class="ds-item">
-            <button class="submit-btn" style="border-color:var(--ink-mid);color:var(--ink)">Run simulation</button>
-            <span class="ds-label">Hover state</span>
+            <span class="ds-label">Primary action · .submit-btn</span>
           </div>
           <div class="ds-item">
             <button class="submit-btn" disabled>Run simulation</button>
-            <span class="ds-label">Disabled</span>
+            <span class="ds-label">Primary action · disabled</span>
+          </div>
+          <div class="ds-item">
+            <button style="font-family:var(--mono);font-size:var(--fs-button-action);font-weight:300;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-faint);background:none;border:none;padding:0;cursor:pointer">Expand section ↓</button>
+            <span class="ds-label">Text disclosure</span>
           </div>
         </div>
         <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">Defined in <span class="ds-token">css/pages/module-foundation.css</span> · disabled state in <span class="ds-token">css/components.css</span></p>
 
-        <p class="ds-subsection-heading">Variant audit — same visual intent, independent definitions</p>
-        <div class="ds-preview">
+        <p class="ds-subsection-heading">Mode, filter, and toggle targets</p>
+        <div class="ds-preview ds-preview--column">
           <div class="ds-item">
-            <!-- Inline recreation of queue-machine-presets button active state -->
-            <button style="font-family:var(--mono);font-size:0.6rem;font-weight:300;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-faint);background:transparent;border:1px solid var(--ink-ghost);padding:0.48rem 0.72rem;cursor:pointer">Steady load</button>
-            <span class="ds-label">Flow &amp; Queuing preset</span>
-            <span class="ds-drift">Audit item: .queue-machine-presets button</span>
+            <nav class="experience-skill-switch" style="margin:0" aria-label="Segmented control example">
+              <a class="experience-skill-switch-link" href="#">Skills graph</a>
+              <a class="experience-skill-switch-link experience-skill-switch-link--active" href="#">CV</a>
+            </nav>
+            <span class="ds-label">Segmented mode switch · one active option</span>
           </div>
           <div class="ds-item">
-            <button style="font-family:var(--mono);font-size:0.6rem;font-weight:300;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink);background:var(--gold);border:1px solid var(--gold);padding:0.48rem 0.72rem;cursor:pointer">Spike</button>
-            <span class="ds-label">Flow &amp; Queuing preset · active</span>
-          </div>
-          <div class="ds-divider"></div>
-          <div class="ds-item">
-            <!-- Inline recreation of section-map-anchor-button -->
-            <button style="font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-mid);background:transparent;border:1px solid rgba(42,32,24,0.2);padding:0.45rem 0.62rem;border-radius:999px;cursor:pointer">Concept</button>
-            <span class="ds-label">Document Map anchor</span>
-            <span class="ds-drift">Audit item: .section-map-anchor-button</span>
+            <div class="section-map-anchor-control the-descent-page" style="margin:0">
+              <button class="section-map-anchor-button is-active" aria-pressed="true">Concept</button>
+              <button class="section-map-anchor-button" aria-pressed="false">Decision</button>
+              <button class="section-map-anchor-button" aria-pressed="false">Evidence</button>
+            </div>
+            <span class="ds-label">Filter chip target · local focus/filter</span>
           </div>
           <div class="ds-item">
-            <button style="font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--paper);background:var(--rust);border:1px solid var(--rust);padding:0.45rem 0.62rem;border-radius:999px;cursor:pointer">Concept</button>
-            <span class="ds-label">Document Map anchor · active</span>
-          </div>
-        </div>
-        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">These are preserved as audit specimens. Do not treat them as canonical button guidance until the consolidation backlog resolves their shared role.</p>
-
-        <p class="ds-subsection-heading">Ghost / icon buttons</p>
-        <div class="ds-preview">
-          <div class="ds-item">
-            <button style="font-family:var(--mono);font-size:var(--fs-button-action);font-weight:300;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-faint);background:none;border:none;padding:0;cursor:pointer">Expand section ↓</button>
-            <span class="ds-label">.collapsible-toggle</span>
+            <button class="satellite-toggle-control" aria-pressed="true">
+              <span class="satellite-toggle-track"><span class="satellite-toggle-thumb"></span></span>
+              Base map
+            </button>
+            <span class="ds-label">Binary toggle · independent on/off setting</span>
           </div>
         </div>
-
-        <p class="ds-subsection-heading">Yellow action buttons — Explorer / Satellite</p>
-        <div class="ds-preview">
-          <div class="ds-item">
-            <button class="satellite-analyse-btn">Analyse viewport →</button>
-            <span class="ds-label">.satellite-analyse-btn · default</span>
-          </div>
-          <div class="ds-item">
-            <button class="satellite-analyse-btn" disabled>Analyse viewport →</button>
-            <span class="ds-label">Disabled</span>
-          </div>
-          <div class="ds-item">
-            <button class="satellite-analyse-btn satellite-secondary-btn">New viewport</button>
-            <span class="ds-label">.satellite-secondary-btn · ghost variant</span>
-          </div>
-        </div>
-        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">Uses <span class="ds-token">--experience-switch-surface</span> (#ffd83e) + shadow. Defined in <span class="ds-token">css/pages/satellite-index.css</span></p>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets, Document Map anchors, risk chips, CV/Satellite switches, and Satellite toggles are current production implementations of these fewer roles. The backlog tracks which should merge visually.</p>
       </section>
 
       <!-- ─── 4. Form elements ──────────────────────────────── -->
@@ -698,62 +766,6 @@
           <div class="ds-item"><span class="outcome-in-co">In-CO</span><span class="ds-label">--sage-light</span></div>
           <div class="ds-item"><span class="outcome-unresolved">Unresolved</span><span class="ds-label">--ink-faint</span></div>
         </div>
-      </section>
-
-      <!-- ─── 8. Toggles & switches ─────────────────────────── -->
-      <section class="ds-section" aria-labelledby="ds-toggles">
-        <p class="ds-section-label" id="ds-toggles">08 · Toggles &amp; switches</p>
-
-        <p class="ds-subsection-heading">Tab switch — Skills / CV</p>
-        <div class="ds-preview">
-          <div class="ds-item">
-            <nav class="experience-skill-switch" style="margin:0" aria-label="View switch example">
-              <a class="experience-skill-switch-link" href="#">Skills graph</a>
-              <a class="experience-skill-switch-link experience-skill-switch-link--active" href="#">CV</a>
-            </nav>
-            <span class="ds-label">Default · one option active</span>
-          </div>
-        </div>
-        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.experience-skill-switch · .experience-skill-switch-link--active — yellow (#ffd83e) container, white active pill with inset ring + shadow. Defined in <span class="ds-token">css/pages/experience-skill-graph.css</span></p>
-
-        <p class="ds-subsection-heading">Segmented control — Basemap / Terrain</p>
-        <div class="ds-preview">
-          <div class="ds-item">
-            <div class="satellite-base-mode-switch" role="group" aria-label="Base context">
-              <button class="satellite-base-mode-option satellite-base-mode-option--active" aria-pressed="true">Basemap</button>
-              <button class="satellite-base-mode-option" aria-pressed="false">Terrain</button>
-            </div>
-            <span class="ds-label">Compact variant · first active</span>
-          </div>
-        </div>
-        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.satellite-base-mode-switch · .satellite-base-mode-option--active — same yellow container as tab switch, smaller padding. Defined in <span class="ds-token">css/pages/satellite-index.css</span>
-          <span class="ds-drift" style="display:inline;margin-left:0.5rem">Audit item: same visual intent as tab switch — separate implementation</span></p>
-
-        <p class="ds-subsection-heading">Track toggle — on/off</p>
-        <div class="ds-preview">
-          <div class="ds-item">
-            <button class="satellite-toggle-control" aria-pressed="false">
-              <span class="satellite-toggle-track"><span class="satellite-toggle-thumb"></span></span>
-              Base map
-            </button>
-            <span class="ds-label">Off state</span>
-          </div>
-          <div class="ds-item">
-            <button class="satellite-toggle-control" aria-pressed="true">
-              <span class="satellite-toggle-track"><span class="satellite-toggle-thumb"></span></span>
-              Base map
-            </button>
-            <span class="ds-label">On state — white pill, green track</span>
-          </div>
-          <div class="ds-item">
-            <button class="satellite-toggle-control" aria-pressed="false" disabled>
-              <span class="satellite-toggle-track"><span class="satellite-toggle-thumb"></span></span>
-              Base map
-            </button>
-            <span class="ds-label">Disabled</span>
-          </div>
-        </div>
-        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.satellite-toggle-control — track uses <span class="ds-token">--sage-light</span> when pressed. Thumb translates right. Defined in <span class="ds-token">css/pages/satellite-index.css</span></p>
       </section>
 
       <!-- ─── 9. Link variants ──────────────────────────────── -->
@@ -954,22 +966,6 @@
             </article>
           </div>
         </div>
-
-        <p class="ds-subsection-heading">Assessment radio chips</p>
-        <div class="ds-preview ds-preview--column">
-          <fieldset class="risk-assessment-group" style="width:100%;margin:0">
-            <legend>Dominant residual risk</legend>
-            <div class="risk-item">
-              <p class="risk-item-label">Evidence stability</p>
-              <p class="risk-item-body">How likely is new evidence to change the choice?</p>
-              <div class="risk-options">
-                <label class="risk-option"><input type="radio" name="ds-risk" /><span class="risk-option-num">0</span><span class="risk-option-text">Low</span></label>
-                <label class="risk-option"><input type="radio" name="ds-risk" checked /><span class="risk-option-num">1</span><span class="risk-option-text">Medium</span></label>
-                <label class="risk-option"><input type="radio" name="ds-risk" /><span class="risk-option-num">2</span><span class="risk-option-text">High</span></label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
       </section>
 
       <!-- ─── 15. Flow and math lab ─────────────────────────── -->
@@ -982,17 +978,6 @@
           <li><strong>Capacity line</strong> uses <span class="ds-token">--rust</span>; force graph nodes use pastel accent tiers.</li>
           <li><strong>Math letters</strong> use STIX/Cambria/Latin Modern/math fallback before the serif stack.</li>
         </ul>
-
-        <p class="ds-subsection-heading">Preset segmented control</p>
-        <div class="ds-preview ds-preview--column">
-          <div class="queue-machine-preset-group">
-            <button data-queue-preset aria-pressed="true">Steady load</button>
-            <button data-queue-preset aria-pressed="false">Spike</button>
-            <button data-queue-preset aria-pressed="false">Variability</button>
-            <button data-queue-preset aria-pressed="false">Overload</button>
-          </div>
-          <p class="queue-machine-preset-note">Re-clicking the active preset reseeds local variability.</p>
-        </div>
 
         <p class="ds-subsection-heading">Mini legend and math variable style</p>
         <div class="ds-preview ds-preview--column">
@@ -1080,19 +1065,6 @@
       <!-- ─── 18. Satellite explorer ────────────────────────── -->
       <section class="ds-section satellite-three-page" aria-labelledby="ds-satellite">
         <p class="ds-section-label" id="ds-satellite">18 · Boundary-free monitoring Explorer</p>
-
-        <p class="ds-subsection-heading">Control hierarchy</p>
-        <div class="ds-preview">
-          <div class="satellite-controls" style="margin:0;padding:0">
-            <button class="satellite-analyse-btn">Analyse viewport →</button>
-            <div class="satellite-base-mode-switch" role="group" aria-label="Base context example">
-              <button class="satellite-base-mode-option satellite-base-mode-option--active" aria-pressed="true">Basemap</button>
-              <button class="satellite-base-mode-option" aria-pressed="false">Terrain</button>
-            </div>
-            <span class="satellite-status satellite-status--working">Analysing…</span>
-          </div>
-        </div>
-        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">Primary action is yellow/shadowed; base context is a compact two-option switch. This is a contextual module specimen; the backlog below decides which parts become canonical.</p>
 
         <p class="ds-subsection-heading">Spectral index content</p>
         <div class="ds-preview ds-preview--column satellite-index-page">

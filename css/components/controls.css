@@ -1,0 +1,67 @@
+/* Shared control-role vocabulary for actions, mode switches, filter chips, toggles, and disclosures. */
+
+.control-action,
+.control-segmented-option,
+.control-chip,
+.control-toggle,
+.control-disclosure {
+  font-family: var(--mono);
+}
+
+.control-action,
+.control-segmented-option,
+.control-chip,
+.control-toggle {
+  text-transform: uppercase;
+}
+
+.control-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.control-action--primary {
+  letter-spacing: 0.12em;
+}
+
+.control-action--secondary {
+  letter-spacing: 0.08em;
+}
+
+.control-segmented {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+.control-segmented-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.control-chip {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.control-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.control-disclosure {
+  cursor: pointer;
+}
+
+.control-action:disabled,
+.control-segmented-option:disabled,
+.control-toggle:disabled {
+  cursor: default;
+}

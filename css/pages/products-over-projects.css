@@ -166,14 +166,9 @@
 }
 
 .risk-option {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3em;
   background: var(--link-surface-nav);
   border-radius: 0.14rem;
   padding: 0.28rem 0.6rem;
-  cursor: pointer;
-  user-select: none;
   transition: none;
 }
 

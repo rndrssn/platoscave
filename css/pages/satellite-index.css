@@ -208,21 +208,15 @@
 
 .satellite-analyse-btn {
   min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 0.6rem;
   border: 1px solid var(--ink);
   border-radius: 0.34rem;
   padding: 0.34rem 1rem;
-  font-family: var(--mono);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  text-transform: uppercase;
   color: var(--paper);
   background: var(--ink);
-  cursor: pointer;
   white-space: nowrap;
   box-shadow: none;
   transition: background 140ms ease, color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
@@ -230,23 +224,13 @@
 
 .satellite-toggle-control {
   min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 0.6rem;
   border: 0;
   border-radius: 0.34rem;
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
   color: var(--control-attention-ink);
   background: var(--control-attention-surface);
-  cursor: pointer;
   white-space: nowrap;
   box-shadow: 0.32rem 0.32rem 0 var(--control-attention-shadow);
-  transition: background 140ms ease, color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
 
 .satellite-toggle-track {
@@ -289,9 +273,6 @@
 }
 
 .satellite-base-mode-switch {
-  display: inline-flex;
-  align-items: stretch;
-  gap: 0;
   padding: 0.14rem;
   border-radius: 0.5rem;
   background: var(--control-attention-surface);
@@ -301,16 +282,11 @@
 .satellite-base-mode-option {
   min-height: 2rem;
   padding: 0.16rem 0.58rem;
-  border: 0;
   border-radius: 0.34rem;
-  font-family: var(--mono);
   font-size: 0.64rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  text-transform: uppercase;
   color: var(--control-attention-ink);
-  background: transparent;
-  cursor: pointer;
   white-space: nowrap;
   transition: background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }

@@ -11,7 +11,8 @@
 .control-action,
 .control-segmented-option,
 .control-chip,
-.control-toggle {
+.control-toggle,
+.control-disclosure {
   text-transform: uppercase;
 }
 
@@ -19,7 +20,29 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid var(--ink-ghost);
+  background: transparent;
+  color: var(--ink-mid);
   cursor: pointer;
+  font-size: var(--fs-button-action);
+  font-weight: 300;
+  padding: 0.75rem 2rem;
+  text-align: center;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.control-action:hover:not(:disabled) {
+  border-color: var(--ink-mid);
+  color: var(--ink);
+}
+
+.control-action:focus-visible,
+.control-segmented-option:focus-visible,
+.control-chip:focus-visible,
+.control-toggle:focus-visible,
+.control-disclosure:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
 }
 
 .control-action--primary {
@@ -40,13 +63,23 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  border: 0;
   cursor: pointer;
+  font-size: 0.6rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  line-height: 1.25;
+  text-align: center;
+  transition: background 120ms ease, color 120ms ease;
 }
 
 .control-chip {
   display: inline-flex;
   align-items: center;
+  gap: 0.3em;
   cursor: pointer;
+  user-select: none;
 }
 
 .control-toggle {
@@ -54,14 +87,27 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: background 140ms ease, color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
 
 .control-disclosure {
+  background: none;
+  border: none;
+  color: var(--ink-faint);
   cursor: pointer;
+  font-size: var(--fs-button-action);
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  padding: 0;
+  transition: color 0.2s ease;
 }
 
 .control-action:disabled,
 .control-segmented-option:disabled,
-.control-toggle:disabled {
+.control-toggle:disabled,
+.control-disclosure:disabled {
   cursor: default;
 }

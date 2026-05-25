@@ -8,13 +8,13 @@ The live design-system page is the current reference for what to use. When a bac
 
 ### Action and control hierarchy
 
-**Status:** Partially resolved. The design-system page now shows fewer canonical control primitives, duplicate peer specimens have been removed, and production markup now carries shared role classes for actions, segmented controls, chips, toggles, and disclosures. Visual consolidation remains open.
+**Status:** Resolved. The design-system page shows fewer canonical control primitives, duplicate peer specimens have been removed, and production markup carries shared role classes for actions, segmented controls, chips, toggles, and disclosures. Shared role classes now own the common visual anatomy; page-specific classes keep contextual sizing, active states, and module-specific color semantics.
 
 **Current variants:** `.submit-btn`, `.satellite-analyse-btn`, Flow presets, Document Map anchors, Products Over Projects risk chips, ghost text toggles.
 
 **Problem:** The design-system page shows several controls that look like actions, filters, mode switches, or chips without defining their hierarchy. A contributor cannot infer what style means "primary action" versus "choose a mode" versus "filter a visualisation."
 
-**Direction:** Keep the canonical roles visible in the design-system page: primary action, secondary action, segmented mode switch, filter chip, binary toggle, and text disclosure. Next, consolidate visual styling behind the shared role classes where it does not break module-specific behavior.
+**Direction:** Keep the canonical roles visible in the design-system page: primary action, secondary action, segmented mode switch, filter chip, binary toggle, and text disclosure. Use the shared role classes for common anatomy, and keep page-specific classes for contextual exceptions.
 
 **Do not break:** Flow preset reseeding, Document Map `aria-pressed` anchor switching, risk assessment radio semantics, and Satellite viewport-analysis state changes.
 

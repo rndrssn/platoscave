@@ -1,0 +1,763 @@
+<!-- Design system reference: live token and component catalogue for To the Bedrock. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Design system reference — tokens, typography, and component patterns for To the Bedrock." />
+  <title>Design System · To the Bedrock</title>
+  <script src="../theme.config.js"></script>
+  <script src="../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../css/fonts.css" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/utilities.css" />
+  <link rel="stylesheet" href="../css/themes.css" />
+  <link rel="stylesheet" href="../css/gc-viz.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <link rel="icon" type="image/png" href="../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../assets/images/doodles/skate_c.png" />
+  <style>
+    /* ─── Design system page layout helpers ──────────────── */
+    .ds-section {
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--ink-ghost);
+    }
+    .ds-section:last-child { border-bottom: none; }
+
+    .ds-section-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-faint);
+      margin-bottom: 2rem;
+    }
+
+    .ds-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .ds-row--baseline { align-items: baseline; }
+    .ds-row--center   { align-items: center; }
+
+    .ds-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .ds-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-ghost);
+    }
+
+    .ds-note {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--ink-ghost);
+      font-style: italic;
+    }
+
+    /* ─── Color swatches ──────────────────────────────────── */
+    .ds-swatch {
+      width: 3.5rem;
+      height: 3.5rem;
+      border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent 92%);
+    }
+
+    .ds-swatch--paper       { background: var(--paper); }
+    .ds-swatch--paper-dark  { background: var(--paper-dark); }
+    .ds-swatch--paper-deep  { background: var(--paper-deep); }
+    .ds-swatch--ink         { background: var(--ink); }
+    .ds-swatch--ink-mid     { background: var(--ink-mid); }
+    .ds-swatch--ink-faint   { background: var(--ink-faint); }
+    .ds-swatch--ink-ghost   { background: var(--ink-ghost); }
+    .ds-swatch--rust        { background: var(--rust); }
+    .ds-swatch--rust-light  { background: var(--rust-light); }
+    .ds-swatch--sage        { background: var(--sage); }
+    .ds-swatch--sage-light  { background: var(--sage-light); }
+    .ds-swatch--ochre       { background: var(--ochre); }
+    .ds-swatch--gold        { background: var(--gold); }
+    .ds-swatch--slate       { background: var(--slate); }
+    .ds-swatch--slate-light { background: var(--slate-light); }
+
+    .ds-swatch--viz-ink-faint  { background: var(--viz-ink-faint); }
+    .ds-swatch--viz-ink-ghost  { background: var(--viz-ink-ghost); }
+
+    /* ─── Typography specimens ────────────────────────────── */
+    .ds-type-specimen {
+      max-width: 52ch;
+    }
+
+    /* ─── Component preview frame ─────────────────────────── */
+    .ds-preview {
+      background: var(--paper-dark);
+      border: 1px solid var(--paper-deep);
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .ds-preview--column {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    /* ─── Drift callout ───────────────────────────────────── */
+    .ds-drift {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      color: var(--rust);
+      margin-top: 0.4rem;
+    }
+
+    .ds-divider {
+      width: 1px;
+      height: 2.5rem;
+      background: var(--ink-ghost);
+      align-self: center;
+    }
+
+    /* Inline code token */
+    .ds-token {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--ink-faint);
+      background: var(--paper-deep);
+      padding: 0.1rem 0.35rem;
+      letter-spacing: 0.03em;
+    }
+
+    /* Subsection heading within a ds-section */
+    .ds-subsection-heading {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-mid);
+      margin: 2rem 0 1rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--paper-deep);
+    }
+    .ds-subsection-heading:first-of-type {
+      padding-top: 0;
+      border-top: none;
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../">To the Bedrock</a>
+    <nav class="main-nav">
+      <div class="nav-links" id="primary-nav">
+        <a class="nav-link" href="../">Home</a>
+        <a class="nav-link" href="../notes/">Notes</a>
+        <a class="nav-link nav-link--catalogue" href="../modules/">Catalogue</a>
+      </div>
+      <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page">
+
+      <header class="module-header">
+        <p class="module-header-number">Internal reference</p>
+        <h1 class="module-header-title">Design System</h1>
+        <p class="module-header-body">
+          Live catalogue of design tokens and component patterns. Renders actual CSS — changes to the stylesheet update this page automatically.
+        </p>
+      </header>
+
+      <!-- ─── 1. Color ─────────────────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-color">
+        <p class="ds-section-label" id="ds-color">01 · Color tokens</p>
+
+        <p class="ds-subsection-heading">Surface</p>
+        <div class="ds-row">
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--paper"></div>
+            <span class="ds-label">--paper</span>
+            <span class="ds-note">#faf8f1</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--paper-dark"></div>
+            <span class="ds-label">--paper-dark</span>
+            <span class="ds-note">#f0ead9</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--paper-deep"></div>
+            <span class="ds-label">--paper-deep</span>
+            <span class="ds-note">#e6dece</span>
+          </div>
+        </div>
+
+        <p class="ds-subsection-heading">Ink</p>
+        <div class="ds-row">
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--ink"></div>
+            <span class="ds-label">--ink</span>
+            <span class="ds-note">#2A2018 · headings, emphasis</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--ink-mid"></div>
+            <span class="ds-label">--ink-mid</span>
+            <span class="ds-note">#5C4F3A · body text</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--ink-faint"></div>
+            <span class="ds-label">--ink-faint</span>
+            <span class="ds-note">#9C8E78 · secondary labels</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--ink-ghost"></div>
+            <span class="ds-label">--ink-ghost</span>
+            <span class="ds-note">#C8BDA8 · borders, disabled</span>
+          </div>
+        </div>
+
+        <p class="ds-subsection-heading">Accents</p>
+        <div class="ds-row">
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--rust"></div>
+            <span class="ds-label">--rust</span>
+            <span class="ds-note">#8B3A2A</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--rust-light"></div>
+            <span class="ds-label">--rust-light</span>
+            <span class="ds-note">#B85C40</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--sage"></div>
+            <span class="ds-label">--sage</span>
+            <span class="ds-note">#4A6741 · focus rings, positive</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--sage-light"></div>
+            <span class="ds-label">--sage-light</span>
+            <span class="ds-note">#6B8F62</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--ochre"></div>
+            <span class="ds-label">--ochre</span>
+            <span class="ds-note">#9A7B3A</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--gold"></div>
+            <span class="ds-label">--gold</span>
+            <span class="ds-note">#B8943A</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--slate"></div>
+            <span class="ds-label">--slate</span>
+            <span class="ds-note">#3D4F5C</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--slate-light"></div>
+            <span class="ds-label">--slate-light</span>
+            <span class="ds-note">#5A7080</span>
+          </div>
+        </div>
+
+        <p class="ds-subsection-heading">Viz tier <span class="ds-note" style="text-transform:none;letter-spacing:0"> — data visualisation only, not UI</span></p>
+        <div class="ds-row">
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--viz-ink-faint"></div>
+            <span class="ds-label">--viz-ink-faint</span>
+            <span class="ds-note">#7A6E5F</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch ds-swatch--viz-ink-ghost"></div>
+            <span class="ds-label">--viz-ink-ghost</span>
+            <span class="ds-note">#B0A490</span>
+          </div>
+          <div class="ds-item" style="position:relative">
+            <div class="ds-swatch" style="background:var(--rust-light)"></div>
+            <span class="ds-label">--viz-rust-light</span>
+            <span class="ds-note">= --rust-light</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch" style="background:var(--gold)"></div>
+            <span class="ds-label">--viz-gold</span>
+            <span class="ds-note">= --gold</span>
+          </div>
+          <div class="ds-item">
+            <div class="ds-swatch" style="background:var(--sage)"></div>
+            <span class="ds-label">--viz-sage</span>
+            <span class="ds-note">= --sage</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 2. Typography ─────────────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-type">
+        <p class="ds-section-label" id="ds-type">02 · Typography</p>
+
+        <p class="ds-subsection-heading">Families</p>
+        <div class="ds-row ds-row--baseline" style="gap:2.5rem">
+          <div class="ds-item">
+            <span style="font-family:var(--serif);font-size:1.4rem;color:var(--ink)">EB Garamond</span>
+            <span class="ds-label">--serif · body, prose</span>
+          </div>
+          <div class="ds-item">
+            <span style="font-family:var(--serif-alt);font-style:italic;font-size:1.4rem;font-weight:300;color:var(--ink)">Cormorant Garamond</span>
+            <span class="ds-label">--serif-alt · headings</span>
+          </div>
+          <div class="ds-item">
+            <span style="font-family:var(--mono);font-size:1rem;font-weight:300;color:var(--ink)">DM Mono</span>
+            <span class="ds-label">--mono · labels, UI, code</span>
+          </div>
+        </div>
+
+        <p class="ds-subsection-heading">Headings</p>
+        <div class="ds-type-specimen">
+          <h1 class="module-header-title" style="font-size:2.5rem;margin-bottom:1rem">Module title h1</h1>
+          <h2 class="essay-heading" style="margin-bottom:0.75rem">Essay heading h2</h2>
+          <p class="section-label" style="margin-bottom:0.5rem">Section label</p>
+          <p class="module-header-number" style="margin-bottom:0">Module context number</p>
+        </div>
+
+        <p class="ds-subsection-heading">Body</p>
+        <div class="ds-type-specimen">
+          <p class="essay-body" style="margin-bottom:0.75rem">Essay body — EB Garamond, 0.875rem, line-height 1.72. Used for long-form prose in module essays and notes.</p>
+          <p class="module-header-body">Module header body — same size, slightly looser colour at <span class="ds-token">--ink-mid</span>.</p>
+        </div>
+
+        <p class="ds-subsection-heading">Mono labels</p>
+        <div class="ds-row ds-row--baseline" style="gap:2rem;flex-direction:column;align-items:flex-start">
+          <div class="ds-item">
+            <span style="font-family:var(--mono);font-size:var(--fs-button-action);font-weight:300;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-mid)">Button / action label</span>
+            <span class="ds-label">--fs-button-action (0.75rem) · 0.12em tracking</span>
+          </div>
+          <div class="ds-item">
+            <span style="font-family:var(--mono);font-size:0.6rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-faint)">Micro label / viz chrome</span>
+            <span class="ds-label">0.6rem · 0.05–0.08em tracking</span>
+          </div>
+          <div class="ds-item">
+            <span class="module-number">01</span>
+            <span class="ds-label">.module-number — catalogue numbering</span>
+          </div>
+        </div>
+
+        <p class="ds-subsection-heading">Section label</p>
+        <div class="ds-type-specimen">
+          <p class="section-label">To the Bedrock</p>
+        </div>
+        <p style="margin-top:0.5rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.section-label — 0.75rem mono uppercase, --ink-faint, 0.12em tracking · defined in <span class="ds-token">css/components/hero-cv.css</span></p>
+
+        <p class="ds-subsection-heading">Hero meta block</p>
+        <div class="ds-preview">
+          <div class="hero-meta" style="margin-top:0;border-left:2px solid var(--link-inline);padding-left:0.7rem">
+            <span class="hero-meta-name">Robert Andersson, PhD</span>
+            <span class="hero-meta-sep" aria-hidden="true">&middot;</span>
+            <span class="hero-meta-role">Thoughts, Notes &amp; Philosophy Loops</span>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.hero-meta · .hero-meta-name (serif-alt italic) · .hero-meta-role (mono upper) · left border uses <span class="ds-token">--link-inline</span></p>
+      </section>
+
+      <!-- ─── 3. Buttons ────────────────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-buttons">
+        <p class="ds-section-label" id="ds-buttons">03 · Buttons</p>
+
+        <p class="ds-subsection-heading">.submit-btn — primary action (shared component)</p>
+        <div class="ds-preview">
+          <div class="ds-item">
+            <button class="submit-btn">Run simulation</button>
+            <span class="ds-label">Default</span>
+          </div>
+          <div class="ds-item">
+            <button class="submit-btn" style="border-color:var(--ink-mid);color:var(--ink)">Run simulation</button>
+            <span class="ds-label">Hover state</span>
+          </div>
+          <div class="ds-item">
+            <button class="submit-btn" disabled>Run simulation</button>
+            <span class="ds-label">Disabled</span>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">Defined in <span class="ds-token">css/pages/module-foundation.css</span> · disabled state in <span class="ds-token">css/components.css</span></p>
+
+        <p class="ds-subsection-heading">Drifted variants — same visual intent, independent definitions</p>
+        <div class="ds-preview">
+          <div class="ds-item">
+            <!-- Inline recreation of queue-machine-presets button active state -->
+            <button style="font-family:var(--mono);font-size:0.6rem;font-weight:300;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-faint);background:transparent;border:1px solid var(--ink-ghost);padding:0.48rem 0.72rem;cursor:pointer">Steady load</button>
+            <span class="ds-label">Flow &amp; Queuing preset</span>
+            <span class="ds-drift">⚠ .queue-machine-presets button</span>
+          </div>
+          <div class="ds-item">
+            <button style="font-family:var(--mono);font-size:0.6rem;font-weight:300;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink);background:var(--gold);border:1px solid var(--gold);padding:0.48rem 0.72rem;cursor:pointer">Spike</button>
+            <span class="ds-label">Flow &amp; Queuing preset · active</span>
+          </div>
+          <div class="ds-divider"></div>
+          <div class="ds-item">
+            <!-- Inline recreation of section-map-anchor-button -->
+            <button style="font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-mid);background:transparent;border:1px solid rgba(42,32,24,0.2);padding:0.45rem 0.62rem;border-radius:999px;cursor:pointer">Concept</button>
+            <span class="ds-label">Document Map anchor</span>
+            <span class="ds-drift">⚠ .section-map-anchor-button</span>
+          </div>
+          <div class="ds-item">
+            <button style="font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--paper);background:var(--rust);border:1px solid var(--rust);padding:0.45rem 0.62rem;border-radius:999px;cursor:pointer">Concept</button>
+            <span class="ds-label">Document Map anchor · active</span>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">These should be consolidated into shared button variants. The ⚠ marks are intentional — this page surfaces the drift.</p>
+
+        <p class="ds-subsection-heading">Ghost / icon buttons</p>
+        <div class="ds-preview">
+          <div class="ds-item">
+            <button style="font-family:var(--mono);font-size:var(--fs-button-action);font-weight:300;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-faint);background:none;border:none;padding:0;cursor:pointer">Expand section ↓</button>
+            <span class="ds-label">.collapsible-toggle</span>
+          </div>
+        </div>
+
+        <p class="ds-subsection-heading">Yellow action buttons — Explorer / Satellite</p>
+        <div class="ds-preview">
+          <div class="ds-item">
+            <button class="satellite-analyse-btn">Analyse viewport →</button>
+            <span class="ds-label">.satellite-analyse-btn · default</span>
+          </div>
+          <div class="ds-item">
+            <button class="satellite-analyse-btn" disabled>Analyse viewport →</button>
+            <span class="ds-label">Disabled</span>
+          </div>
+          <div class="ds-item">
+            <button class="satellite-analyse-btn satellite-secondary-btn">New viewport</button>
+            <span class="ds-label">.satellite-secondary-btn · ghost variant</span>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">Uses <span class="ds-token">--experience-switch-surface</span> (#ffd83e) + shadow. Defined in <span class="ds-token">css/pages/satellite-index.css</span></p>
+      </section>
+
+      <!-- ─── 4. Form elements ──────────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-forms">
+        <p class="ds-section-label" id="ds-forms">04 · Form elements</p>
+
+        <p class="ds-subsection-heading">Radio scale</p>
+        <div class="ds-preview">
+          <fieldset class="question-block" style="max-width:34rem">
+            <legend class="question-text">How clear is the decision criteria?</legend>
+            <div class="question-scale">
+              <span class="scale-pole">Not at all</span>
+              <div class="scale-options">
+                <div class="scale-option"><input type="radio" name="ds-radio" id="r1" /><label for="r1">1</label></div>
+                <div class="scale-option"><input type="radio" name="ds-radio" id="r2" /><label for="r2">2</label></div>
+                <div class="scale-option"><input type="radio" name="ds-radio" id="r3" checked /><label for="r3">3</label></div>
+                <div class="scale-option"><input type="radio" name="ds-radio" id="r4" /><label for="r4">4</label></div>
+                <div class="scale-option"><input type="radio" name="ds-radio" id="r5" /><label for="r5">5</label></div>
+              </div>
+              <span class="scale-pole scale-pole--right">Completely</span>
+            </div>
+          </fieldset>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.question-block · .question-scale · .scale-option · defined in <span class="ds-token">css/pages/module-foundation.css</span></p>
+
+        <p class="ds-subsection-heading">Range slider</p>
+        <div class="ds-preview ds-preview--column">
+          <div style="display:flex;flex-direction:column;gap:0.5rem;width:100%;max-width:20rem">
+            <label style="font-family:var(--mono);font-size:0.68rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-faint)">Arrival rate λ</label>
+            <input type="range" min="0" max="100" value="40" style="width:100%;accent-color:var(--rust)" />
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--rust)">⚠ No shared range slider class — each module styles accent-color independently.</p>
+
+        <p class="ds-subsection-heading">Search input</p>
+        <div class="ds-preview">
+          <div class="note-search" style="max-width:18rem;width:100%">
+            <span class="note-search-icon" aria-hidden="true"></span>
+            <input class="note-search-input" type="search" placeholder="Search notes…" />
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.note-search · .note-search-input — bottom border animates on focus-within. Defined in <span class="ds-token">css/pages/content-cards.css</span></p>
+      </section>
+
+      <!-- ─── 5. Cards ──────────────────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-cards">
+        <p class="ds-section-label" id="ds-cards">05 · Cards</p>
+
+        <p class="ds-subsection-heading">Simulation summary card</p>
+        <div class="sim-summary-card" style="margin-top:0;max-width:400px">
+          <p class="sim-summary-header">Simulation complete</p>
+          <p class="sim-summary-subheader">Outcomes</p>
+          <div class="period-readout">
+            <span class="summary-label">Resolved</span>
+            <span class="summary-metric outcome-resolved">42%</span>
+            <span class="summary-label">Flight</span>
+            <span class="summary-metric outcome-flight">18%</span>
+            <span class="summary-label">Oversight</span>
+            <span class="summary-metric outcome-oversight">12%</span>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.sim-summary-card · top accent uses <span class="ds-token">--card-accent-color</span> (= --sage)</p>
+
+        <p class="ds-subsection-heading">Field notes card</p>
+        <div class="field-notes-card" style="margin:0;max-width:400px">
+          <p class="field-notes-title">Field note</p>
+          <p class="field-notes-body">This card pattern is used for contextual asides and supporting observations within module essays. Left accent uses <strong>--slate-light</strong>.</p>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.field-notes-card — left accent <span class="ds-token">--slate-light</span> · defined in <span class="ds-token">css/pages/content-cards.css</span></p>
+
+        <p class="ds-subsection-heading">Note index card</p>
+        <div style="max-width:380px">
+          <div class="note-index-card">
+            <a class="note-index-link" href="#">
+              <div class="note-index-head">
+                <span class="note-index-title">On emergence and organisational structure</span>
+                <span class="note-index-date">2026-05-12</span>
+              </div>
+              <span class="note-index-summary">A short note on how local interactions produce global patterns without central coordination — and what that means for design.</span>
+              <div class="note-index-tags">
+                <span class="module-tag">emergence</span>
+                <span class="module-tag">complexity</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.note-index-card · .note-index-link — hover lifts with shadow. Left accent <span class="ds-token">--card-accent-color</span> (= --sage)</p>
+
+        <p class="ds-subsection-heading">Essay link card</p>
+        <div class="essay-links" style="margin:0;max-width:380px">
+          <a class="essay-link" href="#">
+            <span class="essay-link-label">Explore the simulation →</span>
+            <span class="essay-link-desc">Interactive garbage can model</span>
+          </a>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.essay-link — slides right on hover (translateX 4px). Label in serif-alt italic <span class="ds-token">--sage</span>. Defined in <span class="ds-token">css/pages/content-cards.css</span></p>
+
+        <p class="ds-subsection-heading">Questionnaire card</p>
+        <div class="q-card" style="max-width:400px;min-height:auto;padding:1.5rem">
+          <p class="q-step-indicator">Step 2 of 5</p>
+          <fieldset class="question-block">
+            <legend class="question-text">How often do goals shift mid-project?</legend>
+            <div class="question-scale">
+              <span class="scale-pole">Rarely</span>
+              <div class="scale-options">
+                <div class="scale-option"><input type="radio" name="ds-qcard" id="qr1"/><label for="qr1">1</label></div>
+                <div class="scale-option"><input type="radio" name="ds-qcard" id="qr2" checked/><label for="qr2">2</label></div>
+                <div class="scale-option"><input type="radio" name="ds-qcard" id="qr3"/><label for="qr3">3</label></div>
+              </div>
+              <span class="scale-pole scale-pole--right">Constantly</span>
+            </div>
+          </fieldset>
+          <div class="submit-row">
+            <button class="submit-btn">Next →</button>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.q-card · top accent uses <span class="ds-token">--ink-ghost</span></p>
+      </section>
+
+      <!-- ─── 6. Navigation components ─────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-nav">
+        <p class="ds-section-label" id="ds-nav">06 · Navigation components</p>
+
+        <p class="ds-subsection-heading">Module back-link</p>
+        <div class="ds-preview">
+          <a class="module-back-link" href="../modules/">Catalogue</a>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.module-back-link · defined in <span class="ds-token">css/pages/navigation-explorer.css</span></p>
+
+        <p class="ds-subsection-heading">Module sub-nav</p>
+        <div class="ds-preview">
+          <nav class="module-sub-nav" aria-label="Section navigation example">
+            <a class="module-sub-nav-link module-sub-nav-link--active" href="#" aria-current="page">
+              <span class="module-sub-nav-number">01</span>
+              <span class="module-sub-nav-dot" aria-hidden="true"></span>
+              Overview
+            </a>
+            <a class="module-sub-nav-link" href="#">
+              <span class="module-sub-nav-number">02</span>
+              Explore
+            </a>
+            <a class="module-sub-nav-link" href="#">
+              <span class="module-sub-nav-number">03</span>
+              Derivation
+            </a>
+          </nav>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.module-sub-nav · .module-sub-nav-link--active · defined in <span class="ds-token">css/pages/navigation-explorer.css</span></p>
+
+        <p class="ds-subsection-heading">Module tags / chips</p>
+        <div class="ds-preview">
+          <ul class="module-tags" style="list-style:none">
+            <li class="module-tag">complexity</li>
+            <li class="module-tag">decision-making</li>
+            <li class="module-tag">emergence</li>
+          </ul>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.module-tags · .module-tag · colour token <span class="ds-token">--tag-chip</span></p>
+
+        <p class="ds-subsection-heading">Demo tag</p>
+        <div class="ds-preview">
+          <div class="ds-item">
+            <span class="module-demo-tag">Demo</span>
+            <span class="ds-label">.module-demo-tag</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 7. Outcome states ─────────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-states">
+        <p class="ds-section-label" id="ds-states">07 · Outcome state colours</p>
+        <p style="font-family:var(--serif);font-size:var(--fs-body);color:var(--ink-faint);font-style:italic;margin-bottom:1.5rem">Used in GC simulation summaries and result readouts.</p>
+        <div class="ds-row ds-row--baseline" style="gap:2rem">
+          <div class="ds-item"><span class="outcome-resolved">Resolved</span><span class="ds-label">--sage</span></div>
+          <div class="ds-item"><span class="outcome-flight">Flight</span><span class="ds-label">--rust</span></div>
+          <div class="ds-item"><span class="outcome-oversight">Oversight</span><span class="ds-label">--slate</span></div>
+          <div class="ds-item"><span class="outcome-searching">Searching</span><span class="ds-label">--gold</span></div>
+          <div class="ds-item"><span class="outcome-in-co">In-CO</span><span class="ds-label">--sage-light</span></div>
+          <div class="ds-item"><span class="outcome-unresolved">Unresolved</span><span class="ds-label">--ink-faint</span></div>
+        </div>
+      </section>
+
+      <!-- ─── 8. Toggles & switches ─────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-toggles">
+        <p class="ds-section-label" id="ds-toggles">08 · Toggles &amp; switches</p>
+
+        <p class="ds-subsection-heading">Tab switch — Skills / CV</p>
+        <div class="ds-preview">
+          <div class="ds-item">
+            <nav class="experience-skill-switch" style="margin:0" aria-label="View switch example">
+              <a class="experience-skill-switch-link" href="#">Skills graph</a>
+              <a class="experience-skill-switch-link experience-skill-switch-link--active" href="#">CV</a>
+            </nav>
+            <span class="ds-label">Default · one option active</span>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.experience-skill-switch · .experience-skill-switch-link--active — yellow (#ffd83e) container, white active pill with inset ring + shadow. Defined in <span class="ds-token">css/pages/experience-skill-graph.css</span></p>
+
+        <p class="ds-subsection-heading">Segmented control — Basemap / Terrain</p>
+        <div class="ds-preview">
+          <div class="ds-item">
+            <div class="satellite-base-mode-switch" role="group" aria-label="Base context">
+              <button class="satellite-base-mode-option satellite-base-mode-option--active" aria-pressed="true">Basemap</button>
+              <button class="satellite-base-mode-option" aria-pressed="false">Terrain</button>
+            </div>
+            <span class="ds-label">Compact variant · first active</span>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.satellite-base-mode-switch · .satellite-base-mode-option--active — same yellow container as tab switch, smaller padding. Defined in <span class="ds-token">css/pages/satellite-index.css</span>
+          <span class="ds-drift" style="display:inline;margin-left:0.5rem">⚠ Same visual intent as tab switch — separate implementation</span></p>
+
+        <p class="ds-subsection-heading">Track toggle — on/off</p>
+        <div class="ds-preview">
+          <div class="ds-item">
+            <button class="satellite-toggle-control" aria-pressed="false">
+              <span class="satellite-toggle-track"><span class="satellite-toggle-thumb"></span></span>
+              Base map
+            </button>
+            <span class="ds-label">Off state</span>
+          </div>
+          <div class="ds-item">
+            <button class="satellite-toggle-control" aria-pressed="true">
+              <span class="satellite-toggle-track"><span class="satellite-toggle-thumb"></span></span>
+              Base map
+            </button>
+            <span class="ds-label">On state — white pill, green track</span>
+          </div>
+          <div class="ds-item">
+            <button class="satellite-toggle-control" aria-pressed="false" disabled>
+              <span class="satellite-toggle-track"><span class="satellite-toggle-thumb"></span></span>
+              Base map
+            </button>
+            <span class="ds-label">Disabled</span>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.satellite-toggle-control — track uses <span class="ds-token">--sage-light</span> when pressed. Thumb translates right. Defined in <span class="ds-token">css/pages/satellite-index.css</span></p>
+      </section>
+
+      <!-- ─── 9. Link variants ──────────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-links">
+        <p class="ds-section-label" id="ds-links">09 · Link variants</p>
+        <p style="font-family:var(--serif);font-size:var(--fs-body);color:var(--ink-faint);font-style:italic;margin-bottom:1.5rem">All link affordances are centralised in <span class="ds-token">css/pages/link-language.css</span> (loaded last).</p>
+
+        <p class="ds-subsection-heading">Inline prose links</p>
+        <div class="ds-preview">
+          <p class="essay-body" style="max-width:none;margin:0">
+            Ideas about <a href="#">complexity and emergence</a> — inline links within <span class="ds-token">.essay-body</span>, <span class="ds-token">.hero-body</span>, <span class="ds-token">.diagnosis-body</span>. Underline thickness 1px, offset 0.16em. Tag links like <a href="#">#emergence</a> render in --ink-faint.
+          </p>
+        </div>
+
+        <p class="ds-subsection-heading">Footer-nav / progression links</p>
+        <div class="ds-preview">
+          <div class="ds-item">
+            <a class="footer-nav-link" href="#">← Flow &amp; Waiting</a>
+            <span class="ds-label">.footer-nav-link · --sage, inset underline</span>
+          </div>
+          <div class="ds-item">
+            <a class="diagnosis-link" href="#">View full diagnosis</a>
+            <span class="ds-label">.diagnosis-link · same treatment as footer-nav-link</span>
+          </div>
+        </div>
+
+        <p class="ds-subsection-heading">In-page jump links</p>
+        <div class="ds-preview">
+          <div class="ds-item">
+            <a class="ep-jump" href="#">Jump to derivation</a>
+            <span class="ds-label">.ep-jump — bottom border underline, no bg</span>
+          </div>
+        </div>
+
+        <p class="ds-subsection-heading">Footer utility link</p>
+        <div class="ds-preview">
+          <div class="ds-item">
+            <a class="footer-link" href="#">Site Notes</a>
+            <span class="ds-label">.footer-link · --ink-faint, no underline</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 10. Status indicators ─────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-status">
+        <p class="ds-section-label" id="ds-status">10 · Status indicators</p>
+        <p style="font-family:var(--serif);font-size:var(--fs-body);color:var(--ink-faint);font-style:italic;margin-bottom:1.5rem">Used for async operation states in the Explorer. Defined in <span class="ds-token">css/pages/satellite-index.css</span>.</p>
+        <div class="ds-row ds-row--baseline" style="gap:2rem">
+          <div class="ds-item">
+            <span class="satellite-status satellite-status--working" style="font-family:var(--mono);font-size:0.68rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em">Analysing…</span>
+            <span class="ds-label">.satellite-status--working · --ochre</span>
+          </div>
+          <div class="ds-item">
+            <span class="satellite-status satellite-status--ready" style="font-family:var(--mono);font-size:0.68rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em">Ready</span>
+            <span class="ds-label">.satellite-status--ready · --sage</span>
+          </div>
+          <div class="ds-item">
+            <span class="satellite-status satellite-status--error" style="font-family:var(--mono);font-size:0.68rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em">Live imagery unavailable</span>
+            <span class="ds-label">.satellite-status--error · --rust</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../colophon/" class="footer-link">Site Notes</a></p>
+  </footer>
+
+  <script src="../js/module-route-data.js"></script>
+  <script src="../js/nav-controller.js"></script>
+</body>
+</html>

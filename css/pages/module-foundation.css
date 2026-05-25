@@ -216,25 +216,9 @@
 }
 
 .submit-btn {
-  font-family: var(--mono);
-  font-size: var(--fs-button-action);
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ink-mid);
-  background: none;
-  border: 1px solid var(--ink-ghost);
-  padding: 0.75rem 2rem;
-  cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
   width: 100%;
 }
 
 @media (min-width: 640px) {
   .submit-btn { width: auto; }
-}
-
-.submit-btn:hover {
-  border-color: var(--ink-mid);
-  color: var(--ink);
 }

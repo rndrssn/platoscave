@@ -124,14 +124,11 @@
   border: 1px solid var(--section-map-ink-border);
   background: transparent;
   color: var(--ink-mid);
-  font-family: var(--mono);
   font-size: 0.62rem;
   line-height: 1;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   padding: 0.45rem 0.62rem;
   border-radius: 999px;
-  cursor: pointer;
 }
 
 .section-map-anchor-button:hover,

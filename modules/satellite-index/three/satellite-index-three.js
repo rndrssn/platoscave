@@ -1260,62 +1260,6 @@ function initMap() {
     });
   }
 
-  initStickyStage();
-}
-
-function initStickyStage() {
-  if (!stageEl || typeof IntersectionObserver === 'undefined') return;
-  if (window.matchMedia('(max-width: 700px)').matches) return;
-
-  const sentinel = document.createElement('div');
-  sentinel.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;pointer-events:none;visibility:hidden;';
-  stageEl.parentNode.insertBefore(sentinel, stageEl);
-
-  const spacer = document.createElement('div');
-  spacer.style.cssText = 'display:none;';
-  stageEl.parentNode.insertBefore(spacer, stageEl.nextSibling);
-
-  let isStuck = false;
-
-  function applyStuck() {
-    if (isStuck) return;
-    isStuck = true;
-    spacer.style.height = stageEl.offsetHeight + 'px';
-    spacer.style.display = 'block';
-    stageEl.classList.add('satellite-three-stage--stuck');
-    if (map) map.resize();
-    if (renderer) renderer.setSize(renderer.domElement.parentElement.clientWidth, renderer.domElement.parentElement.clientHeight);
-  }
-
-  function applyUnstuck() {
-    if (!isStuck) return;
-    isStuck = false;
-    spacer.style.display = 'none';
-    stageEl.classList.remove('satellite-three-stage--stuck');
-    if (map) map.resize();
-    if (renderer) renderer.setSize(renderer.domElement.parentElement.clientWidth, renderer.domElement.parentElement.clientHeight);
-  }
-
-  const observer = new IntersectionObserver(([entry]) => {
-    if (!entry.isIntersecting && entry.boundingClientRect.top <= 0) {
-      applyStuck();
-    } else {
-      applyUnstuck();
-    }
-  }, { threshold: 0 });
-
-  observer.observe(sentinel);
-
-  window.addEventListener('resize', () => {
-    if (window.matchMedia('(max-width: 700px)').matches) {
-      applyUnstuck();
-      return;
-    }
-    if (isStuck) {
-      spacer.style.height = stageEl.offsetHeight + 'px';
-      if (map) map.resize();
-    }
-  });
 }
 
 document.addEventListener('DOMContentLoaded', initMap);

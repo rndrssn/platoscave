@@ -60,6 +60,8 @@
   display: inline-flex;
   align-items: stretch;
   gap: 0;
+  border: 1px solid var(--ink-ghost);
+  overflow: hidden;
 }
 
 .control-segmented-option {
@@ -75,6 +77,15 @@
   line-height: 1.25;
   text-align: center;
   transition: background 120ms ease, color 120ms ease;
+}
+
+.control-segmented-option + .control-segmented-option {
+  border-left: 1px solid var(--ink-ghost);
+}
+
+.control-segmented-option[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--paper);
 }
 
 .control-segmented--preset {
@@ -152,11 +163,48 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.45rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink-mid);
   cursor: pointer;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   transition: background 140ms ease, color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.control-toggle-track {
+  position: relative;
+  display: inline-flex;
+  inline-size: 2rem;
+  block-size: 1rem;
+  border: 1px solid var(--ink-ghost);
+  background: var(--paper-dark);
+}
+
+.control-toggle-thumb {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0.18rem;
+  inline-size: 0.58rem;
+  block-size: 0.58rem;
+  background: var(--ink-faint);
+  transform: translateY(-50%);
+  transition: inset-inline-start 140ms ease, background 140ms ease;
+}
+
+.control-toggle[aria-pressed='true'] {
+  color: var(--ink);
+}
+
+.control-toggle[aria-pressed='true'] .control-toggle-track {
+  border-color: var(--ink-mid);
+}
+
+.control-toggle[aria-pressed='true'] .control-toggle-thumb {
+  inset-inline-start: calc(100% - 0.76rem);
+  background: var(--ink);
 }
 
 .control-disclosure {

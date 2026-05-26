@@ -805,12 +805,14 @@
         <p class="ds-subsection-heading">HUD and high-attention controls</p>
         <div class="ds-preview ds-preview--column">
           <div class="ds-item">
-            <div class="satellite-base-mode-switch control-segmented" role="group" aria-label="Overlay base context example">
-              <button class="satellite-base-mode-option satellite-base-mode-option--active control-segmented-option" type="button" aria-pressed="true">Basemap</button>
-              <button class="satellite-base-mode-option control-segmented-option" type="button" aria-pressed="false">Terrain</button>
-            </div>
-            <span class="ds-state-label">Forced state · active</span>
-            <span class="ds-label">Overlay segmented switch · over dynamic canvas</span>
+            <button class="satellite-terrain-switch control-toggle" type="button" aria-pressed="false">
+              <span class="satellite-terrain-switch-label">Terrain</span>
+              <span class="satellite-terrain-switch-track" aria-hidden="true">
+                <span class="satellite-terrain-switch-thumb"></span>
+              </span>
+            </button>
+            <span class="ds-state-label">Forced state · off</span>
+            <span class="ds-label">Overlay binary switch · Terrain off means Basemap</span>
           </div>
           <div class="ds-item">
             <button class="satellite-toggle-control control-toggle" aria-pressed="true">
@@ -821,7 +823,7 @@
             <span class="ds-label">Contextual HUD toggle · Satellite surface</span>
           </div>
         </div>
-        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets, the CV/Skills shell, and Satellite overlay segmented controls use the neutral segmented language because they choose between peer modes. Satellite HUD elements use an instrument-panel treatment: neutral backing surfaces preserve readability over changing imagery, selected segmented options use the neutral ink active state, and attention color is reserved for warning or blocked states. Manual slider edits can clear a Flow preset, and re-clicking the active preset re-applies the scenario. Document Map anchors, risk chips, Satellite switches, and Satellite toggles carry their corresponding shared role classes in production.</p>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets and the CV/Skills shell use the neutral segmented language because they choose between peer modes. Satellite HUD elements use an instrument-panel treatment: neutral backing surfaces preserve readability over changing imagery, the Terrain control is a single binary switch where off means Basemap, and attention color is reserved for warning or blocked states. Manual slider edits can clear a Flow preset, and re-clicking the active preset re-applies the scenario. Document Map anchors, risk chips, Satellite switches, and Satellite toggles carry their corresponding shared role classes in production.</p>
       </section>
 
       <!-- ─── 4. Form elements ──────────────────────────────── -->

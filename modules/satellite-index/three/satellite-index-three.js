@@ -240,8 +240,7 @@ const INDEX_DEFS = [
 let map = null;
 let busy = false;
 let btnEl = null;
-let baseModeEl = null;
-let baseModeButtons = [];
+let terrainSwitchEl = null;
 let viewportReadoutEl = null;
 let stageEl = null;
 let northEl = null;
@@ -677,7 +676,7 @@ function resetToSelection() {
   setStatus('', null);
   const sceneMetaWrap = document.querySelector('.satellite-three-scene-meta');
   if (sceneMetaWrap) sceneMetaWrap.hidden = true;
-  if (baseModeEl) baseModeEl.hidden = true;
+  if (terrainSwitchEl) terrainSwitchEl.hidden = true;
 }
 
 function setViewerMode(mode) {
@@ -822,20 +821,15 @@ function buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn
 
 function updateTerrainContextVisibility() {
   const terrainActive = baseContextMode === 'terrain';
-  baseModeButtons.forEach(button => {
-    const active = button.dataset.baseContext === baseContextMode;
-    button.classList.toggle('satellite-base-mode-option--active', active);
-    button.setAttribute('aria-pressed', String(active));
-    if (button.dataset.baseContext === 'terrain') {
-      button.disabled = !lastBaseTextures.terrain;
-    }
-  });
+  if (!terrainSwitchEl) return;
+  terrainSwitchEl.setAttribute('aria-pressed', String(terrainActive));
+  terrainSwitchEl.disabled = !lastBaseTextures.terrain;
 }
 
 function applyBaseContextMode(mode) {
   const requestedMode = mode === 'terrain' && lastBaseTextures.terrain ? 'terrain' : 'satellite';
   baseContextMode = requestedMode;
-  if (baseModeEl) baseModeEl.hidden = !lastBaseTextures.satellite && !lastBaseTextures.terrain;
+  if (terrainSwitchEl) terrainSwitchEl.hidden = !lastBaseTextures.satellite && !lastBaseTextures.terrain;
   if (!baseMesh || !baseMesh.material) {
     updateTerrainContextVisibility();
     return;
@@ -1012,7 +1006,7 @@ async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn) {
   baseMesh.position.y = lastBasePlaneY;
   baseMesh.visible = true;
   scene.add(baseMesh);
-  if (baseModeEl) baseModeEl.hidden = false;
+  if (terrainSwitchEl) terrainSwitchEl.hidden = false;
   applyBaseContextMode(baseContextMode);
 
   const terrainGeometry = buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn);
@@ -1201,16 +1195,14 @@ async function runAnalysis() {
 
 function initMap() {
   btnEl = document.getElementById('satellite-three-analyse-btn');
-  baseModeEl = document.getElementById('satellite-three-base-mode');
-  baseModeButtons = baseModeEl ? Array.from(baseModeEl.querySelectorAll('[data-base-context]')) : [];
+  terrainSwitchEl = document.getElementById('satellite-three-terrain-switch');
   viewportReadoutEl = document.getElementById('satellite-three-viewport-readout');
   stageEl = document.getElementById('satellite-three-stage');
   northEl = document.getElementById('satellite-three-north');
 
-  if (!btnEl || !baseModeEl || !baseModeButtons.length || !viewportReadoutEl || !stageEl) return;
+  if (!btnEl || !terrainSwitchEl || !viewportReadoutEl || !stageEl) return;
 
-  const activeBaseButton = baseModeButtons.find(button => button.getAttribute('aria-pressed') === 'true');
-  baseContextMode = activeBaseButton && activeBaseButton.dataset.baseContext === 'terrain' ? 'terrain' : 'satellite';
+  baseContextMode = terrainSwitchEl.getAttribute('aria-pressed') === 'true' ? 'terrain' : 'satellite';
 
   if (!canUseMapLibre()) {
     const mapEl = document.getElementById('satellite-three-map');
@@ -1219,7 +1211,7 @@ function initMap() {
       mapEl.textContent = 'Map unavailable';
     }
     btnEl.disabled = true;
-    baseModeButtons.forEach(button => { button.disabled = true; });
+    terrainSwitchEl.disabled = true;
     setStatus('Map library unavailable · refresh and try again', 'error');
     return;
   }
@@ -1235,10 +1227,9 @@ function initMap() {
   map.on('move', updateViewportReadout);
   updateViewportReadout();
 
-  baseModeButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      applyBaseContextMode(button.dataset.baseContext);
-    });
+  terrainSwitchEl.addEventListener('click', () => {
+    const nextMode = terrainSwitchEl.getAttribute('aria-pressed') === 'true' ? 'satellite' : 'terrain';
+    applyBaseContextMode(nextMode);
   });
 
   btnEl.addEventListener('click', () => {

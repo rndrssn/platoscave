@@ -114,15 +114,15 @@ assertNotMatches(threeHtml, /Use this as a field-scale inspection surface|not re
 assertIncludes(threeHtml, 'id="satellite-three-map"', 'Three.js prototype should keep its own map container');
 assertIncludes(threeHtml, 'id="satellite-three-surface"', 'Three.js prototype should keep its own canvas');
 assertIncludes(threeHtml, 'id="satellite-three-stage" data-view="selecting"', 'Three.js prototype should start in map-selection mode');
-assertIncludes(threeHtml, 'id="satellite-three-base-mode" role="group" aria-label="Base context" hidden', 'Three.js base context switch should stay hidden until a surface exists');
-assertIncludes(threeHtml, 'data-base-context="satellite" aria-pressed="true">Basemap</button>', 'Three.js base context switch should expose Basemap as the default active option');
-assertIncludes(threeHtml, 'data-base-context="terrain" aria-pressed="false">Terrain</button>', 'Three.js base context switch should expose Terrain as the alternate option');
+assertIncludes(threeHtml, 'id="satellite-three-terrain-switch" type="button" aria-pressed="false" aria-label="Toggle terrain context" hidden', 'Three.js terrain switch should stay off/hidden until a surface exists');
+assertIncludes(threeHtml, '<span class="satellite-terrain-switch-label">Terrain</span>', 'Three.js terrain switch should expose Terrain as the single mode label');
+assertNotMatches(threeHtml, /data-base-context="satellite"|>Basemap<\/button>/, 'Three.js terrain switch should not expose Basemap as a second visible option');
 assertIncludes(threeHtml, '<canvas id="satellite-three-surface" tabindex="0" aria-label="Interactive NDVI terrain surface"></canvas>', 'Three.js surface canvas should be keyboard focusable');
 assertNotMatches(threeHtml, /satellite-three-select-btn|Select new area/, 'Three.js prototype should use one analyse/reset button instead of a separate select-new-area action');
 assertIncludes(threeHtml, 'id="satellite-three-meta" aria-label="Request metadata"', 'Three.js HUD should keep only compact request metadata in the viewer overlay');
 assertIncludes(threeHtml, 'class="satellite-three-scene-meta" hidden', 'Three.js scene metadata should live below the viewer and stay hidden until analysis');
 assert(threeHtml.indexOf('id="satellite-three-meta"') < threeHtml.indexOf('class="satellite-three-scene-meta"'), 'Scene metadata should be outside and below the HUD request metadata');
-assert(threeHtml.indexOf('id="satellite-three-base-mode"') < threeHtml.indexOf('id="satellite-three-viewport-readout"'), 'Three.js HUD should keep action, mode switch, and viewport readout in one toolbar flow');
+assert(threeHtml.indexOf('id="satellite-three-terrain-switch"') < threeHtml.indexOf('id="satellite-three-viewport-readout"'), 'Three.js HUD should keep action, terrain switch, and viewport readout in one toolbar flow');
 assert(threeHtml.indexOf('class="satellite-three-scene-meta"') < threeHtml.indexOf('id="satellite-three-index-guide"'), 'Scene metadata should appear before the index guide');
 assertIncludes(threeHtml, 'data-satellite-three-scene-meta aria-label="Scene metadata"', 'Three.js scene metadata should use an accessible label instead of a visible redundant header');
 assertNotMatches(threeHtml, /data-satellite-three-scene-meta[\s\S]*?<span class="satellite-receipt-label">Scene<\/span>/, 'Three.js scene metadata should not repeat a visible Scene label');
@@ -136,9 +136,9 @@ assertIncludes(selectorBlock(css, '.satellite-three-viewer'), 'height: clamp(420
 assertIncludes(selectorBlock(css, '#satellite-three-surface:focus-visible'), 'outline: 3px solid var(--ink);', 'Three.js canvas should expose a visible keyboard focus state');
 assertIncludes(selectorBlock(css, '.satellite-three-surface-wrap'), 'position: absolute;', 'Three.js surface layer should remain contained inside the fixed viewer');
 assertIncludes(selectorBlock(css, '.satellite-three-surface-wrap'), 'inset: 0;', 'Three.js surface layer should not escape the viewer box');
-assertIncludes(selectorBlock(css, '.satellite-base-mode-switch'), 'background: color-mix(in srgb, var(--paper) 92%, var(--ink) 8%);', 'Three.js base context switch should use a neutral readable overlay backing surface');
-assertIncludes(selectorBlock(css, '.satellite-base-mode-option--active'), 'background: var(--ink);', 'Three.js active base context option should use the neutral segmented active state');
-assertIncludes(selectorBlock(css, '.satellite-base-mode-option--active'), 'color: var(--paper);', 'Three.js active base context option should keep readable contrast on the neutral active state');
+assertIncludes(selectorBlock(css, '.satellite-terrain-switch'), 'border-left: 1px solid var(--satellite-hud-border, var(--ink-ghost));', 'Three.js terrain switch should sit as a toolbar segment');
+assertIncludes(selectorBlock(css, '.satellite-terrain-switch[aria-pressed="true"]'), 'background: var(--ink);', 'Three.js terrain switch should use the neutral active state when terrain is on');
+assertIncludes(selectorBlock(css, '.satellite-terrain-switch[aria-pressed="true"]'), 'color: var(--paper);', 'Three.js terrain switch active state should keep readable contrast');
 assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'background: transparent;', 'Three.js NDVI legend should be transparent');
 assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'border: 0;', 'Three.js NDVI legend should not have a bounding box');
 assertIncludes(selectorBlock(css, '.satellite-three-legend'), 'top: 3.5rem;', 'Three.js NDVI legend should sit below the north arrow');
@@ -230,9 +230,9 @@ assertNotMatches(threeJs, /createAxisLabel|createAxisLine|buildAxisGroup|axisGro
 assertIncludes(threeJs, 'baseMesh.visible = true;', 'Three.js base plane should remain visible for both Basemap and Terrain contexts');
 assertIncludes(threeJs, "let lastBaseTextures = { satellite: null, terrain: null };", 'Three.js satellite and contour base texture caches should be preserved after analysis');
 assertIncludes(threeJs, "baseContextMode = requestedMode;", 'Three.js terrain switch should change base context without rerunning analysis');
-assertIncludes(threeJs, "baseModeButtons = baseModeEl ? Array.from(baseModeEl.querySelectorAll('[data-base-context]')) : [];", 'Three.js base context switch should wire both mode buttons');
-assertIncludes(threeJs, 'applyBaseContextMode(button.dataset.baseContext);', 'Three.js base context switch should update cached rendering without rerunning analysis');
-assertNotMatches(threeJs, /showSatelliteBase|satellite-three-base-toggle|satellite-three-terrain-toggle/, 'Three.js Explorer should not keep the old separate base/terrain toggle wiring');
+assertIncludes(threeJs, "terrainSwitchEl = document.getElementById('satellite-three-terrain-switch');", 'Three.js terrain switch should wire the single binary switch');
+assertIncludes(threeJs, "const nextMode = terrainSwitchEl.getAttribute('aria-pressed') === 'true' ? 'satellite' : 'terrain';", 'Three.js terrain switch should map off to Basemap and on to Terrain');
+assertNotMatches(threeJs, /showSatelliteBase|satellite-three-base-toggle|satellite-three-terrain-toggle|baseModeButtons|data-base-context/, 'Three.js Explorer should not keep the old separate base/terrain toggle wiring');
 assertNotMatches(threeJs, /base texture MapTiler satellite tiles|base texture unavailable|SENTINEL_SOURCE_RESOLUTION_LABEL|sceneData\.constellation/, 'Three.js metadata should stay compact and avoid source/base-texture telemetry');
 assertNotMatches(threeJs, /Plotly\./, 'Three.js prototype must not use Plotly');
 
@@ -364,9 +364,8 @@ assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-controls'), '
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-analyse-btn:not(:disabled)'), 'box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 52%, transparent 48%);', 'Three.js enabled analyze button should be emphasized by a quiet inset line, not a heavy fill');
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-analyse-btn::before'), 'inline-size: 0.72rem;', 'Three.js HUD primary action should use a compact viewport icon cue');
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-controls'), 'gap: 0;', 'Three.js HUD should render action, mode switch, and readout as one toolbar capsule');
-assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-base-mode-switch'), 'background: transparent;', 'Three.js base context switch should sit inside the shared toolbar capsule');
-assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-base-mode-option:not(.satellite-base-mode-option--active):hover'), 'background: var(--satellite-hud-muted-surface);', 'Three.js inactive base context options should show a visible neutral hover cue');
-assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-base-mode-option--active:hover'), 'background: var(--ink);', 'Three.js active base context option should not become visually ambiguous on hover');
+assertIncludes(selectorBlock(css, '.satellite-terrain-switch:hover:not(:disabled)'), 'background: var(--satellite-hud-muted-surface, color-mix(in srgb, var(--ink) 8%, transparent 92%));', 'Three.js terrain switch should show a visible neutral hover cue');
+assertIncludes(selectorBlock(css, '.satellite-terrain-switch[aria-pressed="true"] .satellite-terrain-switch-thumb'), 'inset-inline-start: calc(100% - 0.56rem);', 'Three.js terrain switch thumb should visibly move when terrain is on');
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-viewport-readout'), 'background: var(--satellite-hud-surface);', 'Three.js viewport readout should use the neutral HUD surface for normal metadata');
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-viewport-readout--blocked'), 'background: color-mix(in srgb, var(--control-attention-surface) 48%, var(--paper) 52%);', 'Three.js blocked viewport readout should reserve attention color for warning states');
 assertNotMatches(css, /\.satellite-three-hud \.satellite-analyse-btn[\s\S]*?rgba\(255,\s*255,\s*255/, 'Three.js analyze button should not use translucent white overlay styling');

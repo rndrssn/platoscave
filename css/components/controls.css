@@ -1,6 +1,7 @@
 /* Shared control-role vocabulary for actions, mode switches, filter chips, toggles, and disclosures. */
 
 .control-action,
+.control-range,
 .control-segmented-option,
 .control-chip,
 .control-toggle,
@@ -9,6 +10,7 @@
 }
 
 .control-action,
+.control-range,
 .control-segmented-option,
 .control-chip,
 .control-toggle,
@@ -37,6 +39,7 @@
 }
 
 .control-action:focus-visible,
+.control-range:focus-visible,
 .control-segmented-option:focus-visible,
 .control-chip:focus-visible,
 .control-toggle:focus-visible,
@@ -74,6 +77,69 @@
   transition: background 120ms ease, color 120ms ease;
 }
 
+.control-segmented--preset {
+  inline-size: 100%;
+}
+
+.control-range {
+  -webkit-appearance: none;
+  appearance: none;
+  inline-size: 100%;
+  block-size: 1.1rem;
+  background: transparent;
+  cursor: pointer;
+  margin: 0.1rem 0;
+}
+
+.control-range:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.control-range::-webkit-slider-runnable-track {
+  block-size: 1px;
+  background: var(--control-range-color, var(--ink-ghost));
+  border: 0;
+}
+
+.control-range::-moz-range-track {
+  block-size: 1px;
+  background: var(--control-range-color, var(--ink-ghost));
+  border: 0;
+}
+
+.control-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--control-range-color, var(--ink-ghost));
+  background: color-mix(in srgb, var(--paper) 84%, var(--control-range-color, var(--ink-ghost)) 16%);
+  margin-top: -0.4rem;
+  transition: border-color 140ms ease, transform 140ms ease;
+}
+
+.control-range::-moz-range-thumb {
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--control-range-color, var(--ink-ghost));
+  background: color-mix(in srgb, var(--paper) 84%, var(--control-range-color, var(--ink-ghost)) 16%);
+  transition: border-color 140ms ease, transform 140ms ease;
+}
+
+.control-range:hover::-webkit-slider-thumb,
+.control-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--control-range-color, var(--ink-ghost));
+  transform: scale(1.1);
+}
+
+.control-range:hover::-moz-range-thumb,
+.control-range:focus-visible::-moz-range-thumb {
+  border-color: var(--control-range-color, var(--ink-ghost));
+  transform: scale(1.1);
+}
+
 .control-chip {
   display: inline-flex;
   align-items: center;
@@ -106,6 +172,7 @@
 }
 
 .control-action:disabled,
+.control-range:disabled,
 .control-segmented-option:disabled,
 .control-toggle:disabled,
 .control-disclosure:disabled {

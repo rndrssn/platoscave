@@ -62,9 +62,9 @@
       </header>
 
       <section class="queue-machine-lab" aria-label="Queue and utilization demonstration">
-        <p class="force-graph-helper viz-chrome-helper queue-machine-lab-helper">Select a scenario preset or adjust arrival rate, service capacity, and variability coefficients &mdash; then observe how the charts and readouts change together.</p>
+        <p class="viz-chrome-helper queue-machine-lab-helper">Select a scenario preset or adjust arrival rate, service capacity, and variability coefficients &mdash; then observe how the charts and readouts change together.</p>
         <div class="queue-machine-presets">
-          <div class="queue-machine-preset-group control-segmented" role="group" aria-label="Scenario presets">
+          <div class="queue-machine-preset-group control-segmented control-segmented--preset" role="group" aria-label="Scenario presets">
             <button type="button" data-queue-preset="bursty" class="control-segmented-option">Bursty product work</button>
             <button type="button" data-queue-preset="breathing" class="control-segmented-option">Slack absorbs variation</button>
             <button type="button" data-queue-preset="strained" class="control-segmented-option">Strained but stable</button>
@@ -77,22 +77,22 @@
           <div class="queue-machine-control">
             <label for="queue-arrival-rate">Arrival rate (&lambda;)</label>
             <span class="queue-machine-control-meta">(&lambda;&thinsp;=&thinsp;<span data-output="arrival-rate">4.3</span> items / time unit)</span>
-            <input id="queue-arrival-rate" type="range" min="0.10" max="0.98" step="0.01" value="0.72" />
+            <input id="queue-arrival-rate" class="control-range" type="range" min="0.10" max="0.98" step="0.01" value="0.72" />
           </div>
           <div class="queue-machine-control">
             <label for="queue-service-rate">Service capacity (&mu;)</label>
             <span class="queue-machine-control-meta">(&mu;&thinsp;=&thinsp;<span data-output="service-rate">6.0</span> items / time unit)</span>
-            <input id="queue-service-rate" type="range" min="0.50" max="1.20" step="0.01" value="1.00" />
+            <input id="queue-service-rate" class="control-range" type="range" min="0.50" max="1.20" step="0.01" value="1.00" />
           </div>
           <div class="queue-machine-control">
             <label for="queue-arrival-variability">Arrival variability (C<sub>a</sub>)</label>
             <span class="queue-machine-control-meta">(C<sub>a</sub>&thinsp;=&thinsp;<span data-output="arrival-cv">1.7</span>)</span>
-            <input id="queue-arrival-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.65" />
+            <input id="queue-arrival-variability" class="control-range" type="range" min="0.00" max="2.00" step="0.05" value="1.65" />
           </div>
           <div class="queue-machine-control">
             <label for="queue-service-variability">Service variability (C<sub>s</sub>)</label>
             <span class="queue-machine-control-meta">(C<sub>s</sub>&thinsp;=&thinsp;<span data-output="service-cv">1.8</span>)</span>
-            <input id="queue-service-variability" type="range" min="0.00" max="2.00" step="0.05" value="1.80" />
+            <input id="queue-service-variability" class="control-range" type="range" min="0.00" max="2.00" step="0.05" value="1.80" />
           </div>
         </form>
 
@@ -114,11 +114,11 @@
             </p>
             <svg class="queue-machine-chart" data-queue-backlog-chart role="img" aria-label="Bar chart of backlog over time"></svg>
           </div>
-          <p class="queue-machine-status viz-chrome-status" data-queue-status aria-live="polite"></p>
+          <p class="queue-machine-status viz-chrome-insight" data-queue-status aria-live="polite"></p>
         </div>
 
         <h2 class="queue-machine-chart-title">Long-run estimates</h2>
-        <p class="force-graph-helper viz-chrome-helper queue-machine-readout-caption">The charts show one illustrative sample path. The readouts estimate long-run behavior: M/M/1 uses exponential distributions (C<sub>a</sub>&thinsp;=&thinsp;C<sub>s</sub>&thinsp;=&thinsp;1); Kingman applies the full variability penalty from your slider values. The gap between them is the cost of variability at this load.</p>
+        <p class="viz-chrome-helper queue-machine-readout-caption">The charts show one illustrative sample path. The readouts estimate long-run behavior: M/M/1 uses exponential distributions (C<sub>a</sub>&thinsp;=&thinsp;C<sub>s</sub>&thinsp;=&thinsp;1); Kingman applies the full variability penalty from your slider values. The gap between them is the cost of variability at this load.</p>
         <dl class="queue-machine-readout viz-chrome-readout" aria-label="Queue metrics readout">
           <div>
             <dt class="viz-chrome-readout-label">Utilization (&rho;)</dt>

@@ -37,11 +37,9 @@
   gap: 0;
   margin-top: 1.1rem;
   margin-bottom: 0;
-  padding: 0.2rem;
-  border: 0;
-  border-radius: 0.5rem;
-  background: var(--experience-switch-surface);
-  box-shadow: 0.36rem 0.36rem 0 var(--experience-switch-shadow);
+  border: 1px solid var(--ink-ghost);
+  background: transparent;
+  overflow: hidden;
 }
 
 .experience-skill-switch-link {
@@ -52,39 +50,36 @@
   min-height: 2.6rem;
   padding: 0.22rem 1.22rem;
   border: 0;
-  border-radius: 0.34rem;
   font-family: var(--mono);
   font-style: normal;
   font-size: 0.86rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-weight: 300;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   text-decoration: none;
-  color: var(--experience-switch-ink);
+  color: var(--ink-faint);
   background: transparent;
-  transition: color 220ms ease, background-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.experience-skill-switch-link + .experience-skill-switch-link {
+  border-left: 1px solid var(--ink-ghost);
 }
 
 .experience-skill-switch-link:hover,
 .experience-skill-switch-link:focus-visible {
-  color: var(--experience-switch-ink);
-  background: var(--experience-switch-hover-surface);
-  transform: translateY(-1px);
+  color: var(--ink-mid);
+  background: color-mix(in srgb, var(--paper) 92%, var(--ink) 8%);
   outline: none;
 }
 
 .experience-skill-switch-link--active {
-  color: var(--experience-switch-ink);
-  background: var(--experience-switch-active-surface);
-  box-shadow:
-    inset 0 0 0 2px var(--experience-switch-active-ring),
-    0.24rem 0.24rem 0 var(--experience-switch-shadow);
+  color: var(--paper);
+  background: var(--ink);
 }
 
 .experience-skill-switch-link:focus-visible {
-  box-shadow:
-    0 0 0 3px var(--experience-switch-focus-inner),
-    0 0 0 6px var(--experience-switch-focus-outer);
+  box-shadow: inset 0 0 0 2px var(--ink);
 }
 
 .experience-skill-content {
@@ -155,7 +150,6 @@
 
   .experience-skill-switch {
     margin-top: 0.84rem;
-    padding: 0.22rem;
     min-height: 2.48rem;
   }
 

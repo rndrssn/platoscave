@@ -77,16 +77,16 @@ assertNotMatches(demoHtml, /id="satellite-date"|type="date"/, 'Date picker shoul
 assertNotMatches(demoHtml, /<span class="satellite-control-label">Index<\/span>|Map &middot; current viewport|NDVI surface &middot; z = NDVI/, 'Technical labels above the canvases should stay removed');
 assertIncludes(demoHtml, 'id="satellite-base-toggle"', 'Satellite base toggle should be present in the controls bar');
 assertNotMatches(demoHtml, /data-control-style|data-control-style-option|satellite-control-style-switch/, 'Temporary control style switcher should not remain after choosing the Experience style');
-assertIncludes(demoHtml, '<p class="satellite-status" id="satellite-status" aria-live="polite"></p>', 'Status line should start empty');
+assertIncludes(demoHtml, '<p class="satellite-status viz-chrome-status" id="satellite-status" aria-live="polite"></p>', 'Status line should start empty and use shared chrome status role');
 assert(demoHtml.indexOf('id="satellite-meta"') < demoHtml.indexOf('class="satellite-demo-stage"'), 'Analysis metadata should appear above the map and Plotly surfaces');
 assert(demoHtml.indexOf('id="satellite-meta"') < demoHtml.indexOf('id="satellite-viewport-readout"'), 'Viewport readout should live inside the request receipt');
 assert(demoHtml.indexOf('id="satellite-viewport-readout"') < demoHtml.indexOf('class="satellite-demo-stage"'), 'Viewport readout should appear before the map and Plotly surfaces');
 assertIncludes(demoHtml, 'satellite-receipt-line satellite-receipt-line--request', 'Request receipt line missing');
 assertIncludes(demoHtml, 'satellite-receipt-line satellite-receipt-line--scene', 'Scene receipt line missing');
 assertIncludes(demoHtml, 'data-satellite-scene-meta', 'Acquisition metadata target missing');
-assertIncludes(demoHtml, '<span class="satellite-receipt-label">Request</span>', 'Request receipt label missing');
-assertIncludes(demoHtml, '<span class="satellite-receipt-label">Scene</span>', 'Scene receipt label missing');
-assertIncludes(demoHtml, '<span class="satellite-receipt-value satellite-receipt-value--empty">Pending</span>', 'Initial scene receipt value should be pending, not another instruction');
+assertIncludes(demoHtml, '<span class="satellite-receipt-label viz-chrome-readout-label">Request</span>', 'Request receipt label missing');
+assertIncludes(demoHtml, '<span class="satellite-receipt-label viz-chrome-readout-label">Scene</span>', 'Scene receipt label missing');
+assertIncludes(demoHtml, '<span class="satellite-receipt-value viz-chrome-readout-value satellite-receipt-value--empty">Pending</span>', 'Initial scene receipt value should be pending, not another instruction');
 assertNotMatches(demoHtml, /satellite-receipt-value--empty">Run analysis</, 'Initial scene receipt should not compete with the primary action copy');
 assertNotMatches(demoHtml, /satellite-meta-style-switch|data-meta-style|data-meta-style-option/, 'Metadata style selector should be removed after choosing Bar');
 
@@ -125,7 +125,7 @@ assert(threeHtml.indexOf('id="satellite-three-meta"') < threeHtml.indexOf('class
 assert(threeHtml.indexOf('class="satellite-three-scene-meta"') < threeHtml.indexOf('id="satellite-three-index-guide"'), 'Scene metadata should appear before the index guide');
 assertIncludes(threeHtml, 'data-satellite-three-scene-meta aria-label="Scene metadata"', 'Three.js scene metadata should use an accessible label instead of a visible redundant header');
 assertNotMatches(threeHtml, /data-satellite-three-scene-meta[\s\S]*?<span class="satellite-receipt-label">Scene<\/span>/, 'Three.js scene metadata should not repeat a visible Scene label');
-assertIncludes(threeHtml, 'class="satellite-three-legend"', 'Three.js prototype should expose an NDVI color legend overlay');
+assertIncludes(threeHtml, 'class="satellite-three-legend viz-chrome-legend"', 'Three.js prototype should expose an NDVI color legend overlay with shared chrome role');
 assertIncludes(threeHtml, 'class="satellite-three-north"', 'Three.js prototype should expose a north indicator overlay');
 assertNotMatches(threeHtml, /satellite-three-north-label|>N<\/span>/, 'Three.js north indicator should not include a text label');
 assertIncludes(selectorBlock(css, '.satellite-three-stage'), 'margin-bottom: 1.75rem;', 'Three.js viewer should leave room before following text');

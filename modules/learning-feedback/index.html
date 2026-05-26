@@ -67,17 +67,17 @@
 
       <section class="mix-mapper-layout" aria-label="Learning and Feedback visualization and interpretation">
         <article class="mix-mapper-viz-card" aria-label="Epistemic Bets visualization">
-          <p class="mix-mapper-viz-hint">Select a dimension (Process, Assumption, Learning) to explore the map.</p>
-          <div class="mix-mapper-legend" role="group" aria-label="Legend and mode filter">
-            <button type="button" class="mix-mapper-legend-btn" data-mode="learning" aria-pressed="false">
+          <p class="mix-mapper-viz-hint viz-chrome-helper">Select a dimension (Process, Assumption, Learning) to explore the map.</p>
+          <div class="mix-mapper-legend viz-chrome-legend" role="group" aria-label="Legend and mode filter">
+            <button type="button" class="mix-mapper-legend-btn viz-chrome-legend-filter" data-mode="learning" aria-pressed="false">
               <span class="mix-mapper-legend-marker mix-mapper-legend-marker--dot mix-mapper-legend-marker--learning" aria-hidden="true"></span>
               <span class="mix-mapper-legend-label">Learning</span>
             </button>
-            <button type="button" class="mix-mapper-legend-btn" data-mode="process" aria-pressed="false">
+            <button type="button" class="mix-mapper-legend-btn viz-chrome-legend-filter" data-mode="process" aria-pressed="false">
               <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--process" aria-hidden="true"></span>
               <span class="mix-mapper-legend-label">Process</span>
             </button>
-            <button type="button" class="mix-mapper-legend-btn" data-mode="assumptions" aria-pressed="false">
+            <button type="button" class="mix-mapper-legend-btn viz-chrome-legend-filter" data-mode="assumptions" aria-pressed="false">
               <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--assumptions" aria-hidden="true"></span>
               <span class="mix-mapper-legend-label">Assumptions</span>
             </button>
@@ -104,7 +104,7 @@
     </div>
   </main>
 
-  <div id="mix-mapper-tooltip" class="mix-mapper-tooltip" role="status" aria-live="polite" aria-hidden="true"></div>
+  <div id="mix-mapper-tooltip" class="mix-mapper-tooltip viz-chrome-tooltip" role="status" aria-live="polite" aria-hidden="true"></div>
 
   <footer>
     <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="../../colophon/" class="footer-link">Site Notes</a></p>

@@ -294,16 +294,16 @@
     if (!el) return;
     el.innerHTML = '';
     const h = document.createElement('div');
-    h.className = 'section-map-tooltip-header';
+    h.className = 'section-map-tooltip-header viz-chrome-tooltip-header';
     h.textContent = header;
     el.appendChild(h);
     const b = document.createElement('div');
-    b.className = 'section-map-tooltip-body';
+    b.className = 'section-map-tooltip-body viz-chrome-tooltip-body';
     b.textContent = body;
     el.appendChild(b);
     if (meta) {
       const m = document.createElement('div');
-      m.className = 'section-map-tooltip-meta';
+      m.className = 'section-map-tooltip-meta viz-chrome-tooltip-meta';
       m.textContent = meta;
       el.appendChild(m);
     }

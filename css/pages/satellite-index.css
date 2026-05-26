@@ -875,6 +875,7 @@
 /* ─── Terrain renderer — HUD overlay ─────────────────────── */
 
 .satellite-three-hud {
+  /* Page-specific overlay contrast: keep readable over dynamic map/canvas imagery. */
   position: absolute;
   top: 0.75rem;
   left: 0.75rem;

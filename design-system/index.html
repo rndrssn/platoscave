@@ -434,6 +434,32 @@
             </div>
           </div>
         </div>
+
+        <p class="ds-subsection-heading">Page rhythm modes</p>
+        <div class="ds-preview ds-preview--column">
+          <div class="ds-role-table" aria-label="Page rhythm modes">
+            <div class="ds-role-row">
+              <p class="ds-role-name">Essay rhythm</p>
+              <p class="ds-role-use">Use for long-form explanation. Prioritize readable measure, generous section breaks, quiet links, and prose-led hierarchy.</p>
+              <p class="ds-role-map">Examples: module roots, notes, articles, theory sections</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Lab rhythm</p>
+              <p class="ds-role-use">Use for interactive tools. Keep controls compact, stages prominent, readouts close to the visual, and insight copy readable.</p>
+              <p class="ds-role-map">Examples: Flow Explore, Satellite Explorer, GC Explorer</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Catalogue rhythm</p>
+              <p class="ds-role-use">Use for scan-first indexes. Prefer rows, sparse enclosure, compact metadata, and strong title/descriptor alignment.</p>
+              <p class="ds-role-map">Examples: module catalogue, note index, article index</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Reference rhythm</p>
+              <p class="ds-role-use">Use for taxonomies, tables, derivations, and design-system specimens. Favor clear grouping, compact labels, and stable comparison grids.</p>
+              <p class="ds-role-map">Examples: taxonomy grids, M/M/1 derivation, this page</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- ─── 0. Specimen states ───────────────────────────── -->
@@ -551,6 +577,38 @@
             <span class="ds-note">#5A7080</span>
           </div>
         </div>
+
+        <p class="ds-subsection-heading">Accent semantics</p>
+        <div class="ds-preview ds-preview--column">
+          <div class="ds-role-table" aria-label="Accent token semantics">
+            <div class="ds-role-row">
+              <p class="ds-role-name">Rust</p>
+              <p class="ds-role-use">Constraint, risk, warning, capacity pressure, conflict, or negative outcome. Use when the interface needs tension or consequence.</p>
+              <p class="ds-role-map"><span class="ds-token">--rust</span> · examples: error status, Flow capacity line, flight outcome</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Sage</p>
+              <p class="ds-role-use">Constructive signal, resolved/positive state, selected conceptual emphasis, or calm confirmation. Use when the system is showing coherence or useful progress.</p>
+              <p class="ds-role-map"><span class="ds-token">--sage</span> · examples: resolved outcome, card accent, conceptual highlights</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Gold</p>
+              <p class="ds-role-use">Active mode, high-attention context switch, searching/in-progress emphasis, or chosen lens. Do not use as a generic decorative highlight.</p>
+              <p class="ds-role-map"><span class="ds-token">--gold</span> · examples: active Flow preset, CV/Satellite context controls through attention tokens</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Slate</p>
+              <p class="ds-role-use">Structural framing, secondary systems, neutral contrast, or oversight/meta-state. Use when the interface needs weight without alarm.</p>
+              <p class="ds-role-map"><span class="ds-token">--slate</span> · examples: oversight outcome, secondary visual grouping, structural accents</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Ochre</p>
+              <p class="ds-role-use">Working, pending, transitional, or caution-adjacent state. Use when something is active but not failed or confirmed.</p>
+              <p class="ds-role-map"><span class="ds-token">--ochre</span> · examples: working status, pending analysis, transitional notes</p>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Themes may remap the literal colours, but the semantic roles should hold. If one surface needs more than two accent roles at once, prefer neutral ink tiers for supporting detail so the primary signal stays legible.</p>
 
         <p class="ds-subsection-heading">Viz tier <span class="ds-note" style="text-transform:none;letter-spacing:0"> — data visualisation only, not UI</span></p>
         <div class="ds-row">
@@ -942,8 +1000,8 @@
         <p class="ds-subsection-heading">Demo tag</p>
         <div class="ds-preview">
           <div class="ds-item">
-            <span class="module-demo-tag">Demo</span>
-            <span class="ds-label">.module-demo-tag</span>
+            <span class="module-demo-tag" aria-label="Demo">D</span>
+            <span class="ds-label">.module-demo-tag · compact D with accessible Demo label</span>
           </div>
         </div>
       </section>
@@ -1091,7 +1149,7 @@
                 <div class="module-entry-title-row">
                   <span class="module-number">07</span>
                   <h2 class="module-title">Boundary-free monitoring</h2>
-                  <span class="module-demo-tag">Demo</span>
+                  <span class="module-demo-tag" aria-label="Demo">D</span>
                 </div>
                 <p class="module-descriptor">Viewport-as-AOI remote-sensing proof of concept.</p>
                 <p class="module-entry-sections">01 Overview · 02 Explorer</p>
@@ -1190,6 +1248,7 @@
           <li><strong>Panels</strong> chart panels stay unboxed by default; hierarchy comes from title, explanatory note, fixed chart height, and shared visualisation chrome.</li>
           <li><strong>Mobile</strong> preset controls may wrap into a two-by-two grid, chart panels stack, and metric readouts collapse before text is squeezed.</li>
         </ul>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Lab pages should feel like instruments, not dashboards. Keep the primary visual or canvas visually dominant, put controls before the stage, put explanatory insight after the stage, and keep theory/prose as a follow-up layer rather than inline instruction.</p>
       </section>
 
       <!-- ─── 16. Visualisation chrome ──────────────────────── -->
@@ -1333,6 +1392,14 @@
           <li><strong>When production changes</strong> update the matching specimen or add a module-specific exception.</li>
           <li><strong>When a specimen becomes canonical</strong> move its shared vocabulary into <span class="ds-token">css/components/</span> and keep contextual styling in page CSS.</li>
           <li><strong>When a variant remains unresolved</strong> record it in the backlog instead of letting the design-system page imply it is approved.</li>
+        </ul>
+        <p class="ds-subsection-heading">Theme quality checklist</p>
+        <ul class="ds-principle-list" style="max-width:60ch">
+          <li><strong>Readability</strong> body text, labels, links, and captions remain legible without relying on theme novelty.</li>
+          <li><strong>Controls</strong> hover, focus, selected, disabled, and mobile wrapping states remain visible for buttons, chips, toggles, presets, and ranges.</li>
+          <li><strong>Cards and rows</strong> borders, accents, and shadows preserve the card/row taxonomy instead of turning every surface into the same block.</li>
+          <li><strong>Visualisation</strong> chart marks, legends, readouts, tooltips, and interpretive insight preserve data meaning and do not compete with page decoration.</li>
+          <li><strong>Overlays</strong> HUDs and canvas overlays stay readable on dynamic imagery, especially on Satellite Explorer.</li>
         </ul>
       </section>
 

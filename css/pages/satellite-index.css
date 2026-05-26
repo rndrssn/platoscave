@@ -324,6 +324,59 @@
   background: transparent;
 }
 
+.satellite-terrain-switch[hidden] {
+  display: none;
+}
+
+.satellite-terrain-switch {
+  min-height: 2.2rem;
+  padding: 0.22rem 0.62rem;
+  border: 0;
+  border-left: 1px solid var(--satellite-hud-border, var(--ink-ghost));
+  background: transparent;
+  color: var(--ink-faint);
+  box-shadow: none;
+}
+
+.satellite-terrain-switch:hover:not(:disabled) {
+  background: var(--satellite-hud-muted-surface, color-mix(in srgb, var(--ink) 8%, transparent 92%));
+  color: var(--ink);
+}
+
+.satellite-terrain-switch[aria-pressed="true"] {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.satellite-terrain-switch-label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.satellite-terrain-switch-track {
+  position: relative;
+  display: inline-flex;
+  inline-size: 1.55rem;
+  block-size: 0.78rem;
+  border: 1px solid currentColor;
+  background: transparent;
+}
+
+.satellite-terrain-switch-thumb {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0.14rem;
+  inline-size: 0.42rem;
+  block-size: 0.42rem;
+  background: currentColor;
+  transform: translateY(-50%);
+  transition: inset-inline-start 140ms ease;
+}
+
+.satellite-terrain-switch[aria-pressed="true"] .satellite-terrain-switch-thumb {
+  inset-inline-start: calc(100% - 0.56rem);
+}
+
 .satellite-secondary-btn {
   background: transparent;
   color: var(--ink-mid);
@@ -1004,32 +1057,17 @@
   box-shadow: none;
 }
 
-.satellite-three-hud .satellite-base-mode-switch {
-  border-color: transparent;
-  border-left: 1px solid var(--satellite-hud-border);
-  background: transparent;
-  box-shadow: none;
-}
-
-.satellite-three-hud .satellite-base-mode-option {
-  min-height: 1.9rem;
-  padding-inline: 0.52rem;
-}
-
-.satellite-three-hud .satellite-base-mode-option:not(.satellite-base-mode-option--active):hover {
-  background: var(--satellite-hud-muted-surface);
-  color: var(--ink);
-}
-
-.satellite-three-hud .satellite-base-mode-option--active:hover {
-  background: var(--ink);
-  color: var(--paper);
-}
-
 .satellite-three-hud .satellite-toggle-control[aria-pressed="true"] {
   border-color: var(--control-attention-surface);
   background: var(--control-attention-surface);
   color: var(--control-attention-ink);
+}
+
+.satellite-three-hud .satellite-terrain-switch:disabled {
+  color: var(--ink-faint);
+  background: transparent;
+  cursor: default;
+  opacity: 0.55;
 }
 
 .satellite-three-hud .satellite-analyse-btn:not(:disabled) {

@@ -8,6 +8,55 @@ The live design-system page is the current reference for what to use. When a bac
 
 Design-system consolidation should preserve the same overall site feel while reducing ambiguous pattern meanings. A resolved item should leave buttons, chips, switches, toggles, disclosures, and visualisation controls with intact default, hover, focus, active/selected, disabled, keyboard, and mobile wrapping states.
 
+## Visual Feel Improvement Plan
+
+This track is about improving the site's authored visual quality, not only reducing drift. The target feel is an academic field notebook crossed with an interactive systems lab: restrained, inspectable, precise, and quietly distinctive.
+
+1. **Accent semantics**
+   - Plan status: Resolved.
+   - Last touched: 2026-05-26.
+   - Validation: `node tests/run-all.js` passed on 2026-05-26 after adding accent semantics to the design-system page.
+   - Goal: make accent use intentional across themes and modules.
+   - Direction: define functional meanings for rust, sage, gold, slate, and ochre; separate UI state, data semantics, warnings, active modes, and structural framing.
+   - Production impact: likely modest at first; mostly design-system guidance, followed by targeted cleanup where accents currently compete.
+   - Validation focus: theme switcher review, visualisation legends, status states, active controls, and warning/error surfaces.
+
+2. **Page rhythm modes**
+   - Plan status: Resolved.
+   - Last touched: 2026-05-26.
+   - Validation: `node tests/run-all.js` passed on 2026-05-26 after adding page rhythm modes to the design-system system map.
+   - Goal: make the site's density shifts feel deliberate rather than locally tuned.
+   - Direction: define essay rhythm, lab rhythm, catalogue rhythm, and reference rhythm, with guidance for spacing, section boundaries, line length, chrome density, and specimen scale.
+   - Production impact: medium; could improve module pages, catalogues, and long-form notes without changing content.
+   - Validation focus: desktop/mobile spacing, page scanability, and whether each page type keeps its intended tone.
+
+3. **Interactive lab pattern**
+   - Plan status: Resolved.
+   - Last touched: 2026-05-26.
+   - Validation: `node tests/run-all.js` passed on 2026-05-26 after expanding the interactive lab-stage guidance.
+   - Goal: make Flow, Satellite, GC Explorer, and future tools share a recognizable lab grammar.
+   - Direction: canonicalize helper, presets/modes, parameter controls, chart/canvas stage, interpretive insight, metric readout, and follow-up theory/prose.
+   - Production impact: medium to broad, but should be applied incrementally per module.
+   - Validation focus: Flow Explore, Satellite Explorer HUD/readability, GC Explorer summaries, keyboard controls, and mobile wrapping.
+
+4. **Theme quality checklist**
+   - Plan status: Resolved.
+   - Last touched: 2026-05-26.
+   - Validation: `node tests/run-all.js` passed on 2026-05-26 after adding the checklist to the design-system maintenance section.
+   - Goal: distinguish polished public themes from stress-test/audit themes and prevent theme-specific regressions.
+   - Direction: document checks for body readability, control contrast, card borders, focus rings, visualisation legibility, HUD readability, and mobile wrapping.
+   - Production impact: mostly design-system and theme governance until individual themes are edited.
+   - Validation focus: design-system theme switcher, high-contrast themes, neon/brutalist themes, and visualisation-heavy pages.
+
+5. **Design-system polish**
+   - Plan status: Resolved.
+   - Last touched: 2026-05-26.
+   - Validation: `node tests/run-all.js` passed on 2026-05-26 after matching the demo badge specimen to production and improving first-viewport guidance.
+   - Goal: make the design-system page itself feel like the strongest reference surface on the site.
+   - Direction: preserve exhaustive coverage while improving the first viewport, canonical specimen emphasis, contextual example hierarchy, and small mismatches such as the demo badge specimen.
+   - Production impact: design-system page only, except when mismatches reveal production drift.
+   - Validation focus: first-viewport clarity, anchor navigation, theme switcher behavior, and parity with production specimens.
+
 ## Medium Priority Implementation Plan
 
 Work the medium-priority items in this order: visualisation chrome, specimen state model, then card and row taxonomy. This sequence consolidates the most interaction-heavy surfaces first, then clarifies how the design-system page represents states, and only then tackles broader content containers.

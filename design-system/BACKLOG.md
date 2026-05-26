@@ -31,7 +31,9 @@ Work the medium-priority items in this order: visualisation chrome, specimen sta
    - Validation focus: link integrity, accessible labels, keyboard-visible focus examples, and no misleading inert controls.
 
 3. **Card and row taxonomy**
-   - Plan status: Pending.
+   - Plan status: Resolved.
+   - Last touched: 2026-05-26.
+   - Validation: `node tests/run-all.js` passed on 2026-05-26 after adding the shared card/row vocabulary and canonical design-system mappings.
    - Goal: clarify when to use informational cards, action cards, assessment cards, callouts, catalogue rows, and metric/result cards.
    - Implementation: define the taxonomy in `design-system/index.html`; map current surfaces to the taxonomy; consolidate shared card anatomy only where existing cards already use the same token structure.
    - Production impact: potentially broader visual cleanup, so keep changes conservative and preserve academic/product tones by module.
@@ -91,6 +93,8 @@ Work the medium-priority items in this order: visualisation chrome, specimen sta
 
 ### Card and row taxonomy
 
+**Status:** Resolved. Shared taxonomy classes live in `css/components/cards.css`, the design-system page maps canonical card and row roles to current surfaces, and production markup remains conservative where existing tests depend on exact class strings.
+
 **Current variants:** Simulation summary cards, field notes, note index cards, essay link cards, questionnaire cards, risk cards, catalogue rows, satellite PoC cards.
 
 **Problem:** Most share card tokens, but the system does not say when something should be a card, a row, a callout, or a navigation tile.
@@ -102,6 +106,8 @@ Work the medium-priority items in this order: visualisation chrome, specimen sta
 ## Low Priority
 
 ### Page IA and governance
+
+**Status:** Resolved. `design-system/index.html` now starts with a system map that groups the exhaustive inventory into foundations, canonical components, visualisation patterns, module exceptions, and governance. The maintenance section records the update loop for production changes, canonical shared CSS, and unresolved drift.
 
 **Current variants:** Foundations, components, and module surfaces are all presented in one long numbered stream.
 

@@ -105,6 +105,17 @@
       flex-wrap: wrap;
     }
 
+    .ds-rule-list {
+      margin: 0.8rem 0 0;
+      padding-left: 1rem;
+      font-family: var(--serif);
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--ink-faint);
+    }
+
+    .ds-rule-list li + li { margin-top: 0.25rem; }
+
     /* ─── Color swatches ──────────────────────────────────── */
     .ds-swatch {
       width: 3.5rem;
@@ -863,6 +874,13 @@
           </div>
         </div>
         <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets and the CV/Skills shell use neutral segmented language because they choose between peer modes. Satellite Explorer HUD elements use a quiet toolbar capsule: neutral backing surfaces preserve readability over changing imagery, the Terrain control is a single binary switch where off means Basemap, the hectare readout is a read-only segment, and the loading spinner stays small and ink-toned. Attention color is reserved for warning or blocked states. The archived Plotly demo still has its own Base map toggle because it controls a different surface layer.</p>
+        <ul class="ds-rule-list" aria-label="HUD toolbar capsule rules">
+          <li>Use the HUD toolbar capsule only for controls over a dynamic map, rendered surface, or canvas; normal page controls should use the canonical action, segmented, and toggle patterns.</li>
+          <li>The live Explorer capsule order is viewport action, Terrain switch, request-area readout. Keep scene metadata below the viewer rather than inside the overlay.</li>
+          <li>The Terrain switch is binary: <span class="ds-token">aria-pressed=false</span> means Basemap context; <span class="ds-token">aria-pressed=true</span> means Terrain context. Do not reintroduce a visible Basemap peer button.</li>
+          <li>Normal HUD surfaces stay neutral and translucent. The spinner is small, transparent, and ink-toned. Attention color is reserved for blocked or warning states.</li>
+          <li>The archived Plotly demo Base map toggle is documented for legacy parity only; it is not the live Explorer HUD pattern.</li>
+        </ul>
       </section>
 
       <!-- ─── 4. Form elements ──────────────────────────────── -->

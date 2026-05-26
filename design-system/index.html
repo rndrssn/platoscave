@@ -329,6 +329,40 @@
         </p>
       </header>
 
+      <!-- ─── System map ───────────────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-system-map">
+        <p class="ds-section-label" id="ds-system-map">System map</p>
+        <div class="ds-preview ds-preview--column">
+          <div class="ds-role-table" aria-label="Design-system page map">
+            <div class="ds-role-row">
+              <p class="ds-role-name">Foundations</p>
+              <p class="ds-role-use">Tokens and type decisions that should flow through themes before individual components override them.</p>
+              <p class="ds-role-map"><a href="#ds-color">Color</a> · <a href="#ds-type">Typography</a> · <a href="#ds-states">Outcome colours</a></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Canonical components</p>
+              <p class="ds-role-use">Shared controls, forms, cards, rows, links, and status patterns that should reduce variant drift.</p>
+              <p class="ds-role-map"><a href="#ds-specimen-states">Specimen states</a> · <a href="#ds-buttons">Buttons</a> · <a href="#ds-forms">Forms</a> · <a href="#ds-cards">Cards</a> · <a href="#ds-nav">Navigation</a> · <a href="#ds-links">Links</a> · <a href="#ds-status">Status</a></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Visualisation patterns</p>
+              <p class="ds-role-use">Graph, legend, tooltip, readout, and overlay chrome where interaction state and data semantics must stay distinct.</p>
+              <p class="ds-role-map"><a href="#ds-flow">Flow</a> · <a href="#ds-viz-chrome">Visualisation chrome</a> · <a href="#ds-doc-map">Document Map</a> · <a href="#ds-satellite">Satellite Explorer</a></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Module exceptions</p>
+              <p class="ds-role-use">Contextual page patterns that share primitives but retain their own academic, editorial, or exploratory tone.</p>
+              <p class="ds-role-map"><a href="#ds-shell">Global shell</a> · <a href="#ds-editorial">Editorial</a> · <a href="#ds-taxonomy">Taxonomy</a> · <a href="#ds-risk">Products Over Projects</a></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Governance</p>
+              <p class="ds-role-use">How to keep the reference current as production pages change and design debt is discovered.</p>
+              <p class="ds-role-map"><a href="#ds-rules">Maintenance</a> · <a href="./BACKLOG.md">Backlog</a></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ─── 0. Specimen states ───────────────────────────── -->
       <section class="ds-section" aria-labelledby="ds-specimen-states">
         <p class="ds-section-label" id="ds-specimen-states">00 · Specimen state model</p>
@@ -680,8 +714,44 @@
       <section class="ds-section" aria-labelledby="ds-cards">
         <p class="ds-section-label" id="ds-cards">05 · Cards</p>
 
+        <p class="ds-subsection-heading">Card and row taxonomy</p>
+        <div class="ds-preview ds-preview--column">
+          <div class="ds-role-table" aria-label="Canonical card and row taxonomy">
+            <div class="ds-role-row">
+              <p class="ds-role-name">Informational card</p>
+              <p class="ds-role-use">Use for supporting observations or explanatory content that is not itself a navigation target.</p>
+              <p class="ds-role-map">Shared class: <code>.surface-card</code>; examples include <code>.satellite-poc-card</code> and neutral note panels</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Callout card</p>
+              <p class="ds-role-use">Use for contextual asides that interrupt the essay rhythm just enough to clarify, warn, or frame the next step.</p>
+              <p class="ds-role-map">Shared class: <code>.surface-card--callout</code>; examples include <code>.field-notes-card</code></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Action card</p>
+              <p class="ds-role-use">Use for a card-shaped link or next-step affordance where the whole surface navigates.</p>
+              <p class="ds-role-map">Shared class: <code>.surface-card--action</code>; examples include <code>.essay-link</code>, <code>.note-index-link</code>, and <code>.case-card</code></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Assessment card</p>
+              <p class="ds-role-use">Use for questionnaire steps, risk comparison panels, or other task-local decision surfaces.</p>
+              <p class="ds-role-map">Shared class: <code>.surface-card--assessment</code>; examples include <code>.q-card</code>, <code>.risk-comparison-column</code>, and <code>.risk-principle-card</code></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Metric/result card</p>
+              <p class="ds-role-use">Use for result summaries and computed output where the content is primarily read, not acted on.</p>
+              <p class="ds-role-map">Shared class: <code>.surface-card--metric</code>; examples include <code>.sim-summary-card</code> and <code>.risk-result</code></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Catalogue row</p>
+              <p class="ds-role-use">Use for dense catalogue entries where scan order, title, descriptor, and section metadata matter more than card enclosure.</p>
+              <p class="ds-role-map">Shared class: <code>.surface-row</code>; production <code>.module-entry</code> keeps exact class strings for navigation-contract tests</p>
+            </div>
+          </div>
+        </div>
+
         <p class="ds-subsection-heading">Simulation summary card</p>
-        <div class="sim-summary-card" style="margin-top:0;max-width:400px">
+        <div class="sim-summary-card surface-card surface-card--metric surface-card--accent-top" style="margin-top:0;max-width:400px">
           <p class="sim-summary-header">Simulation complete</p>
           <p class="sim-summary-subheader">Outcomes</p>
           <div class="period-readout">
@@ -696,7 +766,7 @@
         <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.sim-summary-card · top accent uses <span class="ds-token">--card-accent-color</span> (= --sage)</p>
 
         <p class="ds-subsection-heading">Field notes card</p>
-        <div class="field-notes-card" style="margin:0;max-width:400px">
+        <div class="field-notes-card surface-card surface-card--callout surface-card--accent-left" style="margin:0;max-width:400px">
           <p class="field-notes-title">Field note</p>
           <p class="field-notes-body">This card pattern is used for contextual asides and supporting observations within module essays. Left accent uses <strong>--slate-light</strong>.</p>
         </div>
@@ -705,7 +775,7 @@
         <p class="ds-subsection-heading">Note index card</p>
         <div style="max-width:380px">
           <div class="note-index-card">
-            <a class="note-index-link" href="#">
+            <a class="note-index-link surface-card surface-card--action surface-card--accent-left" href="#">
               <div class="note-index-head">
                 <span class="note-index-title">On emergence and organisational structure</span>
                 <span class="note-index-date">2026-05-12</span>
@@ -722,7 +792,7 @@
 
         <p class="ds-subsection-heading">Essay link card</p>
         <div class="essay-links" style="margin:0;max-width:380px">
-          <a class="essay-link" href="#">
+          <a class="essay-link surface-card surface-card--action surface-card--accent-left" href="#">
             <span class="essay-link-label">Explore the simulation →</span>
             <span class="essay-link-desc">Interactive garbage can model</span>
           </a>
@@ -730,7 +800,7 @@
         <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.essay-link — slides right on hover (translateX 4px). Label in serif-alt italic <span class="ds-token">--sage</span>. Defined in <span class="ds-token">css/pages/content-cards.css</span></p>
 
         <p class="ds-subsection-heading">Questionnaire card</p>
-        <div class="q-card" style="max-width:400px;min-height:auto;padding:1.5rem">
+        <div class="q-card surface-card surface-card--assessment surface-card--accent-top" style="max-width:400px;min-height:auto;padding:1.5rem">
           <p class="q-step-indicator">Step 2 of 5</p>
           <fieldset class="question-block">
             <legend class="question-text">How often do goals shift mid-project?</legend>
@@ -937,7 +1007,7 @@
 
         <p class="ds-subsection-heading">Catalogue row</p>
         <div class="ds-preview ds-preview--column">
-          <article class="module-entry module-entry--live" style="width:100%;border-top:1px solid var(--ink-ghost)">
+          <article class="module-entry module-entry--live surface-row" style="width:100%;border-top:1px solid var(--ink-ghost)">
             <a class="module-entry-link" href="#" style="width:100%">
               <div class="module-entry-main">
                 <div class="module-entry-title-row">
@@ -1003,12 +1073,12 @@
         <p class="ds-subsection-heading">Risk comparison cards</p>
         <div class="ds-preview">
           <div class="risk-comparison" style="margin:0;width:100%">
-            <article class="risk-comparison-column">
+            <article class="risk-comparison-column surface-card surface-card--assessment surface-card--accent-left">
               <p class="risk-comparison-label">Product-mode risk</p>
               <h3 class="risk-comparison-body">Residual uncertainty lives in discovery and market learning.</h3>
               <p class="risk-comparison-note">Use compact card framing with serif-alt italic claim and serif explanatory body.</p>
             </article>
-            <article class="risk-comparison-column">
+            <article class="risk-comparison-column surface-card surface-card--assessment surface-card--accent-left">
               <p class="risk-comparison-label">Project-mode risk</p>
               <h3 class="risk-comparison-body">Residual uncertainty lives in execution coordination.</h3>
               <p class="risk-comparison-note">The card shape matches shared primitives but carries module-specific semantics.</p>
@@ -1167,6 +1237,11 @@
         <p class="essay-body" style="max-width:60ch">
           Consolidation should preserve the same overall site feel, reduce ambiguous pattern meanings, and keep button, chip, switch, toggle, disclosure, and visualisation-control states intact across hover, focus, active/selected, disabled, keyboard, and mobile contexts.
         </p>
+        <ul class="ds-principle-list" style="max-width:60ch;margin-top:1rem">
+          <li><strong>When production changes</strong> update the matching specimen or add a module-specific exception.</li>
+          <li><strong>When a specimen becomes canonical</strong> move its shared vocabulary into <span class="ds-token">css/components/</span> and keep contextual styling in page CSS.</li>
+          <li><strong>When a variant remains unresolved</strong> record it in the backlog instead of letting the design-system page imply it is approved.</li>
+        </ul>
       </section>
 
     </div>

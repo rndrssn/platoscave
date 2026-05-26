@@ -128,20 +128,14 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   inline-size: 100%;
   border: 1px solid var(--ink-ghost);
-  border-radius: 6px;
   overflow: hidden;
 }
 
 .queue-machine-preset-group [data-queue-preset] {
-  border-right: 1px solid var(--ink-ghost);
   border-radius: 0;
   padding: 0.48rem 0.72rem;
   color: var(--ink-faint);
   white-space: normal;
-}
-
-.queue-machine-preset-group [data-queue-preset]:last-child {
-  border-right: 0;
 }
 
 @media (max-width: 760px) {
@@ -153,8 +147,8 @@
     padding-block: 0.75rem;
   }
 
-  .queue-machine-preset-group [data-queue-preset]:nth-child(2n) {
-    border-right: 0;
+  .queue-machine-preset-group [data-queue-preset]:nth-child(3) {
+    border-left: 0;
   }
 
   .queue-machine-preset-group [data-queue-preset]:nth-child(-n + 2) {
@@ -174,8 +168,8 @@
 
 /* Unified active preset style */
 .queue-machine-preset-group [data-queue-preset][aria-pressed="true"] {
-  background: var(--gold);
-  color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
 }
 
 .queue-machine-preset-note {

@@ -87,18 +87,20 @@
               <button class="satellite-analyse-btn control-action control-action--primary" id="satellite-three-analyse-btn" type="button">
                 Analyse viewport &rarr;
               </button>
-              <div class="satellite-base-mode-switch control-segmented" id="satellite-three-base-mode" role="group" aria-label="Base context" hidden>
-                <button class="satellite-base-mode-option satellite-base-mode-option--active control-segmented-option" type="button" data-base-context="satellite" aria-pressed="true">Basemap</button>
-                <button class="satellite-base-mode-option control-segmented-option" type="button" data-base-context="terrain" aria-pressed="false">Terrain</button>
+              <button class="satellite-terrain-switch control-toggle" id="satellite-three-terrain-switch" type="button" aria-pressed="false" aria-label="Toggle terrain context" hidden>
+                <span class="satellite-terrain-switch-label">Terrain</span>
+                <span class="satellite-terrain-switch-track" aria-hidden="true">
+                  <span class="satellite-terrain-switch-thumb"></span>
+                </span>
+              </button>
+              <div class="satellite-meta viz-chrome-readout" id="satellite-three-meta" aria-label="Request metadata">
+                <p class="satellite-receipt-line satellite-receipt-line--request">
+                  <span class="satellite-receipt-label viz-chrome-readout-label">Request</span>
+                  <span class="satellite-viewport-readout viz-chrome-readout-value" id="satellite-three-viewport-readout" aria-live="polite"></span>
+                </p>
               </div>
             </div>
             <p class="satellite-status viz-chrome-status" id="satellite-three-status" aria-live="polite"></p>
-            <div class="satellite-meta viz-chrome-readout" id="satellite-three-meta" aria-label="Request metadata">
-              <p class="satellite-receipt-line satellite-receipt-line--request">
-                <span class="satellite-receipt-label viz-chrome-readout-label">Request</span>
-                <span class="satellite-viewport-readout viz-chrome-readout-value" id="satellite-three-viewport-readout" aria-live="polite"></span>
-              </p>
-            </div>
           </div>
         </div>
       </div>

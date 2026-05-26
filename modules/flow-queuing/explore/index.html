@@ -62,7 +62,7 @@
       </header>
 
       <section class="queue-machine-lab" aria-label="Queue and utilization demonstration">
-        <p class="force-graph-helper queue-machine-lab-helper">Select a scenario preset or adjust arrival rate, service capacity, and variability coefficients &mdash; then observe how the charts and readouts change together.</p>
+        <p class="force-graph-helper viz-chrome-helper queue-machine-lab-helper">Select a scenario preset or adjust arrival rate, service capacity, and variability coefficients &mdash; then observe how the charts and readouts change together.</p>
         <div class="queue-machine-presets">
           <div class="queue-machine-preset-group control-segmented" role="group" aria-label="Scenario presets">
             <button type="button" data-queue-preset="bursty" class="control-segmented-option">Bursty product work</button>
@@ -114,35 +114,35 @@
             </p>
             <svg class="queue-machine-chart" data-queue-backlog-chart role="img" aria-label="Bar chart of backlog over time"></svg>
           </div>
-          <p class="queue-machine-status" data-queue-status aria-live="polite"></p>
+          <p class="queue-machine-status viz-chrome-status" data-queue-status aria-live="polite"></p>
         </div>
 
         <h2 class="queue-machine-chart-title">Long-run estimates</h2>
-        <p class="force-graph-helper queue-machine-readout-caption">The charts show one illustrative sample path. The readouts estimate long-run behavior: M/M/1 uses exponential distributions (C<sub>a</sub>&thinsp;=&thinsp;C<sub>s</sub>&thinsp;=&thinsp;1); Kingman applies the full variability penalty from your slider values. The gap between them is the cost of variability at this load.</p>
-        <dl class="queue-machine-readout" aria-label="Queue metrics readout">
+        <p class="force-graph-helper viz-chrome-helper queue-machine-readout-caption">The charts show one illustrative sample path. The readouts estimate long-run behavior: M/M/1 uses exponential distributions (C<sub>a</sub>&thinsp;=&thinsp;C<sub>s</sub>&thinsp;=&thinsp;1); Kingman applies the full variability penalty from your slider values. The gap between them is the cost of variability at this load.</p>
+        <dl class="queue-machine-readout viz-chrome-readout" aria-label="Queue metrics readout">
           <div>
-            <dt>Utilization (&rho;)</dt>
-            <dd data-output="utilization">72.0%</dd>
+            <dt class="viz-chrome-readout-label">Utilization (&rho;)</dt>
+            <dd class="viz-chrome-readout-value" data-output="utilization">72.0%</dd>
           </div>
           <div>
-            <dt>Lead time (M/M/1, C<sub>a</sub>&thinsp;=&thinsp;C<sub>s</sub>&thinsp;=&thinsp;1)</dt>
-            <dd><span data-output="mm1-lead-time">3.6</span> time units</dd>
+            <dt class="viz-chrome-readout-label">Lead time (M/M/1, C<sub>a</sub>&thinsp;=&thinsp;C<sub>s</sub>&thinsp;=&thinsp;1)</dt>
+            <dd class="viz-chrome-readout-value"><span data-output="mm1-lead-time">3.6</span> time units</dd>
           </div>
           <div>
-            <dt>Queue wait (Kingman)</dt>
-            <dd><span data-output="kingman-wait">7.7</span> time units</dd>
+            <dt class="viz-chrome-readout-label">Queue wait (Kingman)</dt>
+            <dd class="viz-chrome-readout-value"><span data-output="kingman-wait">7.7</span> time units</dd>
           </div>
           <div>
-            <dt>Lead time (Kingman)</dt>
-            <dd><span data-output="kingman-lead-time">8.7</span> time units</dd>
+            <dt class="viz-chrome-readout-label">Lead time (Kingman)</dt>
+            <dd class="viz-chrome-readout-value"><span data-output="kingman-lead-time">8.7</span> time units</dd>
           </div>
           <div>
-            <dt>Average WIP (Little's Law)</dt>
-            <dd><span data-output="little-law-wip">37.2</span> items</dd>
+            <dt class="viz-chrome-readout-label">Average WIP (Little's Law)</dt>
+            <dd class="viz-chrome-readout-value"><span data-output="little-law-wip">37.2</span> items</dd>
           </div>
           <div>
-            <dt>Variability penalty (Kingman)</dt>
-            <dd><span data-output="variability-factor">3.0</span></dd>
+            <dt class="viz-chrome-readout-label">Variability penalty (Kingman)</dt>
+            <dd class="viz-chrome-readout-value"><span data-output="variability-factor">3.0</span></dd>
           </div>
         </dl>
       </section>

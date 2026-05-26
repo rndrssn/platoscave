@@ -72,8 +72,8 @@
             <div class="satellite-three-north" id="satellite-three-north">
               <span class="satellite-three-north-arrow"></span>
             </div>
-            <div class="satellite-three-legend">
-              <span class="satellite-three-legend-label" id="satellite-three-legend-label">NDVI</span>
+            <div class="satellite-three-legend viz-chrome-legend">
+              <span class="satellite-three-legend-label viz-chrome-legend-item" id="satellite-three-legend-label">NDVI</span>
               <span class="satellite-three-legend-ramp" id="satellite-three-legend-ramp"></span>
               <span class="satellite-three-legend-scale" id="satellite-three-legend-scale">
                 <span>-1</span>
@@ -92,11 +92,11 @@
                 <button class="satellite-base-mode-option control-segmented-option" type="button" data-base-context="terrain" aria-pressed="false">Terrain</button>
               </div>
             </div>
-            <p class="satellite-status" id="satellite-three-status" aria-live="polite"></p>
-            <div class="satellite-meta" id="satellite-three-meta" aria-label="Request metadata">
+            <p class="satellite-status viz-chrome-status" id="satellite-three-status" aria-live="polite"></p>
+            <div class="satellite-meta viz-chrome-readout" id="satellite-three-meta" aria-label="Request metadata">
               <p class="satellite-receipt-line satellite-receipt-line--request">
-                <span class="satellite-receipt-label">Request</span>
-                <span class="satellite-viewport-readout" id="satellite-three-viewport-readout" aria-live="polite"></span>
+                <span class="satellite-receipt-label viz-chrome-readout-label">Request</span>
+                <span class="satellite-viewport-readout viz-chrome-readout-value" id="satellite-three-viewport-readout" aria-live="polite"></span>
               </p>
             </div>
           </div>
@@ -104,9 +104,9 @@
       </div>
 
       <div class="satellite-three-scene-meta" hidden>
-        <div class="satellite-meta">
+        <div class="satellite-meta viz-chrome-readout">
           <p class="satellite-receipt-line satellite-receipt-line--scene" data-satellite-three-scene-meta aria-label="Scene metadata">
-            <span class="satellite-receipt-value satellite-receipt-value--empty">Pending</span>
+            <span class="satellite-receipt-value viz-chrome-readout-value satellite-receipt-value--empty">Pending</span>
           </p>
         </div>
       </div>

@@ -1,0 +1,79 @@
+/* Shared visualisation chrome vocabulary for helpers, legends, tooltips, status, detail, and metric readouts. */
+
+.viz-chrome-helper,
+.viz-chrome-legend,
+.viz-chrome-legend-item,
+.viz-chrome-legend-filter,
+.viz-chrome-detail,
+.viz-chrome-status,
+.viz-chrome-readout-label,
+.viz-chrome-readout-value,
+.viz-chrome-tooltip {
+  font-family: var(--mono);
+}
+
+.viz-chrome-helper,
+.viz-chrome-legend,
+.viz-chrome-legend-item,
+.viz-chrome-legend-filter,
+.viz-chrome-detail,
+.viz-chrome-status,
+.viz-chrome-readout-label,
+.viz-chrome-readout-value,
+.viz-chrome-tooltip-meta {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.viz-chrome-helper {
+  margin: 0 0 0.18rem;
+  color: var(--ink-faint);
+}
+
+.viz-chrome-legend {
+  color: var(--ink-faint);
+}
+
+.viz-chrome-legend-item,
+.viz-chrome-legend-filter {
+  display: inline-flex;
+  align-items: center;
+}
+
+.viz-chrome-legend-filter {
+  gap: 0.32rem;
+  color: inherit;
+}
+
+.viz-chrome-detail {
+  color: var(--ink-faint);
+}
+
+.viz-chrome-status,
+.viz-chrome-readout-label {
+  color: var(--ink-faint);
+}
+
+.viz-chrome-readout-value {
+  color: var(--ink-mid);
+}
+
+.viz-chrome-tooltip {
+  font-size: 0.6rem;
+  line-height: 1.48;
+  letter-spacing: 0.02em;
+}
+
+.viz-chrome-tooltip-header {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.viz-chrome-tooltip-body {
+  color: var(--ink-mid);
+}
+
+.viz-chrome-tooltip-meta {
+  color: var(--ink-faint);
+  font-size: 0.54rem;
+}

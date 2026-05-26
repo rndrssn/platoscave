@@ -212,7 +212,7 @@
     if (!row || !row.text) return '';
     var tooltipContent = TOOLTIP.createTooltipContent({});
     var safeText = tooltipContent.escapeHtml(row.text);
-    return '<div class="mix-mapper-tooltip-header">' + safeText + '</div>';
+    return '<div class="mix-mapper-tooltip-header viz-chrome-tooltip-header">' + safeText + '</div>';
   }
 
   var interactionBindings = INTERACTIONS.createInteractionBindings({

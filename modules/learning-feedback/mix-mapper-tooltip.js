@@ -33,9 +33,9 @@
       var safeTitle = escapeHtml(String(node.step) + '. ' + node.title);
       var safeDesc = escapeHtml(node.description);
       var safeTags = escapeHtml(node.tags.join(' · '));
-      return '<div class="mix-mapper-tooltip-header">' + safeTitle + '</div>' +
-        '<div class="mix-mapper-tooltip-body">' + safeDesc + '</div>' +
-        '<div class="mix-mapper-tooltip-meta">' + safeTags + '</div>';
+      return '<div class="mix-mapper-tooltip-header viz-chrome-tooltip-header">' + safeTitle + '</div>' +
+        '<div class="mix-mapper-tooltip-body viz-chrome-tooltip-body">' + safeDesc + '</div>' +
+        '<div class="mix-mapper-tooltip-meta viz-chrome-tooltip-meta">' + safeTags + '</div>';
     }
 
     function linkTooltipHtml(link, mode, nodeById) {
@@ -49,10 +49,10 @@
       var semantic = escapeHtml(link.semantic || '');
       var modeKey = mode === 'all' ? 'all' : mode;
 
-      return '<div class="mix-mapper-tooltip-header">' + title + '</div>' +
+      return '<div class="mix-mapper-tooltip-header viz-chrome-tooltip-header">' + title + '</div>' +
         '<div class="mix-mapper-tooltip-lens mix-mapper-tooltip-lens--' + modeKey + '">' + lens + '</div>' +
-        '<div class="mix-mapper-tooltip-body">' + narrative + '</div>' +
-        (semantic ? '<div class="mix-mapper-tooltip-meta">' + semantic + '</div>' : '');
+        '<div class="mix-mapper-tooltip-body viz-chrome-tooltip-body">' + narrative + '</div>' +
+        (semantic ? '<div class="mix-mapper-tooltip-meta viz-chrome-tooltip-meta">' + semantic + '</div>' : '');
     }
 
     function linkAriaLabel(link, mode, nodeById) {

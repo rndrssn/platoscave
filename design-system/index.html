@@ -73,6 +73,21 @@
       font-style: italic;
     }
 
+    .ds-state-label {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      border: 1px solid var(--paper-deep);
+      background: var(--paper);
+      padding: 0.12rem 0.38rem;
+      font-family: var(--mono);
+      font-size: 0.54rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+
     /* ─── Color swatches ──────────────────────────────────── */
     .ds-swatch {
       width: 3.5rem;
@@ -314,6 +329,31 @@
         </p>
       </header>
 
+      <!-- ─── 0. Specimen states ───────────────────────────── -->
+      <section class="ds-section" aria-labelledby="ds-specimen-states">
+        <p class="ds-section-label" id="ds-specimen-states">00 · Specimen state model</p>
+        <div class="ds-preview ds-preview--column">
+          <div class="ds-role-table" aria-label="Design-system specimen state model">
+            <div class="ds-role-row">
+              <p class="ds-role-name">Static snapshot</p>
+              <p class="ds-role-use">Use for examples that show stable anatomy, token use, or layout without implying user interaction.</p>
+              <p class="ds-role-map">Label with <span class="ds-state-label">Snapshot</span></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Forced state</p>
+              <p class="ds-role-use">Use when the page intentionally pins a state such as Active, Disabled, Working, Error, or Visible.</p>
+              <p class="ds-role-map">Label the visible state directly</p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Interactive specimen</p>
+              <p class="ds-role-use">Use only when the design-system page is intentionally exercising behavior; otherwise prefer snapshots.</p>
+              <p class="ds-role-map">Label with <span class="ds-state-label">Interactive</span></p>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Specimens are descriptive unless labelled interactive. Forced state examples may expose static <code>aria-pressed</code>, <code>disabled</code>, or visibility classes to document the rendered state.</p>
+      </section>
+
       <!-- ─── 1. Color ─────────────────────────────────────── -->
       <section class="ds-section" aria-labelledby="ds-color">
         <p class="ds-section-label" id="ds-color">01 · Color tokens</p>
@@ -547,14 +587,17 @@
         <div class="ds-preview">
           <div class="ds-item">
             <button class="submit-btn control-action control-action--primary">Run simulation</button>
+            <span class="ds-state-label">Snapshot · default</span>
             <span class="ds-label">Primary action · .submit-btn</span>
           </div>
           <div class="ds-item">
             <button class="submit-btn control-action control-action--primary" disabled>Run simulation</button>
+            <span class="ds-state-label">Forced state · disabled</span>
             <span class="ds-label">Primary action · disabled</span>
           </div>
           <div class="ds-item">
             <button style="font-family:var(--mono);font-size:var(--fs-button-action);font-weight:300;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-faint);background:none;border:none;padding:0;cursor:pointer">Expand section ↓</button>
+            <span class="ds-state-label">Snapshot · default</span>
             <span class="ds-label">Text disclosure</span>
           </div>
         </div>
@@ -567,6 +610,7 @@
               <a class="experience-skill-switch-link" href="#">Skills graph</a>
               <a class="experience-skill-switch-link experience-skill-switch-link--active" href="#">CV</a>
             </nav>
+            <span class="ds-state-label">Forced state · active</span>
             <span class="ds-label">Segmented mode switch · one active option</span>
           </div>
           <div class="ds-item">
@@ -575,6 +619,7 @@
               <button class="section-map-anchor-button control-chip" aria-pressed="false">Decision</button>
               <button class="section-map-anchor-button control-chip" aria-pressed="false">Evidence</button>
             </div>
+            <span class="ds-state-label">Forced state · selected</span>
             <span class="ds-label">Filter chip target · local focus/filter</span>
           </div>
           <div class="ds-item">
@@ -582,6 +627,7 @@
               <span class="satellite-toggle-track"><span class="satellite-toggle-thumb"></span></span>
               Base map
             </button>
+            <span class="ds-state-label">Forced state · on</span>
             <span class="ds-label">Binary toggle · independent on/off setting</span>
           </div>
         </div>
@@ -815,15 +861,18 @@
         <p style="font-family:var(--serif);font-size:var(--fs-body);color:var(--ink-faint);font-style:italic;margin-bottom:1.5rem">Used for async operation states in the Explorer. Defined in <span class="ds-token">css/pages/satellite-index.css</span>.</p>
         <div class="ds-row ds-row--baseline" style="gap:2rem">
           <div class="ds-item">
-            <span class="satellite-status satellite-status--working" style="font-family:var(--mono);font-size:0.68rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em">Analysing…</span>
+            <span class="satellite-status viz-chrome-status satellite-status--working" style="font-family:var(--mono);font-size:0.68rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em">Analysing…</span>
+            <span class="ds-state-label">Forced state · working</span>
             <span class="ds-label">.satellite-status--working · --ochre</span>
           </div>
           <div class="ds-item">
-            <span class="satellite-status satellite-status--ready" style="font-family:var(--mono);font-size:0.68rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em">Ready</span>
+            <span class="satellite-status viz-chrome-status satellite-status--ready" style="font-family:var(--mono);font-size:0.68rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em">Ready</span>
+            <span class="ds-state-label">Forced state · ready</span>
             <span class="ds-label">.satellite-status--ready · --sage</span>
           </div>
           <div class="ds-item">
-            <span class="satellite-status satellite-status--error" style="font-family:var(--mono);font-size:0.68rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em">Live imagery unavailable</span>
+            <span class="satellite-status viz-chrome-status satellite-status--error" style="font-family:var(--mono);font-size:0.68rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em">Live imagery unavailable</span>
+            <span class="ds-state-label">Forced state · error</span>
             <span class="ds-label">.satellite-status--error · --rust</span>
           </div>
         </div>
@@ -992,15 +1041,43 @@
       <section class="ds-section" aria-labelledby="ds-viz-chrome">
         <p class="ds-section-label" id="ds-viz-chrome">16 · Visualisation chrome and graph states</p>
 
+        <p class="ds-subsection-heading">Chrome role taxonomy</p>
+        <div class="ds-preview ds-preview--column">
+          <div class="ds-role-table" aria-label="Canonical visualisation chrome role taxonomy">
+            <div class="ds-role-row">
+              <p class="ds-role-name">Helper</p>
+              <p class="ds-role-use">Use for compact instructions that orient the interaction before or beside a visualisation.</p>
+              <p class="ds-role-map">Shared class: <code>.viz-chrome-helper</code></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Legend</p>
+              <p class="ds-role-use">Use for visual keys and filterable category controls.</p>
+              <p class="ds-role-map">Shared classes: <code>.viz-chrome-legend</code>, <code>.viz-chrome-legend-item</code>, and <code>.viz-chrome-legend-filter</code></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Tooltip/detail</p>
+              <p class="ds-role-use">Use for transient explanatory content tied to hover, focus, selection, or a highlighted relationship.</p>
+              <p class="ds-role-map">Shared classes: <code>.viz-chrome-tooltip</code>, tooltip child classes, and <code>.viz-chrome-detail</code></p>
+            </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Status/readout</p>
+              <p class="ds-role-use">Use for live state, request metadata, and metric output surrounding an interactive visualisation.</p>
+              <p class="ds-role-map">Shared classes: <code>.viz-chrome-status</code>, <code>.viz-chrome-readout</code>, <code>.viz-chrome-readout-label</code>, and <code>.viz-chrome-readout-value</code></p>
+            </div>
+          </div>
+        </div>
+
         <p class="ds-subsection-heading">Force graph chrome</p>
         <div class="ds-preview ds-preview--column">
-          <p class="force-graph-helper">Select a group to focus related nodes</p>
-          <ul class="force-graph-legend">
-            <li><button class="force-graph-legend-btn" aria-pressed="true"><span class="ds-mini-swatch ds-mini-swatch--rust"></span>Assumption</button></li>
-            <li><button class="force-graph-legend-btn" aria-pressed="false"><span class="ds-mini-swatch ds-mini-swatch--gold"></span>Theory</button></li>
-            <li><button class="force-graph-legend-btn" aria-pressed="false"><span class="ds-mini-swatch ds-mini-swatch--sage"></span>Practice</button></li>
+          <p class="force-graph-helper viz-chrome-helper">Select a group to focus related nodes</p>
+          <ul class="force-graph-legend viz-chrome-legend">
+            <li><button class="force-graph-legend-btn viz-chrome-legend-filter" aria-pressed="true"><span class="ds-mini-swatch ds-mini-swatch--rust"></span>Assumption</button></li>
+            <li><button class="force-graph-legend-btn viz-chrome-legend-filter" aria-pressed="false"><span class="ds-mini-swatch ds-mini-swatch--gold"></span>Theory</button></li>
+            <li><button class="force-graph-legend-btn viz-chrome-legend-filter" aria-pressed="false"><span class="ds-mini-swatch ds-mini-swatch--sage"></span>Practice</button></li>
           </ul>
-          <p class="force-graph-detail is-visible"><span class="force-graph-detail-swatch ds-mini-swatch--slate"></span><span class="force-graph-detail-label">Highlighted relationship</span></p>
+          <span class="ds-state-label">Forced state · legend filter selected</span>
+          <p class="force-graph-detail viz-chrome-detail is-visible"><span class="force-graph-detail-swatch ds-mini-swatch--slate"></span><span class="force-graph-detail-label">Highlighted relationship</span></p>
+          <span class="ds-state-label">Forced state · detail visible</span>
           <div class="ds-mini-viz">
             <svg viewBox="0 0 360 120" role="img" aria-label="Force graph state example">
               <line class="force-graph-link is-related" x1="80" y1="58" x2="180" y2="36" stroke="var(--ink-faint)" stroke-width="1.2"></line>
@@ -1017,21 +1094,22 @@
 
         <p class="ds-subsection-heading">Mix Mapper legend</p>
         <div class="ds-preview ds-preview--column">
-          <p class="mix-mapper-viz-hint">Hover or focus a node to inspect process/assumption/learning relationships.</p>
-          <div class="mix-mapper-legend">
-            <button class="mix-mapper-legend-btn is-active">
+          <p class="mix-mapper-viz-hint viz-chrome-helper">Hover or focus a node to inspect process/assumption/learning relationships.</p>
+          <div class="mix-mapper-legend viz-chrome-legend">
+            <button class="mix-mapper-legend-btn viz-chrome-legend-filter is-active">
               <span class="mix-mapper-legend-marker mix-mapper-legend-marker--dot mix-mapper-legend-marker--learning"></span>
               <span class="mix-mapper-legend-label">Learning</span>
             </button>
-            <button class="mix-mapper-legend-btn">
+            <button class="mix-mapper-legend-btn viz-chrome-legend-filter">
               <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--process"></span>
               <span class="mix-mapper-legend-label">Process</span>
             </button>
-            <button class="mix-mapper-legend-btn">
+            <button class="mix-mapper-legend-btn viz-chrome-legend-filter">
               <span class="mix-mapper-legend-marker mix-mapper-legend-marker--line mix-mapper-legend-marker--assumptions"></span>
               <span class="mix-mapper-legend-label">Assumptions</span>
             </button>
           </div>
+          <span class="ds-state-label">Forced state · active mode</span>
         </div>
       </section>
 
@@ -1042,11 +1120,11 @@
         <p class="ds-subsection-heading">Legend, anchors, and tooltip</p>
         <div class="ds-preview ds-preview--column">
           <p class="section-map-caption">Readiness bars are neutral; anchor mode owns the rust emphasis.</p>
-          <div class="section-map-legend">
-            <span class="section-map-legend-item"><span class="section-map-legend-anchor">◆</span>Active anchor</span>
-            <span class="section-map-legend-item"><span class="section-map-legend-bar section-map-legend-bar--exploration"></span>Readiness</span>
-            <span class="section-map-legend-item"><span class="section-map-legend-dot section-map-legend-dot--home"></span>Home station</span>
-            <span class="section-map-legend-item"><span class="section-map-legend-dot section-map-legend-dot--restated"></span>Restated artifact</span>
+          <div class="section-map-legend viz-chrome-legend">
+            <span class="section-map-legend-item viz-chrome-legend-item"><span class="section-map-legend-anchor">◆</span>Active anchor</span>
+            <span class="section-map-legend-item viz-chrome-legend-item"><span class="section-map-legend-bar section-map-legend-bar--exploration"></span>Readiness</span>
+            <span class="section-map-legend-item viz-chrome-legend-item"><span class="section-map-legend-dot section-map-legend-dot--home"></span>Home station</span>
+            <span class="section-map-legend-item viz-chrome-legend-item"><span class="section-map-legend-dot section-map-legend-dot--restated"></span>Restated artifact</span>
           </div>
           <div class="section-map-anchor-control">
             <span class="section-map-anchor-label">Anchor</span>
@@ -1054,11 +1132,12 @@
             <button class="section-map-anchor-button control-chip" aria-pressed="false">Decision</button>
             <button class="section-map-anchor-button control-chip" aria-pressed="false">Evidence</button>
           </div>
-          <div class="section-map-tooltip is-visible" style="position:relative;left:auto;top:auto;max-width:18rem">
-            <p class="section-map-tooltip-header">Station 04 · Concept</p>
-            <p class="section-map-tooltip-body">Tooltip copy uses mono microtype and restrained paper surface.</p>
-            <p class="section-map-tooltip-meta">PM · UX · Eng</p>
+          <div class="section-map-tooltip viz-chrome-tooltip is-visible" style="position:relative;left:auto;top:auto;max-width:18rem">
+            <p class="section-map-tooltip-header viz-chrome-tooltip-header">Station 04 · Concept</p>
+            <p class="section-map-tooltip-body viz-chrome-tooltip-body">Tooltip copy uses mono microtype and restrained paper surface.</p>
+            <p class="section-map-tooltip-meta viz-chrome-tooltip-meta">PM · UX · Eng</p>
           </div>
+          <span class="ds-state-label">Forced state · tooltip visible</span>
         </div>
       </section>
 
@@ -1084,6 +1163,9 @@
         <p class="ds-section-label" id="ds-rules">19 · Maintenance</p>
         <p class="essay-body" style="max-width:60ch">
           This page describes the current design reference. Design debt, open consolidation decisions, and proposed canonical directions live in <a href="./BACKLOG.md">the design-system backlog</a>.
+        </p>
+        <p class="essay-body" style="max-width:60ch">
+          Consolidation should preserve the same overall site feel, reduce ambiguous pattern meanings, and keep button, chip, switch, toggle, disclosure, and visualisation-control states intact across hover, focus, active/selected, disabled, keyboard, and mobile contexts.
         </p>
       </section>
 

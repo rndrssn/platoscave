@@ -1,6 +1,6 @@
 # platoscave — Repository Map
 
-*Auto-generated. 114 JS files · 447 symbols · 68 HTML pages · 372,522 total tokens. Excludes vendor and minified files.*
+*Auto-generated. 114 JS files · 447 symbols · 68 HTML pages · 379,803 total tokens. Excludes vendor and minified files.*
 
 This is a structural index of the repository. JS files list top-level functions; HTML pages list which scripts they load. Use this to orient before reading source.
 
@@ -10,9 +10,9 @@ This is a structural index of the repository. JS files list top-level functions;
 
 | Group | Files | Symbols | Tokens |
 |-------|------:|--------:|-------:|
-| Modules | 34 | 122 | 120,517 |
+| Modules | 34 | 122 | 120,483 |
 | Build scripts | 6 | 63 | 15,828 |
-| Contract tests | 65 | 262 | 73,969 |
+| Contract tests | 65 | 262 | 74,525 |
 | Page-level scripts | 8 | 0 | 10,283 |
 | Root-level files | 1 | 0 | 301 |
 
@@ -22,7 +22,7 @@ This is a structural index of the repository. JS files list top-level functions;
 |-------|------:|------------:|-------:|
 | Articles | 2 | 9 | 11,682 |
 | Case pages | 4 | 0 | 698 |
-| Module pages | 39 | 165 | 93,889 |
+| Module pages | 39 | 165 | 94,166 |
 | Root-level pages | 1 | 5 | 1,272 |
 | colophon | 1 | 4 | 1,436 |
 | tests | 2 | 7 | 7,121 |
@@ -30,16 +30,16 @@ This is a structural index of the repository. JS files list top-level functions;
 | notes | 5 | 21 | 7,480 |
 | cv | 1 | 0 | 166 |
 | skills | 1 | 0 | 162 |
-| design-system | 1 | 4 | 14,641 |
+| design-system | 1 | 4 | 21,123 |
 
 ## JavaScript
 
 ### Modules
-*34 files · 122 symbols · 120,517 tokens*
+*34 files · 122 symbols · 120,483 tokens*
 
 ### `modules/ambiguity-clarity/section-map/section-map.js`
 Interactive section map (Document Map) for Module 06: per-concern readiness across PM, UX, and Eng tracks.
-*0 symbols · 336 lines · 3,691 tokens*
+*0 symbols · 336 lines · 3,706 tokens*
 
 ### `modules/emergence/emergence-primer-gantt.js`
 Game-of-Life–driven Gantt model for the Emergence GANTT meets Game of Life visualization.
@@ -202,11 +202,11 @@ Semantic helpers for Mix Mapper: mode labels, link keys, narrative text, and pro
 
 ### `modules/learning-feedback/mix-mapper-tooltip.js`
 Tooltip content factory for Mix Mapper: HTML generation for node and link hover states.
-*0 symbols · 79 lines · 715 tokens*
+*0 symbols · 79 lines · 745 tokens*
 
 ### `modules/learning-feedback/mix-mapper.js`
 Top-level orchestrator for the Mix Mapper visualization: wires all sub-modules and bootstraps the SVG.
-*0 symbols · 782 lines · 7,192 tokens*
+*0 symbols · 782 lines · 7,197 tokens*
 
 ### `modules/products-over-projects/assessment/products-over-projects-assessment.js`
 Products vs Projects risk classifier: scores slider responses into product, execution, or hybrid governance.
@@ -249,60 +249,60 @@ Satellite NDVI demo: MapLibre map, live Sentinel Hub data via Cloudflare Worker,
 
 ### `modules/satellite-index/three/satellite-index-three.js`
 Boundary-free monitoring Explorer: renders Sentinel-derived spectral surfaces with satellite basemap and optional MapTiler contours-v2 isolines.
-*52 symbols · 1266 lines · 12,390 tokens*
+*52 symbols · 1257 lines · 12,306 tokens*
 
-  - `canUseMapLibre()` (L268)
-  - `isWorkerKeyConfigured()` (L272)
-  - `clamp(value, min, max)` (L276)
-  - `isFiniteNumber(value)` (L280)
-  - `getAnalysisDate()` (L284)
-  - `getViewportMetrics(bounds)` (L288)
-  - `getAdaptiveGridSize(metrics)` (L296)
-  - `canRequestLive(metrics)` (L302)
-  - `getLiveLimitLabel()` (L306)
-  - `formatArea(metrics)` (L310)
-  - `generateNdviGrid(bounds, size)` (L317)
-  - `smoothNdviGridForRender(grid, passes)` (L342)
-  - `decodeNdviPng(base64)` (L371)
-  - `lonToTileX(lon, zoom)` (L406)
-  - `latToTileY(lat, zoom)` (L410)
-  - `chooseBaseTileZoom(bounds)` (L416)
-  - `buildSatelliteTileUrl(x, y, zoom)` (L424)
-  - `buildContourTileJsonUrl()` (L435)
-  - `loadImageBlob(url)` (L439)
-  - `makeThreeTexture(canvas)` (L460)
-  - `drawTileMosaic(bounds, zoom, buildUrl, drawTile)` (L468)
-  - `loadSatelliteBaseTexture(bounds)` (L509)
-  - `buildContourStyle()` (L517)
-  - `snapshotMapCanvas(mapInstance, size)` (L567)
-  - `loadContourBaseTexture(bounds)` (L578)
-  - `setStatus(msg, variant)` (L638)
-  - `setSurfacePlaceholder(msg)` (L650)
-  - `updateAnalysisButtonLabel(liveAllowed)` (L657)
-  - `resetAnalysisButton()` (L667)
-  - `resetToSelection()` (L675)
-  - `setViewerMode(mode)` (L683)
-  - `setMeta(date, sceneData, textureLoaded, fallbackReason)` (L697)
-  - `updateViewportReadout()` (L717)
-  - `colorForIndex(value, def)` (L734)
-  - `decodeIndexPng(base64, encMin, encMax)` (L746)
-  - `buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn)` (L776)
-  - `updateTerrainContextVisibility()` (L823)
-  - `applyBaseContextMode(mode)` (L835)
-  - `clearSceneMeshes()` (L858)
-  - `updateRendererSize()` (L873)
-  - `prefersReducedMotion()` (L884)
-  - `renderOnce(force)` (L888)
-  - `startRenderLoop()` (L896)
-  - `updateNorthIndicator()` (L907)
-  - `initThreeScene()` (L918)
-  - `frameCamera(metrics, heightScale, surfaceOffset)` (L953)
-  - `renderThreeSurface(grid, metrics, bounds, colorFn, heightFn)` (L974)
-  - `updateIndexLegend(def)` (L1035)
-  - `updateIndexGuide(indexId)` (L1055)
-  - `rebuildTerrain(indexId)` (L1066)
-  - `runAnalysis()` (L1105)
-  - `initMap()` (L1202)
+  - `canUseMapLibre()` (L267)
+  - `isWorkerKeyConfigured()` (L271)
+  - `clamp(value, min, max)` (L275)
+  - `isFiniteNumber(value)` (L279)
+  - `getAnalysisDate()` (L283)
+  - `getViewportMetrics(bounds)` (L287)
+  - `getAdaptiveGridSize(metrics)` (L295)
+  - `canRequestLive(metrics)` (L301)
+  - `getLiveLimitLabel()` (L305)
+  - `formatArea(metrics)` (L309)
+  - `generateNdviGrid(bounds, size)` (L316)
+  - `smoothNdviGridForRender(grid, passes)` (L341)
+  - `decodeNdviPng(base64)` (L370)
+  - `lonToTileX(lon, zoom)` (L405)
+  - `latToTileY(lat, zoom)` (L409)
+  - `chooseBaseTileZoom(bounds)` (L415)
+  - `buildSatelliteTileUrl(x, y, zoom)` (L423)
+  - `buildContourTileJsonUrl()` (L434)
+  - `loadImageBlob(url)` (L438)
+  - `makeThreeTexture(canvas)` (L459)
+  - `drawTileMosaic(bounds, zoom, buildUrl, drawTile)` (L467)
+  - `loadSatelliteBaseTexture(bounds)` (L508)
+  - `buildContourStyle()` (L516)
+  - `snapshotMapCanvas(mapInstance, size)` (L566)
+  - `loadContourBaseTexture(bounds)` (L577)
+  - `setStatus(msg, variant)` (L637)
+  - `setSurfacePlaceholder(msg)` (L649)
+  - `updateAnalysisButtonLabel(liveAllowed)` (L656)
+  - `resetAnalysisButton()` (L666)
+  - `resetToSelection()` (L674)
+  - `setViewerMode(mode)` (L682)
+  - `setMeta(date, sceneData, textureLoaded, fallbackReason)` (L696)
+  - `updateViewportReadout()` (L716)
+  - `colorForIndex(value, def)` (L733)
+  - `decodeIndexPng(base64, encMin, encMax)` (L745)
+  - `buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn)` (L775)
+  - `updateTerrainContextVisibility()` (L822)
+  - `applyBaseContextMode(mode)` (L829)
+  - `clearSceneMeshes()` (L852)
+  - `updateRendererSize()` (L867)
+  - `prefersReducedMotion()` (L878)
+  - `renderOnce(force)` (L882)
+  - `startRenderLoop()` (L890)
+  - `updateNorthIndicator()` (L901)
+  - `initThreeScene()` (L912)
+  - `frameCamera(metrics, heightScale, surfaceOffset)` (L947)
+  - `renderThreeSurface(grid, metrics, bounds, colorFn, heightFn)` (L968)
+  - `updateIndexLegend(def)` (L1029)
+  - `updateIndexGuide(indexId)` (L1049)
+  - `rebuildTerrain(indexId)` (L1060)
+  - `runAnalysis()` (L1099)
+  - `initMap()` (L1196)
 
 ### Build scripts
 *6 files · 63 symbols · 15,828 tokens*
@@ -401,7 +401,7 @@ Optional AI writing-polish step (spelling and punctuation only) for notes and ar
   - `main()` (L267)
 
 ### Contract tests
-*65 files · 262 symbols · 73,969 tokens*
+*65 files · 262 symbols · 74,525 tokens*
 
 ### `tests/helpers/fake-dom.js`
 Minimal fake DOM (FakeClassList, FakeElement) for unit-testing browser-dependent code under Node.js.
@@ -919,7 +919,7 @@ Tests the Products vs Projects risk classifier for all residual-risk family and 
 
 ### `tests/test-satellite-index-contract.js`
 Contract tests for satellite-index.js: constants, function exports, and structural requirements.
-*4 symbols · 406 lines · 12,454 tokens*
+*4 symbols · 417 lines · 13,010 tokens*
 
   - `read(relPath)` (L10)
   - `assertIncludes(source, needle, label)` (L14)
@@ -1071,7 +1071,7 @@ Scripts loaded:
 *16 lines · 181 tokens*
 
 ### Module pages
-*39 pages · 165 script refs · 93,889 tokens*
+*39 pages · 165 script refs · 94,166 tokens*
 
 ### `modules/ambiguity-clarity/index.html`
 **Title:** Ambiguous Documents · To the Bedrock
@@ -1087,7 +1087,7 @@ Scripts loaded:
 ### `modules/ambiguity-clarity/section-map/index.html`
 **Title:** Document Map · Ambiguous Documents · To the Bedrock
 **H1:** Document Map
-*113 lines · 1,617 tokens*
+*113 lines · 1,638 tokens*
 
 Scripts loaded:
   - `../../../theme.config.js`
@@ -1158,7 +1158,7 @@ Scripts loaded:
 ### `modules/flow-queuing/concept-graph/index.html`
 **Title:** Concept Map · Flow & Queuing · To the Bedrock
 **H1:** Concept Map
-*157 lines · 2,290 tokens*
+*157 lines · 2,327 tokens*
 
 Scripts loaded:
   - `../../../theme.config.js`
@@ -1185,7 +1185,7 @@ Scripts loaded:
 ### `modules/flow-queuing/explore/index.html`
 **Title:** Explore · Flow & Queuing · To the Bedrock
 **H1:** Explore
-*190 lines · 3,115 tokens*
+*190 lines · 3,250 tokens*
 
 Scripts loaded:
   - `../../../theme.config.js`
@@ -1327,7 +1327,7 @@ Scripts loaded:
 ### `modules/learning-feedback/index.html`
 **Title:** Epistemic Bets · Learning & Feedback · To the Bedrock
 **H1:** Epistemic Bets
-*128 lines · 1,893 tokens*
+*128 lines · 1,924 tokens*
 
 Scripts loaded:
   - `../../theme.config.js`
@@ -1430,7 +1430,7 @@ Scripts loaded:
 ### `modules/satellite-index/demo/index.html`
 **Title:** Demo · Satellite Index · To the Bedrock
 **H1:** Spectral Index Demo
-*143 lines · 1,957 tokens*
+*143 lines · 1,990 tokens*
 
 Scripts loaded:
   - `../../../theme.config.js`
@@ -1459,7 +1459,7 @@ Scripts loaded:
 ### `modules/satellite-index/three/index.html`
 **Title:** Explorer · Boundary-free monitoring · To the Bedrock
 **H1:** Explorer
-*191 lines · 2,968 tokens*
+*193 lines · 2,988 tokens*
 
 Scripts loaded:
   - `../../../theme.config.js`
@@ -1729,12 +1729,12 @@ Scripts loaded:
 *18 lines · 162 tokens*
 
 ### Design-System
-*1 pages · 4 script refs · 14,641 tokens*
+*1 pages · 4 script refs · 21,123 tokens*
 
 ### `design-system/index.html`
 **Title:** Design System · To the Bedrock
 **H1:** Design System
-*1101 lines · 14,641 tokens*
+*1525 lines · 21,123 tokens*
 
 Scripts loaded:
   - `../theme.config.js`

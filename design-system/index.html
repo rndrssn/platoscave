@@ -88,6 +88,23 @@
       color: var(--ink-faint);
     }
 
+    .ds-hud-specimen.satellite-three-hud {
+      position: relative;
+      top: auto;
+      left: auto;
+      z-index: auto;
+      max-width: min(100%, 42rem);
+      pointer-events: auto;
+      transform: none;
+      will-change: auto;
+    }
+
+    .ds-hud-specimen .satellite-controls {
+      width: fit-content;
+      max-width: 100%;
+      flex-wrap: wrap;
+    }
+
     /* ─── Color swatches ──────────────────────────────────── */
     .ds-swatch {
       width: 3.5rem;
@@ -805,14 +822,36 @@
         <p class="ds-subsection-heading">HUD and high-attention controls</p>
         <div class="ds-preview ds-preview--column">
           <div class="ds-item">
-            <button class="satellite-terrain-switch control-toggle" type="button" aria-pressed="false">
+            <div class="satellite-three-hud ds-hud-specimen">
+              <div class="satellite-controls" role="toolbar" aria-label="HUD toolbar example">
+                <button class="satellite-analyse-btn control-action control-action--primary" type="button">New viewport</button>
+                <button class="satellite-terrain-switch control-toggle" type="button" aria-pressed="false">
+                  <span class="satellite-terrain-switch-label">Terrain</span>
+                  <span class="satellite-terrain-switch-track" aria-hidden="true">
+                    <span class="satellite-terrain-switch-thumb"></span>
+                  </span>
+                </button>
+                <div class="satellite-meta viz-chrome-readout" aria-label="Request metadata example">
+                  <p class="satellite-receipt-line satellite-receipt-line--request">
+                    <span class="satellite-receipt-label viz-chrome-readout-label">Request</span>
+                    <span class="satellite-viewport-readout viz-chrome-readout-value">2.52 HA</span>
+                  </p>
+                </div>
+              </div>
+              <p class="satellite-status satellite-status--loading viz-chrome-status" aria-label="Loading"></p>
+            </div>
+            <span class="ds-state-label">Snapshot · normal + loading</span>
+            <span class="ds-label">HUD toolbar capsule · action, Terrain switch, readout</span>
+          </div>
+          <div class="ds-item">
+            <button class="satellite-terrain-switch control-toggle" type="button" aria-pressed="true">
               <span class="satellite-terrain-switch-label">Terrain</span>
               <span class="satellite-terrain-switch-track" aria-hidden="true">
                 <span class="satellite-terrain-switch-thumb"></span>
               </span>
             </button>
-            <span class="ds-state-label">Forced state · off</span>
-            <span class="ds-label">Overlay binary switch · Terrain off means Basemap</span>
+            <span class="ds-state-label">Forced state · on</span>
+            <span class="ds-label">HUD binary switch · Terrain on</span>
           </div>
           <div class="ds-item">
             <button class="satellite-toggle-control control-toggle" aria-pressed="true">
@@ -820,10 +859,10 @@
               Base map
             </button>
             <span class="ds-state-label">Forced state · on</span>
-            <span class="ds-label">Contextual HUD toggle · Satellite surface</span>
+            <span class="ds-label">Archived surface toggle · Plotly demo</span>
           </div>
         </div>
-        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets and the CV/Skills shell use the neutral segmented language because they choose between peer modes. Satellite HUD elements use an instrument-panel treatment: neutral backing surfaces preserve readability over changing imagery, the Terrain control is a single binary switch where off means Basemap, and attention color is reserved for warning or blocked states. Manual slider edits can clear a Flow preset, and re-clicking the active preset re-applies the scenario. Document Map anchors, risk chips, Satellite switches, and Satellite toggles carry their corresponding shared role classes in production.</p>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets and the CV/Skills shell use neutral segmented language because they choose between peer modes. Satellite Explorer HUD elements use a quiet toolbar capsule: neutral backing surfaces preserve readability over changing imagery, the Terrain control is a single binary switch where off means Basemap, the hectare readout is a read-only segment, and the loading spinner stays small and ink-toned. Attention color is reserved for warning or blocked states. The archived Plotly demo still has its own Base map toggle because it controls a different surface layer.</p>
       </section>
 
       <!-- ─── 4. Form elements ──────────────────────────────── -->

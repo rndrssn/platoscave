@@ -5,6 +5,7 @@
 .viz-chrome-legend-item,
 .viz-chrome-legend-filter,
 .viz-chrome-detail,
+.viz-chrome-insight,
 .viz-chrome-status,
 .viz-chrome-readout-label,
 .viz-chrome-readout-value,
@@ -17,7 +18,6 @@
 .viz-chrome-legend-item,
 .viz-chrome-legend-filter,
 .viz-chrome-detail,
-.viz-chrome-status,
 .viz-chrome-readout-label,
 .viz-chrome-readout-value,
 .viz-chrome-tooltip-meta {
@@ -47,6 +47,10 @@
 
 .viz-chrome-detail {
   color: var(--ink-faint);
+}
+
+.viz-chrome-insight {
+  color: var(--ink-mid);
 }
 
 .viz-chrome-status,

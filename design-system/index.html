@@ -301,6 +301,59 @@
       color: var(--ink-mid);
     }
 
+    .ds-theme-audit {
+      display: grid;
+      gap: 0.55rem;
+      max-width: 28rem;
+      margin: 1.5rem 0 0;
+      padding: 1rem 0;
+      border-top: 1px solid var(--paper-deep);
+      border-bottom: 1px solid var(--paper-deep);
+    }
+
+    .ds-theme-audit label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+
+    .ds-theme-audit-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      align-items: center;
+    }
+
+    .ds-theme-audit select {
+      min-width: min(100%, 18rem);
+      border: 1px solid var(--ink-ghost);
+      border-radius: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      padding: 0.5rem 0.65rem;
+    }
+
+    .ds-theme-audit select:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    .ds-theme-audit-note {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 0.8rem;
+      color: var(--ink-faint);
+      font-style: italic;
+      line-height: 1.45;
+    }
+
   </style>
 </head>
 <body>
@@ -327,6 +380,26 @@
         <p class="module-header-body">
           Catalogue of design tokens, component patterns, visualisation chrome, and page-specific variants. Most specimens render actual site CSS; inline recreations are called out where no shared class exists yet.
         </p>
+        <div class="ds-theme-audit" aria-label="Design-system theme audit control">
+          <label for="ds-theme-select">Theme preview</label>
+          <div class="ds-theme-audit-row">
+            <select id="ds-theme-select" data-ds-theme-select>
+              <option value="">Default / base tokens</option>
+              <option value="new-yorker">new-yorker</option>
+              <option value="decision-collision-cold">decision-collision-cold</option>
+              <option value="decision-collision-cold-contrast">decision-collision-cold-contrast</option>
+              <option value="brutalist-max">brutalist-max</option>
+              <option value="neon-bowie">neon-bowie</option>
+              <option value="arcade-afterglow">arcade-afterglow</option>
+              <option value="laser-bauhaus">laser-bauhaus</option>
+              <option value="chrome-glam">chrome-glam</option>
+              <option value="minimalist-brutalist">minimalist-brutalist</option>
+              <option value="neon-brutalist-extreme">neon-brutalist-extreme</option>
+              <option value="neon-brutalist-daylight">neon-brutalist-daylight</option>
+            </select>
+          </div>
+          <p class="ds-theme-audit-note">Local preview only; this does not edit <span class="ds-token">theme.config.js</span>.</p>
+        </div>
       </header>
 
       <!-- ─── System map ───────────────────────────────────── -->
@@ -599,6 +672,11 @@
               <p class="ds-role-map">Shared classes: <code>.control-segmented</code> and <code>.control-segmented-option</code>; high-attention context switches may use <code>--control-attention-*</code> tokens</p>
             </div>
             <div class="ds-role-row">
+              <p class="ds-role-name">Segmented preset group</p>
+              <p class="ds-role-use">Use for scenario presets that set multiple controls together, may become unselected after manual edits, and may re-apply behavior when the active preset is pressed again.</p>
+              <p class="ds-role-map">Shared classes: <code>.control-segmented.control-segmented--preset</code> and <code>.control-segmented-option</code></p>
+            </div>
+            <div class="ds-role-row">
               <p class="ds-role-name">Filter chip</p>
               <p class="ds-role-use">Use for local filtering or focus within a visualization or assessment, not for page navigation.</p>
               <p class="ds-role-map">Shared class: <code>.control-chip</code>; current examples include Document Map anchors and risk chips</p>
@@ -665,7 +743,7 @@
             <span class="ds-label">Binary toggle · independent on/off setting</span>
           </div>
         </div>
-        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets, Document Map anchors, risk chips, Satellite switches, and Satellite toggles carry these shared role classes in production. The current theme renders high-attention context controls with a gold accent, but the design-system rule is token-based through <span class="ds-token">--control-attention-*</span>.</p>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets use the preset subtype because manual slider edits can clear the active option and re-clicking the active preset re-applies the scenario. Document Map anchors, risk chips, Satellite switches, and Satellite toggles carry their corresponding shared role classes in production. The current theme renders high-attention context controls with a gold accent, but the design-system rule is token-based through <span class="ds-token">--control-attention-*</span>.</p>
       </section>
 
       <!-- ─── 4. Form elements ──────────────────────────────── -->
@@ -693,12 +771,12 @@
 
         <p class="ds-subsection-heading">Range slider</p>
         <div class="ds-preview ds-preview--column">
-          <div style="display:flex;flex-direction:column;gap:0.5rem;width:100%;max-width:20rem">
+          <div style="display:flex;flex-direction:column;gap:0.5rem;width:100%;max-width:20rem;--control-range-color:var(--ink-ghost)">
             <label style="font-family:var(--mono);font-size:0.68rem;font-weight:300;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-faint)">Arrival rate λ</label>
-            <input type="range" min="0" max="100" value="40" style="width:100%;accent-color:var(--rust)" />
+            <input class="control-range" type="range" min="0" max="100" value="40" />
           </div>
         </div>
-        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--rust)">Audit item: no shared range slider class — each module styles accent-color independently.</p>
+        <p style="margin-top:0.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--ink-faint)">.control-range · use <span class="ds-token">--control-range-color</span> for contextual track/thumb colour while preserving shared focus and hover behaviour.</p>
 
         <p class="ds-subsection-heading">Search input</p>
         <div class="ds-preview">
@@ -1105,6 +1183,13 @@
             <li><strong>Lead time (<var>W</var>)</strong><span>elapsed time from arrival to completion</span></li>
           </ul>
         </div>
+
+        <p class="ds-subsection-heading">Interactive lab stage</p>
+        <ul class="ds-principle-list">
+          <li><strong>Order</strong> helper, preset group, range controls, chart panels, interpretive insight, then metric readout.</li>
+          <li><strong>Panels</strong> chart panels stay unboxed by default; hierarchy comes from title, explanatory note, fixed chart height, and shared visualisation chrome.</li>
+          <li><strong>Mobile</strong> preset controls may wrap into a two-by-two grid, chart panels stack, and metric readouts collapse before text is squeezed.</li>
+        </ul>
       </section>
 
       <!-- ─── 16. Visualisation chrome ──────────────────────── -->
@@ -1134,6 +1219,11 @@
               <p class="ds-role-use">Use for live state, request metadata, and metric output surrounding an interactive visualisation.</p>
               <p class="ds-role-map">Shared classes: <code>.viz-chrome-status</code>, <code>.viz-chrome-readout</code>, <code>.viz-chrome-readout-label</code>, and <code>.viz-chrome-readout-value</code></p>
             </div>
+            <div class="ds-role-row">
+              <p class="ds-role-name">Interpretive insight</p>
+              <p class="ds-role-use">Use for sentence-length explanatory feedback generated by an interactive lab; keep it readable prose rather than compact status microcopy.</p>
+              <p class="ds-role-map">Shared class: <code>.viz-chrome-insight</code></p>
+            </div>
           </div>
         </div>
 
@@ -1148,6 +1238,8 @@
           <span class="ds-state-label">Forced state · legend filter selected</span>
           <p class="force-graph-detail viz-chrome-detail is-visible"><span class="force-graph-detail-swatch ds-mini-swatch--slate"></span><span class="force-graph-detail-label">Highlighted relationship</span></p>
           <span class="ds-state-label">Forced state · detail visible</span>
+          <p class="viz-chrome-insight" style="max-width:42rem;margin:0;color:var(--ink-mid);font-size:0.82rem;line-height:1.5">Breathing room: variability is more likely to be absorbed before it becomes persistent waiting. This is interpretive feedback, not a short request status.</p>
+          <span class="ds-state-label">Forced state · insight visible</span>
           <div class="ds-mini-viz">
             <svg viewBox="0 0 360 120" role="img" aria-label="Force graph state example">
               <line class="force-graph-link is-related" x1="80" y1="58" x2="180" y2="36" stroke="var(--ink-faint)" stroke-width="1.2"></line>
@@ -1253,5 +1345,52 @@
 
   <script src="../js/module-route-data.js"></script>
   <script src="../js/nav-controller.js"></script>
+  <script>
+    (function initDesignSystemThemePreview() {
+      'use strict';
+
+      var select = document.querySelector('[data-ds-theme-select]');
+      var root = document.documentElement;
+      var stylesheetId = 'platoscave-theme-runtime';
+
+      if (!select || !root || !document.head) return;
+
+      function normalizeThemeName(rawTheme) {
+        var trimmed = (rawTheme || '').trim();
+        if (!trimmed || trimmed === 'default' || trimmed === 'base') return '';
+        if (trimmed === 'collision-decision-cold') return 'decision-collision-cold';
+        return trimmed;
+      }
+
+      function removeThemeStylesheet() {
+        var existing = document.getElementById(stylesheetId);
+        if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+      }
+
+      function applyTheme(themeName) {
+        var normalized = normalizeThemeName(themeName);
+        removeThemeStylesheet();
+        if (!normalized) {
+          root.removeAttribute('data-theme');
+          select.value = '';
+          return;
+        }
+
+        root.setAttribute('data-theme', normalized);
+        var link = document.createElement('link');
+        link.id = stylesheetId;
+        link.rel = 'stylesheet';
+        link.setAttribute('href', '../css/themes/' + normalized + '.css');
+        link.setAttribute('data-theme-file', normalized);
+        document.head.appendChild(link);
+        select.value = normalized;
+      }
+
+      select.value = normalizeThemeName(root.getAttribute('data-theme') || window.PLATOSCAVE_THEME || '');
+      select.addEventListener('change', function onThemeSelectChange(event) {
+        applyTheme(event.target.value);
+      });
+    })();
+  </script>
 </body>
 </html>

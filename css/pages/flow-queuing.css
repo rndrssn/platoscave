@@ -15,6 +15,7 @@
   --queue-flow: var(--sage);
   --queue-strained: var(--rust);
   --queue-bars-color: var(--ink-ghost);
+  --control-range-color: var(--queue-bars-color);
 }
 
 .queue-machine-theory [id] {
@@ -239,65 +240,6 @@
 
 .queue-machine-control [data-output] {
   color: var(--ink);
-}
-
-.queue-machine-control input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  inline-size: 100%;
-  block-size: 1.1rem;
-  background: transparent;
-  cursor: pointer;
-  margin: 0.1rem 0;
-}
-
-.queue-machine-control input[type="range"]:focus:not(:focus-visible) {
-  outline: none;
-}
-
-.queue-machine-control input[type="range"]::-webkit-slider-runnable-track {
-  block-size: 1px;
-  background: var(--queue-bars-color);
-  border: 0;
-}
-
-.queue-machine-control input[type="range"]::-moz-range-track {
-  block-size: 1px;
-  background: var(--queue-bars-color);
-  border: 0;
-}
-
-.queue-machine-control input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  inline-size: 0.85rem;
-  block-size: 0.85rem;
-  border-radius: 999px;
-  border: 1.5px solid var(--queue-bars-color);
-  background: color-mix(in srgb, var(--paper) 84%, var(--queue-bars-color) 16%);
-  margin-top: -0.4rem;
-  transition: border-color 140ms ease, transform 140ms ease;
-}
-
-.queue-machine-control input[type="range"]::-moz-range-thumb {
-  inline-size: 0.85rem;
-  block-size: 0.85rem;
-  border-radius: 999px;
-  border: 1.5px solid var(--queue-bars-color);
-  background: color-mix(in srgb, var(--paper) 84%, var(--queue-bars-color) 16%);
-  transition: border-color 140ms ease, transform 140ms ease;
-}
-
-.queue-machine-control input[type="range"]:hover::-webkit-slider-thumb,
-.queue-machine-control input[type="range"]:focus-visible::-webkit-slider-thumb {
-  border-color: var(--queue-bars-color);
-  transform: scale(1.1);
-}
-
-.queue-machine-control input[type="range"]:hover::-moz-range-thumb,
-.queue-machine-control input[type="range"]:focus-visible::-moz-range-thumb {
-  border-color: var(--queue-bars-color);
-  transform: scale(1.1);
 }
 
 .queue-machine-stage {

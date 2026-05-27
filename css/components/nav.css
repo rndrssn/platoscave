@@ -27,12 +27,9 @@
   justify-content: flex-start;
   padding: 0 var(--nav-inset);
   min-height: var(--nav-bar-min-height);
-  background: var(--nav-surface);
-  border-bottom: 3px solid var(--nav-surface-border);
-  -webkit-backdrop-filter: var(--nav-surface-filter);
-  backdrop-filter: var(--nav-surface-filter);
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
+  transition: background 200ms ease, box-shadow 200ms ease;
 }
 
 .site-header.nav-main-pinned {
@@ -45,6 +42,10 @@
   top: env(safe-area-inset-top, 0px);
   left: 0;
   right: 0;
+  background: var(--nav-surface);
+  -webkit-backdrop-filter: var(--nav-surface-filter);
+  backdrop-filter: var(--nav-surface-filter);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
 .main-nav > .nav-links {
@@ -61,9 +62,6 @@
   color: var(--ink);
   letter-spacing: 0.01em;
   text-decoration: none;
-  background: var(--nav-surface);
-  -webkit-backdrop-filter: var(--nav-surface-filter);
-  backdrop-filter: var(--nav-surface-filter);
 }
 
 .nav-links {

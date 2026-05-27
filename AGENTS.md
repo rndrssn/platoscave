@@ -23,19 +23,18 @@ If conflict is unresolvable, stop and ask.
 
 ## Execution Gate
 
-**Default mode: discuss before acting.**
+**Default mode: plan before acting.**
 
 On every new request, return:
 1. Understanding of the request
 2. Proposed plan (short)
 3. `Proceed?`
 
-Do not edit files, run build/test commands, or execute write operations until approved.
+Always provide a plan before executing. Do not edit files, run build/test commands, or execute write operations until explicitly approved by the user.
 
-**Valid approval signals:** `implement` · `proceed` · `go ahead` · `apply option X` · `ok`
+**Valid approval signals:** `yes` · `ye` · `ok` · `proceed` · `go ahead` · `lets go` · `let's go` · `do that` · `implement` · `apply option X`
 
-**Fast-lane override** (skip planning, implement directly):
-- `implement directly` · `quick fix` · `no plan needed` · `skip discussion`
+**No fast-lane override:** even requests phrased as quick fixes or direct implementation requests still require the plan-and-approval gate before execution.
 
 **Discussion-only mode** (do not implement until explicit approval):
 - `confirm understanding` · `wdyt` · `let's discuss` · `plan first`
@@ -213,7 +212,7 @@ Tests enforcing this contract:
 - Satellite Index Plotly scene may include two surface traces: (1) an optional flat luminance base at `NDVI_BASE_PLANE_Z` from the Worker's RGB PNG, percentile-stretched (2nd–98th percentile), opacity 0.7, warm neutral colorscale; (2) the NDVI surface above it. When cached base data exists, keep trace order base first, NDVI second, and toggle the base via Plotly `visible` rather than removing/reinserting the trace. The Satellite base toggle is a button with `aria-pressed`; it re-renders cached data only and must not refetch Worker data. Do not revert it to a hidden checkbox pattern.
 - Satellite Index Plotly scene uses local metric axes from `buildLocalAxes()`: x is easting meters from the west edge, y is northing meters from the south edge, with axis titles `E` and `N`. Do not reintroduce the 3D north arrow unless explicitly requested.
 - Satellite Index demo chrome stays intentionally quiet: no `Index NDVI` control label, no map/surface panel labels, and no normal "Surface rendered" status copy above the canvases. Date/cloud coverage for live scenes belongs in the Plotly annotation. Status text is for loading, errors, and viewport-limit warnings only.
-- Satellite Index controls hierarchy: `Analyse viewport →` is the single primary action. In the archived Plotly demo, the base-map toggle belongs to the Plotly surface chrome as a quiet `Base map` view setting with a compact switch; do not style it as a peer action button.
+- Satellite Index controls hierarchy: `Load indices` is the single primary action in the Explorer. The archived Plotly demo may retain `Analyse viewport →`; its base-map toggle belongs to the Plotly surface chrome as a quiet `Base map` view setting with a compact switch; do not style it as a peer action button.
 - Satellite Index index isolines are explicit top-plane `scatter3d` traces from `buildIndexContourTraces()`, not Plotly surface contours. Keep surface `contours` disabled so isolines do not appear on every height level. Isolines use dark green `#123D1E`, interval 0.2 index units, and `INDEX_CONTOUR_TOP_OFFSET`.
 - Sentinel Hub PNG orientation: row 0 = northernmost latitude. Both `decodeNdviPng` and `decodeRgbToLuminance` call grid.reverse() before returning so row 0 = southernmost, matching Plotly's y=0=south convention and `generateNdviGrid`'s own ordering.
 - Satellite Index demo layout: map and NDVI surface side-by-side at ≥900px (1fr 1fr grid); both panels use aspect-ratio 1 (square). On mobile they stack full-width.
@@ -226,7 +225,7 @@ Tests enforcing this contract:
 - Explorer HUD colour scheme: the HUD uses quiet neutral/translucent instrument-panel surfaces with dark ink tokens so controls and metadata read on both the map and the rendered canvas. The Terrain switch uses neutral active states, the hectare readout is read-only and neutral by default, and the loading spinner stays small, transparent, and ink-toned (smaller on mobile). Reserve attention colour for blocked/warning states such as viewport area limits; do not use translucent white-on-dark styling or yellow active control surfaces in the live Explorer HUD.
 - Explorer overlay colour scheme: the rendered-canvas north arrow and colorscale legend use ink tokens with no text shadow, glow, or white overlay text. Keep them transparent and unboxed.
 - Explorer overlay positions: north arrow stays at the top-right; colorscale legend stays below it at the same right edge to clear the arrow. Do not return either to the left edge.
-- Explorer primary button label: "Analyse viewport →" before analysis, "New viewport" after a surface is rendered. Do not revert to "Clear / reset".
+- Explorer primary button label: "Load indices" before analysis, "New viewport" after a surface is rendered. Do not revert to "Clear / reset".
 - Explorer map has no MapLibre `NavigationControl`. Do not add one.
 - Explorer fallback copy: `fallbackReason` uses the user-facing string `'live imagery unavailable'`. Never use technical strings like `'Worker key not injected'` in user-facing copy.
 

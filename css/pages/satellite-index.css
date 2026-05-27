@@ -937,9 +937,12 @@
 
 .satellite-three-hud {
   /* Page-specific overlay contrast: keep readable over dynamic map/canvas imagery. */
-  --satellite-hud-surface: color-mix(in srgb, var(--paper) 82%, transparent 18%);
-  --satellite-hud-border: color-mix(in srgb, var(--ink) 14%, transparent 86%);
-  --satellite-hud-muted-surface: color-mix(in srgb, var(--paper) 72%, var(--ink-ghost) 28%);
+  --satellite-hud-surface: color-mix(in srgb, var(--paper) 28%, transparent 72%);
+  --satellite-hud-surface-strong: color-mix(in srgb, var(--paper) 38%, transparent 62%);
+  --satellite-hud-border: color-mix(in srgb, var(--ink) 34%, transparent 66%);
+  --satellite-hud-border-strong: color-mix(in srgb, var(--ink) 58%, transparent 42%);
+  --satellite-hud-blur: blur(14px) saturate(140%) contrast(108%);
+  --satellite-hud-ink: var(--ink);
   position: absolute;
   top: 0.75rem;
   left: 0.75rem;
@@ -952,7 +955,7 @@
   pointer-events: none;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.38rem;
   transform: translateZ(0);
   will-change: transform;
 }
@@ -962,8 +965,21 @@
 }
 
 .satellite-three-hud .satellite-status {
+  align-self: flex-start;
+  max-width: min(24rem, calc(100vw - 2.5rem));
+  min-height: 1.9rem;
   margin-bottom: 0;
-  color: var(--ink-mid);
+  padding: 0.28rem 0.56rem;
+  border: 0;
+  background: var(--satellite-hud-surface);
+  -webkit-backdrop-filter: var(--satellite-hud-blur);
+  backdrop-filter: var(--satellite-hud-blur);
+  color: var(--satellite-hud-ink);
+  text-shadow: none;
+}
+
+.satellite-three-hud .satellite-status:empty {
+  display: none;
 }
 
 .satellite-three-hud .satellite-status--working { color: var(--ochre); }
@@ -982,6 +998,10 @@
   border-top-color: var(--ink-mid);
   border-radius: 50%;
   background: transparent;
+  padding: 0;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  text-shadow: none;
   animation: satellite-three-spin 1s linear infinite;
 }
 
@@ -1003,7 +1023,7 @@
   background: transparent;
   display: inline-flex;
   flex: 0 0 auto;
-  min-height: 2.2rem;
+  min-height: 1.9rem;
 }
 
 .satellite-three-hud .satellite-receipt-label {
@@ -1015,20 +1035,21 @@
 }
 
 .satellite-three-hud .satellite-viewport-readout {
-  min-height: 2.2rem;
-  padding: 0.22rem 0.62rem;
+  min-height: 1.9rem;
+  padding: 0.16rem 0.48rem;
   border-radius: 0;
-  border: 0;
-  border-left: 1px solid var(--satellite-hud-border);
+  border: 1px solid var(--satellite-hud-border);
   background: var(--satellite-hud-surface);
-  color: var(--ink);
+  -webkit-backdrop-filter: var(--satellite-hud-blur);
+  backdrop-filter: var(--satellite-hud-blur);
+  color: var(--satellite-hud-ink);
   text-shadow: none;
 }
 
 .satellite-three-hud .satellite-viewport-readout--blocked {
-  border-color: color-mix(in srgb, var(--control-attention-surface) 72%, var(--ink) 28%);
-  background: color-mix(in srgb, var(--control-attention-surface) 48%, var(--paper) 52%);
-  color: var(--control-attention-ink);
+  border-color: var(--satellite-hud-border);
+  background: var(--satellite-hud-surface);
+  color: var(--satellite-hud-ink);
 }
 
 .satellite-three-hud .satellite-receipt-value--empty {
@@ -1043,70 +1064,100 @@
   align-items: stretch;
   padding: 0;
   margin-bottom: 0;
-  gap: 0;
-  border: 1px solid var(--satellite-hud-border);
-  background: var(--satellite-hud-surface);
+  gap: 0.34rem;
+  border: 0;
+  background: transparent;
   box-shadow: none;
 }
 
 .satellite-three-hud .satellite-analyse-btn,
-.satellite-three-hud .satellite-toggle-control {
-  border: 0;
-  background: var(--satellite-hud-muted-surface);
-  color: var(--ink);
+.satellite-three-hud .satellite-toggle-control,
+.satellite-three-hud .satellite-terrain-switch {
+  min-height: 1.9rem;
+  padding: 0.18rem 0.54rem;
+  border: 1px solid var(--satellite-hud-border);
+  background: var(--satellite-hud-surface);
+  -webkit-backdrop-filter: var(--satellite-hud-blur);
+  backdrop-filter: var(--satellite-hud-blur);
+  color: var(--satellite-hud-ink);
   box-shadow: none;
+  text-shadow: none;
 }
 
-.satellite-three-hud .satellite-toggle-control[aria-pressed="true"] {
-  border-color: var(--control-attention-surface);
-  background: var(--control-attention-surface);
-  color: var(--control-attention-ink);
+.satellite-three-hud .satellite-terrain-switch {
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.12rem;
+  min-width: 2.35rem;
+  padding-inline: 0.34rem;
+}
+
+.satellite-three-hud .satellite-terrain-switch-label {
+  font-size: 0.48rem;
+  line-height: 1;
+  letter-spacing: 0.055em;
+}
+
+.satellite-three-hud .satellite-terrain-switch-track {
+  inline-size: 1.32rem;
+  block-size: 0.62rem;
+}
+
+.satellite-three-hud .satellite-terrain-switch-thumb {
+  inline-size: 0.34rem;
+  block-size: 0.34rem;
+  inset-inline-start: 0.1rem;
+}
+
+.satellite-three-hud .satellite-terrain-switch[aria-pressed="true"] .satellite-terrain-switch-thumb {
+  inset-inline-start: calc(100% - 0.44rem);
+}
+
+.satellite-three-hud .satellite-toggle-control[aria-pressed="true"],
+.satellite-three-hud .satellite-terrain-switch[aria-pressed="true"] {
+  background: var(--satellite-hud-surface-strong);
+  color: var(--satellite-hud-ink);
+  border-color: var(--satellite-hud-border-strong);
 }
 
 .satellite-three-hud .satellite-terrain-switch:disabled {
-  color: var(--ink-faint);
+  color: color-mix(in srgb, var(--satellite-hud-ink) 68%, transparent 32%);
   background: transparent;
   cursor: default;
   opacity: 0.55;
 }
 
 .satellite-three-hud .satellite-analyse-btn:not(:disabled) {
-  border-color: transparent;
-  background: var(--satellite-hud-surface);
-  color: var(--ink);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 52%, transparent 48%);
+  border-color: var(--satellite-hud-border-strong);
+  background: var(--satellite-hud-surface-strong);
+  color: var(--satellite-hud-ink);
+  box-shadow: none;
 }
 
 .satellite-three-hud .satellite-analyse-btn::before {
-  content: "";
-  inline-size: 0.72rem;
-  block-size: 0.72rem;
-  flex: 0 0 auto;
-  border: 1px solid currentColor;
-  background:
-    linear-gradient(currentColor, currentColor) 50% 0 / 1px 100% no-repeat,
-    linear-gradient(currentColor, currentColor) 0 50% / 100% 1px no-repeat;
-  opacity: 0.72;
+  content: none;
 }
 
-.satellite-three-hud .satellite-toggle-control[aria-pressed="false"] {
-  border-color: var(--ink-ghost);
-  background: var(--ink-ghost);
-  color: var(--ink);
+.satellite-three-hud .satellite-toggle-control[aria-pressed="false"],
+.satellite-three-hud .satellite-terrain-switch[aria-pressed="false"] {
+  border-color: var(--satellite-hud-border);
+  background: var(--satellite-hud-surface);
+  color: var(--satellite-hud-ink);
 }
 
 .satellite-three-hud .satellite-analyse-btn:disabled {
-  border-color: transparent;
-  background: var(--satellite-hud-muted-surface);
-  color: var(--ink);
+  border-color: var(--satellite-hud-border-strong);
+  background: var(--satellite-hud-surface-strong);
+  color: var(--satellite-hud-ink);
   cursor: default;
   opacity: 1;
 }
 
-.satellite-three-hud .satellite-toggle-control:disabled {
-  border-color: var(--ink-ghost);
-  background: var(--ink-ghost);
-  color: var(--ink);
+.satellite-three-hud .satellite-toggle-control:disabled,
+.satellite-three-hud .satellite-terrain-switch:disabled {
+  border-color: var(--satellite-hud-border);
+  background: var(--satellite-hud-surface);
+  color: color-mix(in srgb, var(--satellite-hud-ink) 68%, transparent 32%);
   cursor: default;
   opacity: 1;
 }
@@ -1134,15 +1185,15 @@
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.3rem 0.45rem;
-    background: color-mix(in srgb, var(--paper) 85%, transparent 15%);
+    gap: 0.3rem;
+    padding: 0.22rem 0.32rem;
+    background: transparent;
     border-radius: 4px;
   }
 
   .satellite-three-hud .satellite-controls {
     flex: 0 0 auto;
-    gap: 0.35rem;
+    gap: 0.28rem;
     margin-bottom: 0;
     padding: 0;
   }
@@ -1159,6 +1210,16 @@
     text-overflow: ellipsis;
     margin-bottom: 0;
     min-height: 0;
+    max-width: none;
+  }
+
+  .satellite-three-hud .satellite-terrain-switch {
+    min-width: 1.9rem;
+    padding-inline: 0.28rem;
+  }
+
+  .satellite-three-hud .satellite-terrain-switch-label {
+    display: none;
   }
 
   .satellite-three-hud .satellite-status--loading {

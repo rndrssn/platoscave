@@ -491,7 +491,6 @@
   height: 0.52rem;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--ink-ghost) 78%, transparent 22%);
-  animation: cv-legend-swatch-pulse 3.2s ease-in-out infinite;
 }
 
 .cv-graph-swatch--experience {

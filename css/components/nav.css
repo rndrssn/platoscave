@@ -373,7 +373,7 @@
   flex-direction: column;
   gap: 0.2rem;
   margin: 0.02rem 0 0.18rem 0.72rem;
-  padding: 0.14rem 0 0.12rem 0.44rem;
+  padding: 0.14rem 0 0.12rem 0.72rem;
   border-left: 1px dashed color-mix(in srgb, var(--ink-ghost) 72%, transparent 28%);
 }
 
@@ -562,7 +562,7 @@
     flex-direction: column;
     gap: 0.26rem;
     margin: 0;
-    padding: 0.5rem 0.72rem;
+    padding: 0.5rem 0.72rem 0.5rem 1.1rem;
     border: 1px solid color-mix(in srgb, var(--ink-ghost) 66%, transparent 34%);
     border-radius: 0;
     background: var(--nav-submenu-surface);
@@ -1075,7 +1075,7 @@
   width: min(100%, max-content);
   min-width: 14.25rem;
   max-width: var(--nav-submenu-max-inline-size);
-  padding-inline: 0.62rem;
+  padding-inline: 1.1rem 0.62rem;
 }
 
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink,
@@ -1128,7 +1128,7 @@
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-child,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child {
   margin-left: 0.58rem;
-  padding-left: 0.48rem;
+  padding-left: 0.72rem;
   border-left: 1px solid color-mix(in srgb, var(--ink-ghost) 52%, transparent 48%);
 }
 

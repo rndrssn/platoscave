@@ -22,6 +22,7 @@ const INDEX_CONTOUR_MAX_GRID_SIZE = 160;
 const INDEX_CONTOUR_TOP_OFFSET = 0.02;
 const INDEX_CONTOUR_COLOR = '#123D1E';
 const SENTINEL_SOURCE_RESOLUTION_LABEL = 'source 10-20 m';
+const ANALYSIS_REQUEST_TIMEOUT_MS = 25000;
 
 // Brightened Platoscave palette — copper → ochre → gold → fresh sage → green
 const NDVI_COLORSCALE = [
@@ -248,6 +249,18 @@ function getAnalysisDate() {
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
+}
+
+function isAbortError(error) {
+  return error && error.name === 'AbortError';
+}
+
+function fetchWithTimeout(url, options, timeoutMs) {
+  if (!window.AbortController) return fetch(url, options);
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...options, signal: controller.signal })
+    .finally(() => window.clearTimeout(timeoutId));
 }
 
 function isFiniteNumber(value) {
@@ -886,11 +899,16 @@ async function runAnalysis() {
     setStatus('Fetching satellite data…', 'working');
 
     const rawIndexGrids = {};
+    let fallbackReason = '';
     try {
       const payload = JSON.stringify({ bounds, date, width: gridSize, height: gridSize });
       const headers = { 'Content-Type': 'application/json', 'X-API-Key': WORKER_API_KEY };
 
-      const analysisRes = await fetch(WORKER_URL + '/analysis', { method: 'POST', headers, body: payload });
+      const analysisRes = await fetchWithTimeout(
+        WORKER_URL + '/analysis',
+        { method: 'POST', headers, body: payload },
+        ANALYSIS_REQUEST_TIMEOUT_MS
+      );
 
       if (analysisRes.ok) {
         const data = await analysisRes.json();
@@ -904,12 +922,13 @@ async function runAnalysis() {
           }
         }
       }
-    } catch (_) {
+    } catch (error) {
+      fallbackReason = isAbortError(error) ? 'Request timed out' : '';
       // Fall through to fixtures.
     }
 
     if (!grid) {
-      setStatus('Generating fixture surfaces…', 'working');
+      setStatus((fallbackReason ? fallbackReason + ' · ' : '') + 'Generating fixture surfaces…', 'working');
       // Yield so status text paints before synchronous grid computation.
       await new Promise(r => setTimeout(r, 0));
       grid = generateNdviGrid(bounds, gridSize);

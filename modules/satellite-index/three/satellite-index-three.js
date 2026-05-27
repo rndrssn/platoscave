@@ -23,6 +23,8 @@ const BASE_TEXTURE_SIZE = 1024;
 const BASE_TILE_SIZE = 256;
 const BASE_TILE_MIN_ZOOM = 10;
 const BASE_TILE_MAX_ZOOM = 18;
+const ANALYSIS_REQUEST_TIMEOUT_MS = 25000;
+const MAPTILER_TILE_TIMEOUT_MS = 8000;
 const CONTOUR_TEXTURE_TIMEOUT_MS = 12000;
 const CONTOUR_TEXTURE_SIZE = 2048;
 // HEIGHT_SCALE and surface offset are computed per-render from scene span — see renderThreeSurface.
@@ -276,6 +278,18 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+function isAbortError(error) {
+  return error && error.name === 'AbortError';
+}
+
+function fetchWithTimeout(url, options, timeoutMs) {
+  if (!window.AbortController) return fetch(url, options);
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...options, signal: controller.signal })
+    .finally(() => window.clearTimeout(timeoutId));
+}
+
 function isFiniteNumber(value) {
   return typeof value === 'number' && Number.isFinite(value);
 }
@@ -436,7 +450,7 @@ function buildContourTileJsonUrl() {
 }
 
 function loadImageBlob(url) {
-  return fetch(url)
+  return fetchWithTimeout(url, {}, MAPTILER_TILE_TIMEOUT_MS)
     .then(response => {
       if (!response.ok) throw new Error('Tile request failed');
       return response.blob();
@@ -1132,7 +1146,11 @@ async function runAnalysis() {
       try {
         const payload = JSON.stringify({ bounds, date, width: gridSize, height: gridSize });
         const headers = { 'Content-Type': 'application/json', 'X-API-Key': WORKER_API_KEY };
-        const analysisRes = await fetch(WORKER_URL + '/analysis', { method: 'POST', headers, body: payload });
+        const analysisRes = await fetchWithTimeout(
+          WORKER_URL + '/analysis',
+          { method: 'POST', headers, body: payload },
+          ANALYSIS_REQUEST_TIMEOUT_MS
+        );
 
         if (analysisRes.ok) {
           const data = await analysisRes.json();
@@ -1147,8 +1165,8 @@ async function runAnalysis() {
         } else {
           fallbackReason = 'Worker HTTP ' + analysisRes.status;
         }
-      } catch (_) {
-        fallbackReason = 'Worker request failed';
+      } catch (error) {
+        fallbackReason = isAbortError(error) ? 'request timed out' : 'Worker request failed';
       }
     } else {
       fallbackReason = 'live imagery unavailable';

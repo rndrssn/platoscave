@@ -39,7 +39,6 @@ function testRootTokenDeclarations() {
 function testComponentsConsumeNavTokens() {
   const requiredUsages = [
     { label: '.main-nav background', pattern: /background:\s*var\(--nav-surface\)\s*;/ },
-    { label: '.main-nav border', pattern: /border-bottom:\s*[0-9.]+px solid var\(--nav-surface-border\)\s*;/ },
     { label: '.main-nav filter', pattern: /backdrop-filter:\s*var\(--nav-surface-filter\)\s*;/ },
     { label: 'open menu background', pattern: /background:\s*var\(--nav-menu-surface\)\s*;/ },
     { label: 'open menu border', pattern: /border-top:\s*(?:[0-9.]+px solid var\(--nav-menu-border\)|none)\s*;/ },

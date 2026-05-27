@@ -133,6 +133,61 @@ Explorer context:
 
 Do not fan out browser requests to separate `/ndvi` or `/image` endpoints. The Worker call is viewport-area guarded at 200 hectares.
 
+### Why a Worker
+
+Sentinel Hub credentials (`SENTINEL_CLIENT_ID` / `SENTINEL_CLIENT_SECRET`) are billable backend credentials that must stay server-side. The Worker enforces a frontend API key via `X-API-Key`, centralises CORS and request validation, and keeps the frontend a static GitHub Pages site.
+
+### Request flow
+
+```
+Browser (GitHub Pages: rndrssn.github.io)
+    │  POST /analysis
+    │  X-API-Key: <build-time injected key>
+    ▼
+Cloudflare Worker (satellite-worker)
+    │  OAuth2 client_credentials token (cached per isolate)
+    │  Sentinel Hub catalog/process requests
+    ▼
+Copernicus Sentinel Hub API (sh.dataspace.copernicus.eu)
+    │  Sentinel-2 L2A imagery
+    ▼
+Worker returns encoded spectral-index PNGs, RGB image PNG, and scene metadata
+```
+
+### `POST /analysis` contract
+
+Request body:
+
+```json
+{
+  "bounds": { "west": 18.0, "south": 59.0, "east": 18.1, "north": 59.1 },
+  "date": "2026-05-24",
+  "width": 256,
+  "height": 256
+}
+```
+
+Response shape the frontend expects:
+
+```json
+{
+  "ndvi": "<base64 NDVI PNG>",
+  "indices": {
+    "ndre": "<base64 NDRE PNG>",
+    "ndwi": "<base64 NDWI PNG>",
+    "ndmi": "<base64 NDMI PNG>",
+    "evi": "<base64 EVI PNG>",
+    "savi": "<base64 SAVI PNG>",
+    "cire": "<base64 CIre PNG>"
+  },
+  "image": "<base64 RGB PNG>",
+  "scene": { "id": "...", "date": "...", "cloudCover": 3.2 },
+  "timings": {}
+}
+```
+
+Index PNGs are decoded using the encoding range in each local `INDEX_DEFS` entry. Transparent PNG pixels are treated as masked gaps. The frontend applies its own colour ramps and height mapping.
+
 ## Garbage Can Simulation Pipeline
 
 Assess and Explorer share the same model pipeline with different input surfaces.

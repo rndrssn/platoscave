@@ -1,0 +1,69 @@
+html[data-theme='warm-press'] {
+  --paper:       #f5edce;
+  --paper-dark:  #ece1b5;
+  --paper-deep:  #dfd09a;
+
+  --ink:         #1a1208;
+  --ink-mid:     #3d2e14;
+  --ink-faint:   #6b4e28;
+  --ink-ghost:   #9a7d52;
+
+  --rust:        #8b2800;
+  --rust-light:  #b03a1a;
+  --sage:        #3a5a28;
+  --sage-light:  #5a7a44;
+  --ochre:       #9b6200;
+  --gold:        #c08010;
+  --slate:       #2a3a4a;
+  --slate-light: #4a5a6a;
+
+  --serif:       Georgia, 'Times New Roman', serif;
+  --serif-alt:   Georgia, 'Times New Roman', serif;
+  --mono:        'Courier New', Courier, monospace;
+
+  --nav-surface:                 rgba(245, 237, 206, 0.90);
+  --nav-surface-border:          #1a1208;
+  --nav-surface-filter:          blur(10px) saturate(1.08);
+  --nav-menu-surface:            rgba(236, 225, 181, 0.96);
+  --nav-menu-border:             rgba(26, 18, 8, 0.16);
+  --nav-menu-filter:             blur(10px) saturate(1.08);
+  --nav-menu-active-surface:     rgba(236, 225, 181, 0.98);
+  --nav-submenu-surface:         rgba(236, 225, 181, 0.88);
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  var(--ink-faint);
+  --viz-ink-ghost:  var(--ink-ghost);
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+[data-theme='warm-press'] body {
+  background-image: none;
+}
+
+[data-theme='warm-press'] .nav-title,
+[data-theme='warm-press'] .hero-title,
+[data-theme='warm-press'] .module-header-title,
+[data-theme='warm-press'] .module-title,
+[data-theme='warm-press'] .diagnosis-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.08;
+}
+
+[data-theme='warm-press'] .hero-body,
+[data-theme='warm-press'] .module-header-body,
+[data-theme='warm-press'] .diagnosis-body,
+[data-theme='warm-press'] .essay-body,
+[data-theme='warm-press'] .field-notes-body {
+  font-family: Georgia, 'Times New Roman', serif;
+}

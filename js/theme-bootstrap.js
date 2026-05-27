@@ -6,19 +6,10 @@
   var root = document.documentElement;
   var THEME_STYLESHEET_ID = 'platoscave-theme-runtime';
   var AVAILABLE_THEMES = [
-    'new-yorker',
     'decision-collision-cold',
-    'decision-collision-cold-contrast',
-    'brutalist-max',
-    'neon-bowie',
-    'arcade-afterglow',
-    'laser-bauhaus',
-    'chrome-glam',
-    'minimalist-brutalist',
-    'neon-brutalist-extreme',
-    'neon-brutalist-daylight',
-    'geological-survey',
-    'typographic',
+    'plain',
+    'high-signal',
+    'warm-press',
   ];
   var THEME_ALIASES = {
     'collision-decision-cold': 'decision-collision-cold'

@@ -57,32 +57,34 @@ When module titles, section labels, or IA change, update:
 - Inline prose links, UI links, nav links, and action links should use the shared link tokens instead of page-local color inventions.
 - D3/SVG visual properties should use D3 `.style()` where browser CSS parsing matters; avoid SVG `.attr()` with `color-mix(..., transparent)`.
 
+### CSS token tiers
+
+Tokens are defined in `css/tokens.css` and overridden per-theme in `css/themes.css`. If a component references an undefined token the browser silently falls back to the initial value (often `transparent` or `black`) — there is no build-time error.
+
+To audit: search `css/tokens.css` for the expected token name before using it. Tier reference:
+
+| Tier | Prefix | Role |
+|------|--------|------|
+| UI neutrals | `--ink-*` | Text, borders, chrome |
+| Accent palette | `--rust`, `--gold`, `--sage` (and `-light` variants) | Highlight, force-graph nodes |
+| Data viz | `--viz-*` | In-simulation / chart fills |
+| Navigation | `--nav-*` | Theme nav overrides only |
+| Card chrome | `--card-*` | Surface, border, radius, shadow, pad |
+| Monospace | `--mono` | Viz microtype |
+
+Do not cross tiers (e.g. `--viz-*` tokens for force-graph nodes, or `--ink-*` for data-viz fills).
+
 ## Writing CMS
 
-Notes and articles use Markdown frontmatter and static generated output:
-- Notes source: `content/notes/published/`
-- Articles source: `content/articles/published/`
-- Output: `notes/`, `articles/`, `tags/`, and `data/*-index.json`
+Notes and articles use Markdown frontmatter and static generated output. See `README.md` (Writing CMS section) for the full schema, required vs optional fields, validation rules, publish commands, and status lifecycle.
 
-Use `scripts/build-notes.js` for the build and `scripts/publish-note.sh` for one-command writing releases. The script name is historical; it publishes notes and articles.
+Key files: `content/notes/published/`, `content/articles/published/`, `scripts/build-notes.js`, `scripts/publish-note.sh`.
 
 ## Experience-Skill Graph
 
-The Experience/Skills graph is a special profile/CV surface rather than a standard catalogue module.
+The Experience/Skills graph is a special profile/CV surface rather than a standard catalogue module. See `README.md` (Experience-Skill Graph CMS section) for the full data format, linking model, common edit patterns, and wikilink failure-mode behaviour.
 
-Source of truth:
-- Data file: `content/graph-data/experience-skill-graph.md`
-- Loader: `modules/experience-skill-graph/graph-data-loader.js`
-- Skills graph page: `modules/experience-skill-graph/index.html`
-- CV page: `modules/experience-skill-graph/cv/index.html`
-
-Data format:
-- One Markdown file with `## Categories`, `## Skills`, and `## Experiences`.
-- Rows use pipe-delimited fields.
-- Skill rows link to categories with `[[cat-id]]`.
-- Experience rows link to skills with `[[skill-id]]`.
-
-The loader parses the single Markdown file, validates node types, deduplicates links, and builds the graph data consumed by the D3 renderer.
+Key files: `content/graph-data/experience-skill-graph.md`, `modules/experience-skill-graph/graph-data-loader.js`, `modules/experience-skill-graph/index.html`.
 
 ## Learning & Feedback Runtime
 
@@ -116,8 +118,12 @@ Worker integration:
 - Deployed Worker: `https://satellite-worker.platoscave.workers.dev`
 - Frontend endpoint: `POST /analysis`
 - Source placeholder: `const WORKER_API_KEY = '__WORKER_API_KEY__';`
-- Deploy injection: `.github/workflows/deploy.yml`
+- Deploy injection: `.github/workflows/deploy.yml` substitutes the real key from the `WORKER_API_KEY` GitHub Actions secret at deploy time
 - Local injection/restore: `scripts/dev-satellite.sh inject|restore`
+  - `inject` — substitutes the placeholder with the real key from a local git-ignored `.env.satellite` file for local development
+  - `restore` — reverts injected files back to the `__WORKER_API_KEY__` placeholder
+  - Always run `restore` before committing; never commit a file with the real key in place
+- Key rotation: update the `WORKER_API_KEY` GitHub Actions secret and redeploy; also run `wrangler secret put API_KEY --env production` in the `satellite-worker` repo
 
 Explorer context:
 - Spectral surfaces come from Sentinel-derived indices when live data is available.
@@ -149,7 +155,7 @@ getDiagnosis(decisionStructure, accessStructure, unresolvedShare)
 drawViz(simResult)
 ```
 
-Assess fixes `problemInflow = 'moderate'` because the survey does not capture inflow timing. Explorer exposes all four parameters.
+Assess fixes `problemInflow = 'moderate'` because the survey instrument cannot capture inflow timing — the questions measure decision-structure and access-structure only. Explorer exposes all four parameters to support full scenario exploration. If a future survey version adds inflow timing questions, this constraint should be revisited and the fixed value removed from `assess.js`.
 
 `gc-simulation.js` accepts legacy `energyLoad` aliases, but new callers should use `problemIntensity` and `problemInflow` explicitly.
 
@@ -183,5 +189,16 @@ Common triggers:
 - Module IA/title/section changes: update README, module pages, route data, and tests.
 - Runtime API changes: update handover docs, agent contract, and contract tests.
 - New JS file or changed file responsibility: update the first file comment with one factual ownership sentence.
-- Release workflow changes: update README and `GUIDE-testing-and-release.md`.
+- Release workflow changes: update README.
 - GC model semantics or diagnosis text changes: update implementation, tests, and this guide.
+
+## Known Fragilities
+
+Tracked open issues that do not yet have tests or fixes. Do not re-report these as new findings.
+
+| Priority | Issue | Location |
+|----------|-------|----------|
+| 🟠 | Multi-fallback `require()` — not tested; silent catch blocks swallow errors before final throw | `gc-simulation.js:8–42` |
+| 🟠 | Regex match on script `src` is fragile; breaks if file path changes | `js/theme-bootstrap.js:47` |
+| 🟡 | `problemRadius`, `choiceRadius` hardcoded — outside CSS token system | `gc-viz-helpers.js:84–86` |
+| 🟡 | `AGENTS.md` / `CLAUDE.md` sync is enforced by `scripts/check-claude-links.js` but the check is not run on every local edit — only on `node tests/run-all.js` | — |

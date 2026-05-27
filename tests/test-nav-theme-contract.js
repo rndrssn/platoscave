@@ -21,7 +21,6 @@ const REQUIRED_NAV_TOKENS = [
   '--nav-menu-filter',
   '--nav-menu-active-surface',
   '--nav-submenu-surface',
-  '--nav-submenu-filter',
 ];
 
 function assert(condition, message) {
@@ -47,7 +46,6 @@ function testComponentsConsumeNavTokens() {
     { label: 'open menu filter', pattern: /backdrop-filter:\s*var\(--nav-menu-filter\)\s*;/ },
     { label: 'open menu active surface', pattern: /background:\s*var\(--nav-menu-active-surface\)\s*;/ },
     { label: 'submenu background', pattern: /background:\s*var\(--nav-submenu-surface\)\s*;/ },
-    { label: 'submenu filter', pattern: /backdrop-filter:\s*var\(--nav-submenu-filter\)\s*;/ },
   ];
 
   requiredUsages.forEach((usage) => {

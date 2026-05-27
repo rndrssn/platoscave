@@ -56,8 +56,8 @@ html[data-theme='neon-brutalist-extreme'] {
   --nav-menu-border:         color-mix(in srgb, var(--sage-light) 54%, transparent 46%);
   --nav-menu-filter:         blur(14px) saturate(1.16);
   --nav-menu-active-surface: color-mix(in srgb, var(--rust) 26%, #170329 74%);
-  --nav-submenu-surface:     color-mix(in srgb, #110320 82%, var(--paper-dark) 18%);
-  --nav-submenu-filter:      blur(12px) saturate(1.12);
+  --nav-submenu-surface:     rgba(57, 45, 65, 0.82);
+
 
   --viz-ink:         var(--ink);
   --viz-ink-mid:     var(--ink-mid);

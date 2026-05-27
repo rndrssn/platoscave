@@ -57,8 +57,8 @@ html[data-theme='neon-brutalist-daylight'] {
   --nav-menu-border:         color-mix(in srgb, var(--sage) 46%, transparent 54%);
   --nav-menu-filter:         blur(12px) saturate(1.08);
   --nav-menu-active-surface: color-mix(in srgb, var(--gold) 34%, white 66%);
-  --nav-submenu-surface:     color-mix(in srgb, #fff1cb 82%, var(--paper-dark) 18%);
-  --nav-submenu-filter:      blur(10px) saturate(1.05);
+  --nav-submenu-surface:     rgba(252, 240, 206, 0.82);
+
 
   --viz-ink:         var(--ink);
   --viz-ink-mid:     var(--ink-mid);

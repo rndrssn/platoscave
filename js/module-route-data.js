@@ -62,6 +62,7 @@
       slug: 'satellite-index',
       path: 'satellite-index/',
       status: '',
+      demo: true,
       descriptor: 'Viewport-as-area-of-interest remote-sensing proof of concept.',
       sections: 'Overview / Explorer'
     },
@@ -85,6 +86,7 @@
       slug: (route && route.slug) || '',
       path: (route && route.path) || '',
       status: normalizeModuleStatus(route && route.status),
+      demo: !!(route && route.demo),
       descriptor: (route && route.descriptor) || '',
       sections: (route && route.sections) || ''
     };
@@ -100,7 +102,8 @@
         title: route.title,
         slug: route.slug,
         path: route.path,
-        status: route.status
+        status: route.status,
+        demo: route.demo
       };
     });
   }

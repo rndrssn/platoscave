@@ -298,11 +298,35 @@
       modulesToggleButton.type = 'button';
       modulesToggleButton.className = 'nav-link nav-link--editorial nav-modules-toggle nav-modules-toggle--bento';
       modulesToggleButton.title = 'Catalogue';
-      modulesToggleButton.textContent = '';
       var modulesToggleLabel = document.createElement('span');
       modulesToggleLabel.className = 'visually-hidden';
       modulesToggleLabel.textContent = 'Catalogue';
       modulesToggleButton.appendChild(modulesToggleLabel);
+      var svgNs = 'http://www.w3.org/2000/svg';
+      var iconSvg = document.createElementNS(svgNs, 'svg');
+      iconSvg.setAttribute('viewBox', '0 0 24 24');
+      iconSvg.setAttribute('aria-hidden', 'true');
+      iconSvg.setAttribute('focusable', 'false');
+      iconSvg.setAttribute('class', 'nav-modules-icon');
+      var orbitRing = document.createElementNS(svgNs, 'circle');
+      orbitRing.setAttribute('class', 'orbit-ring');
+      orbitRing.setAttribute('cx', '12');
+      orbitRing.setAttribute('cy', '12');
+      orbitRing.setAttribute('r', '6');
+      iconSvg.appendChild(orbitRing);
+      var dotsGroup = document.createElementNS(svgNs, 'g');
+      dotsGroup.setAttribute('class', 'dots-group');
+      var DOT_POS = [[8,8],[12,6],[16,8],[18,12],[16,16],[12,18],[8,16],[6,12]];
+      for (var di = 0; di < DOT_POS.length; di++) {
+        var dot = document.createElementNS(svgNs, 'circle');
+        dot.setAttribute('cx', String(DOT_POS[di][0]));
+        dot.setAttribute('cy', String(DOT_POS[di][1]));
+        dot.setAttribute('r', '1.2');
+        dot.setAttribute('class', 'menu-dot dot-' + di);
+        dotsGroup.appendChild(dot);
+      }
+      iconSvg.appendChild(dotsGroup);
+      modulesToggleButton.appendChild(iconSvg);
       modulesToggleButton.setAttribute('aria-expanded', modulesAutoExpand ? 'true' : 'false');
       modulesToggleButton.setAttribute('aria-label', modulesAutoExpand ? 'Collapse catalogue list' : 'Expand catalogue list');
 
@@ -496,5 +520,6 @@
       if (target.closest('.nav-modules-toggle')) return;
       if (target.closest('.nav-link') || target.closest('.nav-sublink')) closeMenu();
     });
+
   });
 })();

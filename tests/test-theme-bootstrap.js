@@ -58,9 +58,9 @@ function testCustomThemeSetsDataTheme() {
 }
 
 function testCustomThemeIsTrimmed() {
-  const result = runWithTheme('  neon-brutalist-daylight  ');
+  const result = runWithTheme('  decision-collision-cold  ');
   assert(result.setCall !== null, 'Expected setAttribute for trimmed custom theme');
-  assert(result.setCall.value === 'neon-brutalist-daylight', 'Expected trimmed theme value');
+  assert(result.setCall.value === 'decision-collision-cold', 'Expected trimmed theme value');
 }
 
 function testAliasThemeMapsToCanonicalName() {

@@ -38,8 +38,8 @@ html[data-theme='decision-collision-cold'] {
   --nav-menu-border:             color-mix(in srgb, var(--ink-ghost) 44%, transparent 56%);
   --nav-menu-filter:             blur(12px) saturate(1.06);
   --nav-menu-active-surface:     color-mix(in srgb, var(--paper-dark) 80%, var(--paper) 20%);
-  --nav-submenu-surface:         color-mix(in srgb, var(--paper-dark) 78%, var(--paper) 22%);
-  --nav-submenu-filter:          blur(10px) saturate(1.05);
+  --nav-submenu-surface:         rgba(242, 237, 222, 0.82);
+
 
   --viz-ink:        var(--ink);
   --viz-ink-mid:    var(--ink-mid);
@@ -61,7 +61,7 @@ html[data-theme='decision-collision-cold'][data-nav-swatch='white'] {
   --nav-menu-surface:            color-mix(in srgb, white 82%, var(--paper-dark) 18%);
   --nav-menu-border:             color-mix(in srgb, white 50%, var(--ink) 50%);
   --nav-menu-active-surface:     color-mix(in srgb, white 76%, var(--paper-dark) 24%);
-  --nav-submenu-surface:         color-mix(in srgb, white 78%, var(--paper-dark) 22%);
+  --nav-submenu-surface:         rgba(252, 250, 247, 0.82);
 }
 
 [data-theme='decision-collision-cold'] body {

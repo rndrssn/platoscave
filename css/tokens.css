@@ -147,8 +147,7 @@
   --nav-menu-border:             color-mix(in srgb, var(--ink-ghost) 44%, transparent 56%);
   --nav-menu-filter:             blur(12px) saturate(1.06);
   --nav-menu-active-surface:     color-mix(in srgb, var(--paper-dark) 80%, var(--paper) 20%);
-  --nav-submenu-surface:         color-mix(in srgb, var(--paper-dark) 78%, var(--paper) 22%);
-  --nav-submenu-filter:          blur(10px) saturate(1.05);
+  --nav-submenu-surface:         rgba(240, 234, 217, 0.82); /* #f0ead9 = --paper-dark at 82% */
   --nav-menu-open-top-offset:    calc(100% - 0.25rem);
   --nav-submenu-top-desktop:     calc(100% + 0.35rem);
   --nav-submenu-top-mobile:      calc(100% + 0.24rem);

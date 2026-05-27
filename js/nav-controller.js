@@ -349,6 +349,14 @@
           node.appendChild(document.createTextNode(' '));
           node.appendChild(state);
         }
+        if (entry.demo) {
+          var demoTag = document.createElement('span');
+          demoTag.className = 'module-demo-tag';
+          demoTag.setAttribute('aria-label', 'Demo');
+          demoTag.textContent = 'D';
+          node.appendChild(document.createTextNode(' '));
+          node.appendChild(demoTag);
+        }
         return node;
       }
 
@@ -361,6 +369,7 @@
             title: item.title,
             slug: item.slug,
             status: item.status,
+            demo: item.demo,
             href: item.path ? joinHref(modulesHref, item.path) : modulesHref
           };
         });

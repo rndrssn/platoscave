@@ -660,7 +660,7 @@ function updateAnalysisButtonLabel(liveAllowed) {
     btnEl.textContent = 'New viewport';
     return;
   }
-  btnEl.textContent = liveAllowed === false ? 'Zoom in' : 'Analyse viewport →';
+  btnEl.textContent = liveAllowed === false ? 'Zoom in' : 'Load indices';
 }
 
 function resetAnalysisButton() {

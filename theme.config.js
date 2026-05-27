@@ -19,6 +19,8 @@
 // window.PLATOSCAVE_THEME = 'minimalist-brutalist';
 // window.PLATOSCAVE_THEME = 'neon-brutalist-extreme';
 // window.PLATOSCAVE_THEME = 'neon-brutalist-daylight';
+// window.PLATOSCAVE_THEME = 'geological-survey';
+// window.PLATOSCAVE_THEME = 'typographic';
 
 /* Active */
 window.PLATOSCAVE_THEME = 'decision-collision-cold';

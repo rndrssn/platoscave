@@ -166,7 +166,14 @@ assertIncludes(threeJs, "'X-API-Key': WORKER_API_KEY", 'Three.js prototype Worke
 assertIncludes(threeJs, 'function isWorkerKeyConfigured()', 'Three.js prototype should explicitly detect local Worker-key injection');
 assertIncludes(threeJs, "fallbackReason = 'live imagery unavailable';", 'Three.js prototype should explain fixture fallback when the live data path is unavailable');
 assertIncludes(threeJs, "fallbackReason = 'Worker HTTP ' + analysisRes.status;", 'Three.js prototype should expose Worker HTTP fallback status');
-assertIncludes(threeJs, "fetch(WORKER_URL + '/analysis'", 'Three.js prototype should use the combined analysis endpoint');
+assertIncludes(threeJs, 'const ANALYSIS_REQUEST_TIMEOUT_MS = 25000;', 'Three.js Worker analysis requests should have a client-side timeout');
+assertIncludes(threeJs, 'const MAPTILER_TILE_TIMEOUT_MS = 8000;', 'Three.js MapTiler tile requests should have a client-side timeout');
+assertIncludes(threeJs, 'const CONTOUR_TEXTURE_TIMEOUT_MS = 12000;', 'Three.js contour texture rendering should keep a bounded MapLibre wait');
+assertIncludes(threeJs, 'function fetchWithTimeout(url, options, timeoutMs)', 'Three.js prototype should use a shared abortable fetch helper');
+assertIncludes(threeJs, "fallbackReason = isAbortError(error) ? 'request timed out' : 'Worker request failed';", 'Three.js prototype should distinguish Worker request timeouts from generic live failures');
+assertIncludes(threeJs, "fetchWithTimeout(\n          WORKER_URL + '/analysis'", 'Three.js prototype should use the combined analysis endpoint with a timeout');
+assertIncludes(threeJs, 'ANALYSIS_REQUEST_TIMEOUT_MS', 'Three.js Worker request timeout constant should be used');
+assertIncludes(threeJs, 'fetchWithTimeout(url, {}, MAPTILER_TILE_TIMEOUT_MS)', 'Three.js MapTiler satellite tile fetches should be abortable');
 assertIncludes(threeJs, "return 'https://api.maptiler.com/tiles/satellite-v2/'", 'Three.js prototype should compose a base texture from satellite raster tiles');
 assertIncludes(threeJs, "return 'https://api.maptiler.com/tiles/contours-v2/tiles.json?key=' + MAPTILER_API_KEY;", 'Three.js prototype should compose terrain context from MapTiler contours-v2');
 assertIncludes(threeJs, 'const texture = new THREE.CanvasTexture(canvas);', 'Three.js prototype should convert the tile mosaic canvas to a texture');
@@ -242,7 +249,10 @@ assertIncludes(demoJs, "const WORKER_URL     = 'https://satellite-worker.platosc
 assertIncludes(demoJs, "const WORKER_API_KEY = '__WORKER_API_KEY__';", 'WORKER_API_KEY must use placeholder — real key is injected by GitHub Actions at deploy time');
 assertNotMatches(demoJs, /const WORKER_API_KEY = '[0-9a-f]{64}';/, 'Demo source must not contain an injected Worker key');
 assertIncludes(demoJs, "'X-API-Key': WORKER_API_KEY", 'X-API-Key header must be sent on all Worker requests');
-assertIncludes(demoJs, "fetch(WORKER_URL + '/analysis'", 'Combined analysis endpoint should be fetched');
+assertIncludes(demoJs, 'const ANALYSIS_REQUEST_TIMEOUT_MS = 25000;', 'Plotly demo Worker analysis requests should have a client-side timeout');
+assertIncludes(demoJs, 'function fetchWithTimeout(url, options, timeoutMs)', 'Plotly demo should use a shared abortable fetch helper');
+assertIncludes(demoJs, "fetchWithTimeout(\n        WORKER_URL + '/analysis'", 'Combined analysis endpoint should be fetched with a timeout');
+assertIncludes(demoJs, "fallbackReason = isAbortError(error) ? 'Request timed out' : '';", 'Plotly demo should distinguish request timeouts before falling back to fixture surfaces');
 assertNotMatches(demoJs, /fetch\(WORKER_URL \+ '\/ndvi'|fetch\(WORKER_URL \+ '\/image'|\.\.\.INDEX_DEFS\.map\(def => fetch/, 'Frontend should not fan out separate Worker requests for one analysis');
 assertIncludes(demoJs, 'const SMALL_VIEWPORT_GRID_SIZE = 512;', 'Small viewport adaptive grid size changed');
 assertIncludes(demoJs, 'const MEDIUM_VIEWPORT_GRID_SIZE = 256;', 'Medium viewport adaptive grid size changed');
@@ -289,7 +299,7 @@ assertNotMatches(demoJs, /NDVI_CONTOUR_PLANE_Z|#8B3A2A|buildNdviContourTraces/, 
 assertIncludes(demoJs, 'const liveAllowed = canRequestLive(metrics);', 'Live request guard should be evaluated before fetch');
 assertIncludes(demoJs, "btnEl.disabled = busy || !liveAllowed;", 'Analyze button should disable beyond live viewport limit');
 assertIncludes(demoJs, "map.on('move', updateViewportReadout);", 'Viewport readout should update while the map moves');
-assert(demoJs.indexOf('if (!liveAllowed)') < demoJs.indexOf("fetch(WORKER_URL + '/analysis'"), 'Worker fetches must be guarded by the live viewport limit');
+assert(demoJs.indexOf('if (!liveAllowed)') < demoJs.indexOf("WORKER_URL + '/analysis'"), 'Worker fetches must be guarded by the live viewport limit');
 assertIncludes(demoJs, 'width: gridSize, height: gridSize', 'Worker request should use adaptive grid size');
 assertNotMatches(demoJs, /lastLiveSkipped|fixture · live skipped/, 'Live-skipped fixture mode should not remain after disabling analysis above 200 ha');
 assertIncludes(demoJs, 'function canUseMapLibre()', 'MapLibre dependency guard missing');

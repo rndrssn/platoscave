@@ -823,6 +823,8 @@ function updateTerrainContextVisibility() {
   const terrainActive = baseContextMode === 'terrain';
   if (!terrainSwitchEl) return;
   terrainSwitchEl.setAttribute('aria-pressed', String(terrainActive));
+  const label = terrainSwitchEl.querySelector('.satellite-terrain-switch-label');
+  if (label) label.textContent = terrainActive ? 'Terrain on' : 'Terrain off';
   terrainSwitchEl.disabled = !lastBaseTextures.terrain;
 }
 
@@ -1183,7 +1185,7 @@ async function runAnalysis() {
     updateIndexGuide('ndvi');
     updateIndexLegend(activeDef);
     setViewerMode('rendered');
-    setStatus(sceneData ? '' : 'Using fixture surface · ' + fallbackReason, sceneData ? null : 'working');
+    setStatus(sceneData ? '' : 'Fixture surface · ' + fallbackReason, sceneData ? null : 'working');
   } catch (_) {
     setSurfacePlaceholder('Surface unavailable');
     setStatus('Unable to render Three.js surface · refresh and try again', 'error');

@@ -1,0 +1,65 @@
+html[data-theme='high-signal'] {
+  --paper:       #ffffff;
+  --paper-dark:  #f5f5f5;
+  --paper-deep:  #e8e8e8;
+
+  --ink:         #000000;
+  --ink-mid:     #1a1a1a;
+  --ink-faint:   #3d3d3d;
+  --ink-ghost:   #7a7a7a;
+
+  /* UI chrome is monochrome; viz retains colour for legibility */
+  --rust:        #1a1a1a;
+  --rust-light:  #3d3d3d;
+  --sage:        #2a2a2a;
+  --sage-light:  #4a4a4a;
+  --ochre:       #3d3d3d;
+  --gold:        #555555;
+  --slate:       #1a1a1a;
+  --slate-light: #3d3d3d;
+
+  --serif:       'Space Mono', 'Courier New', monospace;
+  --serif-alt:   'Bebas Neue', Impact, sans-serif;
+  --mono:        'Space Mono', 'Courier New', monospace;
+
+  --nav-surface:                 rgba(255, 255, 255, 0.95);
+  --nav-surface-border:          #000000;
+  --nav-surface-filter:          none;
+  --nav-menu-surface:            rgba(255, 255, 255, 0.98);
+  --nav-menu-border:             rgba(0, 0, 0, 0.15);
+  --nav-menu-filter:             none;
+  --nav-menu-active-surface:     rgba(245, 245, 245, 0.99);
+  --nav-submenu-surface:         rgba(245, 245, 245, 0.90);
+
+  /* Keep viz tokens chromatic so simulations remain legible */
+  --viz-ink:        #000000;
+  --viz-ink-mid:    #1a1a1a;
+  --viz-ink-faint:  #3d3d3d;
+  --viz-ink-ghost:  #7a7a7a;
+  --viz-rust:       #b83227;
+  --viz-rust-light: #d04e43;
+  --viz-ochre:      #b87318;
+  --viz-gold:       #d49820;
+  --viz-slate:      #2a3c4a;
+  --viz-slate-light: #486070;
+  --viz-sage:       #2d6e48;
+  --viz-sage-light: #4a8f65;
+}
+
+[data-theme='high-signal'] .nav-title,
+[data-theme='high-signal'] .hero-title,
+[data-theme='high-signal'] .module-header-title,
+[data-theme='high-signal'] .module-title,
+[data-theme='high-signal'] .diagnosis-title {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  letter-spacing: 0.04em;
+  line-height: 1.04;
+}
+
+[data-theme='high-signal'] .hero-body,
+[data-theme='high-signal'] .module-header-body,
+[data-theme='high-signal'] .diagnosis-body,
+[data-theme='high-signal'] .essay-body,
+[data-theme='high-signal'] .field-notes-body {
+  font-family: 'Space Mono', 'Courier New', monospace;
+}

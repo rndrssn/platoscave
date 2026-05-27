@@ -17,6 +17,8 @@
     'minimalist-brutalist',
     'neon-brutalist-extreme',
     'neon-brutalist-daylight',
+    'geological-survey',
+    'typographic',
   ];
   var THEME_ALIASES = {
     'collision-decision-cold': 'decision-collision-cold'

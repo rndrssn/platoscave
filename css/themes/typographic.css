@@ -1,0 +1,152 @@
+html[data-theme='typographic'] {
+  --paper:       #FAFAF8;
+  --paper-dark:  #F3F3F0;
+  --paper-deep:  #E4E4E0;
+
+  --ink:         #111111;
+  --ink-mid:     #2E2E2E;
+  --ink-faint:   #5E5E5E;
+  --ink-ghost:   #A0A0A0;
+
+  /* Semantic colors kept muted — functional in viz, invisible in UI */
+  --rust:        #7A3520;
+  --rust-light:  #9A5035;
+  --sage:        #2E5C38;
+  --sage-light:  #4A7A54;
+  --ochre:       #705820;
+  --gold:        #907838;
+  --slate:       #384858;
+  --slate-light: #506070;
+
+  --serif:       'EB Garamond', Georgia, serif;
+  --serif-alt:   'Cormorant Garamond', Georgia, serif;
+  --mono:        'DM Mono', 'Courier New', monospace;
+
+  --link-text:              var(--ink-mid);
+  --link-text-hover:        var(--ink);
+  --link-inline:            var(--ink-mid);
+  --link-inline-hover:      var(--ink);
+  --link-inline-visited:    var(--ink-faint);
+  --link-ui:                var(--ink-faint);
+  --link-ui-hover:          var(--ink);
+  --tag-chip:               var(--ink-faint);
+  --tag-chip-hover:         var(--ink);
+  --link-underline:         color-mix(in srgb, var(--ink-mid) 38%, transparent 62%);
+  --link-underline-hover:   color-mix(in srgb, var(--ink) 70%, transparent 30%);
+
+  --card-surface:           transparent;
+  --card-border-color:      var(--paper-deep);
+  --card-border-width:      1px;
+  --card-accent-color:      var(--paper-deep);
+  --card-accent-width:      0px;
+  --card-shadow-hover:      none;
+  --shadow-nav-popover:     0 2px 14px rgba(17, 17, 17, 0.09);
+
+  --viz-ink:        var(--ink);
+  --viz-ink-mid:    var(--ink-mid);
+  --viz-ink-faint:  #727272;
+  --viz-ink-ghost:  #AEAEAE;
+  --viz-rust:       var(--rust);
+  --viz-rust-light: var(--rust-light);
+  --viz-ochre:      var(--ochre);
+  --viz-gold:       var(--gold);
+  --viz-slate:      var(--slate);
+  --viz-slate-light: var(--slate-light);
+  --viz-sage:       var(--sage);
+  --viz-sage-light: var(--sage-light);
+}
+
+/* ─── Background: nothing ────────────────────────────────────────────── */
+[data-theme='typographic'] body {
+  background: var(--paper);
+  background-image: none;
+}
+
+/* ─── Nav: hairline separator, no surface ───────────────────────────── */
+[data-theme='typographic'] .main-nav {
+  border-bottom: 1px solid var(--paper-deep);
+  background: var(--paper);
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+[data-theme='typographic'] .nav-links.is-open {
+  border: 1px solid var(--paper-deep);
+  background: var(--paper);
+  box-shadow: 0 4px 16px rgba(17, 17, 17, 0.07);
+}
+
+/* ─── Headings: Cormorant italic — the only visual event ────────────── */
+[data-theme='typographic'] .nav-title,
+[data-theme='typographic'] .hero-title,
+[data-theme='typographic'] .module-header-title,
+[data-theme='typographic'] .module-title,
+[data-theme='typographic'] .diagnosis-title,
+[data-theme='typographic'] .essay-heading {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.06;
+}
+
+/* ─── Cards: strip to hairline rules, no surface, no shadow ─────────── */
+[data-theme='typographic'] .sim-summary-card,
+[data-theme='typographic'] .q-card,
+[data-theme='typographic'] .field-notes-card,
+[data-theme='typographic'] .essay-link,
+[data-theme='typographic'] .note-index-link {
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--paper-deep);
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* Assessment and metric cards keep a minimal surface so they read as contained */
+[data-theme='typographic'] .q-card,
+[data-theme='typographic'] .sim-summary-card {
+  background: var(--paper-dark);
+  border: 1px solid var(--paper-deep);
+}
+
+[data-theme='typographic'] .essay-link:hover,
+[data-theme='typographic'] .note-index-link:hover {
+  box-shadow: none;
+  border-top-color: var(--ink-ghost);
+}
+
+/* ─── Module entries: thin rule only ────────────────────────────────── */
+[data-theme='typographic'] .module-entry {
+  border-color: var(--paper-deep);
+}
+
+/* ─── Sub-nav: hairline ──────────────────────────────────────────────── */
+[data-theme='typographic'] .module-sub-nav,
+[data-theme='typographic'] .results-nav,
+[data-theme='typographic'] .module-footer-nav {
+  border-color: var(--paper-deep);
+}
+
+/* ─── Links: ink with underline, no color ───────────────────────────── */
+[data-theme='typographic'] .module-sub-nav-link,
+[data-theme='typographic'] .diagnosis-link,
+[data-theme='typographic'] .footer-nav-link,
+[data-theme='typographic'] .contact-social-link {
+  color: var(--ink-mid);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--ink-ghost);
+}
+
+[data-theme='typographic'] .module-sub-nav-link--active,
+[data-theme='typographic'] .results-nav-link--active,
+[data-theme='typographic'] .nav-link--active {
+  color: var(--ink);
+  text-decoration-color: color-mix(in srgb, var(--ink) 60%, transparent 40%);
+}
+
+/* ─── Status markers: muted tones only ──────────────────────────────── */
+[data-theme='typographic'] .status-live  { color: var(--sage); }
+[data-theme='typographic'] .status-coming { color: var(--ink-faint); }

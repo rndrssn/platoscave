@@ -832,13 +832,13 @@
           </div>
         </div>
 
-        <p class="ds-subsection-heading">HUD and high-attention controls</p>
+        <p class="ds-subsection-heading">Overlay chrome / glass HUD</p>
         <div class="ds-preview ds-preview--column">
           <div class="ds-item">
             <div class="satellite-three-hud ds-hud-specimen">
               <div class="satellite-controls" role="toolbar" aria-label="HUD toolbar example">
                 <button class="satellite-analyse-btn control-action control-action--primary" type="button">New viewport</button>
-                <button class="satellite-terrain-switch control-toggle" type="button" aria-pressed="false">
+                <button class="satellite-terrain-switch control-toggle" type="button" aria-pressed="true" aria-label="Toggle terrain context">
                   <span class="satellite-terrain-switch-label">Terrain</span>
                   <span class="satellite-terrain-switch-track" aria-hidden="true">
                     <span class="satellite-terrain-switch-thumb"></span>
@@ -847,24 +847,29 @@
                 <div class="satellite-meta viz-chrome-readout" aria-label="Request metadata example">
                   <p class="satellite-receipt-line satellite-receipt-line--request">
                     <span class="satellite-receipt-label viz-chrome-readout-label">Request</span>
-                    <span class="satellite-viewport-readout viz-chrome-readout-value">2.52 HA</span>
+                    <span class="satellite-viewport-readout viz-chrome-readout-value">20.9 ha</span>
                   </p>
                 </div>
               </div>
-              <p class="satellite-status satellite-status--loading viz-chrome-status" aria-label="Loading"></p>
+              <p class="satellite-status satellite-status--working viz-chrome-status">Fixture surface &middot; live imagery unavailable</p>
             </div>
-            <span class="ds-state-label">Snapshot · normal + loading</span>
-            <span class="ds-label">HUD toolbar capsule · action, Terrain switch, readout</span>
+            <span class="ds-state-label">Snapshot · rendered overlay</span>
+            <span class="ds-label">Overlay chrome · one action, Terrain state dot, area metadata</span>
           </div>
           <div class="ds-item">
-            <button class="satellite-terrain-switch control-toggle" type="button" aria-pressed="true">
-              <span class="satellite-terrain-switch-label">Terrain</span>
-              <span class="satellite-terrain-switch-track" aria-hidden="true">
-                <span class="satellite-terrain-switch-thumb"></span>
-              </span>
-            </button>
+            <div class="satellite-three-hud ds-hud-specimen">
+              <div class="satellite-controls" role="toolbar" aria-label="HUD blocked example">
+                <button class="satellite-analyse-btn control-action control-action--primary" type="button" disabled>Zoom in</button>
+                <div class="satellite-meta viz-chrome-readout" aria-label="Blocked request metadata example">
+                  <p class="satellite-receipt-line satellite-receipt-line--request">
+                    <span class="satellite-receipt-label viz-chrome-readout-label">Request</span>
+                    <span class="satellite-viewport-readout satellite-viewport-readout--blocked viz-chrome-readout-value">193877 ha / zoom in below 200 ha</span>
+                  </p>
+                </div>
+              </div>
+            </div>
             <span class="ds-state-label">Forced state · on</span>
-            <span class="ds-label">HUD binary switch · Terrain on</span>
+            <span class="ds-label">Blocked viewport · same glass, text carries state</span>
           </div>
           <div class="ds-item">
             <button class="satellite-toggle-control control-toggle" aria-pressed="true">
@@ -875,12 +880,13 @@
             <span class="ds-label">Archived surface toggle · Plotly demo</span>
           </div>
         </div>
-        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets and the CV/Skills shell use neutral segmented language because they choose between peer modes. Satellite Explorer HUD elements use a quiet toolbar capsule: neutral backing surfaces preserve readability over changing imagery, the Terrain control is a single binary switch where off means Basemap, the hectare readout is a read-only segment, and the loading spinner stays small and ink-toned. Attention color is reserved for warning or blocked states. The archived Plotly demo still has its own Base map toggle because it controls a different surface layer.</p>
-        <ul class="ds-rule-list" aria-label="HUD toolbar capsule rules">
-          <li>Use the HUD toolbar capsule only for controls over a dynamic map, rendered surface, or canvas; normal page controls should use the canonical action, segmented, and toggle patterns.</li>
-          <li>The live Explorer capsule order is viewport action, Terrain switch, request-area readout. Keep scene metadata below the viewer rather than inside the overlay.</li>
-          <li>The Terrain switch is binary: <span class="ds-token">aria-pressed=false</span> means Basemap context; <span class="ds-token">aria-pressed=true</span> means Terrain context. Do not reintroduce a visible Basemap peer button.</li>
-          <li>Normal HUD surfaces stay neutral and translucent. The spinner is small, transparent, and ink-toned. Attention color is reserved for blocked or warning states.</li>
+        <p style="margin-top:0.75rem;font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);font-style:italic">Flow presets and the CV/Skills shell use neutral segmented language because they choose between peer modes. Satellite Explorer uses overlay chrome: a translucent blurred backing preserves readability over changing imagery, one viewport action remains button-like, Terrain is a compact pressed-state chip, hectare values are metadata, and fallback copy is quiet status text. The archived Plotly demo still has its own Base map toggle because it controls a different surface layer.</p>
+        <ul class="ds-rule-list" aria-label="Overlay chrome glass HUD rules">
+          <li>Use overlay chrome only for controls over a dynamic map, rendered surface, or canvas; normal page controls should use the canonical action, segmented, and toggle patterns.</li>
+          <li>The live Explorer overlay order is viewport action, Terrain state chip, request-area readout. Keep scene metadata below the viewer rather than inside the overlay.</li>
+          <li>The Terrain control remains a <span class="ds-token">button[aria-pressed]</span>, but renders as text plus a small state dot rather than a full switch track. Do not reintroduce a visible Basemap peer button.</li>
+          <li>Area values are read-only visualisation metadata. Preserve lowercase units such as <span class="ds-token">ha</span> and avoid input-like boxes.</li>
+          <li>Normal HUD surfaces stay neutral, translucent, and blurred. Blocked viewport state should change text such as <span class="ds-token">zoom in below 200 ha</span>, not the glass material.</li>
           <li>The archived Plotly demo Base map toggle is documented for legacy parity only; it is not the live Explorer HUD pattern.</li>
         </ul>
       </section>

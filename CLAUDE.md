@@ -21,6 +21,8 @@ Operational contract for AI coding agents in this repository. Read this file at 
 
 If conflict is unresolvable, stop and ask.
 
+Design and UI decisions must consult the repository design system in `design-system/` when relevant. Treat it as the canonical source for product UI patterns, visual language, component examples, and design rationale before falling back to ad hoc CSS or inferred patterns.
+
 ## Execution Gate
 
 **Default mode: plan before acting.**
@@ -79,7 +81,7 @@ Three-branch flow: `sandbox` → `develop` → `main`
 | GC simulation, scoring, diagnosis, viz | `modules/garbage-can/runtime/gc-simulation.js`, `modules/garbage-can/runtime/gc-viz.js`, `modules/garbage-can/assess/assess.js`, `modules/garbage-can/explorer/explorer.js` |
 | Emergence module | `modules/emergence/emergence-primer.js`, `modules/emergence/emergence-primer-gantt.js`, `modules/emergence/index.html`, `modules/emergence/ganttgol/index.html` |
 | Module 06 Ambiguous Documents | `modules/ambiguity-clarity/index.html`, `modules/ambiguity-clarity/section-map/index.html`, `modules/ambiguity-clarity/section-map/section-map.js`, `css/pages/the-descent.css` |
-| UI, CSS, navigation, IA | `docs/10-guides/GUIDE-architecture.md` |
+| UI, CSS, navigation, IA | `design-system/index.html`, `design-system/BACKLOG.md`, `docs/10-guides/GUIDE-architecture.md` |
 | Module 04 Learning & Feedback | All files in `modules/learning-feedback/*` + relevant contract tests in `tests/` |
 | Products Over Projects module | `modules/products-over-projects/index.html`, `modules/products-over-projects/taxonomy/index.html`, `modules/products-over-projects/assessment/index.html`, `modules/products-over-projects/assessment/products-over-projects-assessment.js`, `css/pages/products-over-projects.css`, `tests/test-products-over-projects-assessment.js` |
 | Flow & Queuing module | `modules/flow-queuing/index.html`, `modules/flow-queuing/taxonomy/index.html`, `modules/flow-queuing/explore/index.html`, `modules/flow-queuing/concept-graph/index.html`, `modules/flow-queuing/derivation/index.html`, `modules/flow-queuing/flow-queuing-model.js`, `modules/flow-queuing/flow-queuing.js`, `modules/flow-queuing/concept-graph/concept-graph.js`, `css/pages/flow-queuing.css`, `tests/test-flow-queuing-explore-contract.js` |

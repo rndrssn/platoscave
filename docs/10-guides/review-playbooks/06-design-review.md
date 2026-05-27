@@ -121,6 +121,9 @@ Visual consistency, token usage, component reuse, and style drift control.
 
 #### Pattern reuse
 
+The canonical component precedent source is `design-system/index.html`. Before authoring a new component, open that page to find existing pattern examples, token usage, and class conventions. New CSS blocks only when no precedent exists there and the divergence is intentional.
+
+- [ ] Checked `design-system/index.html` for an existing precedent before authoring a new component.
 - [ ] Identified the existing precedent before writing a new component (force graph, legend, scoreboard, controls form, status line, story panel).
 - [ ] Reused the precedent's class names where behaviour overlaps; new classes only for genuinely new affordances.
 - [ ] Did not introduce a third dialect of an already-doubled pattern.

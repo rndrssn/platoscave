@@ -593,10 +593,8 @@
     margin: 0;
     padding: 0.5rem 0.72rem;
     border: 1px solid color-mix(in srgb, var(--ink-ghost) 66%, transparent 34%);
-    border-radius: 0.48rem;
+    border-radius: 0;
     background: var(--nav-submenu-surface);
-    -webkit-backdrop-filter: var(--nav-submenu-filter);
-    backdrop-filter: var(--nav-submenu-filter);
     box-shadow: var(--shadow-nav-popover);
     z-index: var(--z-nav-submenu);
   }
@@ -794,10 +792,8 @@
     margin: 0;
     padding: 0.34rem 0.42rem;
     border: 1px solid color-mix(in srgb, var(--ink-ghost) 66%, transparent 34%);
-    border-radius: 0.48rem;
+    border-radius: 0;
     background: var(--nav-submenu-surface);
-    -webkit-backdrop-filter: var(--nav-submenu-filter);
-    backdrop-filter: var(--nav-submenu-filter);
     box-shadow: var(--shadow-nav-popover);
     z-index: var(--z-nav-submenu);
   }
@@ -1039,11 +1035,9 @@
     margin: 0;
     padding: 0.38rem 0.56rem;
     border: 1px solid color-mix(in srgb, var(--ink-ghost) 56%, transparent 44%);
-    border-radius: 0.48rem;
-    background: var(--paper);
+    border-radius: 0;
+    background: var(--nav-submenu-surface);
     box-shadow: var(--shadow-nav-popover);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
     z-index: var(--z-nav-submenu);
   }
 
@@ -1219,15 +1213,3 @@
   transform: rotate(45deg);
 }
 
-/* Floating modules links: no popover chrome */
-.js-enabled .nav-links .nav-modules-submenu,
-.js-enabled .nav-links.is-open .nav-modules-submenu {
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  padding: 0;
-  padding-inline: 0;
-}

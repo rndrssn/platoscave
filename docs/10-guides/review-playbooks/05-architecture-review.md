@@ -163,11 +163,11 @@ The following findings have already been addressed. Do not re-report them as ope
 | ✅ | `GUIDE-architecture.md` updated to reflect full pipeline including `gc-pressure-narrative.js`, script load order, and Assess/Explorer parameter differences |
 | ✅ | `CLAUDE.md` critical paths updated to include `gc-simulation-core.js` and `gc-pressure-narrative.js` |
 
-Open items (not yet addressed):
+Open items are tracked in `docs/10-guides/GUIDE-architecture.md` under **Known Fragilities**. Check there for the current list before starting a review.
 
-| Open | Description |
-|------|-------------|
-| 🟠 | Multi-fallback `require()` in `gc-simulation.js:8–42` — not tested; silent catch blocks swallow errors before final throw |
-| 🟠 | `theme-bootstrap.js:47` — regex match on script src is fragile; breaks if file path changes |
-| 🟡 | Viz radius (`problemRadius`, `choiceRadius`) hardcoded in `gc-viz-helpers.js:84–86` — outside CSS token system |
-| 🟡 | `AGENTS.md` — verify it mirrors `CLAUDE.md`; currently assumed hand-synced |
+### How to update this baseline
+
+When a finding is resolved:
+1. Move it from the **Known Fragilities** table in `GUIDE-architecture.md` into the **Fixed** table above.
+2. Add the date to the baseline header if the session date differs from the current date.
+3. Run `node tests/run-all.js` to confirm the fix holds before closing the item.

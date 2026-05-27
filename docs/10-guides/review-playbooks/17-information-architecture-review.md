@@ -21,9 +21,8 @@ Site and module structure clarity: labels, hierarchy, wayfinding, and path predi
 ## Verify
 
 - Cross-check against:
-  - `docs/20-reference/navigation-patterns.md`
-  
-  - module IA contract in `CLAUDE.md` / `AGENTS.md`
+  - Module IA contract in `CLAUDE.md` / `AGENTS.md`
+  - Navigation and Module IA section in `docs/10-guides/GUIDE-architecture.md`
 - Run navigation contracts/smoke:
   - `node tests/test-nav-modules-menu-contract.js`
   - `node tests/test-module-landing-pattern-contract.js`

@@ -8,6 +8,10 @@ html {
   overflow-x: hidden;
 }
 
+@media (max-width: 640px) {
+  html { font-size: 16px; }
+}
+
 body {
   font-family: var(--serif);
   font-size: var(--fs-body);

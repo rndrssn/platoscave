@@ -1178,9 +1178,9 @@
 
 @media (max-width: 700px) {
   .satellite-three-hud {
-    top: auto;
+    top: 0.5rem;
     right: 0.5rem;
-    bottom: 0.5rem;
+    bottom: auto;
     left: 0.5rem;
     max-width: none;
     flex-direction: row;

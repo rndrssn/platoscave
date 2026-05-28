@@ -62,6 +62,12 @@
   color: var(--ink-mid);
 }
 
+.viz-chrome-readout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
 .viz-chrome-tooltip {
   font-size: 0.6rem;
   line-height: 1.48;

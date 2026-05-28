@@ -845,5 +845,49 @@
   </script>
   <script src="../../js/module-route-data.js"></script>
   <script src="../../js/nav-controller.js"></script>
+  <script>
+    (function initStickyMasthead() {
+      var masthead = document.querySelector('.experience-skill-masthead');
+      if (!masthead) return;
+      var sentinel = document.createElement('div');
+      sentinel.style.cssText = 'position:absolute;width:1px;height:1px;pointer-events:none;visibility:hidden;';
+      masthead.parentNode.insertBefore(sentinel, masthead);
+      var spacer = null;
+      var stuck = false;
+      function getNavOffset() {
+        var nav = document.querySelector('.main-nav');
+        if (!nav) return 0;
+        var r = nav.getBoundingClientRect();
+        return r.height + Math.max(0, r.top);
+      }
+      function stick() {
+        if (stuck) return;
+        stuck = true;
+        spacer = document.createElement('div');
+        spacer.style.height = masthead.getBoundingClientRect().height + 'px';
+        masthead.parentNode.insertBefore(spacer, masthead);
+        masthead.style.top = getNavOffset() + 'px';
+        masthead.classList.add('experience-skill-masthead--stuck');
+      }
+      function unstick() {
+        if (!stuck) return;
+        stuck = false;
+        if (spacer) { spacer.parentNode.removeChild(spacer); spacer = null; }
+        masthead.style.top = '';
+        masthead.classList.remove('experience-skill-masthead--stuck');
+      }
+      new IntersectionObserver(function(entries) {
+        entries[0].isIntersecting ? unstick() : stick();
+      }, { threshold: 0 }).observe(sentinel);
+      window.addEventListener('resize', function() {
+        if (stuck && spacer) {
+          masthead.classList.remove('experience-skill-masthead--stuck');
+          spacer.style.height = masthead.getBoundingClientRect().height + 'px';
+          masthead.style.top = getNavOffset() + 'px';
+          masthead.classList.add('experience-skill-masthead--stuck');
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -28,6 +28,7 @@ const MAPTILER_TILE_TIMEOUT_MS = 8000;
 const CONTOUR_TEXTURE_TIMEOUT_MS = 12000;
 const CONTOUR_TEXTURE_SIZE = 2048;
 const FIELD_SCALE_CONTOUR_TEXTURE_SIZE = 3072;
+const TERRAIN_CONTEXT_PAPER = '#F2EFE7';
 // HEIGHT_SCALE and surface offset are computed per-render from scene span — see renderThreeSurface.
 
 const INDEX_DEFS = [
@@ -244,6 +245,7 @@ let map = null;
 let busy = false;
 let btnEl = null;
 let terrainSwitchEl = null;
+let terrainContextEl = null;
 let viewportReadoutEl = null;
 let stageEl = null;
 let northEl = null;
@@ -547,7 +549,7 @@ function buildContourStyle() {
       {
         id: 'contour-background',
         type: 'background',
-        paint: { 'background-color': '#FAFCFF' },
+        paint: { 'background-color': TERRAIN_CONTEXT_PAPER },
       },
       {
         id: 'contour-lines',
@@ -698,6 +700,7 @@ function resetToSelection() {
   setStatus('', null);
   const sceneMetaWrap = document.querySelector('.satellite-three-scene-meta');
   if (sceneMetaWrap) sceneMetaWrap.hidden = true;
+  if (terrainContextEl) terrainContextEl.hidden = true;
   if (terrainSwitchEl) terrainSwitchEl.hidden = true;
 }
 
@@ -848,6 +851,7 @@ function updateTerrainContextVisibility() {
   const label = terrainSwitchEl.querySelector('.satellite-terrain-switch-label');
   if (label) label.textContent = terrainActive ? 'Terrain on' : 'Terrain off';
   terrainSwitchEl.disabled = !lastBaseTextures.terrain;
+  if (terrainContextEl) terrainContextEl.hidden = !terrainActive || !lastBaseTextures.terrain;
 }
 
 function applyBaseContextMode(mode) {
@@ -865,7 +869,7 @@ function applyBaseContextMode(mode) {
     baseMesh.material.opacity = 0.95;
   } else {
     baseMesh.material.map = null;
-    baseMesh.material.color.set(requestedMode === 'terrain' ? '#FAFCFF' : '#C4BAB0');
+    baseMesh.material.color.set(requestedMode === 'terrain' ? TERRAIN_CONTEXT_PAPER : '#C4BAB0');
     baseMesh.material.opacity = requestedMode === 'terrain' ? 0.96 : 0.5;
   }
   baseMesh.material.needsUpdate = true;
@@ -1224,6 +1228,7 @@ async function runAnalysis() {
 function initMap() {
   btnEl = document.getElementById('satellite-three-analyse-btn');
   terrainSwitchEl = document.getElementById('satellite-three-terrain-switch');
+  terrainContextEl = document.getElementById('satellite-three-terrain-context');
   viewportReadoutEl = document.getElementById('satellite-three-viewport-readout');
   stageEl = document.getElementById('satellite-three-stage');
   northEl = document.getElementById('satellite-three-north');

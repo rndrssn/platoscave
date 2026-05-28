@@ -1,9 +1,18 @@
-/* ─── Nav — mobile base ──────────────────────────────────── */
-/* Alignment knobs: tune the left edge of the title + link row together via
- * --nav-inset, then fine-tune the link row alone via --nav-links-offset
- * (positive shifts right, negative shifts left) to account for font
- * side-bearing differences between the italic serif title and the mono
- * link text. Override per breakpoint on .site-header. */
+/* ─── Nav ─────────────────────────────────────────────────────
+   Three visual modes — all self-contained, no late global overrides:
+     A. Small-phone (<640px)   font-size adjustments to base rail
+     B. Rail (<900px)          horizontal bar + abs bento popup
+     C. Desktop (≥900px)       wider rail, rotated links, abs bento popup
+
+   The mobile toggle is hidden at all widths (the nav is always a visible
+   row). It is retained in HTML so the JS controller can bind its events.
+
+   Alignment knobs: tune the left edge of the title + link row together
+   via --nav-inset, then fine-tune the link row alone via --nav-links-offset
+   (positive shifts right, negative shifts left).
+─────────────────────────────────────────────────────────────── */
+
+/* ─── 1. Custom properties ───────────────────────────────────── */
 .site-header {
   display: block;
   position: relative;
@@ -18,6 +27,7 @@
   --nav-modules-toggle-active-ink: color-mix(in srgb, #000 72%, #fff 28%);
 }
 
+/* ─── 2. Static chrome ───────────────────────────────────────── */
 .main-nav {
   position: relative;
   width: 100%;
@@ -52,6 +62,7 @@
   margin-left: var(--nav-links-offset);
 }
 
+/* ─── 3. Nav title ───────────────────────────────────────────── */
 .nav-title {
   display: block;
   padding: 1.46rem var(--nav-inset) 0;
@@ -64,6 +75,7 @@
   text-decoration: none;
 }
 
+/* ─── 4. Nav-links container ─────────────────────────────────── */
 .nav-links {
   display: flex;
   flex-wrap: wrap;
@@ -72,10 +84,16 @@
   position: relative;
 }
 
+/* Hidden by default when JS is active; mode blocks (B, C) restore display. */
 .js-enabled .nav-links {
   display: none;
 }
 
+/* Base open-menu state: absolute dropdown popover.
+   Mode blocks B and C override position to static and background to transparent,
+   so this only fires if neither mode block applies (very narrow viewports) or if
+   the mode blocks are somehow removed.  The token references here are required
+   by the theme contract (test-nav-theme-contract.js). */
 .js-enabled .nav-links.is-open {
   display: flex;
   flex-direction: column;
@@ -102,19 +120,13 @@
   animation: nav-popover-in 180ms ease-out both;
 }
 
-@media (max-width: 640px) {
-  .js-enabled .nav-links.is-open {
-    max-height: min(70vh, 20rem);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-
-  .js-enabled .nav-links.is-open .nav-link {
-    line-height: 1.35;
-    white-space: normal;
-  }
+.js-enabled .nav-links.is-open .nav-link.nav-link--active,
+.js-enabled .nav-links.is-open .nav-modules-link.nav-link--active {
+  color: var(--viz-rust, var(--rust));
+  background: var(--nav-menu-active-surface);
 }
 
+/* ─── 5. Primary nav-link base typography ────────────────────── */
 .nav-link {
   font-family: var(--mono);
   font-size: var(--fs-link-nav);
@@ -157,47 +169,8 @@
   line-height: 1;
 }
 
-.js-enabled .nav-links.is-open .nav-link {
-  min-height: 2.5rem;
-  width: 100%;
-  justify-content: flex-start;
-  letter-spacing: 0.06em;
-  border-bottom: none;
-  border-radius: 2px;
-  padding: 0.18rem 0.26rem;
-  animation: nav-link-in 180ms ease-out both;
-}
-
-.js-enabled .nav-links.is-open .nav-link.nav-link--editorial {
-  letter-spacing: 0.01em;
-  text-transform: none;
-  font-size: calc(var(--fs-nav-title) * 0.615 * var(--nav-menu-scale));
-  line-height: 1.25;
-  color: color-mix(in srgb, var(--ink-mid) 82%, var(--viz-rust, var(--rust)) 18%);
-}
-
-.js-enabled .nav-links.is-open .nav-link.nav-link--catalogue {
-  color: var(--viz-rust, var(--rust));
-}
-
-.js-enabled .nav-links.is-open .nav-link:hover,
-.js-enabled .nav-links.is-open .nav-link:focus-visible {
-  background: color-mix(in srgb, var(--paper) 74%, var(--paper-dark) 26%);
-}
-
-.js-enabled .nav-links.is-open .nav-link.nav-link--active {
-  background: color-mix(in srgb, var(--paper) 68%, var(--paper-dark) 32%);
-}
-
-.js-enabled .nav-links.is-open .nav-link:nth-child(1) { animation-delay: 20ms; }
-.js-enabled .nav-links.is-open .nav-link:nth-child(2) { animation-delay: 70ms; }
-.js-enabled .nav-links.is-open .nav-link:nth-child(3) { animation-delay: 120ms; }
-
 .nav-link:hover    { color: var(--ink-mid); }
-.nav-link--active  {
-  color: var(--ink-mid);
-  font-weight: 400;
-}
+.nav-link--active  { color: var(--ink-mid); font-weight: 400; }
 
 .nav-link::before {
   content: "";
@@ -221,28 +194,9 @@
   line-height: 1;
 }
 
-@keyframes nav-popover-in {
-  from {
-    opacity: 0;
-    transform: translateY(-8px) rotate(-0.4deg);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) rotate(-0.4deg);
-  }
-}
-
-@keyframes nav-link-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* ─── 6. Mobile toggle ───────────────────────────────────────── */
+/* Overridden to display:none in both mode B (<900px) and mode C (≥900px),
+   so it is never visible. Kept so JS can bind the click handler. */
 .nav-mobile-toggle {
   display: none;
   font-family: var(--mono);
@@ -277,106 +231,17 @@
   transform: translate(-0.08rem, -0.08rem);
 }
 
-.nav-mobile-toggle:hover::before {
-  background: currentColor;
-}
-
-.nav-mobile-toggle:hover {
-  color: var(--ink-mid);
-}
+.nav-mobile-toggle:hover      { color: var(--ink-mid); }
+.nav-mobile-toggle[aria-expanded='true'] { color: var(--ink-mid); }
 
 .nav-mobile-toggle:focus-visible {
   outline: 2px solid var(--sage);
   outline-offset: 2px;
 }
 
-.nav-mobile-toggle[aria-expanded='true']::before {
-  background: currentColor;
-}
+.js-enabled .nav-mobile-toggle { display: block; }
 
-.nav-mobile-toggle[aria-expanded='true'] {
-  color: var(--ink-mid);
-}
-
-.js-enabled .nav-mobile-toggle {
-  display: block;
-}
-
-.js-enabled .nav-links.is-open .nav-modules-head {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 0.02rem;
-}
-
-.js-enabled .nav-links.is-open .nav-modules-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  width: auto;
-  min-height: 2.5rem;
-  background: transparent;
-  border: none;
-  padding: 0.18rem 0.08rem 0.18rem 0.26rem;
-  cursor: pointer;
-  text-align: center;
-  font-family: var(--mono);
-  font-size: calc(var(--fs-link-nav) * 1.16);
-  font-weight: 300;
-  line-height: 1;
-  letter-spacing: 0.03em;
-  color: var(--ink-faint);
-  -webkit-tap-highlight-color: transparent;
-}
-
-.js-enabled .nav-links.is-open .nav-modules-toggle--bento {
-  width: calc(2.67rem * var(--nav-menu-scale));
-  min-width: calc(2.67rem * var(--nav-menu-scale));
-  min-height: calc(2.67rem * var(--nav-menu-scale));
-  justify-content: center;
-  padding: 0.16rem;
-  border: none;
-  border-radius: 2px;
-}
-
-.js-enabled .nav-links.is-open .nav-modules-toggle--bento .nav-modules-icon,
-.js-enabled .nav-links .nav-modules-toggle--bento .nav-modules-icon {
-  width: var(--nav-modules-icon-size);
-  height: var(--nav-modules-icon-size);
-  display: block;
-  pointer-events: none;
-}
-
-.js-enabled .nav-links.is-open .nav-modules-toggle:hover,
-.js-enabled .nav-links.is-open .nav-modules-toggle:focus-visible {
-  color: var(--ink);
-}
-
-.js-enabled .nav-links.is-open .nav-modules-toggle:active,
-.js-enabled .nav-links.is-open .nav-modules-toggle[aria-expanded='true'],
-.js-enabled .nav-links.is-open .nav-modules-toggle.is-expanded {
-  color: var(--nav-modules-toggle-active-ink);
-}
-
-.js-enabled .nav-links.is-open .nav-modules-toggle:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
-}
-
-.js-enabled .nav-links.is-open .nav-modules-link {
-  flex: 1 1 auto;
-}
-
-.nav-modules-submenu {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  margin: 0.02rem 0 0.18rem 0.72rem;
-  padding: 0.14rem 0 0.12rem 0.72rem;
-  border-left: 1px dashed color-mix(in srgb, var(--ink-ghost) 72%, transparent 28%);
-}
-
+/* ─── 7. Sublink base typography ─────────────────────────────── */
 .nav-sublink {
   font-family: var(--mono);
   font-size: 0.68rem;
@@ -386,26 +251,13 @@
   color: var(--ink-faint);
   text-decoration: none;
   line-height: 1.34;
-  padding: 0.12rem 0;
+  padding-block: 0.12rem;
 }
 
-.nav-sublink:hover {
-  color: var(--ink-mid);
-}
-
-.nav-sublink.nav-sublink--active {
-  color: var(--link-inline);
-  font-weight: 400;
-}
-
-.nav-sublink.nav-sublink--coming {
-  color: var(--ink-ghost);
-  cursor: default;
-}
-
-.nav-sublink.nav-sublink--coming:hover {
-  color: var(--ink-ghost);
-}
+.nav-sublink:hover            { color: var(--ink-mid); }
+.nav-sublink--active          { color: var(--link-inline); font-weight: 400; }
+.nav-sublink--coming          { color: var(--ink-ghost); cursor: default; }
+.nav-sublink--coming:hover    { color: var(--ink-ghost); }
 
 .nav-sublink-state {
   font-family: var(--mono);
@@ -416,223 +268,194 @@
   color: var(--ink-ghost);
 }
 
-@media (min-width: 900px) {
-  .js-enabled .nav-mobile-toggle {
-    display: none;
-  }
-
-  .js-enabled .nav-links,
-  .js-enabled .nav-links.is-open {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0;
-    position: static;
-    width: 100%;
-    min-width: 0;
-    max-width: none;
-    margin-left: var(--nav-links-offset);
-    padding: 0;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    transform: none;
-    animation: none;
-  }
-
-  .js-enabled .nav-links .nav-modules-head,
-  .js-enabled .nav-links.is-open .nav-modules-head {
-    margin-left: auto;
-  }
-
-  .js-enabled .nav-links .nav-link,
-  .js-enabled .nav-links.is-open .nav-link {
-    width: auto;
-    min-height: var(--nav-main-link-min-height);
-    padding: 0;
-    border-radius: 0;
-    background: transparent;
-    animation: none;
-  }
-
-  .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle),
-  .js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle) {
-    font-size: calc(var(--fs-nav-title) * 0.7995 * var(--nav-menu-scale));
-    color: color-mix(in srgb, var(--ink-mid) 82%, var(--viz-rust, var(--rust)) 18%);
-    letter-spacing: 0.01em;
-    font-weight: 300;
-    position: relative;
-    top: var(--nav-editorial-shift-y);
-  }
-
-  .js-enabled .nav-links .nav-link.nav-link--catalogue,
-  .js-enabled .nav-links.is-open .nav-link.nav-link--catalogue {
-    color: var(--viz-rust, var(--rust));
-  }
-
-  .js-enabled .nav-links .nav-link.nav-link--active,
-  .js-enabled .nav-links.is-open .nav-link.nav-link--active {
-    color: color-mix(in srgb, var(--ink-mid) 82%, var(--viz-rust, var(--rust)) 18%);
-    font-weight: 300;
-    background: transparent;
-  }
-
-  .js-enabled .nav-links .nav-link.nav-link--catalogue,
-  .js-enabled .nav-links.is-open .nav-link.nav-link--catalogue {
-    color: var(--viz-rust, var(--rust));
-  }
-
-  .js-enabled .nav-links > .nav-link.nav-link--editorial:hover,
-  .js-enabled .nav-links > .nav-link.nav-link--editorial:focus-visible,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:hover,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:focus-visible {
-    color: color-mix(in srgb, var(--viz-rust, var(--rust)) 62%, var(--paper) 38%);
-    background: transparent;
-  }
-
-  .js-enabled .nav-links > .nav-link.nav-link--editorial::after,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial::after {
-    content: '/';
-    color: color-mix(in srgb, var(--viz-rust, var(--rust)) 55%, var(--paper) 45%);
-    margin: 0 0.8rem;
-  }
-
-  .js-enabled .nav-links > .nav-link.nav-link--editorial:last-of-type::after,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:last-of-type::after {
-    content: '';
-    margin: 0;
-  }
-
-  .js-enabled .nav-links .nav-modules-head,
-  .js-enabled .nav-links.is-open .nav-modules-head {
-    display: inline-flex;
-    align-items: center;
-    position: relative;
-    color: var(--ink);
-  }
-
-  .js-enabled .nav-links .nav-modules-head::before,
-  .js-enabled .nav-links.is-open .nav-modules-head::before {
-    content: '';
-    margin: 0;
-  }
-
-  .js-enabled .nav-links .nav-modules-toggle,
-  .js-enabled .nav-links.is-open .nav-modules-toggle {
-    display: grid;
-    place-items: center;
-    width: var(--nav-modules-toggle-size);
-    min-width: var(--nav-modules-toggle-size);
-    min-height: var(--nav-modules-toggle-size);
-    padding: 0;
-    border: none;
-    border-radius: 2px;
-    background: transparent;
-    cursor: pointer;
-    color: var(--ink-faint);
-  }
-
-  .js-enabled .nav-links .nav-modules-toggle:hover,
-  .js-enabled .nav-links .nav-modules-toggle:focus-visible,
-  .js-enabled .nav-links.is-open .nav-modules-toggle:hover,
-  .js-enabled .nav-links.is-open .nav-modules-toggle:focus-visible {
-    color: var(--ink);
-    background: transparent;
-  }
-
-  .js-enabled .nav-links .nav-modules-toggle:active,
-  .js-enabled .nav-links .nav-modules-toggle[aria-expanded='true'],
-  .js-enabled .nav-links .nav-modules-toggle.is-expanded,
-  .js-enabled .nav-links.is-open .nav-modules-toggle:active,
-  .js-enabled .nav-links.is-open .nav-modules-toggle[aria-expanded='true'],
-  .js-enabled .nav-links.is-open .nav-modules-toggle.is-expanded {
-    color: var(--nav-modules-toggle-active-ink);
-  }
-
-  .js-enabled .nav-links .nav-modules-submenu,
-  .js-enabled .nav-links.is-open .nav-modules-submenu {
-    position: absolute;
-    top: var(--nav-submenu-top-desktop);
-    right: auto;
-    left: var(--modules-submenu-left, 0.76rem);
-    transform: translateX(calc(-100% - 0.42rem));
-    display: flex;
-    flex-direction: column;
-    gap: 0.26rem;
-    margin: 0;
-    padding: 0.5rem 0.72rem 0.5rem 1.1rem;
-    border: 1px solid color-mix(in srgb, var(--ink-ghost) 66%, transparent 34%);
-    border-radius: 0;
-    background: var(--nav-submenu-surface);
-    box-shadow: var(--shadow-nav-popover);
-    z-index: var(--z-nav-submenu);
-  }
-
-  .js-enabled .nav-links .nav-modules-submenu[hidden],
-  .js-enabled .nav-links.is-open .nav-modules-submenu[hidden] {
-    display: none;
-  }
-
-  .js-enabled .nav-links .nav-link::before,
-  .js-enabled .nav-links .nav-link::after,
-  .js-enabled .nav-links.is-open .nav-link::before,
-  .js-enabled .nav-links.is-open .nav-link::after {
-    content: '';
-    margin: 0;
-  }
-
-  .js-enabled .nav-links > .nav-link.nav-link--active::before,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--active::before {
-    content: '_';
-    margin-right: 0.2rem;
-    line-height: 1;
-  }
-
-  .js-enabled .nav-links .nav-sublink,
-  .js-enabled .nav-links.is-open .nav-sublink {
-    font-size: 0.76rem;
-    padding: 0.12rem 0;
-  }
-
-  .js-enabled .nav-links .nav-sublink::before,
-  .js-enabled .nav-links.is-open .nav-sublink::before {
-    content: '';
-    margin-right: 0;
-  }
+.js-enabled .nav-links .nav-sublink.nav-sublink--active::before,
+.js-enabled .nav-links.is-open .nav-sublink.nav-sublink--active::before {
+  content: '_';
+  color: currentColor;
+  margin-right: 0.24rem;
+  display: inline-block;
+  line-height: 1;
 }
 
-/* ── Desktop nav link rotation ──────────────────────────────── */
-@media (min-width: 900px) {
-  /* Allow rotated text to spill outside the nav bar */
-  .site-header,
-  .main-nav {
-    overflow: visible;
-  }
+/* ─── 8. Catalogue visual language ──────────────────────────────
+   Canonical single source of truth for submenu colours and hierarchy.
+   Uses 4-class selectors (0,4,0 specificity) so these rules win over the
+   3-class mode-level .nav-sublink colour/padding resets in sections B & C.
+   Layout (position, gap, padding of the container itself) stays in each
+   mode block so each mode can tune it without fighting cascade order.
+─────────────────────────────────────────────────────────────── */
 
-  /* Smooth snap on hover-in and drift back on hover-out */
-  .js-enabled .nav-links > .nav-link {
-    transition: transform 180ms ease;
-  }
-
-  /* Hand-tuned angles — reads as scattered, not systematic */
-  .js-enabled .nav-links > .nav-link:nth-child(1) { transform: rotate(-4deg); }
-  .js-enabled .nav-links > .nav-link:nth-child(2) { transform: rotate(6deg);  }
-  .js-enabled .nav-links > .nav-link:nth-child(3) { transform: rotate(-5deg); }
-  .js-enabled .nav-links > .nav-link:nth-child(4) { transform: rotate(4deg);  }
-
-  /* Hover and focus: snap upright */
-  .js-enabled .nav-links > .nav-link:hover,
-  .js-enabled .nav-links > .nav-link:focus-visible {
-    transform: rotate(0deg);
-  }
+/* No-JS / fallback: submenu sits inline in the page flow */
+.nav-modules-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin: 0.02rem 0 0.18rem 0.72rem;
+  padding: 0.14rem 0 0.12rem 0.72rem;
+  border-left: 1px dashed color-mix(in srgb, var(--ink-ghost) 72%, transparent 28%);
 }
 
-@media (min-width: 900px) and (prefers-reduced-motion: reduce) {
-  .js-enabled .nav-links > .nav-link { transition: none; }
+/* Sizing shared across all abs-positioned popup states */
+.js-enabled .nav-links .nav-modules-submenu,
+.js-enabled .nav-links.is-open .nav-modules-submenu {
+  width: min(100%, max-content);
+  min-width: 14.25rem;
+  max-width: var(--nav-submenu-max-inline-size);
 }
 
+/* Honour the hidden attribute cross-browser */
+.js-enabled .nav-links .nav-modules-submenu[hidden],
+.js-enabled .nav-links.is-open .nav-modules-submenu[hidden] {
+  display: none;
+}
+
+/* Text wrapping inside popup */
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink-state,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink-state {
+  white-space: nowrap;
+  font-size: 0.58rem;
+}
+
+/* Override mode-level rust colour with neutral ink inside the popup */
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink,
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink:visited,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:visited,
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink:hover,
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink:focus-visible,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:hover,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:focus-visible {
+  color: var(--ink-mid);
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink.nav-sublink--coming,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink.nav-sublink--coming {
+  color: var(--ink-ghost);
+}
+
+/* Catalogue root: header row above the module list */
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-root,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-root {
+  color: var(--ink);
+  margin-left: 0;
+  padding-left: 0;
+  padding-bottom: 0.2rem;
+  margin-bottom: 0.08rem;
+  border-bottom: 1px dashed color-mix(in srgb, var(--ink-ghost) 64%, transparent 36%);
+  font-weight: 400;
+  letter-spacing: 0.07em;
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-root.nav-sublink--active,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-root.nav-sublink--active {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* Catalogue child: indented with left bar — padding-left is the space between
+   the bar and the text.  0,4,0 specificity ensures this wins over any 0,3,0
+   mode-level padding shorthand. */
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-child,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child {
+  color: var(--ink-mid);
+  margin-left: 0.58rem;
+  padding-left: 0.72rem;
+  border-left: 1px solid color-mix(in srgb, var(--ink-ghost) 52%, transparent 48%);
+}
+
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-child.nav-sublink--active,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child.nav-sublink--active {
+  color: var(--rust);
+  font-weight: 400;
+  border-left-color: color-mix(in srgb, var(--rust) 62%, var(--ink-ghost) 38%);
+}
+
+/* ─── 9. Catalogue toggle colours ────────────────────────────── */
+.js-enabled .nav-links .nav-link.nav-modules-toggle,
+.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle,
+.js-enabled .nav-links .nav-link.nav-modules-toggle:hover,
+.js-enabled .nav-links .nav-link.nav-modules-toggle:focus-visible,
+.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle:hover,
+.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle:focus-visible {
+  color: var(--ink);
+  background: transparent;
+}
+
+.js-enabled .nav-links .nav-link.nav-modules-toggle:active,
+.js-enabled .nav-links .nav-link.nav-modules-toggle[aria-expanded='true'],
+.js-enabled .nav-links .nav-link.nav-modules-toggle.is-expanded,
+.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle:active,
+.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle[aria-expanded='true'],
+.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle.is-expanded {
+  color: var(--nav-modules-toggle-active-ink);
+  background: transparent;
+}
+
+/* ─── 10. Inline SVG icon ────────────────────────────────────── */
+.js-enabled .nav-links .nav-modules-toggle--bento .nav-modules-icon,
+.js-enabled .nav-links.is-open .nav-modules-toggle--bento .nav-modules-icon {
+  width: var(--nav-modules-icon-size);
+  height: var(--nav-modules-icon-size);
+  display: block;
+  pointer-events: none;
+}
+
+.nav-modules-icon {
+  overflow: visible;
+}
+
+.nav-modules-icon .orbit-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
+.nav-modules-icon .menu-dot {
+  fill: currentColor;
+}
+
+.nav-modules-icon .dots-group {
+  transform-origin: 12px 12px;
+  transform-box: view-box;
+}
+
+/* Converge: each dot slides to SVG centre (12, 12) when expanded */
+.nav-modules-icon .menu-dot {
+  transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 280ms ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.nav-modules-toggle[aria-expanded='true'] .dot-0 { transform: translate(4px,  4px); }
+.nav-modules-toggle[aria-expanded='true'] .dot-1 { transform: translate(0px,  6px); }
+.nav-modules-toggle[aria-expanded='true'] .dot-2 { transform: translate(-4px, 4px); }
+.nav-modules-toggle[aria-expanded='true'] .dot-3 { transform: translate(-6px, 0px); }
+.nav-modules-toggle[aria-expanded='true'] .dot-4 { transform: translate(-4px,-4px); }
+.nav-modules-toggle[aria-expanded='true'] .dot-5 { transform: translate(0px, -6px); }
+.nav-modules-toggle[aria-expanded='true'] .dot-6 { transform: translate(4px, -4px); }
+.nav-modules-toggle[aria-expanded='true'] .dot-7 { transform: translate(6px,  0px); }
+
+/* ─── 11. Keyframes ──────────────────────────────────────────── */
+@keyframes nav-popover-in {
+  from { opacity: 0; transform: translateY(-8px) rotate(-0.4deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(-0.4deg); }
+}
+
+@keyframes nav-link-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── 12. Small phone (<640px): font-size adjustments ────────── */
 @media (max-width: 640px) {
   .nav-sublink {
     font-size: 0.66rem;
@@ -646,191 +469,13 @@
   }
 }
 
-.js-enabled .nav-links.is-open .nav-link.nav-link--active,
-.js-enabled .nav-links.is-open .nav-modules-link.nav-link--active {
-  color: var(--viz-rust, var(--rust));
-  background: var(--nav-menu-active-surface);
-}
-
-.js-enabled .nav-links.is-open .nav-link::before {
-  content: '[';
-  width: auto;
-  height: auto;
-  border-radius: 0;
-  background: transparent;
-  color: var(--ink-ghost);
-  margin-right: 0.1rem;
-}
-
-.js-enabled .nav-links.is-open .nav-link.nav-link--editorial::before {
-  content: '';
-  margin-right: 0;
-}
-
-.js-enabled .nav-links.is-open .nav-link.nav-link--editorial.nav-link--active::before {
-  content: '_';
-  margin-right: 0.22rem;
-  color: currentColor;
-  line-height: 1;
-}
-
-.js-enabled .nav-links.is-open .nav-link:not(.nav-modules-toggle)::after {
-  content: ']';
-  margin-left: 0.1rem;
-  color: var(--ink-ghost);
-}
-
-.js-enabled .nav-links.is-open .nav-link.nav-link--editorial::after {
-  content: '';
-  margin-left: 0;
-}
-
-.js-enabled .nav-links.is-open .nav-link:hover,
-.js-enabled .nav-links.is-open .nav-link:focus-visible,
-.js-enabled .nav-links.is-open .nav-modules-toggle:hover,
-.js-enabled .nav-links.is-open .nav-modules-toggle:focus-visible,
-.js-enabled .nav-links.is-open .nav-sublink:hover,
-.js-enabled .nav-links.is-open .nav-sublink:focus-visible {
-  color: var(--link-inline);
-  background: transparent;
-}
-
-.js-enabled .nav-links.is-open .nav-link:focus-visible,
-.js-enabled .nav-links.is-open .nav-sublink:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-.js-enabled .nav-links.is-open .nav-modules-submenu {
-  border-left: none;
-  margin-left: 1rem;
-  padding-left: 0;
-}
-
-.js-enabled .nav-links.is-open .nav-sublink::before {
-  content: '·';
-  margin-right: 0.35rem;
-  color: var(--ink-ghost);
-}
-
-@media (min-width: 768px) {
-  .js-enabled .nav-links.is-open {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    align-content: flex-start;
-    row-gap: 0.22rem;
-    column-gap: 0.42rem;
-    min-width: 26rem;
-    max-width: min(52rem, calc(100vw - 2rem));
-    padding: 0.5rem 0.62rem;
-  }
-
-  .js-enabled .nav-links.is-open .nav-link,
-  .js-enabled .nav-links.is-open .nav-modules-toggle {
-    width: auto;
-    min-height: 2rem;
-    padding: 0.12rem 0.16rem;
-  }
-
-  .js-enabled .nav-links.is-open .nav-modules-head {
-    width: auto;
-    gap: 0.02rem;
-  }
-
-  .js-enabled .nav-links.is-open .nav-modules-toggle {
-    padding: 0.12rem 0.08rem 0.12rem 0.16rem;
-  }
-
-  .js-enabled .nav-links.is-open .nav-modules-link {
-    flex: 0 1 auto;
-  }
-
-  .js-enabled .nav-links.is-open .nav-modules-submenu {
-    position: absolute;
-    top: var(--nav-submenu-top-mobile);
-    right: auto;
-    left: var(--modules-submenu-left, 0.76rem);
-    transform: translateX(calc(-100% - 0.42rem));
-    order: initial;
-    flex-basis: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    row-gap: 0.16rem;
-    column-gap: 0;
-    margin: 0;
-    padding: 0.34rem 0.42rem;
-    border: 1px solid color-mix(in srgb, var(--ink-ghost) 66%, transparent 34%);
-    border-radius: 0;
-    background: var(--nav-submenu-surface);
-    box-shadow: var(--shadow-nav-popover);
-    z-index: var(--z-nav-submenu);
-  }
-
-  .js-enabled .nav-links.is-open .nav-modules-submenu[hidden] {
-    display: none;
-  }
-
-  .js-enabled .nav-links.is-open .nav-sublink {
-    display: block;
-    padding: 0.08rem 0;
-    text-align: left;
-  }
-
-  .js-enabled .nav-links.is-open .nav-sublink-state {
-    margin-left: 0.24rem;
-  }
-
-  .js-enabled .nav-links.is-open .nav-sublink::before {
-    content: '';
-    margin-right: 0;
-  }
-}
-
-.js-enabled .nav-links .nav-sublink.nav-sublink--active::before,
-.js-enabled .nav-links.is-open .nav-sublink.nav-sublink--active::before {
-  content: '_';
-  color: currentColor;
-  margin-right: 0.24rem;
-  display: inline-block;
-  line-height: 1;
-}
-
-@media (max-width: 767px) {
-  .js-enabled .nav-links.is-open {
-    gap: 0.14rem;
-    padding: 0.34rem 0.42rem;
-    max-height: min(70vh, 20rem);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-
-  .js-enabled .nav-links.is-open .nav-link {
-    min-height: 2rem;
-    padding: 0.1rem 0.18rem;
-    line-height: 1.22;
-    white-space: normal;
-  }
-
-  .js-enabled .nav-links.is-open .nav-modules-head {
-    gap: 0;
-  }
-
-  .js-enabled .nav-links.is-open .nav-modules-toggle {
-    min-height: 2rem;
-    padding: 0.1rem 0.06rem 0.1rem 0.18rem;
-  }
-
-  .js-enabled .nav-links.is-open .nav-modules-submenu {
-    gap: 0.22rem;
-    margin: 0 0 0.16rem 0.76rem;
-    padding: 0.12rem 0 0.12rem 0.36rem;
-  }
-}
-
+/* ─── 13. Mode B: Rail — all widths below 900px ─────────────────
+   Shows nav as a horizontal row.  The mobile toggle is hidden.
+   The bento popup is absolutely positioned next to the toggle button.
+─────────────────────────────────────────────────────────────── */
 @media (max-width: 899px) {
+
+  /* ── Sizing tokens ── */
   .site-header {
     --nav-inset: 0.9rem;
     --nav-links-offset: 0rem;
@@ -841,10 +486,12 @@
     font-size: calc(var(--fs-nav-title) * 1.8525);
   }
 
+  /* ── Mobile toggle: hidden (nav is always visible) ── */
   .js-enabled .nav-mobile-toggle {
     display: none;
   }
 
+  /* ── Nav row ── */
   .js-enabled .nav-links,
   .js-enabled .nav-links.is-open {
     display: flex;
@@ -869,11 +516,25 @@
     overflow: visible;
   }
 
+  /* ── Modules head ── */
   .js-enabled .nav-links .nav-modules-head,
   .js-enabled .nav-links.is-open .nav-modules-head {
+    display: inline-flex;
+    align-items: center;
+    width: auto;
+    gap: 0;
+    position: relative;
     margin-left: auto;
+    color: var(--ink);
   }
 
+  .js-enabled .nav-links .nav-modules-head::before,
+  .js-enabled .nav-links.is-open .nav-modules-head::before {
+    content: '';
+    margin: 0;
+  }
+
+  /* ── Primary links ── */
   .js-enabled .nav-links .nav-link,
   .js-enabled .nav-links.is-open .nav-link {
     width: auto;
@@ -883,6 +544,14 @@
     animation: none;
     background: transparent;
     color: var(--viz-rust, var(--rust));
+  }
+
+  .js-enabled .nav-links .nav-link::before,
+  .js-enabled .nav-links .nav-link::after,
+  .js-enabled .nav-links.is-open .nav-link::before,
+  .js-enabled .nav-links.is-open .nav-link::after {
+    content: '';
+    margin: 0;
   }
 
   .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle),
@@ -924,22 +593,7 @@
     margin: 0;
   }
 
-  .js-enabled .nav-links .nav-modules-head,
-  .js-enabled .nav-links.is-open .nav-modules-head {
-    display: inline-flex;
-    align-items: center;
-    width: auto;
-    gap: 0;
-    position: relative;
-    color: var(--ink);
-  }
-
-  .js-enabled .nav-links .nav-modules-head::before,
-  .js-enabled .nav-links.is-open .nav-modules-head::before {
-    content: '';
-    margin: 0;
-  }
-
+  /* ── Bento toggle ── */
   .js-enabled .nav-links .nav-modules-toggle,
   .js-enabled .nav-links.is-open .nav-modules-toggle {
     display: grid;
@@ -975,6 +629,9 @@
     background: transparent;
   }
 
+  /* ── Bento popup ──
+     padding shorthand: top/bottom 0.38rem, right 0.62rem, left 1.1rem.
+     The 1.1rem left inset gives the catalogue list visual breathing room.  */
   .js-enabled .nav-links .nav-modules-submenu,
   .js-enabled .nav-links.is-open .nav-modules-submenu {
     position: absolute;
@@ -986,7 +643,7 @@
     flex-direction: column;
     gap: 0.22rem;
     margin: 0;
-    padding: 0.38rem 0.56rem;
+    padding: 0.38rem 0.62rem 0.38rem 1.1rem;
     border: 1px solid color-mix(in srgb, var(--ink-ghost) 56%, transparent 44%);
     border-radius: 0;
     background: var(--nav-submenu-surface);
@@ -999,11 +656,264 @@
     display: none;
   }
 
+  /* ── Sublinks inside popup ──
+     padding-block (top/bottom only) — padding-left is owned by section 8
+     and must never be set here, regardless of specificity. */
   .js-enabled .nav-links .nav-sublink,
   .js-enabled .nav-links.is-open .nav-sublink {
     color: var(--viz-rust, var(--rust));
     font-size: 0.72rem;
-    padding: 0.12rem 0.2rem;
+    padding-block: 0.12rem;
+    display: block;
+    text-align: left;
+  }
+
+  .js-enabled .nav-links .nav-sublink:hover,
+  .js-enabled .nav-links .nav-sublink:focus-visible,
+  .js-enabled .nav-links.is-open .nav-sublink:hover,
+  .js-enabled .nav-links.is-open .nav-sublink:focus-visible {
+    color: color-mix(in srgb, var(--viz-rust, var(--rust)) 62%, var(--paper) 38%);
+  }
+
+  .js-enabled .nav-links .nav-sublink.nav-sublink--active,
+  .js-enabled .nav-links.is-open .nav-sublink.nav-sublink--active {
+    color: var(--viz-rust, var(--rust));
+  }
+
+  .js-enabled .nav-links .nav-sublink.nav-sublink--coming,
+  .js-enabled .nav-links.is-open .nav-sublink.nav-sublink--coming {
+    color: var(--ink-ghost);
+  }
+
+  .js-enabled .nav-links .nav-sublink::before,
+  .js-enabled .nav-links.is-open .nav-sublink::before {
+    content: '';
+    margin-right: 0;
+  }
+
+  .js-enabled .nav-links .nav-sublink-state,
+  .js-enabled .nav-links.is-open .nav-sublink-state {
+    margin-left: 0.24rem;
+  }
+}
+
+/* ─── 14. Mode C: Desktop rail (≥900px) ─────────────────────────
+   Wider rail, rotated links, larger editorial font.
+   Bento popup position uses --nav-submenu-top-desktop.
+─────────────────────────────────────────────────────────────── */
+@media (min-width: 900px) {
+
+  /* Allow rotated links to spill outside the nav bar bounds */
+  .site-header,
+  .main-nav {
+    overflow: visible;
+  }
+
+  /* ── Mobile toggle: hidden ── */
+  .js-enabled .nav-mobile-toggle {
+    display: none;
+  }
+
+  /* ── Nav row ── */
+  .js-enabled .nav-links,
+  .js-enabled .nav-links.is-open {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    position: static;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    margin-left: var(--nav-links-offset);
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    transform: none;
+    animation: none;
+  }
+
+  /* ── Modules head ── */
+  .js-enabled .nav-links .nav-modules-head,
+  .js-enabled .nav-links.is-open .nav-modules-head {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    margin-left: auto;
+    color: var(--ink);
+  }
+
+  .js-enabled .nav-links .nav-modules-head::before,
+  .js-enabled .nav-links.is-open .nav-modules-head::before {
+    content: '';
+    margin: 0;
+  }
+
+  /* ── Primary links ── */
+  .js-enabled .nav-links .nav-link,
+  .js-enabled .nav-links.is-open .nav-link {
+    width: auto;
+    min-height: var(--nav-main-link-min-height);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    animation: none;
+  }
+
+  .js-enabled .nav-links .nav-link::before,
+  .js-enabled .nav-links .nav-link::after,
+  .js-enabled .nav-links.is-open .nav-link::before,
+  .js-enabled .nav-links.is-open .nav-link::after {
+    content: '';
+    margin: 0;
+  }
+
+  .js-enabled .nav-links > .nav-link.nav-link--active::before,
+  .js-enabled .nav-links.is-open > .nav-link.nav-link--active::before {
+    content: '_';
+    margin-right: 0.2rem;
+    line-height: 1;
+  }
+
+  .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle),
+  .js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle) {
+    font-size: calc(var(--fs-nav-title) * 0.7995 * var(--nav-menu-scale));
+    color: color-mix(in srgb, var(--ink-mid) 82%, var(--viz-rust, var(--rust)) 18%);
+    letter-spacing: 0.01em;
+    font-weight: 300;
+    position: relative;
+    top: var(--nav-editorial-shift-y);
+  }
+
+  .js-enabled .nav-links .nav-link.nav-link--catalogue,
+  .js-enabled .nav-links.is-open .nav-link.nav-link--catalogue {
+    color: var(--viz-rust, var(--rust));
+  }
+
+  .js-enabled .nav-links .nav-link.nav-link--active,
+  .js-enabled .nav-links.is-open .nav-link.nav-link--active {
+    color: color-mix(in srgb, var(--ink-mid) 82%, var(--viz-rust, var(--rust)) 18%);
+    font-weight: 300;
+    background: transparent;
+  }
+
+  .js-enabled .nav-links > .nav-link.nav-link--editorial:hover,
+  .js-enabled .nav-links > .nav-link.nav-link--editorial:focus-visible,
+  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:hover,
+  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:focus-visible {
+    color: color-mix(in srgb, var(--viz-rust, var(--rust)) 62%, var(--paper) 38%);
+    background: transparent;
+  }
+
+  .js-enabled .nav-links > .nav-link.nav-link--editorial::after,
+  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial::after {
+    content: '/';
+    color: color-mix(in srgb, var(--viz-rust, var(--rust)) 55%, var(--paper) 45%);
+    margin: 0 0.8rem;
+  }
+
+  .js-enabled .nav-links > .nav-link.nav-link--editorial:last-of-type::after,
+  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:last-of-type::after {
+    content: '';
+    margin: 0;
+  }
+
+  /* ── Rotated links: scattered tilt with snap-to-upright on hover ── */
+  .js-enabled .nav-links > .nav-link {
+    transition: transform 180ms ease;
+  }
+
+  .js-enabled .nav-links > .nav-link:nth-child(1) { transform: rotate(-4deg); }
+  .js-enabled .nav-links > .nav-link:nth-child(2) { transform: rotate(6deg);  }
+  .js-enabled .nav-links > .nav-link:nth-child(3) { transform: rotate(-5deg); }
+  .js-enabled .nav-links > .nav-link:nth-child(4) { transform: rotate(4deg);  }
+
+  .js-enabled .nav-links > .nav-link:hover,
+  .js-enabled .nav-links > .nav-link:focus-visible {
+    transform: rotate(0deg);
+  }
+
+  /* ── Bento toggle ── */
+  .js-enabled .nav-links .nav-modules-toggle,
+  .js-enabled .nav-links.is-open .nav-modules-toggle {
+    display: grid;
+    place-items: center;
+    width: var(--nav-modules-toggle-size);
+    min-width: var(--nav-modules-toggle-size);
+    min-height: var(--nav-modules-toggle-size);
+    padding: 0;
+    border: none;
+    border-radius: 2px;
+    background: transparent;
+    cursor: pointer;
+    color: var(--ink-faint);
+  }
+
+  .js-enabled .nav-links .nav-modules-toggle:hover,
+  .js-enabled .nav-links .nav-modules-toggle:focus-visible,
+  .js-enabled .nav-links.is-open .nav-modules-toggle:hover,
+  .js-enabled .nav-links.is-open .nav-modules-toggle:focus-visible {
+    color: var(--ink);
+    background: transparent;
+  }
+
+  .js-enabled .nav-links .nav-modules-toggle:active,
+  .js-enabled .nav-links .nav-modules-toggle[aria-expanded='true'],
+  .js-enabled .nav-links .nav-modules-toggle.is-expanded,
+  .js-enabled .nav-links.is-open .nav-modules-toggle:active,
+  .js-enabled .nav-links.is-open .nav-modules-toggle[aria-expanded='true'],
+  .js-enabled .nav-links.is-open .nav-modules-toggle.is-expanded {
+    color: var(--nav-modules-toggle-active-ink);
+  }
+
+  .js-enabled .nav-links .nav-modules-toggle:focus-visible,
+  .js-enabled .nav-links.is-open .nav-modules-toggle:focus-visible {
+    outline: 2px solid var(--sage);
+    outline-offset: 2px;
+  }
+
+  .js-enabled .nav-links .nav-modules-link,
+  .js-enabled .nav-links.is-open .nav-modules-link {
+    flex: 1 1 auto;
+  }
+
+  /* ── Bento popup ──
+     padding shorthand: top/bottom 0.5rem, right 0.62rem, left 1.1rem. */
+  .js-enabled .nav-links .nav-modules-submenu,
+  .js-enabled .nav-links.is-open .nav-modules-submenu {
+    position: absolute;
+    top: var(--nav-submenu-top-desktop);
+    right: auto;
+    left: var(--modules-submenu-left, 0.76rem);
+    transform: translateX(calc(-100% - 0.42rem));
+    display: flex;
+    flex-direction: column;
+    gap: 0.26rem;
+    margin: 0;
+    padding: 0.5rem 0.62rem 0.5rem 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--ink-ghost) 66%, transparent 34%);
+    border-radius: 0;
+    background: var(--nav-submenu-surface);
+    box-shadow: var(--shadow-nav-popover);
+    z-index: var(--z-nav-submenu);
+  }
+
+  .js-enabled .nav-links .nav-modules-submenu[hidden],
+  .js-enabled .nav-links.is-open .nav-modules-submenu[hidden] {
+    display: none;
+  }
+
+  /* ── Sublinks inside popup ──
+     padding-block (top/bottom only) — padding-left is owned by section 8
+     and must never be set here, regardless of specificity. */
+  .js-enabled .nav-links .nav-sublink,
+  .js-enabled .nav-links.is-open .nav-sublink {
+    font-size: 0.76rem;
+    padding-block: 0.12rem;
+    color: var(--viz-rust, var(--rust));
   }
 
   .js-enabled .nav-links .nav-sublink:hover,
@@ -1030,167 +940,7 @@
   }
 }
 
-@media (min-width: 900px) {
-  .js-enabled .nav-links .nav-sublink,
-  .js-enabled .nav-links.is-open .nav-sublink {
-    color: var(--viz-rust, var(--rust));
-  }
-
-  .js-enabled .nav-links .nav-sublink:hover,
-  .js-enabled .nav-links .nav-sublink:focus-visible,
-  .js-enabled .nav-links.is-open .nav-sublink:hover,
-  .js-enabled .nav-links.is-open .nav-sublink:focus-visible {
-    color: color-mix(in srgb, var(--viz-rust, var(--rust)) 62%, var(--paper) 38%);
-  }
-
-  .js-enabled .nav-links .nav-sublink.nav-sublink--active,
-  .js-enabled .nav-links.is-open .nav-sublink.nav-sublink--active {
-    color: var(--viz-rust, var(--rust));
-  }
-
-  .js-enabled .nav-links .nav-sublink.nav-sublink--coming,
-  .js-enabled .nav-links.is-open .nav-sublink.nav-sublink--coming {
-    color: var(--ink-ghost);
-  }
+/* ─── 15. Reduced motion ─────────────────────────────────────── */
+@media (min-width: 900px) and (prefers-reduced-motion: reduce) {
+  .js-enabled .nav-links > .nav-link { transition: none; }
 }
-
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink,
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink:visited,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:visited,
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink:hover,
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink:focus-visible,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:hover,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:focus-visible {
-  color: var(--ink-mid);
-}
-
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink.nav-sublink--coming,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink.nav-sublink--coming {
-  color: var(--ink-ghost);
-}
-
-.js-enabled .nav-links .nav-modules-submenu,
-.js-enabled .nav-links.is-open .nav-modules-submenu {
-  width: min(100%, max-content);
-  min-width: 14.25rem;
-  max-width: var(--nav-submenu-max-inline-size);
-  padding-inline: 1.1rem 0.62rem;
-}
-
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink {
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
-
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink-state,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink-state {
-  white-space: nowrap;
-  font-size: 0.58rem;
-}
-
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-root,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-root {
-  color: var(--ink);
-}
-
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-child,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child {
-  color: var(--ink-mid);
-}
-
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-root.nav-sublink--active,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-root.nav-sublink--active {
-  color: var(--ink);
-  font-weight: 500;
-}
-
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-child.nav-sublink--active,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child.nav-sublink--active {
-  color: var(--rust);
-  font-weight: 400;
-  border-left-color: color-mix(in srgb, var(--rust) 62%, var(--ink-ghost) 38%);
-}
-
-/* Catalogue hierarchy: root row + indented entry rows */
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-root,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-root {
-  margin-left: 0;
-  padding-left: 0;
-  padding-bottom: 0.2rem;
-  margin-bottom: 0.08rem;
-  border-bottom: 1px dashed color-mix(in srgb, var(--ink-ghost) 64%, transparent 36%);
-  font-weight: 400;
-  letter-spacing: 0.07em;
-}
-
-.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-child,
-.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child {
-  margin-left: 0.58rem;
-  padding-left: 0.72rem;
-  border-left: 1px solid color-mix(in srgb, var(--ink-ghost) 52%, transparent 48%);
-}
-
-.js-enabled .nav-links .nav-link.nav-modules-toggle,
-.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle,
-.js-enabled .nav-links .nav-link.nav-modules-toggle:hover,
-.js-enabled .nav-links .nav-link.nav-modules-toggle:focus-visible,
-.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle:hover,
-.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle:focus-visible {
-  color: var(--ink);
-  background: transparent;
-}
-
-.js-enabled .nav-links .nav-link.nav-modules-toggle:active,
-.js-enabled .nav-links .nav-link.nav-modules-toggle[aria-expanded='true'],
-.js-enabled .nav-links .nav-link.nav-modules-toggle.is-expanded,
-.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle:active,
-.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle[aria-expanded='true'],
-.js-enabled .nav-links.is-open .nav-link.nav-modules-toggle.is-expanded {
-  color: var(--nav-modules-toggle-active-ink);
-  background: transparent;
-}
-
-/* ── Inline SVG icon: base styles ───────────────────────────────────── */
-
-.nav-modules-icon {
-  overflow: visible;
-}
-
-.nav-modules-icon .orbit-ring {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  opacity: 0;
-}
-
-.nav-modules-icon .menu-dot {
-  fill: currentColor;
-}
-
-.nav-modules-icon .dots-group {
-  transform-origin: 12px 12px;
-  transform-box: view-box;
-}
-
-/* ── Converge: dots collapse to centre when catalogue is open ───────── */
-
-.nav-modules-icon .menu-dot {
-  transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 280ms ease;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.nav-modules-toggle[aria-expanded='true'] .dot-0 { transform: translate(4px,  4px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-1 { transform: translate(0px,  6px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-2 { transform: translate(-4px, 4px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-3 { transform: translate(-6px, 0px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-4 { transform: translate(-4px,-4px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-5 { transform: translate(0px, -6px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-6 { transform: translate(4px, -4px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-7 { transform: translate(6px,  0px); }
-
-

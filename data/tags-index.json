@@ -63,6 +63,15 @@
     ]
   },
   {
+    "label": "physics",
+    "slug": "physics",
+    "notes": [
+      "bellsinequality"
+    ],
+    "articles": [],
+    "modules": []
+  },
+  {
     "label": "product management",
     "slug": "product-management",
     "notes": [

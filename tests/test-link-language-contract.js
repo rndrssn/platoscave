@@ -101,6 +101,21 @@ function testQuietCanonicalLinkLayer() {
   );
 }
 
+function testBentoActiveLinkCueStaysOnLeftBar() {
+  assert(
+    /\.nav-sublink--catalogue-child\.nav-sublink--active[\s\S]*padding-left:\s*1\.5rem;[\s\S]*border-left-color:/m.test(componentsSource),
+    'Active bento catalogue children should keep normal indentation and highlight the left vertical only'
+  );
+  assert(
+    !/\.nav-sublink--catalogue-child\.nav-sublink--active[\s\S]*padding-left:\s*1\.75rem;/m.test(componentsSource),
+    'Active bento catalogue children should not add an active-state indent'
+  );
+  assert(
+    /\.nav-sublink--catalogue-child\.nav-sublink--active[\s\S]*box-shadow:\s*none;/m.test(linkLanguageSource),
+    'Active bento catalogue children should not render the shared active underline'
+  );
+}
+
 function testNeutralLinkTokens() {
   const requiredTokens = [
     '--link-text:',
@@ -129,6 +144,7 @@ function run() {
   testLegacyNotesUnderlineRulesRemoved();
   testCanonicalLinkLayerCoverage();
   testQuietCanonicalLinkLayer();
+  testBentoActiveLinkCueStaysOnLeftBar();
   testNeutralLinkTokens();
   console.log('PASS: tests/test-link-language-contract.js');
 }

@@ -1,4 +1,4 @@
-// Global nav controller: active-link highlighting, modules mega-menu, and nav swatch theming.
+// Global nav controller: active-link highlighting, module launcher, shared footer chrome, and nav swatch theming.
 'use strict';
 
 (function initGlobalNavController() {
@@ -167,21 +167,85 @@
       });
     }
 
+    function appendText(parent, value) {
+      if (!parent) return;
+      if (typeof document.createTextNode === 'function' && typeof parent.appendChild === 'function') {
+        parent.appendChild(document.createTextNode(value));
+        return;
+      }
+      parent.textContent = (parent.textContent || '') + value;
+    }
+
+    function createFooterAnchor(href, label, className, ariaLabel) {
+      var link = document.createElement('a');
+      link.className = className;
+      link.href = href;
+      if (ariaLabel) link.setAttribute('aria-label', ariaLabel);
+      if (label) link.textContent = label;
+      return link;
+    }
+
+    function createFooterSocialLink(config) {
+      var link = createFooterAnchor(config.href, config.label || '', config.className, config.ariaLabel);
+      if (config.external) {
+        link.target = '_blank';
+        link.rel = 'noopener';
+      }
+      if (config.icon) {
+        var icon = document.createElement('span');
+        icon.className = 'contact-social-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        link.appendChild(icon);
+      }
+      return link;
+    }
+
     function ensureFooterActions() {
-      var footerText = document.querySelector('footer .footer-text');
-      if (!footerText) return;
-      if (footerText.querySelector('.footer-socials')) return;
+      var footer = document.querySelector('footer');
+      if (!footer || typeof document.createElement !== 'function') return;
+
+      var footerText = footer.querySelector ? footer.querySelector('.footer-text') : null;
+      if (!footerText) {
+        footerText = document.createElement('p');
+        footerText.className = 'footer-text';
+        footer.appendChild(footerText);
+      }
+      if (footerText.getAttribute('data-site-footer-rendered') === 'true') return;
+      footerText.setAttribute('data-site-footer-rendered', 'true');
 
       var rootPrefix = detectRootPrefix();
 
+      footerText.textContent = '';
+      appendText(footerText, '\u00A9 2026 Robert Andersson \u00B7 To the Bedrock \u00B7 ');
+      footerText.appendChild(createFooterAnchor(rootPrefix + 'colophon/', 'Site Notes', 'footer-link'));
+      appendText(footerText, ' \u00B7 ');
+
       var socials = document.createElement('span');
       socials.className = 'footer-socials';
-      socials.innerHTML =
-        '<a class="contact-social-link contact-social-link--github footer-social-link" href="https://github.com/rndrssn" target="_blank" rel="noopener" aria-label="GitHub profile"><span class="contact-social-icon" aria-hidden="true"></span></a>' +
-        '<a class="contact-social-link contact-social-link--linkedin footer-social-link" href="https://linkedin.com/in/robertandersson" target="_blank" rel="noopener" aria-label="LinkedIn profile"><span class="contact-social-icon" aria-hidden="true"></span></a>' +
-        '<a class="contact-social-link contact-social-link--cv footer-social-link footer-social-link--cv" href="' + rootPrefix + 'modules/experience-skill-graph/cv/" aria-label="CV">CV</a>';
-
-      footerText.appendChild(document.createTextNode(' \u00B7 '));
+      [
+        {
+          href: 'https://github.com/rndrssn',
+          className: 'contact-social-link contact-social-link--github footer-social-link',
+          ariaLabel: 'GitHub profile',
+          external: true,
+          icon: true
+        },
+        {
+          href: 'https://linkedin.com/in/robertandersson',
+          className: 'contact-social-link contact-social-link--linkedin footer-social-link',
+          ariaLabel: 'LinkedIn profile',
+          external: true,
+          icon: true
+        },
+        {
+          href: rootPrefix + 'modules/experience-skill-graph/cv/',
+          label: 'CV',
+          className: 'contact-social-link contact-social-link--cv footer-social-link footer-social-link--cv',
+          ariaLabel: 'CV'
+        }
+      ].forEach(function (item) {
+        socials.appendChild(createFooterSocialLink(item));
+      });
       footerText.appendChild(socials);
     }
 

@@ -122,6 +122,8 @@ assertIncludes(threeHtml, '<canvas id="satellite-three-surface" tabindex="0" ari
 assertNotMatches(threeHtml, /satellite-three-select-btn|Select new area/, 'Three.js prototype should use one analyse/reset button instead of a separate select-new-area action');
 assertIncludes(threeHtml, 'id="satellite-three-meta" aria-label="Request metadata"', 'Three.js HUD should keep only compact request metadata in the viewer overlay');
 assertIncludes(threeHtml, 'class="satellite-three-scene-meta" hidden', 'Three.js scene metadata should live below the viewer and stay hidden until analysis');
+assertIncludes(threeHtml, 'id="satellite-three-terrain-context" hidden', 'Three.js terrain context note should stay hidden until Terrain mode is active');
+assertIncludes(threeHtml, 'Terrain context &middot; elevation contours usually 10 m apart; close lines mean steeper ground. Index height is analytical, not metres.', 'Three.js terrain context note should explain contour interpretation without treating index height as elevation');
 assert(threeHtml.indexOf('id="satellite-three-meta"') < threeHtml.indexOf('class="satellite-three-scene-meta"'), 'Scene metadata should be outside and below the HUD request metadata');
 assert(threeHtml.indexOf('id="satellite-three-terrain-switch"') < threeHtml.indexOf('id="satellite-three-viewport-readout"'), 'Three.js HUD should keep action, terrain switch, and viewport readout in one toolbar flow');
 assert(threeHtml.indexOf('class="satellite-three-scene-meta"') < threeHtml.indexOf('id="satellite-three-index-guide"'), 'Scene metadata should appear before the index guide');
@@ -157,7 +159,7 @@ assertIncludes(selectorBlock(css, '.satellite-three-legend-scale'), 'flex-direct
 assertIncludes(threeHtml, 'https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js', 'Three.js module must be exact-pinned');
 assertIncludes(threeHtml, 'https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/', 'Three.js add-ons import path must be exact-pinned');
 assertIncludes(threeHtml, 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js', 'Three.js prototype should use the same exact-pinned MapLibre runtime');
-assertIncludes(threeHtml, '<script type="module" src="./satellite-index-three.js?v=20260528-1"></script>', 'Three.js prototype should load its separate implementation with a cache-busting query');
+assertIncludes(threeHtml, '<script type="module" src="./satellite-index-three.js?v=20260528-2"></script>', 'Three.js prototype should load its separate implementation with a cache-busting query');
 assertIncludes(threeJs, "const WORKER_URL = 'https://satellite-worker.platoscave.workers.dev';", 'Three.js prototype should use the deployed Worker');
 assertIncludes(threeJs, "const WORKER_API_KEY = '__WORKER_API_KEY__';", 'Three.js prototype must keep the API key placeholder in source');
 assertNotMatches(threeJs, /const WORKER_API_KEY = '[0-9a-f]{64}';/, 'Three.js prototype source must not contain an injected Worker key');
@@ -171,6 +173,7 @@ assertIncludes(threeJs, 'const MAPTILER_TILE_TIMEOUT_MS = 8000;', 'Three.js MapT
 assertIncludes(threeJs, 'const CONTOUR_TEXTURE_TIMEOUT_MS = 12000;', 'Three.js contour texture rendering should keep a bounded MapLibre wait');
 assertIncludes(threeJs, 'const CONTOUR_TEXTURE_SIZE = 2048;', 'Three.js default contour texture should preserve the established snapshot size');
 assertIncludes(threeJs, 'const FIELD_SCALE_CONTOUR_TEXTURE_SIZE = 3072;', 'Three.js field-scale terrain context should increase contour raster density below 10 ha');
+assertIncludes(threeJs, "const TERRAIN_CONTEXT_PAPER = '#F2EFE7';", 'Three.js terrain context should use a paperlike contour base distinct from the page backdrop');
 assertIncludes(threeJs, 'function fetchWithTimeout(url, options, timeoutMs)', 'Three.js prototype should use a shared abortable fetch helper');
 assertIncludes(threeJs, "fallbackReason = isAbortError(error) ? 'request timed out' : 'Worker request failed';", 'Three.js prototype should distinguish Worker request timeouts from generic live failures');
 assertIncludes(threeJs, "fetchWithTimeout(\n          WORKER_URL + '/analysis'", 'Three.js prototype should use the combined analysis endpoint with a timeout');
@@ -189,7 +192,8 @@ assertIncludes(threeJs, 'function getContourTextureSize(metrics)', 'Three.js pro
 assertIncludes(threeJs, 'metrics && metrics.areaKm2 <= SMALL_VIEWPORT_AREA_KM2\n    ? FIELD_SCALE_CONTOUR_TEXTURE_SIZE\n    : CONTOUR_TEXTURE_SIZE;', 'Three.js prototype should use denser contour snapshots only at field scale');
 assertIncludes(threeJs, 'const textureSize = getContourTextureSize(metrics);', 'Three.js contour renderer should choose snapshot size from viewport metrics');
 assertIncludes(threeJs, 'loadContourBaseTexture(bounds, metrics)', 'Three.js renderer should pass viewport metrics into contour texture generation');
-assertIncludes(threeJs, "baseMesh.material.color.set(requestedMode === 'terrain' ? '#FAFCFF' : '#C4BAB0');", 'Three.js terrain context should use a clean white base behind elevation isolines');
+assertIncludes(threeJs, "paint: { 'background-color': TERRAIN_CONTEXT_PAPER },", 'Three.js terrain contour texture should use the shared paperlike background color');
+assertIncludes(threeJs, "baseMesh.material.color.set(requestedMode === 'terrain' ? TERRAIN_CONTEXT_PAPER : '#C4BAB0');", 'Three.js terrain context fallback should use the shared paperlike base behind elevation isolines');
 assertIncludes(threeJs, "const nextTexture = requestedMode === 'terrain' ? lastBaseTextures.terrain : lastBaseTextures.satellite;", 'Three.js base context switch should use cached basemap or contour textures without rerunning analysis');
 assertNotMatches(threeJs, /terrain-rgb-v2|decodeTerrainRgb|buildTerrainContourGroup|terrainContourGroup|lastTerrainGrid|buildTerrainVisualCanvas|texture:\s*makeThreeTexture\(terrain\.canvas\)/, 'Three.js terrain context should not decode Terrain RGB or generate client-side elevation contours');
 assertIncludes(threeJs, 'const terrainGeometry = buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn);', 'Three.js prototype should pass height scale, surface offset, colorFn, and heightFn into terrain geometry builder');
@@ -245,8 +249,10 @@ assertIncludes(threeJs, 'baseMesh.visible = true;', 'Three.js base plane should 
 assertIncludes(threeJs, "let lastBaseTextures = { satellite: null, terrain: null };", 'Three.js satellite and contour base texture caches should be preserved after analysis');
 assertIncludes(threeJs, "baseContextMode = requestedMode;", 'Three.js terrain switch should change base context without rerunning analysis');
 assertIncludes(threeJs, "terrainSwitchEl = document.getElementById('satellite-three-terrain-switch');", 'Three.js terrain switch should wire the single binary switch');
+assertIncludes(threeJs, "terrainContextEl = document.getElementById('satellite-three-terrain-context');", 'Three.js terrain context note should be wired with the Terrain switch state');
 assertIncludes(threeJs, "const nextMode = terrainSwitchEl.getAttribute('aria-pressed') === 'true' ? 'satellite' : 'terrain';", 'Three.js terrain switch should map off to Basemap and on to Terrain');
 assertIncludes(threeJs, "if (label) label.textContent = terrainActive ? 'Terrain on' : 'Terrain off';", 'Three.js terrain switch should sync visible text with the active Terrain state');
+assertIncludes(threeJs, 'if (terrainContextEl) terrainContextEl.hidden = !terrainActive || !lastBaseTextures.terrain;', 'Three.js terrain context note should only show when Terrain mode has a contour texture');
 assertNotMatches(threeJs, /showSatelliteBase|satellite-three-base-toggle|satellite-three-terrain-toggle|baseModeButtons|data-base-context/, 'Three.js Explorer should not keep the old separate base/terrain toggle wiring');
 assertNotMatches(threeJs, /base texture MapTiler satellite tiles|base texture unavailable|SENTINEL_SOURCE_RESOLUTION_LABEL|sceneData\.constellation/, 'Three.js metadata should stay compact and avoid source/base-texture telemetry');
 assertNotMatches(threeJs, /Plotly\./, 'Three.js prototype must not use Plotly');
@@ -363,6 +369,8 @@ assertIncludes(selectorBlock(css, '.satellite-three-hud'), '--satellite-hud-ink:
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-receipt-label'), 'display: none;', 'Three.js HUD should hide the request label to keep the overlay compact');
 assertIncludes(selectorBlock(css, '.satellite-three-scene-meta'), 'max-width: 1120px;', 'Three.js scene metadata should align below the viewer instead of sitting in the overlay');
 assertIncludes(selectorBlock(css, '.satellite-three-scene-meta'), 'margin: -0.65rem auto 1rem;', 'Three.js scene metadata should sit close to the viewer without covering it');
+assertIncludes(selectorBlock(css, '.satellite-terrain-context'), 'font-family: var(--mono);', 'Three.js terrain context note should use quiet metadata typography');
+assertIncludes(selectorBlock(css, '.satellite-terrain-context'), 'color: var(--ink-mid);', 'Three.js terrain context note should stay subdued below the viewer');
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-status'), 'background: transparent;', 'Three.js HUD status text should sit as a quiet note below the control strip');
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-status'), '-webkit-backdrop-filter: none;', 'Three.js HUD status text should not add a second glass surface');
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-status'), 'border: 0;', 'Three.js HUD status text should avoid a redundant border around fixture/status copy');

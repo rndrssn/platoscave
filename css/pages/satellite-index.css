@@ -1176,6 +1176,19 @@
   margin-bottom: 0;
 }
 
+.satellite-terrain-context[hidden] {
+  display: none;
+}
+
+.satellite-terrain-context {
+  margin: 0.35rem 0 0;
+  color: var(--ink-mid);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  line-height: 1.45;
+  letter-spacing: 0.035em;
+}
+
 @media (max-width: 700px) {
   .satellite-three-hud {
     top: 0.5rem;

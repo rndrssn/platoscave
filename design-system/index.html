@@ -875,7 +875,7 @@
         <ul class="ds-rule-list" aria-label="Overlay chrome glass HUD rules">
           <li>Use overlay chrome only for controls over a dynamic map, rendered surface, or canvas; normal page controls should use the canonical action, segmented, and toggle patterns.</li>
           <li>The live Explorer overlay order is viewport action, Terrain state chip, request-area readout. Keep scene metadata below the viewer rather than inside the overlay.</li>
-          <li>The Terrain control remains a <span class="ds-token">button[aria-pressed]</span>, but renders as text plus a small state dot rather than a full switch track. Do not reintroduce a visible Basemap peer button.</li>
+          <li>The Terrain control is a <span class="ds-token">button[aria-pressed]</span> with a visible track-and-thumb switch. It is a compact mode toggle, not a peer action button; do not add a Basemap peer button beside it.</li>
           <li>Area values are read-only visualisation metadata. Preserve lowercase units such as <span class="ds-token">ha</span> and avoid input-like boxes.</li>
           <li>Normal HUD surfaces stay neutral, translucent, and blurred. Blocked viewport state should change text such as <span class="ds-token">zoom in below 200 ha</span>, not the glass material.</li>
           <li>The archived Plotly demo Base map toggle is documented for legacy parity only; it is not the live Explorer HUD pattern.</li>
@@ -1100,7 +1100,7 @@
 
       <!-- ─── 9. Link variants ──────────────────────────────── -->
       <section class="ds-section" aria-labelledby="ds-links">
-        <p class="ds-section-label" id="ds-links">09 · Link variants</p>
+        <p class="ds-section-label" id="ds-links">08 · Link variants</p>
         <p style="font-family:var(--serif);font-size:var(--fs-body);color:var(--ink-faint);font-style:italic;margin-bottom:1.5rem">All link affordances are centralised in <span class="ds-token">css/pages/link-language.css</span> (loaded last).</p>
 
         <p class="ds-subsection-heading">Inline prose links</p>
@@ -1141,7 +1141,7 @@
 
       <!-- ─── 10. Status indicators ─────────────────────────── -->
       <section class="ds-section" aria-labelledby="ds-status">
-        <p class="ds-section-label" id="ds-status">10 · Status indicators</p>
+        <p class="ds-section-label" id="ds-status">09 · Status indicators</p>
         <p style="font-family:var(--serif);font-size:var(--fs-body);color:var(--ink-faint);font-style:italic;margin-bottom:1.5rem">Used for async operation states in the Explorer. Defined in <span class="ds-token">css/pages/satellite-index.css</span>.</p>
         <div class="ds-row ds-row--baseline" style="gap:2rem">
           <div class="ds-item">
@@ -1164,7 +1164,7 @@
 
       <!-- ─── 11. Global shell ──────────────────────────────── -->
       <section class="ds-section" aria-labelledby="ds-shell">
-        <p class="ds-section-label" id="ds-shell">11 · Global shell and home surface</p>
+        <p class="ds-section-label" id="ds-shell">10 · Global shell and home surface</p>
 
         <p class="ds-subsection-heading">Main navigation states</p>
         <div class="ds-preview ds-preview--column">
@@ -1208,7 +1208,7 @@
 
       <!-- ─── 12. Editorial content ─────────────────────────── -->
       <section class="ds-section" aria-labelledby="ds-editorial">
-        <p class="ds-section-label" id="ds-editorial">12 · Editorial content and notes</p>
+        <p class="ds-section-label" id="ds-editorial">11 · Editorial content and notes</p>
 
         <p class="ds-subsection-heading">Markdown article body</p>
         <div class="ds-preview ds-preview--column note-content">
@@ -1239,7 +1239,7 @@
 
       <!-- ─── 13. Taxonomy and tables ───────────────────────── -->
       <section class="ds-section" aria-labelledby="ds-taxonomy">
-        <p class="ds-section-label" id="ds-taxonomy">13 · Taxonomy, comparison, and matrix patterns</p>
+        <p class="ds-section-label" id="ds-taxonomy">12 · Taxonomy, comparison, and matrix patterns</p>
 
         <p class="ds-subsection-heading">Taxonomy dimension</p>
         <div class="ds-preview ds-preview--column">
@@ -1282,7 +1282,7 @@
 
       <!-- ─── 14. Risk assessment ───────────────────────────── -->
       <section class="ds-section products-over-projects-page" aria-labelledby="ds-risk">
-        <p class="ds-section-label" id="ds-risk">14 · Products Over Projects risk patterns</p>
+        <p class="ds-section-label" id="ds-risk">13 · Products Over Projects risk patterns</p>
 
         <p class="ds-subsection-heading">Risk comparison cards</p>
         <div class="ds-preview">
@@ -1303,7 +1303,7 @@
 
       <!-- ─── 15. Flow and math lab ─────────────────────────── -->
       <section class="ds-section queue-machine-page" aria-labelledby="ds-flow">
-        <p class="ds-section-label" id="ds-flow">15 · Flow &amp; Queuing lab and math treatment</p>
+        <p class="ds-section-label" id="ds-flow">14 · Flow &amp; Queuing lab and math treatment</p>
 
         <p class="ds-subsection-heading">Token tier policy</p>
         <ul class="ds-principle-list">
@@ -1331,7 +1331,7 @@
 
       <!-- ─── 16. Visualisation chrome ──────────────────────── -->
       <section class="ds-section" aria-labelledby="ds-viz-chrome">
-        <p class="ds-section-label" id="ds-viz-chrome">16 · Visualisation chrome and graph states</p>
+        <p class="ds-section-label" id="ds-viz-chrome">15 · Visualisation chrome and graph states</p>
 
         <p class="ds-subsection-heading">Chrome role taxonomy</p>
         <div class="ds-preview ds-preview--column">
@@ -1414,7 +1414,7 @@
 
       <!-- ─── 17. Document map ──────────────────────────────── -->
       <section class="ds-section the-descent-page" aria-labelledby="ds-doc-map">
-        <p class="ds-section-label" id="ds-doc-map">17 · Document Map visual language</p>
+        <p class="ds-section-label" id="ds-doc-map">16 · Document Map visual language</p>
 
         <p class="ds-subsection-heading">Legend, anchors, and tooltip</p>
         <div class="ds-preview ds-preview--column">
@@ -1442,7 +1442,7 @@
 
       <!-- ─── 18. Satellite explorer ────────────────────────── -->
       <section class="ds-section satellite-three-page" aria-labelledby="ds-satellite">
-        <p class="ds-section-label" id="ds-satellite">18 · Boundary-free monitoring Explorer</p>
+        <p class="ds-section-label" id="ds-satellite">17 · Boundary-free monitoring Explorer</p>
 
         <p class="ds-subsection-heading">Spectral index content</p>
         <div class="ds-preview ds-preview--column satellite-index-page">
@@ -1459,7 +1459,7 @@
 
       <!-- ─── 19. Maintenance ────────────────────────────────── -->
       <section class="ds-section" aria-labelledby="ds-rules">
-        <p class="ds-section-label" id="ds-rules">19 · Maintenance</p>
+        <p class="ds-section-label" id="ds-rules">18 · Maintenance</p>
         <p class="essay-body" style="max-width:60ch">
           This page describes the current design reference. Design debt, open consolidation decisions, and proposed canonical directions live in <a href="./BACKLOG.md">the design-system backlog</a>.
         </p>
@@ -1503,7 +1503,6 @@
       function normalizeThemeName(rawTheme) {
         var trimmed = (rawTheme || '').trim();
         if (!trimmed || trimmed === 'default' || trimmed === 'base') return '';
-        if (trimmed === 'collision-decision-cold') return 'decision-collision-cold';
         return trimmed;
       }
 

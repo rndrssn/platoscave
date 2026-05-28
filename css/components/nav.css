@@ -483,6 +483,7 @@
   .site-header {
     --nav-inset: 0.9rem;
     --nav-links-offset: 0rem;
+    --nav-menu-scale: 1.0;
   }
 
   .nav-title {

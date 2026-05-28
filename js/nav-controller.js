@@ -73,7 +73,8 @@
           title: (item && item.title) || '',
           slug: (item && item.slug) || '',
           path: (item && item.path) || '',
-          status: normalizeModuleStatus(item && item.status)
+          status: normalizeModuleStatus(item && item.status),
+          demo: !!(item && item.demo)
         };
       });
     }
@@ -218,27 +219,12 @@
 
     function setModulesExpanded(open) {
       if (!modulesToggleButton || !modulesSubmenu) return;
-      positionModulesSubmenu();
       modulesSubmenu.hidden = !open;
       modulesToggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
       modulesToggleButton.setAttribute('aria-label', open ? 'Collapse catalogue list' : 'Expand catalogue list');
       modulesToggleButton.setAttribute('title', open ? 'Collapse catalogue list' : 'Expand catalogue list');
       if (open) modulesToggleButton.classList.add('is-expanded');
       else modulesToggleButton.classList.remove('is-expanded');
-    }
-
-    function positionModulesSubmenu() {
-      if (!modulesToggleButton || !modulesSubmenu || !navLinks) return;
-      var anchorLeft = modulesToggleButton.offsetLeft + 6;
-      if (
-        typeof modulesToggleButton.getBoundingClientRect === 'function' &&
-        typeof navLinks.getBoundingClientRect === 'function'
-      ) {
-        var toggleRect = modulesToggleButton.getBoundingClientRect();
-        var navRect = navLinks.getBoundingClientRect();
-        anchorLeft = (toggleRect.left - navRect.left) + toggleRect.width;
-      }
-      modulesSubmenu.style.setProperty('--modules-submenu-left', String(anchorLeft) + 'px');
     }
 
     function getMainNavPinThreshold() {
@@ -261,7 +247,6 @@
       if (siteHeader && siteHeader.classList) {
         siteHeader.classList.toggle('nav-main-pinned', shouldPin);
       }
-      positionModulesSubmenu();
     }
 
     function initModulesBentoSection(rootPrefix) {
@@ -406,9 +391,8 @@
       });
 
       modulesHead.appendChild(modulesToggleButton);
+      modulesHead.appendChild(modulesSubmenu);
       modulesLink.parentNode.replaceChild(modulesHead, modulesLink);
-      modulesHead.insertAdjacentElement('afterend', modulesSubmenu);
-      positionModulesSubmenu();
 
       modulesToggleButton.addEventListener('click', function (event) {
         event.preventDefault();
@@ -433,7 +417,6 @@
     function openMenu() {
       navLinks.classList.add('is-open');
       setExpanded(true);
-      positionModulesSubmenu();
       prefetchMenuRoutes();
       if (modulesAutoExpand) setModulesExpanded(true);
     }
@@ -490,7 +473,6 @@
         }
         if (modulesAutoExpand) setModulesExpanded(true);
         updateMainNavPinnedState();
-        positionModulesSubmenu();
       });
       window.addEventListener('scroll', updateMainNavPinnedState, { passive: true });
     }

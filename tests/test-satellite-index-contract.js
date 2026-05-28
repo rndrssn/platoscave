@@ -367,7 +367,7 @@ assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-status--loadi
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-status--loading'), 'display: inline-block;', 'Three.js loading spinner should keep visible layout dimensions');
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-status--loading'), 'background: transparent;', 'Three.js loading spinner should stay quiet on map imagery');
 assertIncludes(css, '@media (max-width: 700px) {\n  .satellite-three-hud {', 'Three.js HUD should keep a mobile-specific compact layout');
-assertIncludes(css, '.satellite-three-hud .satellite-status--loading {\n    width: 0.62rem;', 'Three.js mobile loading spinner should be smaller than the desktop spinner');
+assertIncludes(css, '.satellite-three-hud .satellite-status--loading {\n    width: 0.41rem;', 'Three.js mobile loading spinner should be smaller than the desktop spinner');
 assertIncludes(css, '@keyframes satellite-three-spin', 'Three.js loading spinner animation missing');
 assertIncludes(selectorBlock(css, '.satellite-three-index-guide'), 'max-width: 1120px;', 'Three.js index guide should align with the viewer');
 assertIncludes(selectorBlock(css, '.satellite-three-index-cue'), 'font-size: 0.78rem;', 'Three.js index controls should stay legible without becoming a dominant button strip');

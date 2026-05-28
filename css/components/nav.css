@@ -376,7 +376,7 @@
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child.nav-sublink--active {
   color: var(--rust);
   font-weight: 400;
-  padding-left: 1.75rem;
+  padding-left: 1.5rem;
   border-left-color: color-mix(in srgb, var(--rust) 62%, var(--ink-ghost) 38%);
 }
 

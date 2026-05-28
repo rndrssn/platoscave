@@ -10,6 +10,7 @@ const source = fs.readFileSync(path.join(__dirname, '..', 'js', 'nav-controller.
 function makeClassList() {
   const set = new Set();
   return {
+    set,
     add(name) { set.add(name); },
     remove(name) { set.delete(name); },
     contains(name) { return set.has(name); },
@@ -20,10 +21,15 @@ function makeElement(className) {
   const listeners = Object.create(null);
   const attrs = Object.create(null);
   const classList = makeClassList();
+  const children = [];
+  let storedClassName = className || '';
   (className || '').split(/\s+/).filter(Boolean).forEach((c) => classList.add(c));
 
-  return {
+  const element = {
     classList,
+    children,
+    textContent: '',
+    href: '',
     addEventListener(type, cb) {
       if (!listeners[type]) listeners[type] = [];
       listeners[type].push(cb);
@@ -38,10 +44,35 @@ function makeElement(className) {
     getAttribute(name) {
       return Object.prototype.hasOwnProperty.call(attrs, name) ? attrs[name] : null;
     },
+    appendChild(child) {
+      children.push(child);
+      return child;
+    },
+    querySelector(selector) {
+      if (selector === '.footer-text') {
+        return children.find((child) => child.classList && child.classList.contains('footer-text')) || null;
+      }
+      if (selector === '.footer-socials') {
+        return children.find((child) => child.classList && child.classList.contains('footer-socials')) || null;
+      }
+      return null;
+    },
     contains(target) {
       return target === this;
     },
   };
+  Object.defineProperty(element, 'className', {
+    get() {
+      return storedClassName;
+    },
+    set(value) {
+      storedClassName = String(value || '');
+      classList.set.clear();
+      storedClassName.split(/\s+/).filter(Boolean).forEach((c) => classList.add(c));
+    },
+  });
+  element.className = storedClassName;
+  return element;
 }
 
 function assert(condition, message) {
@@ -52,6 +83,7 @@ function run() {
   const docListeners = Object.create(null);
   const navToggle = makeElement('nav-mobile-toggle');
   const navLinks = makeElement('nav-links');
+  const footer = makeElement('');
 
   const document = {
     addEventListener(type, cb) {
@@ -65,7 +97,14 @@ function run() {
     querySelector(selector) {
       if (selector === '.nav-mobile-toggle') return navToggle;
       if (selector === '.nav-links') return navLinks;
+      if (selector === 'footer') return footer;
       return null;
+    },
+    createElement(tagName) {
+      return makeElement('');
+    },
+    createTextNode(value) {
+      return { nodeType: 3, textContent: String(value) };
     },
   };
 
@@ -74,6 +113,14 @@ function run() {
   vm.runInContext(source, context, { filename: 'nav-controller.js' });
 
   document.emit('DOMContentLoaded');
+
+  const footerText = footer.querySelector('.footer-text');
+  assert(footerText, 'Expected shared footer text to be rendered');
+  assert(footerText.children.some((child) => child.href === './colophon/'), 'Expected Site Notes footer link');
+  assert(
+    footerText.children.some((child) => child.classList && child.classList.contains('footer-socials')),
+    'Expected shared footer socials'
+  );
 
   navToggle.emit('click', { type: 'click', target: navToggle });
   assert(navLinks.classList.contains('is-open'), 'Expected menu open after toggle click');

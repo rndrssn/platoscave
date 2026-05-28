@@ -76,9 +76,7 @@ function htmlShell(params) {
     + '  <main id="main-content" class="main--narrow">\n'
     + main + '\n'
     + '  </main>\n\n'
-    + '  <footer>\n'
-    + '    <p class="footer-text">&copy; 2026 Robert Andersson &middot; To the Bedrock &middot; <a href="' + prefix + 'colophon/" class="footer-link">Site Notes</a></p>\n'
-    + '  </footer>\n\n'
+    + '  <footer data-site-footer></footer>\n\n'
     + extraScripts.map((src) => '  <script src="' + escapeAttr(src) + '"></script>\n').join('')
     + '  <script src="' + prefix + 'js/module-route-data.js"></script>\n'
     + '  <script src="' + prefix + 'js/nav-controller.js"></script>\n'

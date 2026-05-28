@@ -14,11 +14,6 @@ const IGNORE_DIRS = new Set(['node_modules', '.git', 'vendor']);
 // the list (with justification) when a new site is intentionally introduced.
 const ALLOWLIST = [
   {
-    file: 'js/nav-controller.js',
-    line: "socials.innerHTML =",
-    reason: 'static HTML literal, no interpolation (footer social icons)',
-  },
-  {
     file: 'modules/ambiguity-clarity/section-map/section-map.js',
     line: "el.innerHTML = '';",
     reason: 'clears container before rebuilding from textContent',

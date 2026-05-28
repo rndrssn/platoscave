@@ -137,6 +137,11 @@ a.eq-ref {
   box-shadow: inset 0 -2px 0 var(--ink);
 }
 
+.js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-child.nav-sublink--active,
+.js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child.nav-sublink--active {
+  box-shadow: none;
+}
+
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink:visited,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink:visited {
   color: var(--link-text);

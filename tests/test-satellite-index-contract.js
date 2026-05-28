@@ -157,7 +157,7 @@ assertIncludes(selectorBlock(css, '.satellite-three-legend-scale'), 'flex-direct
 assertIncludes(threeHtml, 'https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js', 'Three.js module must be exact-pinned');
 assertIncludes(threeHtml, 'https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/', 'Three.js add-ons import path must be exact-pinned');
 assertIncludes(threeHtml, 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js', 'Three.js prototype should use the same exact-pinned MapLibre runtime');
-assertIncludes(threeHtml, '<script type="module" src="./satellite-index-three.js?v=20260523-1"></script>', 'Three.js prototype should load its separate implementation with a cache-busting query');
+assertIncludes(threeHtml, '<script type="module" src="./satellite-index-three.js?v=20260528-1"></script>', 'Three.js prototype should load its separate implementation with a cache-busting query');
 assertIncludes(threeJs, "const WORKER_URL = 'https://satellite-worker.platoscave.workers.dev';", 'Three.js prototype should use the deployed Worker');
 assertIncludes(threeJs, "const WORKER_API_KEY = '__WORKER_API_KEY__';", 'Three.js prototype must keep the API key placeholder in source');
 assertNotMatches(threeJs, /const WORKER_API_KEY = '[0-9a-f]{64}';/, 'Three.js prototype source must not contain an injected Worker key');
@@ -169,6 +169,8 @@ assertIncludes(threeJs, "fallbackReason = 'Worker HTTP ' + analysisRes.status;",
 assertIncludes(threeJs, 'const ANALYSIS_REQUEST_TIMEOUT_MS = 25000;', 'Three.js Worker analysis requests should have a client-side timeout');
 assertIncludes(threeJs, 'const MAPTILER_TILE_TIMEOUT_MS = 8000;', 'Three.js MapTiler tile requests should have a client-side timeout');
 assertIncludes(threeJs, 'const CONTOUR_TEXTURE_TIMEOUT_MS = 12000;', 'Three.js contour texture rendering should keep a bounded MapLibre wait');
+assertIncludes(threeJs, 'const CONTOUR_TEXTURE_SIZE = 2048;', 'Three.js default contour texture should preserve the established snapshot size');
+assertIncludes(threeJs, 'const FIELD_SCALE_CONTOUR_TEXTURE_SIZE = 3072;', 'Three.js field-scale terrain context should increase contour raster density below 10 ha');
 assertIncludes(threeJs, 'function fetchWithTimeout(url, options, timeoutMs)', 'Three.js prototype should use a shared abortable fetch helper');
 assertIncludes(threeJs, "fallbackReason = isAbortError(error) ? 'request timed out' : 'Worker request failed';", 'Three.js prototype should distinguish Worker request timeouts from generic live failures');
 assertIncludes(threeJs, "fetchWithTimeout(\n          WORKER_URL + '/analysis'", 'Three.js prototype should use the combined analysis endpoint with a timeout');
@@ -182,7 +184,11 @@ assertIncludes(threeJs, 'baseMesh.material.map = nextTexture;', 'Three.js protot
 assertIncludes(threeJs, "'source-layer': 'contour'", 'Three.js terrain context should use the contours-v2 contour source layer');
 assertIncludes(threeJs, "['get', 'nth_line']", 'Three.js terrain context should style MapTiler contour index lines from nth_line');
 assertIncludes(threeJs, 'preserveDrawingBuffer: true', 'Three.js terrain context should snapshot the MapLibre contour canvas into a Three texture');
-assertIncludes(threeJs, 'function loadContourBaseTexture(bounds)', 'Three.js prototype should render MapTiler contour tiles into the terrain base texture');
+assertIncludes(threeJs, 'function loadContourBaseTexture(bounds, metrics)', 'Three.js prototype should render MapTiler contour tiles into the terrain base texture');
+assertIncludes(threeJs, 'function getContourTextureSize(metrics)', 'Three.js prototype should centralize contour texture density by viewport scale');
+assertIncludes(threeJs, 'metrics && metrics.areaKm2 <= SMALL_VIEWPORT_AREA_KM2\n    ? FIELD_SCALE_CONTOUR_TEXTURE_SIZE\n    : CONTOUR_TEXTURE_SIZE;', 'Three.js prototype should use denser contour snapshots only at field scale');
+assertIncludes(threeJs, 'const textureSize = getContourTextureSize(metrics);', 'Three.js contour renderer should choose snapshot size from viewport metrics');
+assertIncludes(threeJs, 'loadContourBaseTexture(bounds, metrics)', 'Three.js renderer should pass viewport metrics into contour texture generation');
 assertIncludes(threeJs, "baseMesh.material.color.set(requestedMode === 'terrain' ? '#FAFCFF' : '#C4BAB0');", 'Three.js terrain context should use a clean white base behind elevation isolines');
 assertIncludes(threeJs, "const nextTexture = requestedMode === 'terrain' ? lastBaseTextures.terrain : lastBaseTextures.satellite;", 'Three.js base context switch should use cached basemap or contour textures without rerunning analysis');
 assertNotMatches(threeJs, /terrain-rgb-v2|decodeTerrainRgb|buildTerrainContourGroup|terrainContourGroup|lastTerrainGrid|buildTerrainVisualCanvas|texture:\s*makeThreeTexture\(terrain\.canvas\)/, 'Three.js terrain context should not decode Terrain RGB or generate client-side elevation contours');
@@ -350,8 +356,9 @@ assertIncludes(css, 'box-shadow: 0.32rem 0.32rem 0 var(--control-attention-shado
 assertIncludes(selectorBlock(css, '.satellite-three-hud'), 'background: transparent;', 'Three.js HUD should not add a backing panel over map imagery');
 assertIncludes(selectorBlock(css, '.satellite-three-hud'), 'border: 0;', 'Three.js HUD should not add a panel border over map imagery');
 assertIncludes(selectorBlock(css, '.satellite-three-hud'), 'padding: 0.38rem;', 'Three.js HUD should stay compact over the map and canvas');
-assertIncludes(selectorBlock(css, '.satellite-three-hud'), '--satellite-hud-surface: color-mix(in srgb, var(--paper) 28%, transparent 72%);', 'Three.js HUD controls should use brightened transparent neutral instrument-panel surfaces');
-assertIncludes(selectorBlock(css, '.satellite-three-hud'), '--satellite-hud-blur: blur(14px) saturate(140%) contrast(108%);', 'Three.js HUD controls should use restrained backdrop blur for imagery-independent contrast');
+assertIncludes(selectorBlock(css, '.satellite-three-hud'), '--satellite-hud-surface: color-mix(in srgb, var(--paper) 56%, transparent 44%);', 'Three.js HUD controls should use brightened transparent neutral instrument-panel surfaces');
+assertIncludes(selectorBlock(css, '.satellite-three-hud'), '--satellite-hud-surface-strong: color-mix(in srgb, var(--paper) 72%, transparent 28%);', 'Three.js primary HUD controls should read as white glass over MapTiler imagery');
+assertIncludes(selectorBlock(css, '.satellite-three-hud'), '--satellite-hud-blur: blur(16px) saturate(150%) contrast(106%);', 'Three.js HUD controls should use restrained backdrop blur for imagery-independent contrast');
 assertIncludes(selectorBlock(css, '.satellite-three-hud'), '--satellite-hud-ink: var(--ink);', 'Three.js HUD buttons should use dark text over transparent glass controls for bright map/canvas areas');
 assertIncludes(selectorBlock(css, '.satellite-three-hud .satellite-receipt-label'), 'display: none;', 'Three.js HUD should hide the request label to keep the overlay compact');
 assertIncludes(selectorBlock(css, '.satellite-three-scene-meta'), 'max-width: 1120px;', 'Three.js scene metadata should align below the viewer instead of sitting in the overlay');

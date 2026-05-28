@@ -8,6 +8,7 @@
   var AVAILABLE_THEMES = [
     'decision-collision-cold',
     'plain',
+    'plain-readable',
     'high-signal',
     'warm-press',
   ];

@@ -96,9 +96,12 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - Build notes, articles, and tags pages:
   - `node scripts/build-notes.js`
 - One-command publish flow from `sandbox`:
-  - note: `scripts/publish-note.sh -m "Publish writing: notes:<slug>" --only notes:<slug>`
-  - optional full-suite mode: `scripts/publish-note.sh -m "Publish writing: <target>" --only <target> --full-suite`
-  - optional LLM polish: `OPENAI_API_KEY=... scripts/publish-note.sh -m "Publish writing: <target>" --polish <target> --only <target>`
+  - note: `scripts/publish-note.sh <slug>` (defaults to notes/articles auto-resolution and commit message `Publish writing: <collection>:<slug>`)
+  - explicit note: `scripts/publish-note.sh notes:<slug>`
+  - article: `scripts/publish-note.sh articles:<slug>`
+  - optional full-suite mode: `scripts/publish-note.sh <target> --full-suite`
+  - optional LLM polish: `OPENAI_API_KEY=... scripts/publish-note.sh <target> --polish <target>`
+  - explicit guard/message form remains supported: `scripts/publish-note.sh -m "Publish writing: <target>" --only <target>`
 - Publish safety: script requires a clean staged index; `--only` blocks unexpected changed published source files under `content/notes/published/` and `content/articles/published/`.
 - Status lifecycle:
   - `published`: rendered to notes/tags output
@@ -117,7 +120,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 - Markdown source lives in `content/articles/published/` (and optional drafts in `content/articles/drafts/`)
 - Articles use the same frontmatter schema as notes (`title`, `slug`, `date`, `tags`, `status`; `summary` optional) with the same required/optional and validation rules
 - Publish one article:
-  - `scripts/publish-note.sh -m "Publish writing: articles:<slug>" --only articles:<slug>`
+  - `scripts/publish-note.sh articles:<slug>`
 
 ## Experience-Skill Graph CMS (Markdown + Obsidian)
 

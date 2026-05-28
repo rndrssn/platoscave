@@ -27,6 +27,7 @@ const ANALYSIS_REQUEST_TIMEOUT_MS = 25000;
 const MAPTILER_TILE_TIMEOUT_MS = 8000;
 const CONTOUR_TEXTURE_TIMEOUT_MS = 12000;
 const CONTOUR_TEXTURE_SIZE = 2048;
+const FIELD_SCALE_CONTOUR_TEXTURE_SIZE = 3072;
 // HEIGHT_SCALE and surface offset are computed per-render from scene span — see renderThreeSurface.
 
 const INDEX_DEFS = [
@@ -449,6 +450,12 @@ function buildContourTileJsonUrl() {
   return 'https://api.maptiler.com/tiles/contours-v2/tiles.json?key=' + MAPTILER_API_KEY;
 }
 
+function getContourTextureSize(metrics) {
+  return metrics && metrics.areaKm2 <= SMALL_VIEWPORT_AREA_KM2
+    ? FIELD_SCALE_CONTOUR_TEXTURE_SIZE
+    : CONTOUR_TEXTURE_SIZE;
+}
+
 function loadImageBlob(url) {
   return fetchWithTimeout(url, {}, MAPTILER_TILE_TIMEOUT_MS)
     .then(response => {
@@ -588,16 +595,17 @@ function snapshotMapCanvas(mapInstance, size) {
   return makeThreeTexture(canvas);
 }
 
-function loadContourBaseTexture(bounds) {
+function loadContourBaseTexture(bounds, metrics) {
   if (!window.maplibregl || !document.body) return Promise.resolve(null);
   return new Promise(resolve => {
+    const textureSize = getContourTextureSize(metrics);
     const container = document.createElement('div');
     container.setAttribute('aria-hidden', 'true');
     container.style.position = 'fixed';
     container.style.left = '-200vw';
     container.style.top = '0';
-    container.style.width = CONTOUR_TEXTURE_SIZE + 'px';
-    container.style.height = CONTOUR_TEXTURE_SIZE + 'px';
+    container.style.width = textureSize + 'px';
+    container.style.height = textureSize + 'px';
     container.style.pointerEvents = 'none';
     document.body.appendChild(container);
 
@@ -632,12 +640,12 @@ function loadContourBaseTexture(bounds) {
           { padding: 0, duration: 0 }
         );
         // Primary: full idle means both contour and hillshade tiles rendered.
-        contourMap.once('idle', () => cleanup(snapshotMapCanvas(contourMap, CONTOUR_TEXTURE_SIZE)));
+        contourMap.once('idle', () => cleanup(snapshotMapCanvas(contourMap, textureSize)));
         // Fallback: snapshot as soon as contour tiles are ready without waiting for any slow source.
         const onSourceData = (e) => {
           if (e.sourceId === 'contours' && e.isSourceLoaded) {
             contourMap.off('sourcedata', onSourceData);
-            window.requestAnimationFrame(() => cleanup(snapshotMapCanvas(contourMap, CONTOUR_TEXTURE_SIZE)));
+            window.requestAnimationFrame(() => cleanup(snapshotMapCanvas(contourMap, textureSize)));
           }
         };
         contourMap.on('sourcedata', onSourceData);
@@ -992,7 +1000,7 @@ async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn) {
   try {
     const results = await Promise.allSettled([
       loadSatelliteBaseTexture(bounds),
-      loadContourBaseTexture(bounds),
+      loadContourBaseTexture(bounds, metrics),
     ]);
     satelliteTexture = results[0].status === 'fulfilled' ? results[0].value : null;
     contourTexture = results[1].status === 'fulfilled' ? results[1].value : null;

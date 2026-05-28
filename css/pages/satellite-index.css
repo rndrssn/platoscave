@@ -937,11 +937,11 @@
 
 .satellite-three-hud {
   /* Page-specific overlay contrast: keep readable over dynamic map/canvas imagery. */
-  --satellite-hud-surface: color-mix(in srgb, var(--paper) 28%, transparent 72%);
-  --satellite-hud-surface-strong: color-mix(in srgb, var(--paper) 38%, transparent 62%);
-  --satellite-hud-border: color-mix(in srgb, var(--ink) 34%, transparent 66%);
-  --satellite-hud-border-strong: color-mix(in srgb, var(--ink) 58%, transparent 42%);
-  --satellite-hud-blur: blur(14px) saturate(140%) contrast(108%);
+  --satellite-hud-surface: color-mix(in srgb, var(--paper) 56%, transparent 44%);
+  --satellite-hud-surface-strong: color-mix(in srgb, var(--paper) 72%, transparent 28%);
+  --satellite-hud-border: color-mix(in srgb, var(--paper) 52%, var(--ink) 48%);
+  --satellite-hud-border-strong: color-mix(in srgb, var(--paper) 34%, var(--ink) 66%);
+  --satellite-hud-blur: blur(16px) saturate(150%) contrast(106%);
   --satellite-hud-ink: var(--ink);
   position: absolute;
   top: 0.75rem;

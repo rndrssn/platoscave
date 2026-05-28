@@ -8,6 +8,9 @@ set -euo pipefail
 # 4) Push sandbox and merge into develop + main
 #
 # Usage:
+#   scripts/publish-note.sh <slug>
+#   scripts/publish-note.sh notes:<slug>
+#   scripts/publish-note.sh articles:<slug>
 #   scripts/publish-note.sh -m "Publish writing: <slug>" --only notes:<slug>
 #   scripts/publish-note.sh -m "Publish writing: <slug>" --only articles:<slug> --full-suite
 #   scripts/publish-note.sh -m "Publish writing: <slug>" --polish articles:<slug> --only articles:<slug>
@@ -15,6 +18,8 @@ set -euo pipefail
 #
 # Notes:
 # - The script name is retained for compatibility.
+# - A bare positional slug defaults to notes/articles auto-resolution.
+#   If the slug exists in both collections, use notes:<slug> or articles:<slug>.
 # - --only accepts either <collection>:<slug> or bare <slug>.
 #   Bare slugs auto-resolve only when unique across notes/articles.
 
@@ -226,6 +231,13 @@ parse_allowed_specs() {
   done
 }
 
+format_allowed_targets() {
+  printf '%s\n' "$ALLOWED_ITEMS" \
+    | sed '/^$/d' \
+    | sort -u \
+    | awk -F'|' 'BEGIN { sep = "" } { printf "%s%s:%s", sep, $1, $2; sep = ", " } END { print "" }'
+}
+
 allowed_item_exists() {
   local collection="$1"
   local slug="$2"
@@ -335,23 +347,30 @@ while [[ $# -gt 0 ]]; do
       exit 0
       ;;
     *)
-      echo "Unknown argument: $1" >&2
-      exit 1
+      if [[ "$1" == -* ]]; then
+        echo "Unknown argument: $1" >&2
+        exit 1
+      fi
+      ONLY_SPECS+=("$1")
+      shift
       ;;
   esac
 done
 
-if [[ -z "$COMMIT_MSG" ]]; then
-  echo "Commit message is required. Use -m \"Publish writing: <slug>\"." >&2
+if [[ ${#ONLY_SPECS[@]} -eq 0 ]]; then
+  echo "A slug is required." >&2
+  echo "Examples:" >&2
+  echo "  scripts/publish-note.sh my-note" >&2
+  echo "  scripts/publish-note.sh notes:my-note" >&2
+  echo "  scripts/publish-note.sh articles:my-article" >&2
+  echo "  scripts/publish-note.sh -m \"Publish writing\" --only notes:my-note" >&2
   exit 1
 fi
 
-if [[ ${#ONLY_SPECS[@]} -eq 0 ]]; then
-  echo "--only is required (single value or comma-separated list)." >&2
-  echo "Examples:" >&2
-  echo "  scripts/publish-note.sh -m \"Publish writing\" --only notes:my-note" >&2
-  echo "  scripts/publish-note.sh -m \"Publish writing\" --only articles:my-article" >&2
-  exit 1
+parse_allowed_specs
+
+if [[ -z "$COMMIT_MSG" ]]; then
+  COMMIT_MSG="Publish writing: $(format_allowed_targets)"
 fi
 
 CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
@@ -364,8 +383,6 @@ if ! git diff --cached --quiet; then
   echo "Index is not clean. Please commit or unstage existing staged changes before running publish-note." >&2
   exit 1
 fi
-
-parse_allowed_specs
 
 sync_target_branch() {
   local target="$1"

@@ -7,6 +7,7 @@ const path = require('path');
 const themesDir = path.join(__dirname, '..', 'css', 'themes');
 const themeConfigPath = path.join(__dirname, '..', 'theme.config.js');
 const themeBootstrapPath = path.join(__dirname, '..', 'js', 'theme-bootstrap.js');
+const designSystemPath = path.join(__dirname, '..', 'design-system', 'index.html');
 
 function loadAllThemeCss() {
   const files = fs.readdirSync(themesDir)
@@ -61,14 +62,26 @@ function parseBootstrapAllowlist(bootstrapSource) {
   return new Set(names);
 }
 
+function parseDesignSystemThemeOptions(designSystemSource) {
+  const names = [];
+  const optionRe = /<option\s+value="([^"]+)"/g;
+  let match;
+  while ((match = optionRe.exec(designSystemSource)) !== null) {
+    names.push(match[1]);
+  }
+  return new Set(names);
+}
+
 function testThemeConfigAndThemeCssStayInSync() {
   const cssSource = loadAllThemeCss();
   const configSource = fs.readFileSync(themeConfigPath, 'utf8');
   const bootstrapSource = fs.readFileSync(themeBootstrapPath, 'utf8');
+  const designSystemSource = fs.readFileSync(designSystemPath, 'utf8');
 
   const declaredThemes = getDeclaredThemeNames(cssSource);
   const configEntries = parseThemeConfigAssignments(configSource);
   const bootstrapAllowlist = parseBootstrapAllowlist(bootstrapSource);
+  const designSystemOptions = parseDesignSystemThemeOptions(designSystemSource);
   const specialValues = new Set(['', 'default', 'base']);
 
   assert(declaredThemes.size > 0, 'No [data-theme=...] names found in imported theme CSS');
@@ -105,12 +118,24 @@ function testThemeConfigAndThemeCssStayInSync() {
       bootstrapAllowlist.has(declaredName),
       'js/theme-bootstrap.js allowlist is missing declared theme name: ' + declaredName
     );
+    assert(
+      designSystemOptions.has(declaredName),
+      'design-system theme preview is missing declared theme name: ' + declaredName
+    );
   }
 
   for (const allowedName of bootstrapAllowlist) {
     assert(
       declaredThemes.has(allowedName),
       'js/theme-bootstrap.js allowlist includes unknown theme name: ' + allowedName
+    );
+  }
+
+  for (const optionName of designSystemOptions) {
+    if (specialValues.has(optionName)) continue;
+    assert(
+      declaredThemes.has(optionName),
+      'design-system theme preview includes unknown theme name: ' + optionName
     );
   }
 }

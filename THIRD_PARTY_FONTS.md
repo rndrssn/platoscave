@@ -17,6 +17,7 @@ All currently used families are licensed under the SIL Open Font License 1.1 (OF
 | Bebas Neue | https://github.com/google/fonts/tree/main/ofl/bebasneue | OFL-1.1 | `licenses/fonts/bebasneue-OFL.txt` |
 | Barlow Condensed | https://github.com/google/fonts/tree/main/ofl/barlowcondensed | OFL-1.1 | `licenses/fonts/barlowcondensed-OFL.txt` |
 | Space Mono | https://github.com/google/fonts/tree/main/ofl/spacemono | OFL-1.1 | `licenses/fonts/spacemono-OFL.txt` |
+| Source Serif 4 | https://github.com/google/fonts/tree/main/ofl/sourceserif4 | OFL-1.1 | `licenses/fonts/sourceserif4-OFL.txt` |
 | Rajdhani | https://github.com/google/fonts/tree/main/ofl/rajdhani | OFL-1.1 | `licenses/fonts/rajdhani-OFL.txt` |
 | Newsreader | https://github.com/google/fonts/tree/main/ofl/newsreader | OFL-1.1 | `licenses/fonts/newsreader-OFL.txt` |
 | DM Sans | https://github.com/google/fonts/tree/main/ofl/dmsans | OFL-1.1 | `licenses/fonts/dmsans-OFL.txt` |

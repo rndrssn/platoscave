@@ -4,7 +4,8 @@
  */
 
 /* Available */
- window.PLATOSCAVE_THEME = 'plain';
+ window.PLATOSCAVE_THEME = 'plain-readable';
+// window.PLATOSCAVE_THEME = 'plain';
 // window.PLATOSCAVE_THEME = 'high-signal';
 // window.PLATOSCAVE_THEME = 'warm-press';
 

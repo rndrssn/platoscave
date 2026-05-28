@@ -1,6 +1,6 @@
 # platoscave — Repository Map
 
-*Auto-generated. 114 JS files · 447 symbols · 68 HTML pages · 379,803 total tokens. Excludes vendor and minified files.*
+*Auto-generated. 114 JS files · 451 symbols · 68 HTML pages · 382,134 total tokens. Excludes vendor and minified files.*
 
 This is a structural index of the repository. JS files list top-level functions; HTML pages list which scripts they load. Use this to orient before reading source.
 
@@ -10,11 +10,11 @@ This is a structural index of the repository. JS files list top-level functions;
 
 | Group | Files | Symbols | Tokens |
 |-------|------:|--------:|-------:|
-| Modules | 34 | 122 | 120,483 |
+| Modules | 34 | 126 | 120,826 |
 | Build scripts | 6 | 63 | 15,828 |
-| Contract tests | 65 | 262 | 74,525 |
-| Page-level scripts | 8 | 0 | 10,283 |
-| Root-level files | 1 | 0 | 301 |
+| Contract tests | 65 | 262 | 76,093 |
+| Page-level scripts | 8 | 0 | 10,619 |
+| Root-level files | 1 | 0 | 138 |
 
 ### HTML pages
 
@@ -22,7 +22,7 @@ This is a structural index of the repository. JS files list top-level functions;
 |-------|------:|------------:|-------:|
 | Articles | 2 | 9 | 11,682 |
 | Case pages | 4 | 0 | 698 |
-| Module pages | 39 | 165 | 94,166 |
+| Module pages | 39 | 165 | 94,125 |
 | Root-level pages | 1 | 5 | 1,272 |
 | colophon | 1 | 4 | 1,436 |
 | tests | 2 | 7 | 7,121 |
@@ -30,12 +30,12 @@ This is a structural index of the repository. JS files list top-level functions;
 | notes | 5 | 21 | 7,480 |
 | cv | 1 | 0 | 166 |
 | skills | 1 | 0 | 162 |
-| design-system | 1 | 4 | 21,123 |
+| design-system | 1 | 4 | 21,411 |
 
 ## JavaScript
 
 ### Modules
-*34 files · 122 symbols · 120,483 tokens*
+*34 files · 126 symbols · 120,826 tokens*
 
 ### `modules/ambiguity-clarity/section-map/section-map.js`
 Interactive section map (Document Map) for Module 06: per-concern readiness across PM, UX, and Eng tracks.
@@ -214,95 +214,99 @@ Products vs Projects risk classifier: scores slider responses into product, exec
 
 ### `modules/satellite-index/demo/satellite-index.js`
 Satellite NDVI demo: MapLibre map, live Sentinel Hub data via Cloudflare Worker, and Plotly 3D surface.
-*30 symbols · 1010 lines · 10,175 tokens*
+*32 symbols · 1029 lines · 10,331 tokens*
 
-  - `canUseMapLibre()` (L235)
-  - `canUsePlotly()` (L239)
-  - `getAnalysisDate()` (L245)
-  - `clamp(value, min, max)` (L249)
-  - `isFiniteNumber(value)` (L253)
-  - `getViewportMetrics(bounds)` (L257)
-  - `getAdaptiveGridSize(metrics)` (L269)
-  - `canRequestLive(metrics)` (L275)
-  - `getLiveLimitLabel()` (L279)
-  - `formatArea(metrics)` (L283)
-  - `buildLocalAxes(metrics, grid)` (L290)
-  - `generateNdviGrid(bounds, size)` (L314)
-  - `smoothNdviGridForRender(grid, passes)` (L337)
-  - `addContourIntersection(points, a, b, level)` (L366)
-  - `buildIndexContourTraces(grid, axes, minValue, maxValue, step)` (L380)
-  - `decodeNdviPng(base64)` (L442)
-  - `decodeRgbToLuminance(base64)` (L477)
-  - `decodeIndexPng(base64, encMin, encMax)` (L524)
-  - `renderSurface(ndviGrid, imageGrid, axes, showBase)` (L558)
-  - `renderCurrentSurface()` (L663)
-  - `initIndexGrid()` (L669)
-  - `renderIndexSurface(def, renderGrid, axes)` (L709)
-  - `renderAllIndexSurfaces()` (L778)
-  - `setStatus(msg, variant)` (L787)
-  - `setSurfacePlaceholder(msg)` (L794)
-  - `resetAnalysisButton()` (L802)
-  - `setMeta(bounds, date, scene)` (L810)
-  - `updateViewportReadout()` (L838)
-  - `runAnalysis()` (L855)
-  - `initMap()` (L951)
+  - `canUseMapLibre()` (L236)
+  - `canUsePlotly()` (L240)
+  - `getAnalysisDate()` (L246)
+  - `clamp(value, min, max)` (L250)
+  - `isAbortError(error)` (L254)
+  - `fetchWithTimeout(url, options, timeoutMs)` (L258)
+  - `isFiniteNumber(value)` (L266)
+  - `getViewportMetrics(bounds)` (L270)
+  - `getAdaptiveGridSize(metrics)` (L282)
+  - `canRequestLive(metrics)` (L288)
+  - `getLiveLimitLabel()` (L292)
+  - `formatArea(metrics)` (L296)
+  - `buildLocalAxes(metrics, grid)` (L303)
+  - `generateNdviGrid(bounds, size)` (L327)
+  - `smoothNdviGridForRender(grid, passes)` (L350)
+  - `addContourIntersection(points, a, b, level)` (L379)
+  - `buildIndexContourTraces(grid, axes, minValue, maxValue, step)` (L393)
+  - `decodeNdviPng(base64)` (L455)
+  - `decodeRgbToLuminance(base64)` (L490)
+  - `decodeIndexPng(base64, encMin, encMax)` (L537)
+  - `renderSurface(ndviGrid, imageGrid, axes, showBase)` (L571)
+  - `renderCurrentSurface()` (L676)
+  - `initIndexGrid()` (L682)
+  - `renderIndexSurface(def, renderGrid, axes)` (L722)
+  - `renderAllIndexSurfaces()` (L791)
+  - `setStatus(msg, variant)` (L800)
+  - `setSurfacePlaceholder(msg)` (L807)
+  - `resetAnalysisButton()` (L815)
+  - `setMeta(bounds, date, scene)` (L823)
+  - `updateViewportReadout()` (L851)
+  - `runAnalysis()` (L868)
+  - `initMap()` (L970)
 
 ### `modules/satellite-index/three/satellite-index-three.js`
 Boundary-free monitoring Explorer: renders Sentinel-derived spectral surfaces with satellite basemap and optional MapTiler contours-v2 isolines.
-*52 symbols · 1257 lines · 12,306 tokens*
+*54 symbols · 1277 lines · 12,493 tokens*
 
-  - `canUseMapLibre()` (L267)
-  - `isWorkerKeyConfigured()` (L271)
-  - `clamp(value, min, max)` (L275)
-  - `isFiniteNumber(value)` (L279)
-  - `getAnalysisDate()` (L283)
-  - `getViewportMetrics(bounds)` (L287)
-  - `getAdaptiveGridSize(metrics)` (L295)
-  - `canRequestLive(metrics)` (L301)
-  - `getLiveLimitLabel()` (L305)
-  - `formatArea(metrics)` (L309)
-  - `generateNdviGrid(bounds, size)` (L316)
-  - `smoothNdviGridForRender(grid, passes)` (L341)
-  - `decodeNdviPng(base64)` (L370)
-  - `lonToTileX(lon, zoom)` (L405)
-  - `latToTileY(lat, zoom)` (L409)
-  - `chooseBaseTileZoom(bounds)` (L415)
-  - `buildSatelliteTileUrl(x, y, zoom)` (L423)
-  - `buildContourTileJsonUrl()` (L434)
-  - `loadImageBlob(url)` (L438)
-  - `makeThreeTexture(canvas)` (L459)
-  - `drawTileMosaic(bounds, zoom, buildUrl, drawTile)` (L467)
-  - `loadSatelliteBaseTexture(bounds)` (L508)
-  - `buildContourStyle()` (L516)
-  - `snapshotMapCanvas(mapInstance, size)` (L566)
-  - `loadContourBaseTexture(bounds)` (L577)
-  - `setStatus(msg, variant)` (L637)
-  - `setSurfacePlaceholder(msg)` (L649)
-  - `updateAnalysisButtonLabel(liveAllowed)` (L656)
-  - `resetAnalysisButton()` (L666)
-  - `resetToSelection()` (L674)
-  - `setViewerMode(mode)` (L682)
-  - `setMeta(date, sceneData, textureLoaded, fallbackReason)` (L696)
-  - `updateViewportReadout()` (L716)
-  - `colorForIndex(value, def)` (L733)
-  - `decodeIndexPng(base64, encMin, encMax)` (L745)
-  - `buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn)` (L775)
-  - `updateTerrainContextVisibility()` (L822)
-  - `applyBaseContextMode(mode)` (L829)
-  - `clearSceneMeshes()` (L852)
-  - `updateRendererSize()` (L867)
-  - `prefersReducedMotion()` (L878)
-  - `renderOnce(force)` (L882)
-  - `startRenderLoop()` (L890)
-  - `updateNorthIndicator()` (L901)
-  - `initThreeScene()` (L912)
-  - `frameCamera(metrics, heightScale, surfaceOffset)` (L947)
-  - `renderThreeSurface(grid, metrics, bounds, colorFn, heightFn)` (L968)
-  - `updateIndexLegend(def)` (L1029)
-  - `updateIndexGuide(indexId)` (L1049)
-  - `rebuildTerrain(indexId)` (L1060)
-  - `runAnalysis()` (L1099)
-  - `initMap()` (L1196)
+  - `canUseMapLibre()` (L269)
+  - `isWorkerKeyConfigured()` (L273)
+  - `clamp(value, min, max)` (L277)
+  - `isAbortError(error)` (L281)
+  - `fetchWithTimeout(url, options, timeoutMs)` (L285)
+  - `isFiniteNumber(value)` (L293)
+  - `getAnalysisDate()` (L297)
+  - `getViewportMetrics(bounds)` (L301)
+  - `getAdaptiveGridSize(metrics)` (L309)
+  - `canRequestLive(metrics)` (L315)
+  - `getLiveLimitLabel()` (L319)
+  - `formatArea(metrics)` (L323)
+  - `generateNdviGrid(bounds, size)` (L330)
+  - `smoothNdviGridForRender(grid, passes)` (L355)
+  - `decodeNdviPng(base64)` (L384)
+  - `lonToTileX(lon, zoom)` (L419)
+  - `latToTileY(lat, zoom)` (L423)
+  - `chooseBaseTileZoom(bounds)` (L429)
+  - `buildSatelliteTileUrl(x, y, zoom)` (L437)
+  - `buildContourTileJsonUrl()` (L448)
+  - `loadImageBlob(url)` (L452)
+  - `makeThreeTexture(canvas)` (L473)
+  - `drawTileMosaic(bounds, zoom, buildUrl, drawTile)` (L481)
+  - `loadSatelliteBaseTexture(bounds)` (L522)
+  - `buildContourStyle()` (L530)
+  - `snapshotMapCanvas(mapInstance, size)` (L580)
+  - `loadContourBaseTexture(bounds)` (L591)
+  - `setStatus(msg, variant)` (L651)
+  - `setSurfacePlaceholder(msg)` (L663)
+  - `updateAnalysisButtonLabel(liveAllowed)` (L670)
+  - `resetAnalysisButton()` (L680)
+  - `resetToSelection()` (L688)
+  - `setViewerMode(mode)` (L696)
+  - `setMeta(date, sceneData, textureLoaded, fallbackReason)` (L710)
+  - `updateViewportReadout()` (L730)
+  - `colorForIndex(value, def)` (L747)
+  - `decodeIndexPng(base64, encMin, encMax)` (L759)
+  - `buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn, heightFn)` (L789)
+  - `updateTerrainContextVisibility()` (L836)
+  - `applyBaseContextMode(mode)` (L845)
+  - `clearSceneMeshes()` (L868)
+  - `updateRendererSize()` (L883)
+  - `prefersReducedMotion()` (L894)
+  - `renderOnce(force)` (L898)
+  - `startRenderLoop()` (L906)
+  - `updateNorthIndicator()` (L917)
+  - `initThreeScene()` (L928)
+  - `frameCamera(metrics, heightScale, surfaceOffset)` (L963)
+  - `renderThreeSurface(grid, metrics, bounds, colorFn, heightFn)` (L984)
+  - `updateIndexLegend(def)` (L1045)
+  - `updateIndexGuide(indexId)` (L1065)
+  - `rebuildTerrain(indexId)` (L1076)
+  - `runAnalysis()` (L1115)
+  - `initMap()` (L1216)
 
 ### Build scripts
 *6 files · 63 symbols · 15,828 tokens*
@@ -401,7 +405,7 @@ Optional AI writing-polish step (spelling and punctuation only) for notes and ar
   - `main()` (L267)
 
 ### Contract tests
-*65 files · 262 symbols · 74,525 tokens*
+*65 files · 262 symbols · 76,093 tokens*
 
 ### `tests/helpers/fake-dom.js`
 Minimal fake DOM (FakeClassList, FakeElement) for unit-testing browser-dependent code under Node.js.
@@ -860,13 +864,13 @@ Contract tests: verifies the modules mega-menu contains all registered module ro
 
 ### `tests/test-nav-theme-contract.js`
 Contract tests: verifies nav-specific CSS tokens are defined in theme stylesheets.
-*5 symbols · 89 lines · 842 tokens*
+*5 symbols · 86 lines · 768 tokens*
 
-  - `assert(condition, message)` (L27)
-  - `testRootTokenDeclarations()` (L31)
-  - `testComponentsConsumeNavTokens()` (L40)
-  - `testDecisionCollisionColdOverridesTokensOnly()` (L61)
-  - `run()` (L81)
+  - `assert(condition, message)` (L26)
+  - `testRootTokenDeclarations()` (L30)
+  - `testComponentsConsumeNavTokens()` (L39)
+  - `testDecisionCollisionColdOverridesTokensOnly()` (L58)
+  - `run()` (L78)
 
 ### `tests/test-navigation-links.js`
 Checks that all internal href links in HTML files resolve to existing paths.
@@ -919,7 +923,7 @@ Tests the Products vs Projects risk classifier for all residual-risk family and 
 
 ### `tests/test-satellite-index-contract.js`
 Contract tests for satellite-index.js: constants, function exports, and structural requirements.
-*4 symbols · 417 lines · 13,010 tokens*
+*4 symbols · 458 lines · 14,655 tokens*
 
   - `read(relPath)` (L10)
   - `assertIncludes(source, needle, label)` (L14)
@@ -950,7 +954,7 @@ Contract tests for the Document Map section in Module 06 (The Descent / Ambiguit
 
 ### `tests/test-theme-bootstrap.js`
 Unit tests for theme-bootstrap.js: theme application, alias resolution, and stylesheet injection.
-*8 symbols · 88 lines · 649 tokens*
+*8 symbols · 88 lines · 646 tokens*
 
   - `runWithTheme(themeValue)` (L10)
   - `assert(condition, message)` (L37)
@@ -982,7 +986,7 @@ Verifies the vendored D3 library against a known checksum to detect unauthorized
   - `run()` (L22)
 
 ### Page-level scripts
-*8 files · 0 symbols · 10,283 tokens*
+*8 files · 0 symbols · 10,619 tokens*
 
 ### `js/articles-search.js`
 Client-side keyword filter for the articles index page.
@@ -1002,11 +1006,11 @@ Renders all [data-formula] elements on the page using KaTeX in display mode.
 
 ### `js/module-route-data.js`
 Registry of all module routes used by the nav mega-menu and module-navigation UI.
-*0 symbols · 114 lines · 793 tokens*
+*0 symbols · 117 lines · 814 tokens*
 
 ### `js/nav-controller.js`
 Global nav controller: active-link highlighting, modules mega-menu, and nav swatch theming.
-*0 symbols · 492 lines · 4,046 tokens*
+*0 symbols · 526 lines · 4,426 tokens*
 
 ### `js/notes-search.js`
 Client-side keyword filter for the notes index page.
@@ -1014,14 +1018,14 @@ Client-side keyword filter for the notes index page.
 
 ### `js/theme-bootstrap.js`
 Reads PLATOSCAVE_THEME config and applies the active theme stylesheet and data-theme attribute on page load.
-*0 symbols · 120 lines · 977 tokens*
+*0 symbols · 113 lines · 912 tokens*
 
 ### Root-level files
-*1 files · 0 symbols · 301 tokens*
+*1 files · 0 symbols · 138 tokens*
 
 ### `theme.config.js`
 Global theme switch. Keep one line uncommented. Set to 'default' (or empty) for base theme with no data-theme attribute.
-*0 symbols · 28 lines · 301 tokens*
+*0 symbols · 16 lines · 138 tokens*
 
 ## Pages
 
@@ -1071,7 +1075,7 @@ Scripts loaded:
 *16 lines · 181 tokens*
 
 ### Module pages
-*39 pages · 165 script refs · 94,166 tokens*
+*39 pages · 165 script refs · 94,125 tokens*
 
 ### `modules/ambiguity-clarity/index.html`
 **Title:** Ambiguous Documents · To the Bedrock
@@ -1446,7 +1450,7 @@ External scripts:
 ### `modules/satellite-index/index.html`
 **Title:** Boundary-free monitoring · Satellite Index · To the Bedrock
 **H1:** Boundary-free monitoring
-*323 lines · 5,344 tokens*
+*323 lines · 5,342 tokens*
 
 Scripts loaded:
   - `../../theme.config.js`
@@ -1459,7 +1463,7 @@ Scripts loaded:
 ### `modules/satellite-index/three/index.html`
 **Title:** Explorer · Boundary-free monitoring · To the Bedrock
 **H1:** Explorer
-*193 lines · 2,988 tokens*
+*190 lines · 2,949 tokens*
 
 Scripts loaded:
   - `../../../theme.config.js`
@@ -1729,12 +1733,12 @@ Scripts loaded:
 *18 lines · 162 tokens*
 
 ### Design-System
-*1 pages · 4 script refs · 21,123 tokens*
+*1 pages · 4 script refs · 21,411 tokens*
 
 ### `design-system/index.html`
 **Title:** Design System · To the Bedrock
 **H1:** Design System
-*1525 lines · 21,123 tokens*
+*1542 lines · 21,411 tokens*
 
 Scripts loaded:
   - `../theme.config.js`

@@ -309,11 +309,10 @@
   display: none;
 }
 
-/* Text wrapping inside popup */
+/* No line breaks inside popup — popup width expands to fit */
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink {
-  white-space: normal;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
 
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink-state,
@@ -363,9 +362,13 @@
    mode-level padding shorthand. */
 .js-enabled .nav-links .nav-modules-submenu .nav-sublink--catalogue-child,
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  gap: 0.35em;
   color: var(--ink-mid);
   margin-left: 0.58rem;
-  padding-left: 0.72rem;
+  padding-left: 1.5rem;
   border-left: 1px solid color-mix(in srgb, var(--ink-ghost) 52%, transparent 48%);
 }
 
@@ -373,6 +376,7 @@
 .js-enabled .nav-links.is-open .nav-modules-submenu .nav-sublink--catalogue-child.nav-sublink--active {
   color: var(--rust);
   font-weight: 400;
+  padding-left: 1.75rem;
   border-left-color: color-mix(in srgb, var(--rust) 62%, var(--ink-ghost) 38%);
 }
 
@@ -471,7 +475,7 @@
 
 /* ─── 13. Mode B: Rail — all widths below 900px ─────────────────
    Shows nav as a horizontal row.  The mobile toggle is hidden.
-   The bento popup is absolutely positioned next to the toggle button.
+   The bento popup is absolutely positioned inside nav-modules-head.
 ─────────────────────────────────────────────────────────────── */
 @media (max-width: 899px) {
 
@@ -492,8 +496,7 @@
   }
 
   /* ── Nav row ── */
-  .js-enabled .nav-links,
-  .js-enabled .nav-links.is-open {
+  .js-enabled .nav-links {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -517,8 +520,7 @@
   }
 
   /* ── Modules head ── */
-  .js-enabled .nav-links .nav-modules-head,
-  .js-enabled .nav-links.is-open .nav-modules-head {
+  .js-enabled .nav-links .nav-modules-head {
     display: inline-flex;
     align-items: center;
     width: auto;
@@ -528,15 +530,13 @@
     color: var(--ink);
   }
 
-  .js-enabled .nav-links .nav-modules-head::before,
-  .js-enabled .nav-links.is-open .nav-modules-head::before {
+  .js-enabled .nav-links .nav-modules-head::before {
     content: '';
     margin: 0;
   }
 
   /* ── Primary links ── */
-  .js-enabled .nav-links .nav-link,
-  .js-enabled .nav-links.is-open .nav-link {
+  .js-enabled .nav-links .nav-link {
     width: auto;
     min-height: var(--nav-main-link-min-height);
     padding: 0;
@@ -547,15 +547,12 @@
   }
 
   .js-enabled .nav-links .nav-link::before,
-  .js-enabled .nav-links .nav-link::after,
-  .js-enabled .nav-links.is-open .nav-link::before,
-  .js-enabled .nav-links.is-open .nav-link::after {
+  .js-enabled .nav-links .nav-link::after {
     content: '';
     margin: 0;
   }
 
-  .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle),
-  .js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle) {
+  .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle) {
     font-size: calc(var(--fs-nav-title) * 0.5859375 * var(--nav-menu-scale));
     color: var(--viz-rust, var(--rust));
     letter-spacing: 0.01em;
@@ -565,37 +562,30 @@
     top: var(--nav-editorial-shift-y);
   }
 
-  .js-enabled .nav-links .nav-link.nav-link--active,
-  .js-enabled .nav-links.is-open .nav-link.nav-link--active,
-  .js-enabled .nav-links.is-open .nav-modules-link.nav-link--active {
+  .js-enabled .nav-links .nav-link.nav-link--active {
     color: var(--viz-rust, var(--rust));
     background: transparent;
   }
 
   .js-enabled .nav-links > .nav-link.nav-link--editorial:hover,
-  .js-enabled .nav-links > .nav-link.nav-link--editorial:focus-visible,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:hover,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:focus-visible {
+  .js-enabled .nav-links > .nav-link.nav-link--editorial:focus-visible {
     color: color-mix(in srgb, var(--viz-rust, var(--rust)) 62%, var(--paper) 38%);
     background: transparent;
   }
 
-  .js-enabled .nav-links > .nav-link.nav-link--editorial::after,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial::after {
+  .js-enabled .nav-links > .nav-link.nav-link--editorial::after {
     content: '/';
     color: color-mix(in srgb, var(--viz-rust, var(--rust)) 55%, var(--paper) 45%);
     margin: 0 0.24rem;
   }
 
-  .js-enabled .nav-links > .nav-link.nav-link--editorial:last-of-type::after,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:last-of-type::after {
+  .js-enabled .nav-links > .nav-link.nav-link--editorial:last-of-type::after {
     content: '';
     margin: 0;
   }
 
   /* ── Bento toggle ── */
-  .js-enabled .nav-links .nav-modules-toggle,
-  .js-enabled .nav-links.is-open .nav-modules-toggle {
+  .js-enabled .nav-links .nav-modules-toggle {
     display: grid;
     place-items: center;
     width: var(--nav-modules-toggle-size);
@@ -612,33 +602,26 @@
   }
 
   .js-enabled .nav-links .nav-modules-toggle:hover,
-  .js-enabled .nav-links .nav-modules-toggle:focus-visible,
-  .js-enabled .nav-links.is-open .nav-modules-toggle:hover,
-  .js-enabled .nav-links.is-open .nav-modules-toggle:focus-visible {
+  .js-enabled .nav-links .nav-modules-toggle:focus-visible {
     color: var(--ink);
     background: transparent;
   }
 
   .js-enabled .nav-links .nav-modules-toggle:active,
   .js-enabled .nav-links .nav-modules-toggle[aria-expanded='true'],
-  .js-enabled .nav-links .nav-modules-toggle.is-expanded,
-  .js-enabled .nav-links.is-open .nav-modules-toggle:active,
-  .js-enabled .nav-links.is-open .nav-modules-toggle[aria-expanded='true'],
-  .js-enabled .nav-links.is-open .nav-modules-toggle.is-expanded {
+  .js-enabled .nav-links .nav-modules-toggle.is-expanded {
     color: var(--nav-modules-toggle-active-ink);
     background: transparent;
   }
 
   /* ── Bento popup ──
      padding shorthand: top/bottom 0.38rem, right 0.62rem, left 1.1rem.
-     The 1.1rem left inset gives the catalogue list visual breathing room.  */
-  .js-enabled .nav-links .nav-modules-submenu,
-  .js-enabled .nav-links.is-open .nav-modules-submenu {
+     The 1.1rem left inset gives the catalogue list visual breathing room.
+     right: 0 aligns the popup's right edge to nav-modules-head's right edge. */
+  .js-enabled .nav-links .nav-modules-submenu {
     position: absolute;
     top: var(--nav-submenu-top-mobile);
-    right: auto;
-    left: var(--modules-submenu-left, 0.76rem);
-    transform: translateX(calc(-100% - 0.42rem));
+    right: 0;
     display: flex;
     flex-direction: column;
     gap: 0.22rem;
@@ -651,48 +634,40 @@
     z-index: var(--z-nav-submenu);
   }
 
-  .js-enabled .nav-links .nav-modules-submenu[hidden],
-  .js-enabled .nav-links.is-open .nav-modules-submenu[hidden] {
+  .js-enabled .nav-links .nav-modules-submenu[hidden] {
     display: none;
   }
 
   /* ── Sublinks inside popup ──
      padding-block (top/bottom only) — padding-left is owned by section 8
      and must never be set here, regardless of specificity. */
-  .js-enabled .nav-links .nav-sublink,
-  .js-enabled .nav-links.is-open .nav-sublink {
+  .js-enabled .nav-links .nav-sublink {
     color: var(--viz-rust, var(--rust));
-    font-size: 0.72rem;
+    font-size: 0.58rem;
     padding-block: 0.12rem;
     display: block;
     text-align: left;
   }
 
   .js-enabled .nav-links .nav-sublink:hover,
-  .js-enabled .nav-links .nav-sublink:focus-visible,
-  .js-enabled .nav-links.is-open .nav-sublink:hover,
-  .js-enabled .nav-links.is-open .nav-sublink:focus-visible {
+  .js-enabled .nav-links .nav-sublink:focus-visible {
     color: color-mix(in srgb, var(--viz-rust, var(--rust)) 62%, var(--paper) 38%);
   }
 
-  .js-enabled .nav-links .nav-sublink.nav-sublink--active,
-  .js-enabled .nav-links.is-open .nav-sublink.nav-sublink--active {
+  .js-enabled .nav-links .nav-sublink.nav-sublink--active {
     color: var(--viz-rust, var(--rust));
   }
 
-  .js-enabled .nav-links .nav-sublink.nav-sublink--coming,
-  .js-enabled .nav-links.is-open .nav-sublink.nav-sublink--coming {
+  .js-enabled .nav-links .nav-sublink.nav-sublink--coming {
     color: var(--ink-ghost);
   }
 
-  .js-enabled .nav-links .nav-sublink::before,
-  .js-enabled .nav-links.is-open .nav-sublink::before {
+  .js-enabled .nav-links .nav-sublink::before {
     content: '';
     margin-right: 0;
   }
 
-  .js-enabled .nav-links .nav-sublink-state,
-  .js-enabled .nav-links.is-open .nav-sublink-state {
+  .js-enabled .nav-links .nav-sublink-state {
     margin-left: 0.24rem;
   }
 }
@@ -715,8 +690,7 @@
   }
 
   /* ── Nav row ── */
-  .js-enabled .nav-links,
-  .js-enabled .nav-links.is-open {
+  .js-enabled .nav-links {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -737,8 +711,7 @@
   }
 
   /* ── Modules head ── */
-  .js-enabled .nav-links .nav-modules-head,
-  .js-enabled .nav-links.is-open .nav-modules-head {
+  .js-enabled .nav-links .nav-modules-head {
     display: inline-flex;
     align-items: center;
     position: relative;
@@ -746,15 +719,13 @@
     color: var(--ink);
   }
 
-  .js-enabled .nav-links .nav-modules-head::before,
-  .js-enabled .nav-links.is-open .nav-modules-head::before {
+  .js-enabled .nav-links .nav-modules-head::before {
     content: '';
     margin: 0;
   }
 
   /* ── Primary links ── */
-  .js-enabled .nav-links .nav-link,
-  .js-enabled .nav-links.is-open .nav-link {
+  .js-enabled .nav-links .nav-link {
     width: auto;
     min-height: var(--nav-main-link-min-height);
     padding: 0;
@@ -764,22 +735,18 @@
   }
 
   .js-enabled .nav-links .nav-link::before,
-  .js-enabled .nav-links .nav-link::after,
-  .js-enabled .nav-links.is-open .nav-link::before,
-  .js-enabled .nav-links.is-open .nav-link::after {
+  .js-enabled .nav-links .nav-link::after {
     content: '';
     margin: 0;
   }
 
-  .js-enabled .nav-links > .nav-link.nav-link--active::before,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--active::before {
+  .js-enabled .nav-links > .nav-link.nav-link--active::before {
     content: '_';
     margin-right: 0.2rem;
     line-height: 1;
   }
 
-  .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle),
-  .js-enabled .nav-links.is-open .nav-link.nav-link--editorial:not(.nav-modules-toggle) {
+  .js-enabled .nav-links .nav-link.nav-link--editorial:not(.nav-modules-toggle) {
     font-size: calc(var(--fs-nav-title) * 0.7995 * var(--nav-menu-scale));
     color: color-mix(in srgb, var(--ink-mid) 82%, var(--viz-rust, var(--rust)) 18%);
     letter-spacing: 0.01em;
@@ -788,35 +755,29 @@
     top: var(--nav-editorial-shift-y);
   }
 
-  .js-enabled .nav-links .nav-link.nav-link--catalogue,
-  .js-enabled .nav-links.is-open .nav-link.nav-link--catalogue {
+  .js-enabled .nav-links .nav-link.nav-link--catalogue {
     color: var(--viz-rust, var(--rust));
   }
 
-  .js-enabled .nav-links .nav-link.nav-link--active,
-  .js-enabled .nav-links.is-open .nav-link.nav-link--active {
+  .js-enabled .nav-links .nav-link.nav-link--active {
     color: color-mix(in srgb, var(--ink-mid) 82%, var(--viz-rust, var(--rust)) 18%);
     font-weight: 300;
     background: transparent;
   }
 
   .js-enabled .nav-links > .nav-link.nav-link--editorial:hover,
-  .js-enabled .nav-links > .nav-link.nav-link--editorial:focus-visible,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:hover,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:focus-visible {
+  .js-enabled .nav-links > .nav-link.nav-link--editorial:focus-visible {
     color: color-mix(in srgb, var(--viz-rust, var(--rust)) 62%, var(--paper) 38%);
     background: transparent;
   }
 
-  .js-enabled .nav-links > .nav-link.nav-link--editorial::after,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial::after {
+  .js-enabled .nav-links > .nav-link.nav-link--editorial::after {
     content: '/';
     color: color-mix(in srgb, var(--viz-rust, var(--rust)) 55%, var(--paper) 45%);
     margin: 0 0.8rem;
   }
 
-  .js-enabled .nav-links > .nav-link.nav-link--editorial:last-of-type::after,
-  .js-enabled .nav-links.is-open > .nav-link.nav-link--editorial:last-of-type::after {
+  .js-enabled .nav-links > .nav-link.nav-link--editorial:last-of-type::after {
     content: '';
     margin: 0;
   }
@@ -837,8 +798,7 @@
   }
 
   /* ── Bento toggle ── */
-  .js-enabled .nav-links .nav-modules-toggle,
-  .js-enabled .nav-links.is-open .nav-modules-toggle {
+  .js-enabled .nav-links .nav-modules-toggle {
     display: grid;
     place-items: center;
     width: var(--nav-modules-toggle-size);
@@ -853,42 +813,33 @@
   }
 
   .js-enabled .nav-links .nav-modules-toggle:hover,
-  .js-enabled .nav-links .nav-modules-toggle:focus-visible,
-  .js-enabled .nav-links.is-open .nav-modules-toggle:hover,
-  .js-enabled .nav-links.is-open .nav-modules-toggle:focus-visible {
+  .js-enabled .nav-links .nav-modules-toggle:focus-visible {
     color: var(--ink);
     background: transparent;
   }
 
   .js-enabled .nav-links .nav-modules-toggle:active,
   .js-enabled .nav-links .nav-modules-toggle[aria-expanded='true'],
-  .js-enabled .nav-links .nav-modules-toggle.is-expanded,
-  .js-enabled .nav-links.is-open .nav-modules-toggle:active,
-  .js-enabled .nav-links.is-open .nav-modules-toggle[aria-expanded='true'],
-  .js-enabled .nav-links.is-open .nav-modules-toggle.is-expanded {
+  .js-enabled .nav-links .nav-modules-toggle.is-expanded {
     color: var(--nav-modules-toggle-active-ink);
   }
 
-  .js-enabled .nav-links .nav-modules-toggle:focus-visible,
-  .js-enabled .nav-links.is-open .nav-modules-toggle:focus-visible {
+  .js-enabled .nav-links .nav-modules-toggle:focus-visible {
     outline: 2px solid var(--sage);
     outline-offset: 2px;
   }
 
-  .js-enabled .nav-links .nav-modules-link,
-  .js-enabled .nav-links.is-open .nav-modules-link {
+  .js-enabled .nav-links .nav-modules-link {
     flex: 1 1 auto;
   }
 
   /* ── Bento popup ──
-     padding shorthand: top/bottom 0.5rem, right 0.62rem, left 1.1rem. */
-  .js-enabled .nav-links .nav-modules-submenu,
-  .js-enabled .nav-links.is-open .nav-modules-submenu {
+     padding shorthand: top/bottom 0.5rem, right 0.62rem, left 1.1rem.
+     right: 0 aligns the popup's right edge to nav-modules-head's right edge. */
+  .js-enabled .nav-links .nav-modules-submenu {
     position: absolute;
     top: var(--nav-submenu-top-desktop);
-    right: auto;
-    left: var(--modules-submenu-left, 0.76rem);
-    transform: translateX(calc(-100% - 0.42rem));
+    right: 0;
     display: flex;
     flex-direction: column;
     gap: 0.26rem;
@@ -901,40 +852,33 @@
     z-index: var(--z-nav-submenu);
   }
 
-  .js-enabled .nav-links .nav-modules-submenu[hidden],
-  .js-enabled .nav-links.is-open .nav-modules-submenu[hidden] {
+  .js-enabled .nav-links .nav-modules-submenu[hidden] {
     display: none;
   }
 
   /* ── Sublinks inside popup ──
      padding-block (top/bottom only) — padding-left is owned by section 8
      and must never be set here, regardless of specificity. */
-  .js-enabled .nav-links .nav-sublink,
-  .js-enabled .nav-links.is-open .nav-sublink {
+  .js-enabled .nav-links .nav-sublink {
     font-size: 0.76rem;
     padding-block: 0.12rem;
     color: var(--viz-rust, var(--rust));
   }
 
   .js-enabled .nav-links .nav-sublink:hover,
-  .js-enabled .nav-links .nav-sublink:focus-visible,
-  .js-enabled .nav-links.is-open .nav-sublink:hover,
-  .js-enabled .nav-links.is-open .nav-sublink:focus-visible {
+  .js-enabled .nav-links .nav-sublink:focus-visible {
     color: color-mix(in srgb, var(--viz-rust, var(--rust)) 62%, var(--paper) 38%);
   }
 
-  .js-enabled .nav-links .nav-sublink.nav-sublink--active,
-  .js-enabled .nav-links.is-open .nav-sublink.nav-sublink--active {
+  .js-enabled .nav-links .nav-sublink.nav-sublink--active {
     color: var(--viz-rust, var(--rust));
   }
 
-  .js-enabled .nav-links .nav-sublink.nav-sublink--coming,
-  .js-enabled .nav-links.is-open .nav-sublink.nav-sublink--coming {
+  .js-enabled .nav-links .nav-sublink.nav-sublink--coming {
     color: var(--ink-ghost);
   }
 
-  .js-enabled .nav-links .nav-sublink::before,
-  .js-enabled .nav-links.is-open .nav-sublink::before {
+  .js-enabled .nav-links .nav-sublink::before {
     content: '';
     margin-right: 0;
   }

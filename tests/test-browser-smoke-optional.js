@@ -26,6 +26,12 @@ async function run() {
     return 'file://' + path.join(ROOT, relPath);
   }
 
+  async function checkSurveyAnswers(start, end) {
+    for (let idx = start; idx <= end; idx += 1) {
+      await page.check(`input[name="q${idx}"][value="3"]`);
+    }
+  }
+
   await page.goto(toFile('index.html'));
   await page.waitForSelector('main#main-content');
   const hasHomeNav = await page.locator('.main-nav .nav-link').first().count();
@@ -39,6 +45,14 @@ async function run() {
 
   await page.goto(toFile(path.join('modules', 'garbage-can', 'assess', 'index.html')));
   await page.waitForSelector('#questionnaire');
+  await checkSurveyAnswers(0, 4);
+  await page.click('#q-continue-1');
+  await page.waitForSelector('#q-group-2');
+  await checkSurveyAnswers(5, 7);
+  await page.click('#q-continue-2');
+  await page.waitForSelector('#q-group-3');
+  await checkSurveyAnswers(8, 11);
+  await page.click('#submit-btn');
   await page.waitForSelector('#run-sim-btn');
 
   await page.goto(toFile(path.join('modules', 'garbage-can', 'can-explainer', 'index.html')));

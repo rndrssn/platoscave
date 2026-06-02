@@ -1,0 +1,205 @@
+<!-- Alice and Bob section 04: Explore — D3 lab for quantum CHSH correlations and local randomness. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive Alice and Bob lab showing locally random outcomes and quantum CHSH correlations beyond the local hidden-variable limit." />
+  <title>Explore · Alice and Bob · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../../css/fonts.css" />
+  <link rel="stylesheet" href="../../../css/tokens.css" />
+  <link rel="stylesheet" href="../../../css/base.css" />
+  <link rel="stylesheet" href="../../../css/layout.css" />
+  <link rel="stylesheet" href="../../../css/components.css" />
+  <link rel="stylesheet" href="../../../css/utilities.css" />
+  <link rel="stylesheet" href="../../../css/themes.css" />
+  <link rel="stylesheet" href="../../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../../css/pages.css" />
+  <link rel="stylesheet" href="../../../css/pages/bell-inequality.css" />
+  <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../../">To the Bedrock</a>
+    <nav class="main-nav">
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../../">Home</a>
+      <a class="nav-link" href="../../../notes/">Notes</a>
+      <a class="nav-link nav-link--catalogue nav-link--active" href="../../../modules/" aria-current="page">Catalogue</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page bell-page">
+      <a class="module-back-link" href="../../" aria-label="Back to Archive"></a>
+      <a class="module-header-number module-context-number module-context-link" href="../">Alice and Bob</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> On Bell&apos;s Inequality</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../taxonomy/"><span class="module-sub-nav-number">02</span> Taxonomy</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../classical-expectation/"><span class="module-sub-nav-number">03</span> Classical Expectation</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">04</span> Explore</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Explore</h1>
+        <p class="module-header-body">
+          Run paired Alice/Bob measurements. Each local tape stays random, but the compared records build a correlation
+          pattern that reaches beyond the classical 75% ceiling.
+        </p>
+      </header>
+
+      <article class="module-essay bell-essay">
+        <section class="bell-lab" aria-labelledby="bell-lab-heading">
+          <div class="bell-lab-heading-row">
+            <div>
+              <h2 class="essay-heading" id="bell-lab-heading">Quantum mechanical correlation</h2>
+              <p class="essay-body bell-lab-helper">
+                Bob can reveal a random-looking result first; Alice&apos;s paired result can be locked in relation to it. Yet
+                both local tapes still look like coin flips until the logs are compared.
+              </p>
+            </div>
+            <div class="bell-mode" role="group" aria-label="Simulation model">
+              <button class="control-segmented-option" type="button" data-bell-mode="quantum" aria-pressed="true">Quantum pairs</button>
+              <button class="control-segmented-option" type="button" data-bell-mode="classical" aria-pressed="false">Instruction cards</button>
+            </div>
+          </div>
+
+          <div class="bell-stage-shell">
+            <svg class="bell-stage" data-bell-stage role="img" aria-label="Animated Alice and Bob lab with separated local logs, abstract analyzer dials, and compare-afterward lane"></svg>
+          </div>
+
+          <p class="bell-fallback" data-bell-fallback>
+            The Alice and Bob drawing layer needs the local D3 runtime. The counters below still give the classical
+            ceiling and quantum target.
+          </p>
+
+          <div class="bell-controls" aria-label="Explore controls">
+            <button class="control-action control-action--primary" type="button" data-bell-run-one>Run trial</button>
+            <button class="control-action control-action--secondary" type="button" data-bell-burst>Run 32</button>
+            <button class="control-action control-action--secondary" type="button" data-bell-auto aria-pressed="false">Auto</button>
+            <button class="control-action control-action--secondary" type="button" data-bell-reset>Reset</button>
+            <span class="bell-status" data-bell-status aria-live="polite">Waiting for script...</span>
+          </div>
+
+          <div class="bell-readout-grid" aria-label="Alice and Bob readouts">
+            <section class="bell-readout" aria-labelledby="bell-win-heading">
+              <h3 id="bell-win-heading">Coincidence score</h3>
+              <dl class="bell-score-list">
+                <div>
+                  <dt>Rounds</dt>
+                  <dd data-bell-rounds>0</dd>
+                </div>
+                <div>
+                  <dt>Win rate</dt>
+                  <dd data-bell-win-rate>--</dd>
+                </div>
+                <div>
+                  <dt>CHSH S</dt>
+                  <dd data-bell-s>--</dd>
+                </div>
+              </dl>
+              <div class="bell-limit-chart" aria-label="Classical and quantum win-rate targets">
+                <div class="bell-limit-row">
+                  <span>Classical ceiling</span>
+                  <span>75.0%</span>
+                  <i style="--bell-limit: 75%"></i>
+                </div>
+                <div class="bell-limit-row">
+                  <span>Quantum target</span>
+                  <span>85.4%</span>
+                  <i style="--bell-limit: 85.4%"></i>
+                </div>
+                <div class="bell-limit-row bell-limit-row--live">
+                  <span>Current run</span>
+                  <span data-bell-live-rate>--</span>
+                  <i data-bell-live-bar style="--bell-limit: 0%"></i>
+                </div>
+              </div>
+            </section>
+
+            <section class="bell-readout" aria-labelledby="bell-local-heading">
+              <h3 id="bell-local-heading">Local randomness</h3>
+              <p class="bell-readout-note">Alice and Bob should each look close to a coin flip even when the pair score is not classical.</p>
+              <div class="bell-local-bars">
+                <div class="bell-local-row">
+                  <span>Alice +</span>
+                  <i data-bell-local-bar="alice-plus" style="--bell-local: 50%"></i>
+                  <strong data-bell-local-text="alice-plus">--</strong>
+                </div>
+                <div class="bell-local-row">
+                  <span>Bob +</span>
+                  <i data-bell-local-bar="bob-plus" style="--bell-local: 50%"></i>
+                  <strong data-bell-local-text="bob-plus">--</strong>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="bell-grid">
+            <section class="bell-panel" aria-labelledby="bell-correlations-heading">
+              <h3 id="bell-correlations-heading">Correlations by setting</h3>
+              <div class="bell-correlation-list" data-bell-correlations></div>
+            </section>
+
+            <section class="bell-panel" aria-labelledby="bell-ledger-heading">
+              <h3 id="bell-ledger-heading">Coincidence ledger</h3>
+              <div class="bell-ledger-wrap">
+                <table class="bell-ledger">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">A</th>
+                      <th scope="col">B</th>
+                      <th scope="col">Alice</th>
+                      <th scope="col">Bob</th>
+                      <th scope="col">Game</th>
+                    </tr>
+                  </thead>
+                  <tbody data-bell-ledger></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="essay-section">
+          <h2 class="essay-heading">Why this still cannot signal</h2>
+          <p class="essay-body">
+            If Bob could choose whether Alice sees plus or minus, the setup would be a faster-than-light telegraph. But he
+            cannot. Bob sees a random local result, Alice sees a random local result, and neither side can tell from its
+            own tape which setting or result happened far away.
+          </p>
+        </section>
+      </article>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../classical-expectation/" aria-label="Previous: Classical Expectation">
+          <span class="footer-nav-label-full">&larr; Previous: Classical Expectation</span>
+          <span class="footer-nav-label-short">&larr; Previous</span>
+        </a>
+        <span></span>
+      </nav>
+    </div>
+  </main>
+
+  <footer data-site-footer></footer>
+
+  <script src="../../../assets/vendor/d3.v7.min.js"></script>
+  <script src="../../../js/module-route-data.js"></script>
+  <script src="../../../js/nav-controller.js"></script>
+  <script src="../bell-inequality.js?v=20260530-1"></script>
+</body>
+</html>

@@ -632,16 +632,18 @@ function writeNotesIndex(notes) {
   const body = '    <div class="module-page">\n'
     + '      <header class="module-header">\n'
     + '        <h1 class="module-header-title">Notes</h1>\n'
-    + '        <p class="module-header-body">\n'
+    + '        <p class="module-header-body prose-measure-wide">\n'
     + '          My notes are stories and reflections about the way we organise work, the way we do that work, related feedback loops, and the emergent phenomena that lead to tensions, fragility, and unexpected behaviors in organisations and technologies. Some notes become future <a href="../modules/">catalogue entries</a>. Longer essays live in <a href="../articles/">articles</a>. This is not a chronological blog feed; it is a field-notes layer connected to the interactive work.\n'
     + '        </p>\n'
     + '      </header>\n\n'
-    + '      <article class="module-essay">\n'
-    + '        <section class="essay-section">\n'
-    + '          <div class="note-search" role="search" aria-label="Search notes">\n'
-    + '            <label class="visually-hidden" for="notes-search-input">Search notes</label>\n'
-    + '            <span class="note-search-icon" aria-hidden="true"></span>\n'
-    + '            <input id="notes-search-input" class="note-search-input" type="search" placeholder="Search notes" autocomplete="off" />\n'
+    + '      <article class="module-essay notes-index-listing">\n'
+    + '        <section class="essay-section notes-index-section">\n'
+    + '          <div class="notes-index-tools">\n'
+    + '            <div class="note-search" role="search" aria-label="Search notes">\n'
+    + '              <label class="visually-hidden" for="notes-search-input">Search notes</label>\n'
+    + '              <span class="note-search-icon" aria-hidden="true"></span>\n'
+    + '              <input id="notes-search-input" class="note-search-input" type="search" placeholder="Search notes" autocomplete="off" />\n'
+    + '            </div>\n'
     + '          </div>\n'
     + '          ' + listHtml + '\n'
     + '        </section>\n'
@@ -654,6 +656,7 @@ function writeNotesIndex(notes) {
     prefix,
     nav: navHtml(prefix, 'notes'),
     main: body,
+    mainClass: 'main--notes-index',
     extraScripts: [prefix + 'js/notes-search.js']
   });
 

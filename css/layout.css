@@ -7,6 +7,8 @@ main {
 
 .main--narrow { max-width: 720px; }
 
+.main--notes-index { max-width: 1040px; }
+
 section {
   padding: 3rem 0;
 }
@@ -14,4 +16,3 @@ section {
 section + section {
   border-top: 1px solid var(--ink-ghost);
 }
-

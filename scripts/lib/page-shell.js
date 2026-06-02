@@ -43,6 +43,8 @@ function htmlShell(params) {
   const prefix = params.prefix;
   const nav = params.nav;
   const main = params.main;
+  const mainClass = String(params.mainClass || 'main--narrow').trim();
+  const mainAttrs = String(params.mainAttrs || '').trim();
   const extraScripts = Array.isArray(params.extraScripts) ? params.extraScripts : [];
   const bodyAttrs = String(params.bodyAttrs || '').trim();
 
@@ -73,7 +75,7 @@ function htmlShell(params) {
     + '<body' + (bodyAttrs ? ' ' + bodyAttrs : '') + '>\n'
     + '  <a class="skip-link" href="#main-content">Skip to main content</a>\n\n'
     + nav + '\n\n'
-    + '  <main id="main-content" class="main--narrow">\n'
+    + '  <main id="main-content" class="' + escapeAttr(mainClass) + '"' + (mainAttrs ? ' ' + mainAttrs : '') + '>\n'
     + main + '\n'
     + '  </main>\n\n'
     + '  <footer data-site-footer></footer>\n\n'

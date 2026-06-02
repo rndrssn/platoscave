@@ -60,6 +60,10 @@
   margin-bottom: 1.25rem;
 }
 
+.prose-measure-wide {
+  max-width: 68ch;
+}
+
 .module-tags {
   display: flex;
   flex-wrap: wrap;

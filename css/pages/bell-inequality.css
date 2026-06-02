@@ -1,0 +1,443 @@
+.bell-page {
+  --bell-alice: var(--rust);
+  --bell-bob: var(--sage);
+  --bell-quantum: var(--gold);
+  --bell-classical: var(--ink-faint);
+  --bell-line: var(--ink-ghost);
+}
+
+.bell-page code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+}
+
+.bell-lab {
+  border-top: 1px solid var(--ink-ghost);
+  border-bottom: 1px solid var(--ink-ghost);
+  margin: 2rem 0 4rem;
+  padding: 2rem 0;
+}
+
+.bell-lab-heading-row {
+  display: grid;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 760px) {
+  .bell-lab-heading-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
+.bell-lab-helper {
+  margin-bottom: 0;
+}
+
+.bell-mode {
+  display: inline-flex;
+  border: 1px solid var(--ink-ghost);
+  inline-size: fit-content;
+}
+
+.bell-mode .control-segmented-option {
+  min-inline-size: 8.5rem;
+  padding: 0.62rem 0.85rem;
+}
+
+.bell-stage-shell {
+  border: 1px solid var(--ink-ghost);
+  background:
+    linear-gradient(to right, color-mix(in srgb, var(--paper-dark) 84%, transparent), transparent 22%, transparent 78%, color-mix(in srgb, var(--paper-dark) 84%, transparent)),
+    var(--paper);
+}
+
+.bell-stage {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  min-block-size: 18rem;
+}
+
+.bell-fallback {
+  color: var(--ink-mid);
+  font-family: var(--serif);
+  margin: 1rem 0;
+}
+
+.bell-classical-lab {
+  border-top: 1px solid var(--ink-ghost);
+  border-bottom: 1px solid var(--ink-ghost);
+  margin: 1.6rem 0 2rem;
+  padding: 1.5rem 0;
+}
+
+.bell-classical-stage {
+  display: block;
+  inline-size: 100%;
+  min-block-size: 18rem;
+  border: 1px solid var(--ink-ghost);
+  background: var(--paper);
+}
+
+.bell-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin: 1rem 0 1.4rem;
+}
+
+.bell-controls .control-action {
+  padding: 0.64rem 1rem;
+}
+
+.bell-status,
+.bell-readout h3,
+.bell-panel h3,
+.bell-card-copy h3,
+.bell-score-list dt,
+.bell-score-list dd,
+.bell-limit-row,
+.bell-local-row,
+.bell-correlation-row,
+.bell-ledger,
+.bell-card,
+.bell-card-tests {
+  font-family: var(--mono);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bell-status {
+  color: var(--ink-faint);
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.bell-readout-grid,
+.bell-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 820px) {
+  .bell-readout-grid,
+  .bell-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.bell-readout,
+.bell-panel,
+.bell-card-explainer {
+  border-top: 1px solid var(--ink-ghost);
+  padding-top: 1rem;
+}
+
+.bell-readout h3,
+.bell-panel h3,
+.bell-card-copy h3 {
+  color: var(--ink);
+  font-size: 0.72rem;
+  margin: 0 0 0.8rem;
+}
+
+.bell-readout-note,
+.bell-card-copy p {
+  color: var(--ink-mid);
+  font-family: var(--serif);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  margin: 0 0 0.9rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.bell-taxonomy-list {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+}
+
+.bell-taxonomy-list div {
+  border-top: 1px solid var(--ink-ghost);
+  padding-top: 0.75rem;
+}
+
+.bell-taxonomy-list dt,
+.bell-taxonomy-list dd,
+.bell-mini-list {
+  font-family: var(--mono);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+.bell-taxonomy-list dt {
+  color: var(--ink);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.bell-taxonomy-list dd {
+  color: var(--ink-mid);
+  font-size: 0.72rem;
+  line-height: 1.55;
+  margin-top: 0.25rem;
+  text-transform: none;
+}
+
+.bell-mini-list {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--ink-mid);
+  font-size: 0.72rem;
+  line-height: 1.55;
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+.bell-mini-list strong {
+  color: var(--ink);
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.bell-score-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+}
+
+.bell-score-list div {
+  border-left: 1px solid var(--ink-ghost);
+  padding-left: 0.65rem;
+}
+
+.bell-score-list dt {
+  color: var(--ink-faint);
+  font-size: 0.58rem;
+  margin-bottom: 0.25rem;
+}
+
+.bell-score-list dd {
+  color: var(--ink);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.bell-limit-chart,
+.bell-local-bars,
+.bell-correlation-list,
+.bell-card-tests {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.bell-limit-row,
+.bell-local-row,
+.bell-correlation-row,
+.bell-card-tests div {
+  display: grid;
+  grid-template-columns: minmax(6rem, 0.8fr) minmax(4rem, 0.38fr) minmax(0, 1fr);
+  gap: 0.65rem;
+  align-items: center;
+  color: var(--ink-faint);
+  font-size: 0.62rem;
+}
+
+.bell-limit-row i,
+.bell-local-row i,
+.bell-correlation-row i {
+  position: relative;
+  display: block;
+  block-size: 0.52rem;
+  background: color-mix(in srgb, var(--ink-ghost) 26%, transparent);
+}
+
+.bell-limit-row i::after,
+.bell-local-row i::after {
+  position: absolute;
+  inset: 0 auto 0 0;
+  inline-size: var(--bell-limit, var(--bell-local, 0%));
+  content: "";
+  background: var(--ink-faint);
+}
+
+.bell-limit-row:nth-child(2) i::after {
+  background: var(--bell-quantum);
+}
+
+.bell-limit-row--live i::after {
+  background: var(--bell-bob);
+}
+
+.bell-local-row i::after {
+  inline-size: var(--bell-local, 50%);
+  background: var(--bell-alice);
+}
+
+.bell-local-row + .bell-local-row i::after {
+  background: var(--bell-bob);
+}
+
+.bell-local-row strong,
+.bell-correlation-row strong,
+.bell-correlation-row em,
+.bell-card-tests strong,
+.bell-card-tests em {
+  color: var(--ink-mid);
+  font-style: normal;
+  font-weight: 300;
+}
+
+.bell-correlation-row {
+  grid-template-columns: minmax(5.2rem, 0.54fr) minmax(0, 1fr) 3.5rem 4rem;
+}
+
+.bell-correlation-row i::before {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 50%;
+  inline-size: 1px;
+  content: "";
+  background: var(--ink-mid);
+}
+
+.bell-correlation-row i::after {
+  position: absolute;
+  inset-block: 0;
+  inline-size: max(2px, var(--bell-correlation-width, 0%));
+  content: "";
+  background: var(--bell-quantum);
+}
+
+.bell-correlation-row i {
+  background:
+    linear-gradient(to right, color-mix(in srgb, var(--bell-alice) 20%, transparent), transparent 50%, color-mix(in srgb, var(--bell-bob) 20%, transparent));
+}
+
+.bell-correlation-row i::after {
+  inset-inline-start: var(--bell-correlation-left, 50%);
+}
+
+.bell-ledger-wrap {
+  max-block-size: 16rem;
+  overflow: auto;
+}
+
+.bell-ledger {
+  border-collapse: collapse;
+  inline-size: 100%;
+  font-size: 0.6rem;
+}
+
+.bell-ledger th,
+.bell-ledger td {
+  border-bottom: 1px solid var(--ink-ghost);
+  color: var(--ink-mid);
+  padding: 0.5rem 0.35rem;
+  text-align: left;
+}
+
+.bell-ledger thead th {
+  color: var(--ink-faint);
+}
+
+.bell-ledger tr.is-loss td:last-child {
+  color: var(--rust);
+}
+
+.bell-ledger tr.is-win td:last-child {
+  color: var(--sage);
+}
+
+.bell-card-explainer {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+@media (min-width: 820px) {
+  .bell-card-explainer {
+    grid-template-columns: minmax(0, 0.7fr) minmax(13rem, 0.5fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.bell-card {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--ink-ghost);
+}
+
+.bell-card div {
+  display: grid;
+  gap: 0.35rem;
+  min-block-size: 4.5rem;
+  place-content: center;
+  text-align: center;
+}
+
+.bell-card div:nth-child(odd) {
+  border-right: 1px solid var(--ink-ghost);
+}
+
+.bell-card div:nth-child(-n + 2) {
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+.bell-card span {
+  color: var(--ink-faint);
+  font-size: 0.6rem;
+}
+
+.bell-card strong {
+  color: var(--ink);
+  font-size: 1.35rem;
+  font-weight: 300;
+}
+
+.bell-card-tests div {
+  grid-template-columns: minmax(4.8rem, 0.7fr) minmax(4rem, 0.5fr) minmax(4rem, 0.45fr);
+  border-bottom: 1px solid var(--ink-ghost);
+  padding-bottom: 0.45rem;
+}
+
+.bell-card-tests .is-loss em {
+  color: var(--rust);
+}
+
+.bell-card-tests .is-win em {
+  color: var(--sage);
+}
+
+@media (max-width: 620px) {
+  .bell-mode,
+  .bell-mode .control-segmented-option,
+  .bell-controls .control-action {
+    inline-size: 100%;
+  }
+
+  .bell-mode {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .bell-mode .control-segmented-option + .control-segmented-option {
+    border-left: 0;
+    border-top: 1px solid var(--ink-ghost);
+  }
+
+  .bell-limit-row,
+  .bell-local-row,
+  .bell-correlation-row,
+  .bell-card-tests div {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}

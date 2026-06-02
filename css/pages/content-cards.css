@@ -203,6 +203,23 @@
   gap: 1rem;
 }
 
+.main--notes-index .module-page {
+  padding-bottom: 6rem;
+}
+
+.notes-index-section {
+  display: block;
+}
+
+.notes-index-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.9rem 1.2rem;
+  margin-bottom: 1rem;
+}
+
 .note-search {
   margin-bottom: 0.8rem;
   max-width: 20rem;
@@ -211,6 +228,11 @@
   gap: 0.36rem;
   border-bottom: 1px solid var(--ink-ghost);
   padding-bottom: 0.24rem;
+}
+
+.main--notes-index .note-search {
+  width: min(100%, 24rem);
+  margin-bottom: 0;
 }
 
 .note-search-icon {
@@ -267,6 +289,11 @@
   .note-search {
     margin-bottom: 0.9rem;
   }
+}
+
+.main--notes-index .essay-links--notes {
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(17.5rem, 100%), 1fr));
 }
 
 .note-index-card {
@@ -371,6 +398,15 @@
 }
 
 @media (max-width: 640px) {
+  .main--notes-index .notes-index-tools,
+  .main--notes-index .note-search {
+    width: 100%;
+  }
+
+  .main--notes-index .essay-links--notes {
+    grid-template-columns: 1fr;
+  }
+
   .note-index-link {
     padding: 0.9rem 0.95rem 0.9rem 1rem;
   }

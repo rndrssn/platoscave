@@ -10,6 +10,10 @@ main.main--narrow + footer {
   max-width: 720px;
 }
 
+main.main--notes-index + footer {
+  max-width: 1040px;
+}
+
 .footer-text {
   font-family: var(--mono);
   font-size: 0.58rem;
@@ -86,4 +90,3 @@ main.main--narrow + footer {
     margin-top: 0.3rem;
   }
 }
-

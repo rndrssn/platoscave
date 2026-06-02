@@ -1,0 +1,118 @@
+<!-- Alice and Bob section 03: Classical Expectation — local prewritten-answer limit for Bell correlations. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Classical local expectation for Alice and Bob: why prewritten answer cards fail one of four Bell-game cases." />
+  <title>Classical Expectation · Alice and Bob · To the Bedrock</title>
+  <script src="../../../theme.config.js"></script>
+  <script src="../../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../../css/fonts.css" />
+  <link rel="stylesheet" href="../../../css/tokens.css" />
+  <link rel="stylesheet" href="../../../css/base.css" />
+  <link rel="stylesheet" href="../../../css/layout.css" />
+  <link rel="stylesheet" href="../../../css/components.css" />
+  <link rel="stylesheet" href="../../../css/utilities.css" />
+  <link rel="stylesheet" href="../../../css/themes.css" />
+  <link rel="stylesheet" href="../../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../../css/pages.css" />
+  <link rel="stylesheet" href="../../../css/pages/bell-inequality.css" />
+  <link rel="icon" type="image/png" href="../../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../../">To the Bedrock</a>
+    <nav class="main-nav">
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../../">Home</a>
+      <a class="nav-link" href="../../../notes/">Notes</a>
+      <a class="nav-link nav-link--catalogue nav-link--active" href="../../../modules/" aria-current="page">Catalogue</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page bell-page">
+      <a class="module-back-link" href="../../" aria-label="Back to Archive"></a>
+      <a class="module-header-number module-context-number module-context-link" href="../">Alice and Bob</a>
+
+      <nav class="module-sub-nav" aria-label="Module sections">
+        <a class="module-sub-nav-link" href="../"><span class="module-sub-nav-number">01</span> On Bell&apos;s Inequality</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../taxonomy/"><span class="module-sub-nav-number">02</span> Taxonomy</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link module-sub-nav-link--active" href="./" aria-current="page"><span class="module-sub-nav-number">03</span> Classical Expectation</a>
+        <span class="module-sub-nav-dot">&middot;</span>
+        <a class="module-sub-nav-link" href="../explore/"><span class="module-sub-nav-number">04</span> Explore</a>
+      </nav>
+
+      <header class="module-header">
+        <h1 class="module-header-title">Classical Expectation</h1>
+        <p class="module-header-body">
+          The naive local picture says the pair carries a small answer card. Alice and Bob may reveal different parts of
+          the card later, but nothing distant has to reach across space during measurement.
+        </p>
+      </header>
+
+      <article class="module-essay">
+        <section class="essay-section">
+          <h2 class="essay-heading">The cheat-sheet version</h2>
+          <p class="essay-body">
+            Alice can be asked a red question or a blue question. Bob can also be asked red or blue. They answer yes or
+            no. The rule is simple: in three cases they should match; when both are asked blue, they should differ.
+          </p>
+
+          <section class="bell-classical-lab" aria-label="Classical answer-card animation">
+            <svg class="bell-classical-stage" data-bell-classical-stage role="img" aria-label="Animated prewritten answer card checked against four question pairs"></svg>
+            <p class="bell-fallback" data-bell-classical-fallback>The classical card animation needs JavaScript and D3.</p>
+            <div class="bell-controls">
+              <button class="control-action control-action--primary" type="button" data-bell-classical-step>Check next case</button>
+              <button class="control-action control-action--secondary" type="button" data-bell-classical-deal>Deal another card</button>
+              <span class="bell-status" data-bell-classical-status aria-live="polite">Waiting for script...</span>
+            </div>
+          </section>
+        </section>
+
+        <section class="essay-section">
+          <h2 class="essay-heading">Why one case must fail</h2>
+          <p class="essay-body">
+            If Alice&apos;s red answer must match Bob&apos;s red answer, Alice&apos;s red answer must match Bob&apos;s blue answer,
+            and Alice&apos;s blue answer must match Bob&apos;s red answer, then all four answers have been chained together.
+            They are forced to be the same.
+          </p>
+          <p class="essay-body">
+            But the blue/blue case demands different answers. A local prewritten card can move the failure around, but it
+            cannot remove the failure. With four equally likely question pairs, the best classical score is three out of
+            four: 75%.
+          </p>
+        </section>
+      </article>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../taxonomy/" aria-label="Previous: Taxonomy">
+          <span class="footer-nav-label-full">&larr; Previous: Taxonomy</span>
+          <span class="footer-nav-label-short">&larr; Previous</span>
+        </a>
+        <a class="footer-nav-link" href="../explore/" aria-label="Next: Explore">
+          <span class="footer-nav-label-full">Next: Explore &rarr;</span>
+          <span class="footer-nav-label-short">Next &rarr;</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <footer data-site-footer></footer>
+
+  <script src="../../../assets/vendor/d3.v7.min.js"></script>
+  <script src="../../../js/module-route-data.js"></script>
+  <script src="../../../js/nav-controller.js"></script>
+  <script src="classical-expectation.js"></script>
+</body>
+</html>

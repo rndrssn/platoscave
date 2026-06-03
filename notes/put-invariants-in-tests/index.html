@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Agent instructions are strongest when their observable consequences become automated checks. Keep judgment in prose, but put durable project invariants in tests." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'" />
+  <title>Put invariants in tests · Notes · To the Bedrock</title>
+  <script src="../../theme.config.js"></script>
+  <script src="../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../css/fonts.css" />
+  <link rel="stylesheet" href="../../css/tokens.css" />
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="../../css/layout.css" />
+  <link rel="stylesheet" href="../../css/components.css" />
+  <link rel="stylesheet" href="../../css/utilities.css" />
+  <link rel="stylesheet" href="../../css/themes.css" />
+  <link rel="stylesheet" href="../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../">To the Bedrock</a>
+    <nav class="main-nav">
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../">Home</a>
+      <a class="nav-link nav-link--active" href="../../notes/" aria-current="page">Notes</a>
+      <a class="nav-link" href="../../articles/">Articles</a>
+      <a class="nav-link nav-link--catalogue" href="../../modules/">Catalogue</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page">
+      <header class="module-header">
+        <h1 class="module-header-title">Put invariants in tests</h1>
+<p class="module-header-body">Agent instructions are strongest when their observable consequences become automated checks. Keep judgment in prose, but put durable project invariants in tests.</p>
+        <p class="positioning-caption">Published 2026-06-03</p>
+        <div class="module-tags note-page-tags"><a class="module-tag" href="../../tags/ai-agents/">#ai agents</a><a class="module-tag" href="../../tags/testing/">#testing</a><a class="module-tag" href="../../tags/governance/">#governance</a></div>
+      </header>
+
+      <article class="module-essay note-content">
+        <section class="essay-section">
+          <h2>Abstract</h2>
+          <p>AI agent instructions should not only describe how an agent ought to work. Where possible, they should identify which outcomes can be validated automatically.</p>
+          <p>The pattern is simple: keep judgment in prose, but put durable invariants in tests.</p>
+          <p>This is a form of policy as code, contract testing, or executable specification. A repository can test that secrets remain placeholders, generated maps still follow source conventions, documentation stays aligned with route data, and workflow scripts preserve the expected release gates. These tests do not prove that an agent reasoned correctly. They prove that the resulting repository state still satisfies the contract.</p>
+          <p>That distinction is useful. Many instructions remain irreducibly judgment-based: be careful, follow the local design system, prefer existing patterns, avoid unnecessary abstractions. But many consequences of good behavior are visible in files, metadata, commands, links, and generated artifacts. Those consequences can be guarded.</p>
+          <p>The result is a better collaboration surface between humans, agents, and the repository itself. Instructions stop being passive documentation and become feedback loops.</p>
+          <p>The longer version is in <a href="../../articles/making-instructions-executable/">Making Instructions Executable</a>.</p>
+        </section>
+      </article>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../" aria-label="Back to Notes">
+          <span class="footer-nav-label-full">&larr; Back to Notes</span>
+          <span class="footer-nav-label-short">&larr; Notes</span>
+        </a>
+        <span></span>
+      </nav>
+    </div>
+  </main>
+
+  <footer data-site-footer></footer>
+
+  <script src="../../js/module-route-data.js"></script>
+  <script src="../../js/nav-controller.js"></script>
+</body>
+</html>

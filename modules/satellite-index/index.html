@@ -56,7 +56,9 @@
           upload a shapefile, draw a polygon, or enter parcel coordinates. This proof of concept tests whether
           that step is necessary for first-pass crop inspection. A farmer who has navigated a map to their field
           has already defined an area of interest. Capturing that implicitly removes a registration barrier that
-          excludes the users with the least administrative infrastructure.
+          excludes the users with the least administrative infrastructure. The Explorer turns that premise into
+          a tactile boundary-free monitoring surface: pan, load, orbit, and compare crop signals without drawing
+          a boundary first.
         </p>
       </header>
 
@@ -87,7 +89,9 @@
             NDVI, NDRE, NDWI, NDMI, EVI, SAVI, and CIre — and renders each as a Three.js terrain mesh above
             a high-resolution satellite tile base. Surface height maps the index value; the satellite imagery
             below provides spatial orientation against field boundaries, roads, and hedgerows. Switching between
-            indices rebuilds only the terrain mesh — the base layer and camera position remain fixed.
+            indices rebuilds only the terrain mesh — the base layer and camera position remain fixed. The result
+            is tactile rather than form-driven: the current view becomes the working object, and inspection happens
+            by moving through the surface.
           </p>
           <p class="essay-body">
             Data arrives from a Cloudflare Worker that proxies Sentinel Hub requests. All seven indices are

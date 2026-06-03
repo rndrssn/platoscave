@@ -1,4 +1,4 @@
-// Boundary-free monitoring Explorer: renders Sentinel-derived spectral surfaces with satellite basemap and optional MapTiler contours-v2 isolines.
+// Boundary-free monitoring Explorer: renders Sentinel-derived spectral surfaces with satellite, scene RGB, and optional contour context.
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -244,7 +244,9 @@ const INDEX_DEFS = [
 let map = null;
 let busy = false;
 let btnEl = null;
+let sceneRgbSwitchEl = null;
 let terrainSwitchEl = null;
+let sceneRgbContextEl = null;
 let terrainContextEl = null;
 let viewportReadoutEl = null;
 let stageEl = null;
@@ -265,7 +267,7 @@ let lastTextureLoaded = false;
 let lastFallbackReason = '';
 let lastMetrics = null;
 let lastIndexGrids = {};
-let lastBaseTextures = { satellite: null, terrain: null };
+let lastBaseTextures = { satellite: null, sentinel: null, terrain: null };
 let lastBasePlaneY = 0;
 let activeIndexId = 'ndvi';
 
@@ -415,6 +417,22 @@ function decodeNdviPng(base64) {
       resolve(grid.reverse());
     };
     img.onerror = reject;
+    img.src = 'data:image/png;base64,' + base64;
+  });
+}
+
+function decodeRgbCanvas(base64) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas);
+    };
+    img.onerror = () => reject(new Error('Scene RGB image decode failed'));
     img.src = 'data:image/png;base64,' + base64;
   });
 }
@@ -700,7 +718,9 @@ function resetToSelection() {
   setStatus('', null);
   const sceneMetaWrap = document.querySelector('.satellite-three-scene-meta');
   if (sceneMetaWrap) sceneMetaWrap.hidden = true;
+  if (sceneRgbContextEl) sceneRgbContextEl.hidden = true;
   if (terrainContextEl) terrainContextEl.hidden = true;
+  if (sceneRgbSwitchEl) sceneRgbSwitchEl.hidden = true;
   if (terrainSwitchEl) terrainSwitchEl.hidden = true;
 }
 
@@ -844,36 +864,55 @@ function buildTerrainGeometry(grid, metrics, heightScale, surfaceOffset, colorFn
   return geometry;
 }
 
-function updateTerrainContextVisibility() {
+function updateBaseContextControls() {
+  const sceneRgbActive = baseContextMode === 'sentinel';
   const terrainActive = baseContextMode === 'terrain';
-  if (!terrainSwitchEl) return;
-  terrainSwitchEl.setAttribute('aria-pressed', String(terrainActive));
-  const label = terrainSwitchEl.querySelector('.satellite-terrain-switch-label');
-  if (label) label.textContent = terrainActive ? 'Terrain on' : 'Terrain off';
-  terrainSwitchEl.disabled = !lastBaseTextures.terrain;
+
+  if (sceneRgbSwitchEl) {
+    sceneRgbSwitchEl.hidden = !lastBaseTextures.sentinel;
+    sceneRgbSwitchEl.disabled = !lastBaseTextures.sentinel;
+    sceneRgbSwitchEl.setAttribute('aria-pressed', String(sceneRgbActive));
+    const sceneRgbLabel = sceneRgbSwitchEl.querySelector('.satellite-scene-rgb-switch-label');
+    if (sceneRgbLabel) sceneRgbLabel.textContent = sceneRgbActive ? 'Scene RGB on' : 'Scene RGB off';
+  }
+
+  if (terrainSwitchEl) {
+    const anyBaseTexture = lastBaseTextures.satellite || lastBaseTextures.sentinel || lastBaseTextures.terrain;
+    terrainSwitchEl.hidden = !anyBaseTexture;
+    terrainSwitchEl.disabled = !lastBaseTextures.terrain;
+    terrainSwitchEl.setAttribute('aria-pressed', String(terrainActive));
+    const terrainLabel = terrainSwitchEl.querySelector('.satellite-terrain-switch-label');
+    if (terrainLabel) terrainLabel.textContent = terrainActive ? 'Terrain on' : 'Terrain off';
+  }
+
+  if (sceneRgbContextEl) sceneRgbContextEl.hidden = !sceneRgbActive || !lastBaseTextures.sentinel;
   if (terrainContextEl) terrainContextEl.hidden = !terrainActive || !lastBaseTextures.terrain;
 }
 
 function applyBaseContextMode(mode) {
-  const requestedMode = mode === 'terrain' && lastBaseTextures.terrain ? 'terrain' : 'satellite';
+  const availableMode = lastBaseTextures[mode] ? mode : null;
+  const requestedMode = availableMode
+    || (lastBaseTextures.satellite ? 'satellite' : null)
+    || (lastBaseTextures.sentinel ? 'sentinel' : null)
+    || (lastBaseTextures.terrain ? 'terrain' : null)
+    || 'satellite';
   baseContextMode = requestedMode;
-  if (terrainSwitchEl) terrainSwitchEl.hidden = !lastBaseTextures.satellite && !lastBaseTextures.terrain;
   if (!baseMesh || !baseMesh.material) {
-    updateTerrainContextVisibility();
+    updateBaseContextControls();
     return;
   }
-  const nextTexture = requestedMode === 'terrain' ? lastBaseTextures.terrain : lastBaseTextures.satellite;
+  const nextTexture = lastBaseTextures[requestedMode];
   if (nextTexture) {
     baseMesh.material.map = nextTexture;
     baseMesh.material.color.set('#ffffff');
-    baseMesh.material.opacity = 0.95;
+    baseMesh.material.opacity = requestedMode === 'terrain' ? 0.96 : 0.95;
   } else {
     baseMesh.material.map = null;
     baseMesh.material.color.set(requestedMode === 'terrain' ? TERRAIN_CONTEXT_PAPER : '#C4BAB0');
     baseMesh.material.opacity = requestedMode === 'terrain' ? 0.96 : 0.5;
   }
   baseMesh.material.needsUpdate = true;
-  updateTerrainContextVisibility();
+  updateBaseContextControls();
   renderOnce();
 }
 
@@ -993,13 +1032,14 @@ function frameCamera(metrics, heightScale, surfaceOffset) {
   controls.update();
 }
 
-async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn) {
+async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn, sceneRgbCanvas) {
   if (!renderer && !initThreeScene()) {
     throw new Error('Three.js surface unavailable');
   }
 
   const wrap = document.getElementById('satellite-three-surface-wrap');
   let satelliteTexture = null;
+  const sceneRgbTexture = sceneRgbCanvas ? makeThreeTexture(sceneRgbCanvas) : null;
   let contourTexture = null;
   try {
     const results = await Promise.allSettled([
@@ -1013,9 +1053,11 @@ async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn) {
     contourTexture = null;
   }
   lastBaseTextures.satellite?.dispose();
+  lastBaseTextures.sentinel?.dispose();
   lastBaseTextures.terrain?.dispose();
   lastBaseTextures = {
     satellite: satelliteTexture,
+    sentinel: sceneRgbTexture,
     terrain: contourTexture,
   };
 
@@ -1034,6 +1076,7 @@ async function renderThreeSurface(grid, metrics, bounds, colorFn, heightFn) {
   baseMesh.position.y = lastBasePlaneY;
   baseMesh.visible = true;
   scene.add(baseMesh);
+  if (sceneRgbSwitchEl) sceneRgbSwitchEl.hidden = !sceneRgbTexture;
   if (terrainSwitchEl) terrainSwitchEl.hidden = false;
   applyBaseContextMode(baseContextMode);
 
@@ -1151,6 +1194,7 @@ async function runAnalysis() {
 
     setStatus('', 'loading');
     let sceneData = null;
+    let sceneRgbCanvas = null;
     let fallbackReason = '';
     const rawIndexGrids = {};
 
@@ -1167,6 +1211,13 @@ async function runAnalysis() {
         if (analysisRes.ok) {
           const data = await analysisRes.json();
           rawIndexGrids['ndvi'] = await decodeNdviPng(data.ndvi);
+          if (data.image) {
+            try {
+              sceneRgbCanvas = await decodeRgbCanvas(data.image);
+            } catch (_) {
+              sceneRgbCanvas = null;
+            }
+          }
           sceneData = data.scene;
           for (const def of INDEX_DEFS) {
             if (def.id === 'ndvi') continue;
@@ -1205,7 +1256,7 @@ async function runAnalysis() {
       return (t * 2 - 1) * heightScale + surfaceOffset;
     };
     const renderGrid = smoothNdviGridForRender(rawIndexGrids['ndvi'], NDVI_RENDER_SMOOTHING_PASSES);
-    const textureLoaded = await renderThreeSurface(renderGrid, metrics, bounds, colorFn, heightFn);
+    const textureLoaded = await renderThreeSurface(renderGrid, metrics, bounds, colorFn, heightFn, sceneRgbCanvas);
     lastBounds = bounds;
     lastDate = date;
     lastScene = sceneData;
@@ -1227,13 +1278,15 @@ async function runAnalysis() {
 
 function initMap() {
   btnEl = document.getElementById('satellite-three-analyse-btn');
+  sceneRgbSwitchEl = document.getElementById('satellite-three-scene-rgb-switch');
   terrainSwitchEl = document.getElementById('satellite-three-terrain-switch');
+  sceneRgbContextEl = document.getElementById('satellite-three-scene-rgb-context');
   terrainContextEl = document.getElementById('satellite-three-terrain-context');
   viewportReadoutEl = document.getElementById('satellite-three-viewport-readout');
   stageEl = document.getElementById('satellite-three-stage');
   northEl = document.getElementById('satellite-three-north');
 
-  if (!btnEl || !terrainSwitchEl || !viewportReadoutEl || !stageEl) return;
+  if (!btnEl || !sceneRgbSwitchEl || !terrainSwitchEl || !viewportReadoutEl || !stageEl) return;
 
   baseContextMode = terrainSwitchEl.getAttribute('aria-pressed') === 'true' ? 'terrain' : 'satellite';
 
@@ -1244,6 +1297,7 @@ function initMap() {
       mapEl.textContent = 'Map unavailable';
     }
     btnEl.disabled = true;
+    sceneRgbSwitchEl.disabled = true;
     terrainSwitchEl.disabled = true;
     setStatus('Map library unavailable · refresh and try again', 'error');
     return;
@@ -1259,6 +1313,11 @@ function initMap() {
   map.on('load', updateViewportReadout);
   map.on('move', updateViewportReadout);
   updateViewportReadout();
+
+  sceneRgbSwitchEl.addEventListener('click', () => {
+    const nextMode = sceneRgbSwitchEl.getAttribute('aria-pressed') === 'true' ? 'satellite' : 'sentinel';
+    applyBaseContextMode(nextMode);
+  });
 
   terrainSwitchEl.addEventListener('click', () => {
     const nextMode = terrainSwitchEl.getAttribute('aria-pressed') === 'true' ? 'satellite' : 'terrain';

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Project instructions become stronger when their observable consequences are encoded as tests. The pattern turns agent guidance into executable contracts without pretending that judgment itself can be fully automated." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'" />
+  <title>Making Instructions Executable · Articles · To the Bedrock</title>
+  <script src="../../theme.config.js"></script>
+  <script src="../../js/theme-bootstrap.js"></script>
+  <link rel="preload" href="../../assets/fonts/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../../assets/fonts/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../../css/fonts.css" />
+  <link rel="stylesheet" href="../../css/tokens.css" />
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="../../css/layout.css" />
+  <link rel="stylesheet" href="../../css/components.css" />
+  <link rel="stylesheet" href="../../css/utilities.css" />
+  <link rel="stylesheet" href="../../css/themes.css" />
+  <link rel="stylesheet" href="../../css/gc-viz.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link rel="icon" type="image/png" href="../../assets/images/doodles/skate_c.png" />
+  <link rel="apple-touch-icon" href="../../assets/images/doodles/skate_c.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="nav-title" href="../../">To the Bedrock</a>
+    <nav class="main-nav">
+    <div class="nav-links" id="primary-nav">
+      <a class="nav-link" href="../../">Home</a>
+      <a class="nav-link" href="../../notes/">Notes</a>
+      <a class="nav-link nav-link--active" href="../../articles/" aria-current="page">Articles</a>
+      <a class="nav-link nav-link--catalogue" href="../../modules/">Catalogue</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">&#x22EF;</button>
+    </nav>
+  </header>
+
+  <main id="main-content" class="main--narrow">
+    <div class="module-page">
+      <header class="module-header">
+        <h1 class="module-header-title">Making Instructions Executable</h1>
+<p class="module-header-body">Project instructions become stronger when their observable consequences are encoded as tests. The pattern turns agent guidance into executable contracts without pretending that judgment itself can be fully automated.</p>
+        <p class="positioning-caption">Published 2026-06-03</p>
+        <div class="module-tags note-page-tags"><a class="module-tag" href="../../tags/ai-agents/">#ai agents</a><a class="module-tag" href="../../tags/testing/">#testing</a><a class="module-tag" href="../../tags/governance/">#governance</a></div>
+      </header>
+
+      <article class="module-essay note-content">
+        <section class="essay-section">
+          <h2>Core claim</h2>
+          <p>A useful way to work with AI agents is to treat instructions not only as prose, but as contracts that can be tested.</p>
+          <p>Most project instructions begin as human-readable guidance: follow this workflow, keep these files aligned, never commit secrets, preserve this naming convention, update documentation when behavior changes. That prose matters. It gives the agent intent, context, and a local operating culture. But prose alone depends on memory and interpretation. An agent may read it, summarize it, agree with it, and still miss one of its observable consequences.</p>
+          <p>A stronger pattern is to turn the most important instructions into executable checks.</p>
+          <p>This is often called <strong>policy as code</strong>, <strong>contract testing</strong>, <strong>compliance testing</strong>, or <strong>executable specification</strong>. The names differ by community, but the shared idea is simple: if a rule matters, and its outcome can be observed in the repository, write a test for it.</p>
+          <h2>From instruction to invariant</h2>
+          <p>An instruction says how people and agents should behave. An invariant says what must remain true after they have behaved.</p>
+          <p>For example:</p>
+          <ul><li>&quot;Do not commit real API keys&quot; becomes a test that scans source files for key-like values and verifies that required placeholders remain in place.</li><li>&quot;Keep documentation aligned with routes&quot; becomes a test that compares README entries, route metadata, and generated navigation.</li><li>&quot;New JavaScript files need a purpose comment&quot; becomes a test that checks leading comments in non-vendor source files.</li><li>&quot;Agent contract files must stay synchronized&quot; becomes a test that compares their bytes.</li><li>&quot;Release through the expected branch flow&quot; becomes a test that confirms the release script documents and performs the expected gates.</li></ul>
+          <p>The test does not prove that the agent understood the instruction. It proves something more practical: the repository state still satisfies the contract.</p>
+          <p>That distinction matters. We are not trying to inspect the agent&#39;s private reasoning. We are constraining the public artifact it leaves behind.</p>
+          <h2>Why this matters for agentic work</h2>
+          <p>AI agents are good at reading instructions, but they are also operating under shifting context, partial recall, tool constraints, and long chains of local decisions. The longer the task, the easier it is for an instruction to become background noise. Even careful agents drift.</p>
+          <p>Executable checks change the feedback loop.</p>
+          <p>Instead of relying only on the agent to remember that a route table, an index page, and a README section must move together, the repository can say so directly. Instead of hoping that no one replaces a placeholder with a real key, the test suite can fail when it happens. Instead of treating generated documentation conventions as tribal knowledge, the conventions can be validated before release.</p>
+          <p>This makes the repository less dependent on perfect obedience and more dependent on shared constraints.</p>
+          <p>The benefit is not only technical. It changes the culture of collaboration. Instructions stop being passive documentation and become part of the project&#39;s operating system. A future human, a future agent, or the same agent under time pressure gets fast feedback when the work drifts outside the intended boundaries.</p>
+          <h2>What can be tested</h2>
+          <p>The best candidates are instructions whose effects are visible in files, commands, metadata, links, generated artifacts, or runtime behavior.</p>
+          <p>Good candidates include:</p>
+          <ul><li>Secrets and placeholder conventions.</li><li>Required metadata in source files.</li><li>Navigation and route consistency.</li><li>Generated artifact reproducibility.</li><li>Documentation alignment with code.</li><li>Release script behavior.</li><li>Dependency sourcing rules.</li><li>Accessibility or security guardrails.</li><li>Naming conventions that other tooling depends on.</li></ul>
+          <p>These rules are valuable because they are concrete. They can fail in a way that tells the next contributor exactly what to fix.</p>
+          <p>Poor candidates are instructions that require broad human judgment: be careful, write elegant code, avoid unnecessary abstractions, keep the user experience coherent, or understand the domain before changing behavior. Those instructions are still important, but they cannot be fully reduced to a test without becoming brittle or misleading.</p>
+          <p>The useful division is:</p>
+          <blockquote><p>Put judgment in prose. Put invariants in tests.</p></blockquote>
+          <h2>The limits of executable instruction</h2>
+          <p>There is a temptation to overreach and turn every instruction into a rule. That usually makes the system worse.</p>
+          <p>Some instructions describe intent rather than outcome. &quot;Use good judgment&quot; cannot be tested directly. &quot;Prefer existing patterns&quot; cannot be tested without embedding a shallow imitation of taste into the test suite. &quot;Plan before acting&quot; is a process expectation that may be visible in conversation, but not in the repository artifact itself.</p>
+          <p>For these rules, prose remains the right tool. It gives agents and humans a shared orientation without pretending that the repository can mechanically decide every case.</p>
+          <p>Other instructions should be encoded because the outcome is non-negotiable. A secret should not appear in source. Two contract files should not diverge. A generated index should not depend on undocumented conventions. A route should not exist in one place but not another.</p>
+          <p>The art is to separate principles from invariants.</p>
+          <p>Principles guide reasoning. Invariants guard the boundary.</p>
+          <h2>A practical pattern</h2>
+          <p>A simple workflow works well:</p>
+          <ol><li>Write the instruction in prose first.</li><li>Ask what observable repository state would prove that the instruction was followed.</li><li>If that state is stable and important, write a focused test for it.</li><li>Make the failure message explain the contract, not just the mismatch.</li><li>Keep the test narrow enough that a contributor can fix it without reverse-engineering the whole project.</li></ol>
+          <p>This creates a layered contract. The agent instruction file explains how to work. The README explains the public workflow. The tests enforce the parts that can be observed.</p>
+          <p>The result is not a fully automated substitute for judgment. It is a better collaboration surface. Humans and agents can move faster because the repository itself catches more of the avoidable drift.</p>
+          <h2>The real goal</h2>
+          <p>The goal is not to make agents obedient in some abstract sense. The goal is to make important project expectations durable.</p>
+          <p>When a rule lives only in prose, every contributor has to remember it. When the rule&#39;s observable consequence lives in a test, the repository remembers it too.</p>
+          <p>That is the quiet power of executable instructions: they turn local working agreements into feedback loops.</p>
+          <p>The instruction still matters. The agent still has to read, reason, and decide. But the project no longer depends entirely on the agent carrying every constraint in working memory.</p>
+          <p>It gives the work a floor.</p>
+        </section>
+      </article>
+
+      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
+        <a class="footer-nav-link" href="../" aria-label="Back to Articles">
+          <span class="footer-nav-label-full">&larr; Back to Articles</span>
+          <span class="footer-nav-label-short">&larr; Articles</span>
+        </a>
+        <a class="footer-nav-link" href="../../notes/" aria-label="Back to Notes">
+          <span class="footer-nav-label-full">Back to Notes &rarr;</span>
+          <span class="footer-nav-label-short">Notes &rarr;</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <footer data-site-footer></footer>
+
+  <script src="../../js/module-route-data.js"></script>
+  <script src="../../js/nav-controller.js"></script>
+</body>
+</html>

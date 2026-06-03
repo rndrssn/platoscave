@@ -1,5 +1,26 @@
 [
   {
+    "title": "Put invariants in tests",
+    "slug": "put-invariants-in-tests",
+    "summary": "Agent instructions are strongest when their observable consequences become automated checks. Keep judgment in prose, but put durable project invariants in tests.",
+    "date": "2026-06-03",
+    "tags": [
+      {
+        "label": "ai agents",
+        "slug": "ai-agents"
+      },
+      {
+        "label": "testing",
+        "slug": "testing"
+      },
+      {
+        "label": "governance",
+        "slug": "governance"
+      }
+    ],
+    "relatedModules": []
+  },
+  {
     "title": "Wrap a head around Bell's inequality",
     "slug": "bellsinequality",
     "summary": "Wrap a head around Bell's inequality On Bell’s inequality Bell’s inequality is a notoriously difficult subject, not because the basic conclusion is impossible to state, but because the conclusion rests on distinctions that are easy to blur. A simplified explanation therefore has to sacrifice some precision. Still, the broad shape of the argument is this: Classical physics tends to assume a few things about the world. First, locality: things can only be affected by other things close enough to influence them, meaning inside their light cone. Second, realism: measurable properties have definite values whether or not anyone has measured them yet. Third, ordinary causality: later events do not reach backward and cause earlier ones. These assumptions feel so natural that they can seem almost invisible.",

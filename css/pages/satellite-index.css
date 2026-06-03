@@ -328,6 +328,35 @@
   display: none;
 }
 
+.satellite-scene-rgb-switch[hidden] {
+  display: none;
+}
+
+.satellite-scene-rgb-switch {
+  min-height: 2.2rem;
+  padding: 0.22rem 0.62rem;
+  border: 0;
+  border-left: 1px solid var(--satellite-hud-border, var(--ink-ghost));
+  background: transparent;
+  color: var(--ink-faint);
+  box-shadow: none;
+}
+
+.satellite-scene-rgb-switch:hover:not(:disabled) {
+  background: var(--satellite-hud-muted-surface, color-mix(in srgb, var(--ink) 8%, transparent 92%));
+  color: var(--ink);
+}
+
+.satellite-scene-rgb-switch[aria-pressed="true"] {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.satellite-scene-rgb-switch-label {
+  display: inline-flex;
+  align-items: center;
+}
+
 .satellite-terrain-switch {
   min-height: 2.2rem;
   padding: 0.22rem 0.62rem;
@@ -1078,6 +1107,7 @@
 
 .satellite-three-hud .satellite-analyse-btn,
 .satellite-three-hud .satellite-toggle-control,
+.satellite-three-hud .satellite-scene-rgb-switch,
 .satellite-three-hud .satellite-terrain-switch {
   min-height: 1.65rem;
   padding: 0.12rem 0;
@@ -1090,6 +1120,15 @@
   text-shadow: none;
 }
 
+.satellite-three-hud .satellite-scene-rgb-switch {
+  flex-direction: row;
+  justify-content: center;
+  gap: 0;
+  min-width: 0;
+  padding-inline: 0;
+  opacity: 0.82;
+}
+
 .satellite-three-hud .satellite-terrain-switch {
   flex-direction: row;
   justify-content: center;
@@ -1099,6 +1138,12 @@
   opacity: 0.82;
 }
 
+.satellite-three-hud .satellite-scene-rgb-switch-label {
+  font-size: 0.58rem;
+  line-height: 1;
+  letter-spacing: 0.06em;
+}
+
 .satellite-three-hud .satellite-terrain-switch-label {
   font-size: 0.58rem;
   line-height: 1;
@@ -1106,11 +1151,19 @@
 }
 
 .satellite-three-hud .satellite-toggle-control[aria-pressed="true"],
+.satellite-three-hud .satellite-scene-rgb-switch[aria-pressed="true"],
 .satellite-three-hud .satellite-terrain-switch[aria-pressed="true"] {
   background: transparent;
   color: var(--satellite-hud-ink);
   border-color: transparent;
   opacity: 1;
+}
+
+.satellite-three-hud .satellite-scene-rgb-switch:disabled {
+  color: color-mix(in srgb, var(--satellite-hud-ink) 68%, transparent 32%);
+  background: transparent;
+  cursor: default;
+  opacity: 0.55;
 }
 
 .satellite-three-hud .satellite-terrain-switch:disabled {
@@ -1136,6 +1189,7 @@
 }
 
 .satellite-three-hud .satellite-toggle-control[aria-pressed="false"],
+.satellite-three-hud .satellite-scene-rgb-switch[aria-pressed="false"],
 .satellite-three-hud .satellite-terrain-switch[aria-pressed="false"] {
   border-color: transparent;
   background: transparent;
@@ -1155,6 +1209,7 @@
 }
 
 .satellite-three-hud .satellite-toggle-control:disabled,
+.satellite-three-hud .satellite-scene-rgb-switch:disabled,
 .satellite-three-hud .satellite-terrain-switch:disabled {
   border-color: transparent;
   background: transparent;
@@ -1178,6 +1233,19 @@
 
 .satellite-terrain-context[hidden] {
   display: none;
+}
+
+.satellite-scene-rgb-context[hidden] {
+  display: none;
+}
+
+.satellite-scene-rgb-context {
+  margin: 0.35rem 0 0;
+  color: var(--ink-mid);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  line-height: 1.45;
+  letter-spacing: 0.035em;
 }
 
 .satellite-terrain-context {
@@ -1229,6 +1297,7 @@
 
   .satellite-three-hud .satellite-analyse-btn,
   .satellite-three-hud .satellite-toggle-control,
+  .satellite-three-hud .satellite-scene-rgb-switch,
   .satellite-three-hud .satellite-terrain-switch {
     min-height: 1.1rem;
   }
@@ -1247,6 +1316,16 @@
   .satellite-three-hud .satellite-terrain-switch {
     min-width: 0;
     padding-inline: 0;
+  }
+
+  .satellite-three-hud .satellite-scene-rgb-switch {
+    min-width: 0;
+    padding-inline: 0;
+  }
+
+  .satellite-three-hud .satellite-scene-rgb-switch-label {
+    display: inline-flex;
+    font-size: 0.39rem;
   }
 
   .satellite-three-hud .satellite-terrain-switch-label {

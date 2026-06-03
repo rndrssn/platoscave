@@ -1,10 +1,10 @@
-<!-- Boundary-free monitoring Explorer: seven-index Sentinel-2 terrain renderer with Basemap/Terrain context and no field boundary required. -->
+<!-- Boundary-free monitoring Explorer: seven-index Sentinel-2 terrain renderer with Basemap/Scene RGB/Terrain context and no field boundary required. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Boundary-free crop monitoring explorer — pan to any field, click once, and get seven Sentinel-2 spectral-index terrain surfaces with no boundary registration required." />
+  <meta name="description" content="Tactile boundary-free crop monitoring explorer — pan to any field, click once, and get seven Sentinel-2 spectral-index terrain surfaces with no boundary registration required." />
   <title>Explorer · Boundary-free monitoring · To the Bedrock</title>
   <script src="../../../theme.config.js"></script>
   <script src="../../../js/theme-bootstrap.js"></script>
@@ -55,7 +55,10 @@
           Pan to any agricultural area, zoom to field scale, and click <strong>Load indices</strong> — no
           boundary registration required. Seven Sentinel-2 spectral indices render as terrain above a
           satellite tile base fitted to the current bounds. Select an index to swap the surface; the imagery
-          and camera position stay fixed. Orbit controls let you inspect from any angle.
+          and camera position stay fixed. Orbit controls make boundary-free monitoring tactile: the field becomes
+          a surface you can turn, compare, and inspect from any angle. After a live analysis, <strong>Scene RGB</strong>
+          swaps in the lower-resolution Sentinel image from the same acquisition date; <strong>Terrain</strong>
+          swaps in contour context.
         </p>
       </header>
 
@@ -87,6 +90,9 @@
               <button class="satellite-analyse-btn control-action control-action--primary" id="satellite-three-analyse-btn" type="button">
                 Load indices
               </button>
+              <button class="satellite-scene-rgb-switch control-toggle" id="satellite-three-scene-rgb-switch" type="button" aria-pressed="false" aria-label="Toggle Sentinel scene RGB context" hidden>
+                <span class="satellite-scene-rgb-switch-label">Scene RGB off</span>
+              </button>
               <button class="satellite-terrain-switch control-toggle" id="satellite-three-terrain-switch" type="button" aria-pressed="false" aria-label="Toggle terrain context" hidden>
                 <span class="satellite-terrain-switch-label">Terrain off</span>
               </button>
@@ -110,6 +116,9 @@
         </div>
         <p class="satellite-terrain-context" id="satellite-three-terrain-context" hidden>
           Terrain context &middot; elevation contours usually 10 m apart; close lines mean steeper ground. Index height is analytical, not metres.
+        </p>
+        <p class="satellite-scene-rgb-context" id="satellite-three-scene-rgb-context" hidden>
+          Scene RGB context &middot; same Sentinel-2 acquisition as the index surface; lower resolution than the MapTiler basemap.
         </p>
       </div>
 
@@ -185,6 +194,10 @@
             each grid cell to a vertex height and colour, and builds a Three.js <code>BufferGeometry</code> mesh.
             At 10&nbsp;ha the display grid is denser than Sentinel-2's native 10-20&nbsp;m bands, so neighbouring
             vertices should be read as resampled display points rather than independent source observations.
+            The base context defaults to sharper MapTiler imagery for orientation, while Scene RGB uses the same
+            Sentinel acquisition as the index grids when the live response includes it.
+            If the live path is unavailable, a procedural fixture preserves the tactile interaction model; treat
+            that fallback as illustrative interaction data rather than crop observations.
           </p>
         </section>
       </article>

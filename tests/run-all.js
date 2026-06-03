@@ -7,6 +7,7 @@ const path = require('path');
 const tests = [
   '../scripts/check-claude-links.js',
   '../scripts/check-docs-integrity.js',
+  'test-repo-map-source-contract.js',
   'test-notes-build-contract.js',
   'test-notes-build-negative.js',
   'test-browser-smoke-optional.js',

@@ -56,7 +56,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
     - Mathematical appendix deriving the M/M/1 queueing formula from Poisson arrivals, exponential service, and steady-state balance equations.
 - **Boundary-free monitoring** — Viewport-as-AOI remote-sensing proof of concept.
   - **01 Overview** (`/modules/satellite-index/`)
-  - **02 Explorer** (`/modules/satellite-index/three/`) — Three.js seven-index Sentinel-2 terrain renderer with Basemap/Terrain context; Terrain uses MapTiler `contours-v2` isolines.
+  - **02 Explorer** (`/modules/satellite-index/three/`) — Three.js seven-index Sentinel-2 terrain renderer with MapTiler basemap, same-scene Sentinel RGB, and Terrain context; Terrain uses MapTiler `contours-v2` isolines.
   - **Archived Demo** (`/modules/satellite-index/demo/`) — Plotly.js multi-index surfaces with Sentinel-derived RGB context; URL preserved but unlinked from the module sub-nav.
 - **Ambiguous Documents** — How ambiguous product documentation becomes precise enough to test and build. Paired narratively with Module 04 (same epistemic bet, at unit scale).
   - **01 Ambiguous Documents** (`/modules/ambiguity-clarity/`)

@@ -95,7 +95,17 @@ class FakeElement {
 
   appendChild(child) {
     child.parent = this;
+    child.ownerDocument = this.ownerDocument;
     this.children.push(child);
+    return child;
+  }
+
+  insertBefore(child, refChild) {
+    child.parent = this;
+    child.ownerDocument = this.ownerDocument;
+    const idx = refChild ? this.children.indexOf(refChild) : -1;
+    if (idx >= 0) this.children.splice(idx, 0, child);
+    else this.children.push(child);
     return child;
   }
 
@@ -113,13 +123,30 @@ class FakeElement {
   }
 
   querySelector(selector) {
-    if (!this.ownerDocument) return null;
-    return this.ownerDocument.querySelector(selector);
+    const all = this.querySelectorAll(selector);
+    if (all.length > 0) return all[0];
+    return this.ownerDocument ? this.ownerDocument.querySelector(selector) : null;
   }
 
   querySelectorAll(selector) {
-    if (!this.ownerDocument) return [];
-    return this.ownerDocument.querySelectorAll(selector);
+    const matches = [];
+
+    function matchesSelector(el) {
+      if (selector.startsWith('#')) return el.id === selector.slice(1);
+      if (selector.startsWith('.')) return el.classList.contains(selector.slice(1));
+      return el.tagName === String(selector || '').toUpperCase();
+    }
+
+    function walk(el) {
+      for (const child of el.children) {
+        if (matchesSelector(child)) matches.push(child);
+        walk(child);
+      }
+    }
+
+    walk(this);
+    if (matches.length > 0) return matches;
+    return this.ownerDocument ? this.ownerDocument.querySelectorAll(selector) : [];
   }
 
   scrollIntoView() {}

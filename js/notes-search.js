@@ -1,4 +1,4 @@
-// Client-side keyword filter for the notes index page.
+// Client-side keyword filter and freshness repair for the notes index page.
 'use strict';
 
 (function initNotesSearch() {
@@ -7,10 +7,102 @@
   if (!input || !list) return;
 
   var cards = Array.from(list.querySelectorAll('.note-index-card'));
-  if (!cards.length) return;
 
   function normalize(text) {
     return String(text || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  }
+
+  function safeSlug(value) {
+    var slug = String(value || '').trim();
+    return /^[a-z0-9-]+$/.test(slug) ? slug : '';
+  }
+
+  function getCardSlug(card) {
+    var explicitSlug = safeSlug(card.getAttribute('data-writing-slug'));
+    if (explicitSlug) return explicitSlug;
+
+    var link = card.querySelector ? card.querySelector('.note-index-link') : null;
+    var href = link ? String(link.getAttribute('href') || '') : '';
+    var match = href.match(/\.\/([a-z0-9-]+)\/?$/);
+    return match ? match[1] : '';
+  }
+
+  function buildSearchText(entry) {
+    var tags = Array.isArray(entry.tags) ? entry.tags : [];
+    return normalize([
+      entry.title,
+      entry.summary,
+      entry.date,
+      tags.map(function(tag) { return tag && tag.label; }).join(' ')
+    ].join(' '));
+  }
+
+  function appendTextNode(parent, tagName, className, text) {
+    var el = document.createElement(tagName);
+    if (className) el.className = className;
+    if (className && el.classList) {
+      className.split(/\s+/).filter(Boolean).forEach(function(name) {
+        el.classList.add(name);
+      });
+    }
+    el.textContent = String(text || '');
+    parent.appendChild(el);
+    return el;
+  }
+
+  function appendTags(parent, tags) {
+    if (!Array.isArray(tags) || !tags.length) {
+      appendTextNode(parent, 'span', 'module-tag', '#untagged');
+      return;
+    }
+
+    tags.forEach(function(tag) {
+      var slug = safeSlug(tag && tag.slug);
+      if (!slug) return;
+      var link = appendTextNode(parent, 'a', 'module-tag', '#' + String(tag.label || slug));
+      link.setAttribute('href', '../tags/' + slug + '/');
+    });
+  }
+
+  function buildCard(entry) {
+    var slug = safeSlug(entry && entry.slug);
+    if (!slug) return null;
+
+    var card = document.createElement('article');
+    card.className = 'note-index-card';
+    if (card.classList) card.classList.add('note-index-card');
+    card.setAttribute('data-writing-slug', slug);
+    card.setAttribute('data-note-search', buildSearchText(entry));
+
+    var link = document.createElement('a');
+    link.className = 'note-index-link';
+    if (link.classList) link.classList.add('note-index-link');
+    link.setAttribute('href', './' + slug + '/');
+    card.appendChild(link);
+
+    var head = document.createElement('span');
+    head.className = 'note-index-head';
+    if (head.classList) head.classList.add('note-index-head');
+    link.appendChild(head);
+
+    appendTextNode(head, 'span', 'note-index-title', entry.title || slug);
+    appendTextNode(head, 'span', 'note-index-date', entry.date ? 'Published ' + entry.date : 'Published');
+
+    if (entry.summary) {
+      appendTextNode(link, 'span', 'note-index-summary', entry.summary);
+      appendTextNode(link, 'span', 'note-index-more', '...more');
+    }
+
+    var tagLine = document.createElement('div');
+    tagLine.className = 'module-tags note-index-tags';
+    if (tagLine.classList) {
+      tagLine.classList.add('module-tags');
+      tagLine.classList.add('note-index-tags');
+    }
+    appendTags(tagLine, entry.tags);
+    card.appendChild(tagLine);
+
+    return card;
   }
 
   function runFilter() {
@@ -23,5 +115,41 @@
     });
   }
 
+  function prependMissingEntries(entries) {
+    var seen = new Set(cards.map(getCardSlug).filter(Boolean));
+    var missing = entries.filter(function(entry) {
+      var slug = safeSlug(entry && entry.slug);
+      if (!slug || seen.has(slug)) return false;
+      seen.add(slug);
+      return true;
+    });
+
+    for (var i = missing.length - 1; i >= 0; i -= 1) {
+      var card = buildCard(missing[i]);
+      if (!card) continue;
+      list.insertBefore(card, list.firstChild);
+    }
+
+    if (missing.length) {
+      cards = Array.from(list.querySelectorAll('.note-index-card'));
+      runFilter();
+    }
+  }
+
+  function fetchFreshIndex() {
+    if (typeof fetch !== 'function') return;
+
+    fetch('../data/notes-index.json?fresh=' + Date.now(), { cache: 'no-store' })
+      .then(function(response) {
+        if (!response || !response.ok) return null;
+        return response.json();
+      })
+      .then(function(entries) {
+        if (Array.isArray(entries)) prependMissingEntries(entries);
+      })
+      .catch(function() {});
+  }
+
   input.addEventListener('input', runFilter);
+  fetchFreshIndex();
 })();

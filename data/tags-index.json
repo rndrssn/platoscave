@@ -1,5 +1,16 @@
 [
   {
+    "label": "ai agents",
+    "slug": "ai-agents",
+    "notes": [
+      "put-invariants-in-tests"
+    ],
+    "articles": [
+      "making-instructions-executable"
+    ],
+    "modules": []
+  },
+  {
     "label": "complexity",
     "slug": "complexity",
     "notes": [
@@ -43,6 +54,17 @@
     "modules": [
       "03-garbage-can"
     ]
+  },
+  {
+    "label": "governance",
+    "slug": "governance",
+    "notes": [
+      "put-invariants-in-tests"
+    ],
+    "articles": [
+      "making-instructions-executable"
+    ],
+    "modules": []
   },
   {
     "label": "long tails",
@@ -89,6 +111,17 @@
       "cost-overruns"
     ],
     "articles": [],
+    "modules": []
+  },
+  {
+    "label": "testing",
+    "slug": "testing",
+    "notes": [
+      "put-invariants-in-tests"
+    ],
+    "articles": [
+      "making-instructions-executable"
+    ],
     "modules": []
   },
   {

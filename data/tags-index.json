@@ -97,6 +97,7 @@
     "label": "product management",
     "slug": "product-management",
     "notes": [
+      "the-distant-business",
       "pm-complexity"
     ],
     "articles": [
@@ -128,6 +129,7 @@
     "label": "the mix",
     "slug": "the-mix",
     "notes": [
+      "the-distant-business",
       "semantics",
       "what-works-and-what-doesnt-work",
       "cost-overruns"

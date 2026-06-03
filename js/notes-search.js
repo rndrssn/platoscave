@@ -1,4 +1,4 @@
-// Client-side keyword filter and freshness repair for the notes index page.
+// Client-side keyword filter and JSON-backed rendering for the notes index page.
 'use strict';
 
 (function initNotesSearch() {
@@ -15,16 +15,6 @@
   function safeSlug(value) {
     var slug = String(value || '').trim();
     return /^[a-z0-9-]+$/.test(slug) ? slug : '';
-  }
-
-  function getCardSlug(card) {
-    var explicitSlug = safeSlug(card.getAttribute('data-writing-slug'));
-    if (explicitSlug) return explicitSlug;
-
-    var link = card.querySelector ? card.querySelector('.note-index-link') : null;
-    var href = link ? String(link.getAttribute('href') || '') : '';
-    var match = href.match(/\.\/([a-z0-9-]+)\/?$/);
-    return match ? match[1] : '';
   }
 
   function buildSearchText(entry) {
@@ -115,25 +105,18 @@
     });
   }
 
-  function prependMissingEntries(entries) {
-    var seen = new Set(cards.map(getCardSlug).filter(Boolean));
-    var missing = entries.filter(function(entry) {
-      var slug = safeSlug(entry && entry.slug);
-      if (!slug || seen.has(slug)) return false;
-      seen.add(slug);
-      return true;
+  function renderFreshEntries(entries) {
+    while (list.firstChild) {
+      list.removeChild(list.firstChild);
+    }
+
+    entries.forEach(function(entry) {
+      var card = buildCard(entry);
+      if (card) list.appendChild(card);
     });
 
-    for (var i = missing.length - 1; i >= 0; i -= 1) {
-      var card = buildCard(missing[i]);
-      if (!card) continue;
-      list.insertBefore(card, list.firstChild);
-    }
-
-    if (missing.length) {
-      cards = Array.from(list.querySelectorAll('.note-index-card'));
-      runFilter();
-    }
+    cards = Array.from(list.querySelectorAll('.note-index-card'));
+    runFilter();
   }
 
   function fetchFreshIndex() {
@@ -145,7 +128,7 @@
         return response.json();
       })
       .then(function(entries) {
-        if (Array.isArray(entries)) prependMissingEntries(entries);
+        if (Array.isArray(entries)) renderFreshEntries(entries);
       })
       .catch(function() {});
   }

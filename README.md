@@ -215,6 +215,7 @@ git commit --allow-empty -m "Force GitHub Pages redeploy" && git push origin mai
   - `tests/test-nav-theme-contract.js` ensures nav surfaces stay token-driven and prevents direct `.main-nav` theme overrides for the active theme.
 - Optional real-browser smoke test (auto-skips unless Playwright is installed):
   - `node tests/test-browser-smoke-optional.js`
+- Release branch flow is `sandbox` -> `develop` -> `main`; `scripts/release-all.sh` runs `node tests/run-all.js`, commits staged changes on `sandbox` when present, merges through `develop` and `main`, pushes affected branches, and returns to `sandbox`.
 
 ### Release gate
 

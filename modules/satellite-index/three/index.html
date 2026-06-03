@@ -163,6 +163,32 @@
         </div>
       </section>
 
+      <article class="module-essay satellite-three-technical-notes" aria-labelledby="satellite-three-technical-notes-heading">
+        <section class="essay-section">
+          <h2 class="essay-heading" id="satellite-three-technical-notes-heading">Technical notes</h2>
+          <p class="essay-body">
+            The live path is <strong>Sentinel-2 L2A imagery -&gt; Cloudflare Worker -&gt; encoded index rasters -&gt;
+            browser value grids -&gt; Three.js terrain geometry</strong>. The browser sends viewport bounds, date,
+            and an adaptive grid size to the Worker. At field scale, up to and including 10&nbsp;ha
+            (0.1&nbsp;km&sup2;), the Explorer requests a 512&nbsp;&times;&nbsp;512 grid; larger allowed viewports
+            up to 200&nbsp;ha use 256&nbsp;&times;&nbsp;256.
+          </p>
+          <p class="essay-body">
+            The Worker returns seven spectral indices as base64-encoded PNGs, plus scene metadata. Base64 is only
+            a text wrapper and PNG compression is lossless; the intentional precision limit is the one-byte channel
+            used to transport each index value. For NDVI, which is encoded across -1 to +1, that means about
+            0.0078 index units per step. A representative 10&nbsp;ha request is roughly 0.3&nbsp;MB over the wire,
+            mostly the encoded PNG rasters.
+          </p>
+          <p class="essay-body">
+            The PNGs are not used as surface textures. The Explorer decodes each image into a numeric grid, maps
+            each grid cell to a vertex height and colour, and builds a Three.js <code>BufferGeometry</code> mesh.
+            At 10&nbsp;ha the display grid is denser than Sentinel-2's native 10-20&nbsp;m bands, so neighbouring
+            vertices should be read as resampled display points rather than independent source observations.
+          </p>
+        </section>
+      </article>
+
       <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">
         <a class="footer-nav-link" href="../" aria-label="Back to Overview">
           <span class="footer-nav-label-full">&larr; Back to Overview</span>

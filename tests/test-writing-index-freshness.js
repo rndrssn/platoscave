@@ -1,4 +1,4 @@
-// Regression tests for stale notes/articles index pages repairing themselves from fresh JSON.
+// Regression tests for notes/articles index pages rendering from fresh JSON over stale fallback HTML.
 'use strict';
 
 const assert = require('assert');
@@ -71,7 +71,7 @@ function cardSlugs(list) {
   });
 }
 
-async function testNotesIndexPrependsMissingFreshEntries() {
+async function testNotesIndexRendersFreshJsonEntries() {
   const harness = makeHarness({
     inputId: 'notes-search-input',
     listId: 'notes-list',
@@ -101,6 +101,7 @@ async function testNotesIndexPrependsMissingFreshEntries() {
   });
 
   harness.input.value = 'middle';
+  addExistingCard(harness, 'stale-note', ['note-index-card'], 'data-note-search');
   addExistingCard(harness, 'old-note', ['note-index-card'], 'data-note-search');
 
   loadScript('notes-search.js', harness);
@@ -109,12 +110,13 @@ async function testNotesIndexPrependsMissingFreshEntries() {
   assert.strictEqual(harness.fetchCall.url, '../data/notes-index.json?fresh=123456789');
   assert.strictEqual(harness.fetchCall.options.cache, 'no-store');
   assert.deepStrictEqual(cardSlugs(harness.list), ['newest-note', 'middle-note', 'old-note']);
+  assert(!cardSlugs(harness.list).includes('stale-note'), 'stale fallback-only note should be removed after JSON render');
   assert.strictEqual(harness.list.children[0].hidden, true, 'non-matching fresh note should be hidden by active filter');
   assert.strictEqual(harness.list.children[1].hidden, false, 'matching fresh note should remain visible');
   assert.strictEqual(harness.list.children[2].hidden, true, 'existing non-matching note should be hidden by active filter');
 }
 
-async function testArticlesIndexPrependsMissingFreshEntries() {
+async function testArticlesIndexRendersFreshJsonEntries() {
   const harness = makeHarness({
     inputId: 'articles-search-input',
     listId: 'articles-list',
@@ -136,6 +138,7 @@ async function testArticlesIndexPrependsMissingFreshEntries() {
     ]
   });
 
+  addExistingCard(harness, 'stale-article', ['note-index-card', 'article-index-card'], 'data-article-search');
   addExistingCard(harness, 'old-article', ['note-index-card', 'article-index-card'], 'data-article-search');
 
   loadScript('articles-search.js', harness);
@@ -144,6 +147,7 @@ async function testArticlesIndexPrependsMissingFreshEntries() {
   assert.strictEqual(harness.fetchCall.url, '../data/articles-index.json?fresh=123456789');
   assert.strictEqual(harness.fetchCall.options.cache, 'no-store');
   assert.deepStrictEqual(cardSlugs(harness.list), ['new-article', 'old-article']);
+  assert(!cardSlugs(harness.list).includes('stale-article'), 'stale fallback-only article should be removed after JSON render');
   assert(harness.list.children[0].classList.contains('article-index-card'), 'fresh article card should keep article index class');
 
   const tagLink = harness.list.children[0].querySelector('.module-tag');
@@ -152,8 +156,8 @@ async function testArticlesIndexPrependsMissingFreshEntries() {
 }
 
 async function run() {
-  await testNotesIndexPrependsMissingFreshEntries();
-  await testArticlesIndexPrependsMissingFreshEntries();
+  await testNotesIndexRendersFreshJsonEntries();
+  await testArticlesIndexRendersFreshJsonEntries();
   console.log('PASS: tests/test-writing-index-freshness.js');
 }
 

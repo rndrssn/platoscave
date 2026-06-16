@@ -140,8 +140,55 @@ function testThemeConfigAndThemeCssStayInSync() {
   }
 }
 
+function testDesignSystemTypographyReadoutsUseComputedStyles() {
+  const designSystemSource = fs.readFileSync(designSystemPath, 'utf8');
+  const requiredFamilySamples = [
+    'data-ds-font-sample="serif"',
+    'data-ds-font-sample="serif-alt"',
+    'data-ds-font-sample="mono"',
+  ];
+  const requiredTypeReadouts = [
+    'data-ds-type-readout-for="module-title"',
+    'data-ds-type-readout-for="essay-heading"',
+    'data-ds-type-readout-for="essay-body"',
+    'data-ds-type-readout-for="module-body"',
+  ];
+
+  for (const snippet of requiredFamilySamples) {
+    assert(
+      designSystemSource.includes(snippet),
+      'design-system typography families must expose live computed sample: ' + snippet
+    );
+  }
+
+  for (const snippet of requiredTypeReadouts) {
+    assert(
+      designSystemSource.includes(snippet),
+      'design-system typography section must expose live computed readout: ' + snippet
+    );
+  }
+
+  assert(
+    /function\s+refreshTypographyReadouts\s*\(\)/.test(designSystemSource),
+    'design-system theme preview must refresh typography readouts'
+  );
+  assert(
+    /window\.getComputedStyle\(/.test(designSystemSource),
+    'design-system typography readouts must use computed styles'
+  );
+  assert(
+    /link\.addEventListener\('load',\s*scheduleTypographyRefresh/.test(designSystemSource),
+    'design-system theme preview must refresh typography after the selected theme stylesheet loads'
+  );
+  assert(
+    !/>Cormorant Garamond<\/span>/.test(designSystemSource),
+    'design-system typography families should not hard-code Cormorant Garamond as the active heading label'
+  );
+}
+
 function run() {
   testThemeConfigAndThemeCssStayInSync();
+  testDesignSystemTypographyReadoutsUseComputedStyles();
   console.log('PASS: tests/test-theme-config-contract.js');
 }
 

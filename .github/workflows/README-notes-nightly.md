@@ -40,7 +40,7 @@ This gives you a manual one-off deployment mode without enabling nightly schedul
 
 ## Activation Steps
 
-1. Ensure GitHub Pages serves from `main` (root).
+1. Confirm the Cloudflare Worker (`platoscave.bedrockrebel.app`) is still connected to auto-deploy from `main` pushes — it already is by default, nothing to change here unless that connection was removed.
 2. Ensure Actions permission is set to allow writing repository contents:
    - Repository Settings -> Actions -> Workflow permissions -> `Read and write permissions`
 3. Rename workflow file:

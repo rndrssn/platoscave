@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Publish writing workflow from sandbox:
+# Publish writing workflow from main:
 # 1) Build writing outputs (notes + articles + tags)
 # 2) Validate targeted writing items (and optionally run full test suite)
 # 3) Commit generated artifacts
-# 4) Push sandbox and merge into develop + main
+# 4) Push main directly (notes/articles publishing is content, not code, and
+#    is deliberately not part of the feature-branch workflow used for code)
 #
 # Usage:
 #   scripts/publish-note.sh <slug>
@@ -374,34 +375,17 @@ if [[ -z "$COMMIT_MSG" ]]; then
 fi
 
 CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-if [[ "$CURRENT_BRANCH" != "sandbox" ]]; then
-  echo "This script must be run from branch 'sandbox'. Current branch: $CURRENT_BRANCH" >&2
+if [[ "$CURRENT_BRANCH" != "main" ]]; then
+  echo "This script must be run from branch 'main'. Current branch: $CURRENT_BRANCH" >&2
   exit 1
 fi
+
+git pull --ff-only origin main
 
 if ! git diff --cached --quiet; then
   echo "Index is not clean. Please commit or unstage existing staged changes before running publish-note." >&2
   exit 1
 fi
-
-sync_target_branch() {
-  local target="$1"
-  echo "==> Preparing $target"
-  if git show-ref --verify --quiet "refs/heads/$target"; then
-    git checkout "$target"
-  else
-    git checkout -B "$target" "origin/$target"
-  fi
-  git merge --ff-only "origin/$target"
-}
-
-promote_sandbox_to_target() {
-  local target="$1"
-  echo "==> Merging sandbox -> $target"
-  sync_target_branch "$target"
-  git merge --no-ff sandbox -m "Merge branch 'sandbox' into $target"
-  git push origin "$target"
-}
 
 if [[ -n "$POLISH_TARGET" ]]; then
   echo "==> Polishing writing spelling/punctuation"
@@ -512,32 +496,9 @@ fi
 echo "==> Committing"
 git commit -m "$COMMIT_MSG"
 
-echo "==> Pushing sandbox"
-git push origin sandbox
-
-echo "==> Fetching remote branch tips"
-git fetch origin sandbox develop main
-
-promote_sandbox_to_target develop
-promote_sandbox_to_target main
-
-echo "==> Returning to sandbox"
-git checkout sandbox
-
-echo "==> Verifying branch promotion"
-git fetch origin sandbox develop main
-SANDBOX_SHA="$(git rev-parse sandbox)"
-for target in develop main; do
-  if git merge-base --is-ancestor "$SANDBOX_SHA" "origin/$target"; then
-    echo "OK: origin/$target contains sandbox commit $SANDBOX_SHA"
-  else
-    echo "FAIL: origin/$target does not contain sandbox commit $SANDBOX_SHA" >&2
-    exit 1
-  fi
-done
+echo "==> Pushing main"
+git push origin main
 
 echo "==> Done"
-echo "sandbox: $(git rev-parse sandbox)"
-echo "develop: $(git rev-parse develop)"
-echo "main:    $(git rev-parse main)"
-echo "tree:    $(git rev-parse sandbox^{tree})"
+echo "main: $(git rev-parse main)"
+echo "tree: $(git rev-parse main^{tree})"

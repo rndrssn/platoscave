@@ -1,4 +1,4 @@
-// Contract test for release and validation workflow documented in README and implemented by scripts.
+// Contract test for the git/release workflow documented in README and implemented by scripts.
 'use strict';
 
 const assert = require('assert');
@@ -12,18 +12,21 @@ function read(relPath) {
 }
 
 const readme = read('README.md');
-const releaseScriptPath = path.join(ROOT, 'scripts', 'release-all.sh');
-assert(fs.existsSync(releaseScriptPath), 'scripts/release-all.sh must exist');
 
-const releaseScript = read('scripts/release-all.sh');
+for (const relPath of ['scripts/ship.sh', 'scripts/start-feature.sh']) {
+  assert(fs.existsSync(path.join(ROOT, relPath)), relPath + ' must exist');
+}
+
+const shipScript = read('scripts/ship.sh');
+const startFeatureScript = read('scripts/start-feature.sh');
 const failures = [];
 
 for (const needle of [
   'node tests/run-all.js',
-  'scripts/release-all.sh',
-  'sandbox',
-  'develop',
+  'scripts/ship.sh',
+  'scripts/start-feature.sh',
   'main',
+  'feature',
   'scripts/check-claude-links.js',
   'AGENTS.md',
   'CLAUDE.md',
@@ -34,16 +37,28 @@ for (const needle of [
 }
 
 for (const needle of [
-  'git checkout sandbox',
   'node tests/run-all.js',
-  'git checkout develop',
-  'git merge --no-ff sandbox',
   'git checkout main',
-  'git merge --no-ff develop',
-  'git checkout sandbox',
+  'git merge --no-ff',
+  'git push origin main',
+  'git branch -d',
+  'git push origin --delete',
 ]) {
-  if (!releaseScript.includes(needle)) {
-    failures.push('scripts/release-all.sh must implement workflow step: ' + needle);
+  if (!shipScript.includes(needle)) {
+    failures.push('scripts/ship.sh must implement workflow step: ' + needle);
+  }
+}
+
+for (const needle of ['git checkout -b', 'origin main']) {
+  if (!startFeatureScript.includes(needle)) {
+    failures.push('scripts/start-feature.sh must implement workflow step: ' + needle);
+  }
+}
+
+// The old three-branch flow must actually be gone, not just supplemented.
+for (const stale of ['scripts/release-all.sh', 'develop` -> `main', 'sandbox` -> `develop']) {
+  if (readme.includes(stale)) {
+    failures.push('README.md still references the retired sandbox/develop flow: ' + stale);
   }
 }
 

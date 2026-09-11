@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# One-command writing publish from sandbox:
+# One-command writing publish from main:
 # - Detect changed published writing under content/notes/published and content/articles/published
 # - Extract slugs from frontmatter
 # - Run publish-note.sh with explicit --only guards
@@ -16,8 +16,8 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-if [[ "$CURRENT_BRANCH" != "sandbox" ]]; then
-  echo "This script must be run from branch 'sandbox'. Current branch: $CURRENT_BRANCH" >&2
+if [[ "$CURRENT_BRANCH" != "main" ]]; then
+  echo "This script must be run from branch 'main'. Current branch: $CURRENT_BRANCH" >&2
   exit 1
 fi
 

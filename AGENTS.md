@@ -46,27 +46,42 @@ Always provide a plan before executing. Do not edit files, run build/test comman
 
 ## Git Workflow
 
-Three-branch flow: `sandbox` → `develop` → `main`
-
-| Branch | Role | Rule |
-|--------|------|------|
-| `sandbox` | Development | All commits and iteration happen here |
-| `develop` | Staging | Integration step before production |
-| `main` | Production | Live on Cloudflare Workers static assets (platoscave.bedrockrebel.app) |
+`main` is the only permanent branch, live on Cloudflare Workers static
+assets (platoscave.bedrockrebel.app), and stays directly committable for
+routine, low-risk work — most fixes, content, and small features land there
+straight away. Short-lived feature branches (named feature/ plus a short
+slug, e.g. feature/rewrite-search) are spun up **on demand, not for every
+change** — only when a specific piece of work warrants isolation (larger,
+multi-commit, experimental, or explicitly requested). When unsure whether a
+change warrants one, ask.
 
 **Trigger phrases:**
-- `commit` → commit on `sandbox` only
-- `release to develop` → merge `sandbox` → `develop`, push both
-- `release to main` → merge `develop` → `main`, push both
-- `commit and release to main` → commit on `sandbox` → merge to `develop` → merge to `main`, push all three
+- `commit` → test, commit, and push on whichever branch you're on (`main`
+  or the current feature branch). Commit always implies push.
+- `start feature <slug>` → branch off up-to-date `main` into a new feature
+  branch, only when isolation is warranted.
+- `merge to main` / `commit and merge to main` → from a feature branch:
+  merge `--no-ff` into `main`, push, delete the branch (local + remote).
+  No-op/meaningless if already on `main`.
 
-**Shorthand script:** `scripts/release-all.sh` — accepts an optional commit message argument; runs `node tests/run-all.js`, commits any staged changes on `sandbox`, merges sandbox→develop→main, pushes all three, and returns to `sandbox`. Equivalent to `commit and release to main`. Skips the commit step if nothing is staged.
+**Scripts:**
+- `scripts/start-feature.sh` (takes a slug argument) — creates a feature
+  branch off up-to-date `main`.
+- `scripts/ship.sh` (takes an optional commit-message argument) — adapts to
+  the current branch: on `main`, commits and pushes; on a feature branch,
+  commits, pushes, merges into `main`, and deletes the branch. A message is
+  only required when there are staged changes to commit — it never falls
+  back to a generic message.
 
 **Rules:**
-- Never commit directly to `develop` or `main`
-- Always switch back to `sandbox` after any release
-- Push all affected branches to remote after each release
-- Run `node tests/run-all.js` before every commit
+- Never commit directly to a branch other than `main` or the feature
+  branch you're currently working on.
+- Delete a feature branch (local + remote) immediately once merged — don't
+  keep it around "just in case."
+- Run `node tests/run-all.js` before every commit.
+- Notes/articles publishing (`scripts/publish-note.sh`,
+  `scripts/publish-notes-now.sh`) is a separate, lighter direct-to-`main`
+  flow — content, not code, and unaffected by the feature-branch model.
 
 ## Context Loading
 

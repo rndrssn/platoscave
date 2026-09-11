@@ -95,7 +95,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
   - Missing required fields or an unrecognised `status` value cause the build to fail with the affected filename
 - Build notes, articles, and tags pages:
   - `node scripts/build-notes.js`
-- One-command publish flow from `sandbox`:
+- One-command publish flow from `main`:
   - note: `scripts/publish-note.sh <slug>` (defaults to notes/articles auto-resolution and commit message `Publish writing: <collection>:<slug>`)
   - explicit note: `scripts/publish-note.sh notes:<slug>`
   - article: `scripts/publish-note.sh articles:<slug>`
@@ -189,8 +189,8 @@ If a `[[wikilink]]` target does not match any `id` in the data file, the loader 
 node tests/run-all.js
 ```
 
-2. Commit and release through normal flow:
-   - `sandbox` -> `develop` -> `main`
+2. Commit and push directly to `main` (content publishing, unaffected by
+   the feature-branch workflow used for code)
 
 ## Deployment
 
@@ -211,7 +211,7 @@ Worker project → **Settings → Build → Build variables and secrets** (build
 
 - `WORKER_API_KEY` — the real Satellite Index Worker key, injected at build time
 
-`node tests/run-all.js` runs separately as GitHub Actions CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) on pushes to `sandbox`, `develop`, and `main` and on pull requests; it does not gate the Cloudflare build, so the local pre-commit gate (`node tests/run-all.js`) stays authoritative.
+`node tests/run-all.js` runs separately as GitHub Actions CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) on pushes to `main` and any `feature/*` branch; it does not gate the Cloudflare build, so the local pre-commit gate (`node tests/run-all.js`) stays authoritative.
 
 To re-run a deploy: use **Retry deployment** in the Cloudflare dashboard, or push an empty commit:
 
@@ -228,7 +228,7 @@ git commit --allow-empty -m "Force redeploy" && git push origin main
   - `tests/test-nav-theme-contract.js` ensures nav surfaces stay token-driven and prevents direct `.main-nav` theme overrides for the active theme.
 - Optional real-browser smoke test (auto-skips unless Playwright is installed):
   - `node tests/test-browser-smoke-optional.js`
-- Release branch flow is `sandbox` -> `develop` -> `main`; `scripts/release-all.sh` runs `node tests/run-all.js`, commits staged changes on `sandbox` when present, merges through `develop` and `main`, pushes affected branches, and returns to `sandbox`.
+- `main` is the only permanent branch and stays directly committable for routine work; short-lived feature branches are spun up on demand (not for every change) for anything that warrants isolation. `scripts/ship.sh` runs `node tests/run-all.js`, commits and pushes on whichever branch you're on, and — from a feature branch — merges `--no-ff` into `main` and deletes the branch. `scripts/start-feature.sh` creates a feature branch off up-to-date `main`.
 
 ### Release gate
 

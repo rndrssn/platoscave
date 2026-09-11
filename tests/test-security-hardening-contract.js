@@ -30,16 +30,9 @@ function testPageShellCsp() {
 
 function testWorkflowPinning() {
   const ci = read('.github/workflows/ci.yml');
-  const deploy = read('.github/workflows/deploy.yml');
 
   assertPinnedAction(ci, 'actions/checkout', '.github/workflows/ci.yml');
   assertPinnedAction(ci, 'actions/setup-node', '.github/workflows/ci.yml');
-
-  assertPinnedAction(deploy, 'actions/checkout', '.github/workflows/deploy.yml');
-  assertPinnedAction(deploy, 'actions/setup-node', '.github/workflows/deploy.yml');
-  assertPinnedAction(deploy, 'actions/configure-pages', '.github/workflows/deploy.yml');
-  assertPinnedAction(deploy, 'actions/upload-pages-artifact', '.github/workflows/deploy.yml');
-  assertPinnedAction(deploy, 'actions/deploy-pages', '.github/workflows/deploy.yml');
 }
 
 function run() {

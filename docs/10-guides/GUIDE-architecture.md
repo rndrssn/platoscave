@@ -118,12 +118,12 @@ Worker integration:
 - Deployed Worker: `https://satellite-worker.platoscave.workers.dev`
 - Frontend endpoint: `POST /analysis`
 - Source placeholder: `const WORKER_API_KEY = '__WORKER_API_KEY__';`
-- Deploy injection: `.github/workflows/deploy.yml` substitutes the real key from the `WORKER_API_KEY` GitHub Actions secret at deploy time
+- Deploy injection: `scripts/cf-build.sh` (the Cloudflare Pages build) substitutes the real key from the `WORKER_API_KEY` Pages environment variable at build time
 - Local injection/restore: `scripts/dev-satellite.sh inject|restore`
   - `inject` — substitutes the placeholder with the real key from a local git-ignored `.env.satellite` file for local development
   - `restore` — reverts injected files back to the `__WORKER_API_KEY__` placeholder
   - Always run `restore` before committing; never commit a file with the real key in place
-- Key rotation: update the `WORKER_API_KEY` GitHub Actions secret and redeploy; also run `wrangler secret put API_KEY --env production` in the `satellite-worker` repo
+- Key rotation: update the `WORKER_API_KEY` Cloudflare Pages environment variable and redeploy; also run `wrangler secret put API_KEY --env production` in the `satellite-worker` repo
 
 Explorer context:
 - Spectral surfaces come from Sentinel-derived indices when live data is available.
@@ -135,12 +135,12 @@ Do not fan out browser requests to separate `/ndvi` or `/image` endpoints. The W
 
 ### Why a Worker
 
-Sentinel Hub credentials (`SENTINEL_CLIENT_ID` / `SENTINEL_CLIENT_SECRET`) are billable backend credentials that must stay server-side. The Worker enforces a frontend API key via `X-API-Key`, centralises CORS and request validation, and keeps the frontend a static GitHub Pages site.
+Sentinel Hub credentials (`SENTINEL_CLIENT_ID` / `SENTINEL_CLIENT_SECRET`) are billable backend credentials that must stay server-side. The Worker enforces a frontend API key via `X-API-Key`, centralises CORS and request validation, and keeps the frontend a static site (Cloudflare Pages).
 
 ### Request flow
 
 ```
-Browser (GitHub Pages: rndrssn.github.io)
+Browser (Cloudflare Pages: platoscave.bedrockrebel.app)
     │  POST /analysis
     │  X-API-Key: <build-time injected key>
     ▼

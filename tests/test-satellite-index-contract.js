@@ -36,6 +36,8 @@ const componentsCss = read('css/components.css');
 const modulesIndexHtml = read('modules/index.html');
 const moduleRouteData = read('js/module-route-data.js');
 const devSatelliteScript = read('scripts/dev-satellite.sh');
+const cfBuildScript = read('scripts/cf-build.sh');
+const satelliteWorkerTargets = read('scripts/lib/satellite-worker-targets.sh');
 const legacyCasesIndexHtml = read('cases/index.html');
 const legacyCaseOverviewHtml = read('cases/satellite-index/index.html');
 const legacyCaseThreeHtml = read('cases/satellite-index/three/index.html');
@@ -104,9 +106,13 @@ assertIncludes(componentsCss, '.module-demo-tag', 'Demo tag styling missing from
 assertIncludes(legacyCasesIndexHtml, 'url=../modules/satellite-index/', 'Legacy cases index should redirect to promoted module');
 assertIncludes(legacyCaseOverviewHtml, 'url=../../modules/satellite-index/', 'Legacy case overview should redirect to promoted module root');
 assertIncludes(legacyCaseThreeHtml, 'url=../../../modules/satellite-index/three/', 'Legacy case Explorer should redirect to promoted module Explorer');
-assertIncludes(devSatelliteScript, 'modules/satellite-index/demo/satellite-index.js', 'Satellite dev helper should restore placeholders in promoted demo script');
-assertIncludes(devSatelliteScript, 'modules/satellite-index/three/satellite-index-three.js', 'Satellite dev helper should restore placeholders in promoted Explorer script');
-assertNotMatches(devSatelliteScript, /cases\/satellite-index\/(?:demo|three)\/satellite-index/, 'Satellite dev helper should not target deleted legacy case scripts');
+assertIncludes(satelliteWorkerTargets, 'modules/satellite-index/demo/satellite-index.js', 'Satellite worker target list should restore placeholders in promoted demo script');
+assertIncludes(satelliteWorkerTargets, 'modules/satellite-index/three/satellite-index-three.js', 'Satellite worker target list should restore placeholders in promoted Explorer script');
+assertNotMatches(satelliteWorkerTargets, /cases\/satellite-index\/(?:demo|three)\/satellite-index/, 'Satellite worker target list should not target deleted legacy case scripts');
+// The Cloudflare build and the local dev helper share one target list so they
+// can't silently diverge if a Satellite Index file is ever added or renamed.
+assertIncludes(devSatelliteScript, 'satellite-worker-targets.sh', 'Satellite dev helper should source the shared target list');
+assertIncludes(cfBuildScript, 'satellite-worker-targets.sh', 'Cloudflare build should source the shared target list');
 
 assertIncludes(threeHtml, 'Explorer', 'Explorer page heading missing');
 assertNotMatches(threeHtml, /Data arrives from a Cloudflare Worker proxying Sentinel Hub|cached\s+client-side|no new network request/, 'Explorer note should stay focused on field-use caveats, not backend plumbing');

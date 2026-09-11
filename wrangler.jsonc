@@ -1,0 +1,14 @@
+{
+  // Cloudflare deprecated new Pages projects (April 2025); "Create an app" +
+  // Connect GitHub now creates a Worker with static assets instead. No `main`
+  // script — assets-only, Cloudflare serves the directory directly.
+  "name": "platoscave",
+  "compatibility_date": "2026-09-11",
+  "assets": {
+    "directory": ".",
+    // This is a real multi-page site (test-navigation-links.js checks 97
+    // internal paths), not an SPA — a missing path must 404, never silently
+    // fall back to index.html.
+    "not_found_handling": "none"
+  }
+}

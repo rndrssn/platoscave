@@ -2,180 +2,181 @@
 
 ## 1. Session Summary
 
-This session migrated platoscave's deployment target from GitHub Pages to
-Cloudflare Pages, so the site can be reached at `platoscave.bedrockrebel.app`
-on the same Cloudflare zone/account as the `ioths-public-site` product site.
+This session migrated platoscave's deployment target off GitHub Pages, so
+the site can be reached at `platoscave.bedrockrebel.app` on the same
+Cloudflare zone/account as the `ioths-public-site` product site.
 
-The repo-side work is complete, reviewed (`/code-review`), fixed, tested, and
-released through `sandbox` → `develop` → `main`. The site is path-relative
-with no `/platoscave/` subpath assumptions, so no page content changed — only
-the build/deploy plumbing and its documentation.
+**Correction mid-session:** the plan originally assumed classic Cloudflare
+Pages (a dashboard build-command/output-directory wizard). Cloudflare
+deprecated Pages for new projects in April 2025 — the dashboard's Git-connect
+"Create an app" flow now creates a **Worker with static assets** instead,
+configured by `wrangler.jsonc` + `.assetsignore` in the repo rather than
+dashboard fields. All repo-side docs (`README.md`, `CLAUDE.md`/`AGENTS.md`,
+`docs/10-guides/GUIDE-architecture.md`) have been corrected to say "Cloudflare
+Workers (static assets)", not "Cloudflare Pages". If you find a stray "Pages"
+reference to this deploy target, it's a miss from this correction — fix it.
 
-**The Cloudflare/DNS/dashboard side of the migration has not started.** The
-live site today is still `https://rndrssn.github.io/platoscave/`, served by
-GitHub Pages from whatever the last `deploy.yml` run published — it is frozen
-there and will not receive further automatic deploys, because this session
-deleted `.github/workflows/deploy.yml`. Nothing is broken: GitHub Pages does
-not take a site down just because its deploy workflow disappears; it simply
-stops publishing new builds.
+The repo-side work is otherwise complete: build entrypoint, migration commit,
+code review + fixes, all released through `sandbox` → `develop` → `main`.
+The site is path-relative with no `/platoscave/` subpath assumptions, so no
+page content changed — only build/deploy plumbing and its documentation.
+
+**The Cloudflare/DNS/dashboard side of the migration is in progress, live,
+in this same session** (the user is following along in the Cloudflare
+dashboard in real time). The live site today is still
+`https://rndrssn.github.io/platoscave/`, served by GitHub Pages from whatever
+the last `deploy.yml` run published — frozen there, receiving no further
+automatic deploys, because an earlier part of this session deleted
+`.github/workflows/deploy.yml`. Nothing is broken: GitHub Pages does not take
+a site down just because its deploy workflow disappears; it simply stops
+publishing new builds.
 
 ## 2. Repository + Branch State
 
 - Repository: `/Users/robertandersson/dev/platoscave`
 - Branch at handoff time: `sandbox`
-- `sandbox`, `develop`, and `main` are all in sync with their remotes, at the
-  same commit:
-  - `sandbox`: `0c79db2` (== `origin/sandbox`)
-  - `develop`: `558f361` (== `origin/develop`)
-  - `main`: `f944670` (== `origin/main`)
-- Working tree: clean, nothing staged or uncommitted.
-- No unrelated pre-existing dirty files were present at session start or end.
+- `sandbox`, `develop`, and `main` are in sync with their remotes as of the
+  last release, at `5603032` / `22861d8` / `d632f57` respectively — **but
+  see Files Changed below: there are new uncommitted changes on top of
+  that**, not yet released.
+- Working tree: **dirty** — see section 4.
 
 ## 3. Commits From This Session
 
-1. `10bfc2a` — "Move deployment from GitHub Pages to Cloudflare Pages"
-   (the migration itself; merged into `develop` as `c2a7200`, into `main`
-   as `d6ff965`)
-2. `0c79db2` — "Update all changes" (`scripts/release-all.sh` bug fix; merged
-   into `develop` as `558f361`, into `main` as `f944670`)
+Already released (`sandbox` → `develop` → `main`), from earlier in this
+session:
 
-Commit 2's message is the generic fallback from `scripts/release-all.sh`
-(no `-m` argument was passed) rather than something descriptive — this
-happened because a verification re-run of the script picked up the script's
-own uncommitted edit and released it end-to-end before I noticed. **The user
-was told and chose to leave the message as-is rather than rewrite pushed
-history on `main`.** The content of that commit is correct and small (see
-Files Changed below).
+1. `10bfc2a` — "Move deployment from GitHub Pages to Cloudflare Pages" (the
+   original migration commit — written before the Pages→Workers correction,
+   so its own message and content are Pages-flavored; see below for the
+   correction that supersedes parts of it)
+2. `0c79db2` — "Update all changes" (`scripts/release-all.sh` bug fix —
+   generic message; the user was told and chose to leave it as-is rather
+   than rewrite pushed history)
+3. `5603032` — "Update HANDOFF.md with the Cloudflare Pages migration status
+   and remaining plan" (superseded by this rewrite)
+
+**Not yet committed** — see section 4.
 
 ## 4. Files Changed
 
-**Commit `10bfc2a`** — the migration:
+Uncommitted, on `sandbox`, staged for the Pages→Workers correction:
 
-- `scripts/cf-build.sh` *(new)* — Cloudflare Pages build entrypoint. Runs
-  `node tests/run-all.js` first (restoring the test gate the old
-  `deploy: needs: test` enforced, since `ci.yml` now runs independently of
-  the Pages build), then `node scripts/build-notes.js`, then injects
-  `WORKER_API_KEY` over the committed `__WORKER_API_KEY__` placeholder in
-  the two Satellite Index sources.
-- `scripts/lib/satellite-worker-targets.sh` *(new)* — single source of truth
-  for those two file paths, sourced by both `cf-build.sh` and the existing
-  `scripts/dev-satellite.sh` so they can't silently diverge.
-- `package.json` — added `"build": "bash scripts/cf-build.sh"`.
-- `.node-version` *(new)* — pins Node 20.
-- `.github/workflows/deploy.yml` *(deleted)* — the GitHub Pages deploy
-  workflow. Its test job was already duplicated by the pre-existing
-  `ci.yml` (runs `node tests/run-all.js` on `sandbox`/`develop`/`main` +
-  PRs), which was left untouched.
-- `README.md`, `docs/10-guides/GUIDE-architecture.md`, `CLAUDE.md`/`AGENTS.md`
-  — updated the deploy description, the `MAPTILER_API_KEY` domain
-  restriction (`rndrssn.github.io` → `platoscave.bedrockrebel.app`), and the
-  Worker key rotation/injection instructions to describe Cloudflare Pages
-  instead of GitHub Actions/Pages.
-- `tests/test-security-hardening-contract.js` — dropped the `deploy.yml`
-  action-pinning assertions (file no longer exists); kept the `ci.yml` ones.
-- `tests/test-satellite-index-contract.js` — repointed the target-path
-  assertions at `scripts/lib/satellite-worker-targets.sh` and added
-  assertions that both `cf-build.sh` and `dev-satellite.sh` actually source
-  it (guards against the two drifting again).
-- `scripts/dev-satellite.sh` — now sources the shared target list instead of
-  its own copy.
+- `wrangler.jsonc` *(new)* — Worker config. `name: "platoscave"`, no `main`
+  (assets-only Worker, no custom script needed), `assets.directory: "."`,
+  `assets.not_found_handling: "none"` (this is a real multi-page site with
+  97 internally-checked paths, not an SPA — a missing path must 404, never
+  silently fall back to `index.html`).
+- `.assetsignore` *(new)* — keeps `node_modules/`, `.git/`, `.github/`,
+  `tests/`, `scripts/`, `content/` out of what gets served publicly.
+  `data/*.json` is deliberately **not** excluded —
+  `js/notes-search.js`/`js/articles-search.js` fetch it client-side.
+- `README.md` — Deployment section rewritten for Workers static assets:
+  build command unchanged (`npm run build`), deploy command is now
+  `npx wrangler deploy` reading `wrangler.jsonc`, and the `WORKER_API_KEY`
+  env var now lives under **Settings → Build → Build variables and
+  secrets** (explicitly build-time-only, not accessible at runtime — matches
+  how `cf-build.sh` uses it, baked into static JS before upload rather than
+  read at request time). Dropped `NPM_FLAGS=--omit=dev` — that was a Pages
+  concept; not yet confirmed whether/how Workers Builds handles
+  devDependency install (see Open Decisions).
+- `CLAUDE.md` / `AGENTS.md` (kept byte-identical) — "Cloudflare Pages" →
+  "Cloudflare Workers static assets"; `WORKER_API_KEY` injection description
+  → Workers build variable.
+- `docs/10-guides/GUIDE-architecture.md` — same terminology correction in
+  the Satellite Index Worker-integration section and its request-flow
+  diagram.
 
-**Commit `0c79db2`** — `scripts/release-all.sh` only: `git push origin
-sandbox` was nested inside the "there was something to commit this run"
-branch, so a release run with nothing newly staged (sandbox already carrying
-an earlier separate `commit`) merged/pushed `develop` and `main` but silently
-left `sandbox` unpushed. The push is now unconditional, after the
-commit-or-skip step.
+`node tests/run-all.js` passes with these changes (this doesn't exercise
+`wrangler.jsonc` itself — nothing in this repo's test suite parses or
+validates it; only real value is proving Cloudflare's build/deploy step
+actually works).
 
 ## 5. Validation Run Result
 
-`node tests/run-all.js` — **all tests passed**, run multiple times across
-this session (after the migration edits, after the code-review fixes, before
-each commit, and after the `release-all.sh` fix). Last full run: passed
-with no failures.
+`node tests/run-all.js` — all tests pass, run after these edits.
 
-`npm run build` was exercised end-to-end manually: with `WORKER_API_KEY`
-unset (builds notes/articles/tags, warns, does not touch the satellite
-files) and with a dummy key set (injects into both satellite files; verified
-the placeholder was restored afterward via `git checkout --`). No stray
-secret was left in the working tree at any point.
+`wrangler.jsonc` has **not** been validated against a real `wrangler deploy`
+yet — the dashboard project isn't created. First real signal comes from the
+user clicking Deploy after this commit lands on `main`.
 
 ## 6. Open Decisions / WIP
 
-None blocking. This was a complete, self-contained infrastructure change.
-
-- The commit-message quality issue on `0c79db2` (see above) — resolved:
-  user chose to leave it.
-- CSP `_headers` / `_redirects` treatment (matching `ioths-public-site`) was
-  explicitly deferred by the user during planning — not part of this
-  migration, worth a separate future pass.
-- `.github/workflows/notes-nightly-deploy.yml.disabled` and
-  `README-notes-nightly.md` — a separate, already-disabled nightly-deploy
-  mechanism that also targeted GitHub Pages. Noticed but intentionally left
-  untouched; may need the same GitHub Pages → Cloudflare Pages treatment
-  later if it's ever re-enabled.
+- **Not yet committed.** Waiting on the user to say `commit` /
+  `commit and release to main` for the `wrangler.jsonc`/`.assetsignore`/doc
+  changes in section 4. Do this before the user retries Deploy in the
+  Cloudflare dashboard, or `npx wrangler deploy` will still fail (no config
+  on `main` yet).
+- Whether Workers Builds needs an `NPM_FLAGS`-equivalent to skip installing
+  the `playwright` devDependency during build, or whether it's a non-issue
+  on this platform. Unconfirmed — check the first real build log once the
+  project exists.
+- Whether the `.assetsignore` list is complete. It's a first pass covering
+  the obviously-internal directories (dev tooling, tests, raw Markdown
+  source); `docs/`, `design-system/`, and a few others were deliberately
+  left alone because their public-facing status wasn't confirmed this
+  session — revisit if it matters.
+- The commit-message quality issue on `0c79db2` (see section 3) — resolved
+  in an earlier part of this session: user chose to leave it.
+- CSP `_headers`/`_redirects` — still deferred (unrelated to the Pages vs.
+  Workers question; `_headers`/`_redirects` are Pages-era static-file
+  conventions and would need a Workers-static-assets equivalent researched
+  if ever revisited).
 
 ## 7. Suggested Next Actions — Remaining Migration Plan
 
-Everything below happens **outside this repository**, in dashboards the
-agent does not have access to. Do these in order; each step's verification
-gates the next.
+Steps 0 is repo-side (mine to do on request); 1–6 are dashboard/external,
+each gating the next. **Step 1 is already in progress in this session** —
+the user has the Cloudflare "Create an app" → Connect GitHub screen open.
 
-1. **Create the Cloudflare Pages project.**
-   Cloudflare dashboard → Workers & Pages → Create → Pages → connect the
-   `rndrssn/platoscave` GitHub repo.
-   - Production branch: `main`
-   - Build command: `npm run build`
-   - Build output directory: `/` (repository root — `build-notes.js` writes
-     `notes/`, `articles/`, `tags/`, `data/` in place; there is no separate
-     `dist/`)
-   - Environment variables (set for **both** Production and Preview):
-     - `WORKER_API_KEY` = the real Satellite Index Worker key
-     - `NPM_FLAGS=--omit=dev` (skips installing the `playwright`
-       devDependency during the Pages build; `test-browser-smoke-optional.js`
-       auto-skips without it, same as local CI)
-   - `.node-version` (committed, value `20`) should be picked up
-     automatically; if not, set `NODE_VERSION=20` explicitly.
+0. **Commit and release** the `wrangler.jsonc`/`.assetsignore`/doc changes
+   in section 4 to `main`, before the user clicks Deploy — otherwise the
+   very first `npx wrangler deploy` has no config to read.
 
-2. **Verify the first build on its `*.pages.dev` URL** before touching DNS.
-   Check: home page, at least one module (e.g. `/modules/garbage-can/`), a
-   generated notes/tags page, and — the most fragile surface — the
-   **Satellite Index Explorer** (`/modules/satellite-index/three/`). Expect
-   the Explorer's live analysis to still fail at this point (steps 4–5 below
-   haven't happened yet) but the page itself, the fixture fallback, and the
-   basemap should render.
+1. **Finish creating the Cloudflare Worker project.** Dashboard → Create an
+   app → Connect GitHub → select `rndrssn/platoscave`. On the "Set up your
+   application" screen: Project name `platoscave` (already prefilled), Build
+   command `npm run build` (already prefilled), Deploy command leave as the
+   default `npx wrangler deploy` placeholder. Click Deploy — it should now
+   succeed once step 0 has landed on `main`.
 
-3. **Attach the custom domain.**
-   Cloudflare Pages project → Custom domains → add
-   `platoscave.bedrockrebel.app`. Because `bedrockrebel.app` is already a
-   Cloudflare zone on this account (same one `ioths-public-site` uses),
-   Cloudflare manages the CNAME and certificate automatically — no manual
-   DNS record needed. Wait for the domain to show Active, then re-verify the
-   same pages as step 2 on the real domain.
+2. **Add the build variable.** Project → Settings → Build → Build variables
+   and secrets → add `WORKER_API_KEY` = the real Satellite Index Worker key.
+   Retry the deployment afterward so the build picks it up (Deployments tab
+   → ⋯ on the latest → Retry deployment).
 
-4. **MapTiler dashboard.** Find the key used as `MAPTILER_API_KEY` in
+3. **Verify the `*.workers.dev` (or whatever default URL it assigns) build**
+   before touching DNS: home page, a module, a generated notes/tags page,
+   and — the fragile surface — the Satellite Index Explorer
+   (`/modules/satellite-index/three/`). Expect its *live* data fetch to
+   still fail here (steps 5–6 below haven't happened); the page, fixture
+   fallback, and basemap should still render.
+
+4. **Attach the custom domain.** Project → Settings → Domains (wording may
+   vary) → add `platoscave.bedrockrebel.app`. Same Cloudflare account/zone
+   as `ioths-public-site`, so DNS + certificate are auto-managed. Re-check
+   the same pages as step 3 on the real domain.
+
+5. **MapTiler dashboard.** `MAPTILER_API_KEY` (used in
    `modules/satellite-index/demo/satellite-index.js` and
-   `modules/satellite-index/three/satellite-index-three.js`. Its allowed
-   origins currently list `rndrssn.github.io` + `localhost` (per
-   `CLAUDE.md`/`AGENTS.md`). Add `https://platoscave.bedrockrebel.app`.
-   Re-verify the Explorer's Terrain/basemap context switches.
+   `.../three/satellite-index-three.js`) is currently restricted to
+   `rndrssn.github.io` + `localhost`. Add
+   `https://platoscave.bedrockrebel.app`. Re-verify the Explorer's
+   Terrain/basemap context switches.
 
-5. **satellite-worker repo** (separate repo, outside this workspace — not
-   editable from here). Add `https://platoscave.bedrockrebel.app` to its
-   CORS allow-list and redeploy the Worker
-   (`https://satellite-worker.platoscave.workers.dev`). Re-verify
-   `runAnalysis()` — a live "Load indices" request from the new domain —
-   actually returns data instead of failing CORS preflight.
+6. **satellite-worker repo** (separate, outside this workspace). Add the
+   new origin to its CORS allow-list, redeploy the Worker. Re-verify
+   `runAnalysis()` — the live "Load indices" fetch — actually returns data
+   instead of failing CORS preflight.
 
-6. **Retire GitHub Pages**, only once steps 1–5 are all verified working on
-   `platoscave.bedrockrebel.app`: GitHub repo → Settings → Pages → Source:
-   **None**. This is the point where `rndrssn.github.io/platoscave/` actually
-   stops serving; everything up to here has left it untouched and live.
+7. **Retire GitHub Pages**, only once 1–6 are all verified: GitHub repo →
+   Settings → Pages → Source: **None**. This is the one moment
+   `rndrssn.github.io/platoscave/` actually goes dark — deliberately last.
 
-7. Optional, not required for functional parity: revisit the deferred CSP
-   `_headers` / `_redirects` treatment (see Open Decisions above), and decide
-   whether `notes-nightly-deploy.yml.disabled` needs the same GitHub Pages →
-   Cloudflare Pages update if it's ever reactivated.
+8. Optional cleanup, not required for parity: revisit `.assetsignore`
+   completeness (Open Decisions), the deferred CSP treatment, and whether
+   `notes-nightly-deploy.yml.disabled` needs the same GitHub→Cloudflare
+   correction if it's ever reactivated.
 
 ## 8. Session Start Checklist
 
@@ -183,15 +184,17 @@ For the next agent (or the next session with this user):
 
 1. Read `AGENTS.md` first. It requires plan before acting.
 2. Read this `HANDOFF.md`.
-3. Check branch/status with `git status --short --branch` — should be clean,
-   on `sandbox`, matching `origin/sandbox`.
-4. **Ask the user which of the 7 dashboard steps above have already been
-   done** — none of that state is visible from git. Do not assume step order
-   was followed outside a session if the user reports otherwise.
-5. If asked to touch `scripts/release-all.sh` or run a release, run
+3. Check `git status --short --branch` — if it shows the section 4 files
+   still uncommitted, that work never landed; don't assume it did.
+4. **Ask the user which of the 8 numbered steps above have already been
+   done** — none of that state is visible from git, and this session ended
+   mid-flow on step 1.
+5. Do not describe this deploy target as "Cloudflare Pages" — it's a Worker
+   with static assets. If you see that phrase describing platoscave's own
+   hosting anywhere, it's stale; fix it.
+6. If asked to touch `scripts/release-all.sh` or run a release, run
    `git status`/`git diff` first — a prior session learned the hard way that
    a "just verifying" re-run of that script is not a no-op if the script
    file itself has uncommitted changes.
-6. Do not re-add `.github/workflows/deploy.yml` or otherwise re-enable a
-   GitHub Pages deploy without the user explicitly asking — the whole point
-   of this migration was to move off of it.
+7. Do not re-add `.github/workflows/deploy.yml` or otherwise re-enable a
+   GitHub Pages deploy without the user explicitly asking.

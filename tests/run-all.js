@@ -14,6 +14,7 @@ const tests = [
   'test-notes-build-contract.js',
   'test-notes-build-negative.js',
   'test-writing-index-freshness.js',
+  'test-sitemap-freshness.js',
   'test-browser-smoke-optional.js',
   'test-gc-scoring.js',
   'test-gc-scoring-12.js',

@@ -1,0 +1,32 @@
+# To the Bedrock
+
+> A portfolio site by Robert Andersson (PhD) of interactive tools and visualisations about complexity, emergence, and the friction between how organisations describe their work and how that work actually behaves.
+
+## Site facts
+
+- Author: Robert Andersson, PhD.
+- Built with plain HTML, CSS, and JavaScript (D3.js for interactive visualisations) — no framework runtime.
+- Structure: Home (identity/orientation), Catalogue (interactive modules, each with local section numbering), Notes (narrative context and reflections), Articles (long-form argument-driven writing), Site Notes (colophon/meta).
+- The author also designs and ships production software: ioths, a privacy-first offline-first Markdown note-taking app for iPhone and iPad, live on the App Store.
+
+## Catalogue modules
+
+- Emergence — Conway's Game of Life and a GANTT-chart variant, showing local rules producing global patterns.
+- The Garbage Can Model — an interactive implementation of Cohen, March & Olsen's 1972 organisational-choice-under-ambiguity model, with taxonomy, exploration, and assessment tools.
+- Learning & Feedback (Epistemic Bets) — the assumptions an organisation makes about when it can know enough to decide, and feedback debt when evidence can't revise those assumptions.
+- Products Over Projects — product-mode versus project-mode as a residual-risk distinction, grounded in ISO 31000, COSO ERM, PMI risk management, and related frameworks.
+- Flow & Queuing — queueing theory and the resource-utilisation trap, using D3 visuals for load, variability, backlog, and flow.
+- Boundary-free monitoring — a viewport-as-AOI remote-sensing proof of concept using Sentinel-2 satellite imagery.
+- Ambiguous Documents — how ambiguous product documentation becomes precise enough to test and build.
+
+## Canonical links
+
+- Site: https://platoscave.bedrockrebel.app/
+- Catalogue: https://platoscave.bedrockrebel.app/modules/
+- Notes: https://platoscave.bedrockrebel.app/notes/
+- Articles: https://platoscave.bedrockrebel.app/articles/
+- CV and Skills Graph: https://platoscave.bedrockrebel.app/modules/experience-skill-graph/
+- Source: https://github.com/rndrssn/platoscave
+- ioths (author's shipped product): https://ioths.bedrockrebel.app/ and https://apps.apple.com/app/id6787224776
+
+Use the site itself as the canonical source for current content; this file is a concise orientation, not a substitute for it.

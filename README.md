@@ -194,20 +194,26 @@ node tests/run-all.js
 
 ## Deployment
 
-The site is hosted on **Cloudflare Pages** at https://platoscave.bedrockrebel.app/, on the same `bedrockrebel.app` zone as the ioths product site. Cloudflare builds and deploys every push to `main`:
+The site is hosted on a **Cloudflare Worker with static assets** at
+https://platoscave.bedrockrebel.app/, on the same `bedrockrebel.app` zone as
+the ioths product site. Cloudflare Pages stopped accepting new projects in
+April 2025; the dashboard's Git-connected "Create an app" flow now creates a
+Worker instead, configured by `wrangler.jsonc` and `.assetsignore` at the
+repo root rather than a dashboard build-output-directory field. There is no
+Worker script (`main`) — it's assets-only, so Cloudflare serves the
+directory directly. Cloudflare builds and deploys every push to `main`:
 
 1. Build command: `npm run build` (`scripts/cf-build.sh` — runs `node scripts/build-notes.js`, then substitutes the real Worker key for the `__WORKER_API_KEY__` placeholder in the Satellite Index sources)
-2. Build output directory: repository root
+2. Deploy command: `npx wrangler deploy`, reading `assets.directory: "."` from `wrangler.jsonc`
 3. Node version: pinned by `.node-version` (20)
 
-Cloudflare Pages project settings (Production **and** Preview environments):
+Worker project → **Settings → Build → Build variables and secrets** (build-time only, not accessible at runtime — this is what `cf-build.sh` needs, since the key is baked into static JS before upload rather than read at request time):
 
 - `WORKER_API_KEY` — the real Satellite Index Worker key, injected at build time
-- `NPM_FLAGS=--omit=dev` — skip the Playwright devDependency during the Pages build
 
 `node tests/run-all.js` runs separately as GitHub Actions CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) on pushes to `sandbox`, `develop`, and `main` and on pull requests; it does not gate the Cloudflare build, so the local pre-commit gate (`node tests/run-all.js`) stays authoritative.
 
-To re-run a deploy: use **Retry deployment** in the Cloudflare Pages dashboard, or push an empty commit:
+To re-run a deploy: use **Retry deployment** in the Cloudflare dashboard, or push an empty commit:
 
 ```sh
 git commit --allow-empty -m "Force redeploy" && git push origin main

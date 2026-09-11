@@ -1,0 +1,11 @@
+# Keeps repo-internal files out of what Workers Static Assets uploads and
+# serves publicly. GitHub Pages served the whole repo tree with no equivalent
+# control; this is worth tightening now that we have the mechanism for it.
+# data/*.json stays servable — js/notes-search.js and js/articles-search.js
+# fetch it client-side.
+node_modules/
+.git/
+.github/
+tests/
+scripts/
+content/

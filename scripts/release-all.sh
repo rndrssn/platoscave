@@ -18,8 +18,12 @@ if git diff --cached --quiet; then  # nothing staged → skip
   echo "==> Nothing to commit, skipping commit step."
 else
   git commit -m "$MSG"
-  git push origin sandbox
 fi
+
+# Unconditional: sandbox can be ahead of origin from an earlier separate
+# `commit` even when this run has nothing new to stage, and develop/main
+# below are about to merge whatever sandbox holds regardless.
+git push origin sandbox
 
 git checkout develop
 git pull --ff-only origin develop

@@ -9,10 +9,8 @@
 
 set -euo pipefail
 
-TARGETS=(
-  "modules/satellite-index/demo/satellite-index.js"
-  "modules/satellite-index/three/satellite-index-three.js"
-)
+source "$(dirname "${BASH_SOURCE[0]}")/lib/satellite-worker-targets.sh"
+TARGETS=("${SATELLITE_WORKER_TARGETS[@]}")
 PLACEHOLDER="__WORKER_API_KEY__"
 
 cmd="${1:-}"

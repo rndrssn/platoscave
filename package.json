@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "bash scripts/cf-build.sh"
+  },
   "devDependencies": {
     "playwright": "^1.60.0"
   }

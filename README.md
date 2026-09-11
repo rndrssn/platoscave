@@ -4,7 +4,7 @@
 
 A portfolio of interactive tools and visualizations about complexity, emergence, and the friction between how organizations describe their work and how that work actually behaves.
 
-**Live site:** https://rndrssn.github.io/platoscave/
+**Live site:** https://platoscave.bedrockrebel.app/
 
 ## Site Structure
 
@@ -81,7 +81,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 - Plain HTML, CSS, and JavaScript — no framework runtime
 - D3.js (v7) for visualizations, including queue charts, graph layouts, and simulation views
-- Hosted on GitHub Pages
+- Hosted on Cloudflare Pages
 - Notes content is authored in Markdown and compiled to static pages with `node scripts/build-notes.js`
 
 ## Writing CMS (Markdown + Obsidian)
@@ -194,16 +194,23 @@ node tests/run-all.js
 
 ## Deployment
 
-The site deploys to GitHub Pages via the `Deploy to GitHub Pages` GitHub Actions workflow ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)). It runs on every push to `main`:
+The site is hosted on **Cloudflare Pages** at https://platoscave.bedrockrebel.app/, on the same `bedrockrebel.app` zone as the ioths product site. Cloudflare builds and deploys every push to `main`:
 
-1. `node tests/run-all.js` runs first
-2. On success, the deploy job runs `node scripts/build-notes.js` so Markdown notes/articles are reflected in the Pages artifact
-3. The site is uploaded and deployed via `actions/deploy-pages`
+1. Build command: `npm run build` (`scripts/cf-build.sh` — runs `node scripts/build-notes.js`, then substitutes the real Worker key for the `__WORKER_API_KEY__` placeholder in the Satellite Index sources)
+2. Build output directory: repository root
+3. Node version: pinned by `.node-version` (20)
 
-If a deploy needs to be re-run, trigger it manually from the Actions tab (`Run workflow` on the `Deploy to GitHub Pages` workflow), or push an empty commit:
+Cloudflare Pages project settings (Production **and** Preview environments):
 
-```
-git commit --allow-empty -m "Force GitHub Pages redeploy" && git push origin main
+- `WORKER_API_KEY` — the real Satellite Index Worker key, injected at build time
+- `NPM_FLAGS=--omit=dev` — skip the Playwright devDependency during the Pages build
+
+`node tests/run-all.js` runs separately as GitHub Actions CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) on pushes to `sandbox`, `develop`, and `main` and on pull requests; it does not gate the Cloudflare build, so the local pre-commit gate (`node tests/run-all.js`) stays authoritative.
+
+To re-run a deploy: use **Retry deployment** in the Cloudflare Pages dashboard, or push an empty commit:
+
+```sh
+git commit --allow-empty -m "Force redeploy" && git push origin main
 ```
 
 ## Testing and Release

@@ -1,0 +1,186 @@
+/* Interdependence module: taxonomy, diagnostic, and illustrative cost-model surfaces. */
+.interdependence-page {
+  --interdependence-pooled: var(--slate);
+  --interdependence-sequential: var(--sage);
+  --interdependence-retractive: var(--rust);
+}
+
+.interdependence-taxonomy {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1.75rem 0;
+}
+
+@media (min-width: 760px) {
+  .interdependence-taxonomy { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.interdependence-type,
+.interdependence-principle,
+.interdependence-result,
+.interdependence-cost-reading {
+  background: var(--card-surface);
+  border: var(--card-border-width) solid var(--card-border-color);
+  border-left: var(--card-accent-width) solid var(--interdependence-pooled);
+  border-radius: var(--card-radius);
+  padding: 1.15rem 1.3rem;
+}
+
+.interdependence-type:nth-child(2) { border-left-color: var(--interdependence-sequential); }
+.interdependence-type:nth-child(3) { border-left-color: var(--gold); }
+.interdependence-type--retractive { border-left-color: var(--interdependence-retractive); }
+
+.interdependence-type-label,
+.interdependence-principle-label,
+.interdependence-result-label,
+.interdependence-instrument-help,
+.interdependence-model-notice,
+.interdependence-control label,
+.interdependence-cost-metrics dt,
+.interdependence-score-grid dt,
+.interdependence-chart-legend,
+.interdependence-chart-axis {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 300;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.interdependence-type-label,
+.interdependence-principle-label,
+.interdependence-result-label,
+.interdependence-instrument-help,
+.interdependence-model-notice,
+.interdependence-control label,
+.interdependence-cost-metrics dt,
+.interdependence-score-grid dt { color: var(--ink-faint); }
+
+.interdependence-type h3,
+.interdependence-result h2,
+.interdependence-cost-reading h2 {
+  color: var(--ink);
+  font-family: var(--serif-alt);
+  font-size: 1.3rem;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.2;
+  margin: 0.4rem 0 0.65rem;
+}
+
+.interdependence-type p:not(.interdependence-type-label),
+.interdependence-principle p:not(.interdependence-principle-label),
+.interdependence-result > p,
+.interdependence-cost-reading > p {
+  color: var(--ink-mid);
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.interdependence-type-fit {
+  border-top: 1px solid var(--ink-ghost);
+  color: var(--ink-faint) !important;
+  font-family: var(--mono) !important;
+  font-size: 0.62rem !important;
+  letter-spacing: 0.045em;
+  line-height: 1.45 !important;
+  margin-top: 0.8rem !important;
+  padding-top: 0.65rem;
+  text-transform: uppercase;
+}
+
+.interdependence-principle { border-left-color: var(--gold); margin: 1.5rem 0; max-width: 50rem; }
+.interdependence-vector-explanation { background: var(--card-surface); border: var(--card-border-width) solid var(--card-border-color); border-left: var(--card-accent-width) solid var(--gold); border-radius: var(--card-radius); margin: 1.25rem 0; max-width: 58rem; padding: 1rem 1.15rem; }
+.interdependence-vector-explanation p:not(.interdependence-principle-label) { color: var(--ink-mid); font-family: var(--serif); font-size: 0.92rem; line-height: 1.58; margin: 0.5rem 0 0; }
+
+.interdependence-actions { display: grid; gap: 0.65rem; margin-top: 1.6rem; max-width: 52rem; }
+
+.interdependence-action {
+  align-items: center;
+  border-bottom: 1px solid var(--ink-ghost);
+  color: var(--ink);
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: 1.8rem 1fr;
+  padding: 0.85rem 0;
+  text-decoration: none;
+}
+
+.interdependence-action:hover { color: var(--rust); }
+.interdependence-action-number { color: var(--rust); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.07em; }
+.interdependence-action strong { display: block; font-family: var(--serif-alt); font-size: 1.05rem; font-style: italic; font-weight: 300; }
+.interdependence-action small { color: var(--ink-faint); display: block; font-family: var(--serif); font-size: 0.88rem; margin-top: 0.2rem; }
+
+.interdependence-sources { color: var(--ink-mid); font-family: var(--serif); font-size: var(--fs-body); line-height: 1.6; margin: 1rem 0; padding-left: 1.1rem; }
+.interdependence-sources li + li { margin-top: 0.45rem; }
+.interdependence-limit { color: var(--ink-faint) !important; font-size: 0.9em !important; }
+
+.interdependence-instrument-help { line-height: 1.6; margin: 0 0 1.2rem; max-width: 66ch; text-transform: none; }
+.interdependence-instrument-help strong { color: var(--ink-mid); font-weight: 400; }
+.interdependence-assessment { max-width: 62rem; }
+
+.interdependence-question-group { border: 0; border-top: 1px solid var(--ink-ghost); margin: 0 0 2.2rem; padding: 1.1rem 0 0; }
+.interdependence-question-group legend { color: var(--ink); font-family: var(--serif-alt); font-size: 1.25rem; font-style: italic; font-weight: 300; padding-right: 0.6rem; }
+.interdependence-question-group legend span { color: var(--ink-faint); font-family: var(--mono); font-size: 0.62rem; font-style: normal; letter-spacing: 0.08em; margin-right: 0.35rem; text-transform: uppercase; }
+.interdependence-question { border-bottom: 1px solid var(--ink-ghost); padding: 1.05rem 0; }
+.interdependence-question > p { color: var(--ink-mid); font-family: var(--serif); font-size: var(--fs-body); line-height: 1.58; margin: 0 0 0.8rem; max-width: 62ch; }
+.interdependence-options { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.interdependence-options label { align-items: center; background: var(--link-surface-nav); border-radius: 0.14rem; cursor: pointer; display: inline-flex; min-height: 44px; padding: 0.35rem 0.65rem; }
+.interdependence-options label:hover { background: var(--link-surface-nav-hover); }
+.interdependence-options label:has(input:checked) { background: var(--link-surface-nav-active); }
+.interdependence-options label:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+.interdependence-options input { height: 0; opacity: 0; position: absolute; width: 0; }
+.interdependence-options span { color: var(--ink-mid); font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.055em; text-transform: uppercase; }
+.interdependence-options label:has(input:checked) span { color: var(--ink); }
+
+.interdependence-result { border-left-color: var(--interdependence-retractive); margin-top: 1.5rem; max-width: 54rem; }
+.interdependence-score-grid,
+.interdependence-cost-metrics { display: grid; gap: 0.75rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 1.1rem 0 0; }
+.interdependence-score-grid div,
+.interdependence-cost-metrics div { border-top: 1px solid var(--ink-ghost); padding-top: 0.6rem; }
+.interdependence-score-grid dt,
+.interdependence-cost-metrics dt { margin-bottom: 0.25rem; }
+.interdependence-score-grid dd,
+.interdependence-cost-metrics dd { color: var(--ink); font-family: var(--serif-alt); font-size: 1.2rem; font-style: italic; font-weight: 300; margin: 0; }
+
+.interdependence-model-notice { border-left: 2px solid var(--gold); line-height: 1.55; margin: 0 0 1.3rem; max-width: 64ch; padding-left: 0.75rem; text-transform: none; }
+.interdependence-cost-lab { border-bottom: 1px solid var(--ink-ghost); border-top: 1px solid var(--ink-ghost); padding: 1.5rem 0; }
+.interdependence-cost-controls { --control-range-color: var(--rust); display: grid; gap: 1.15rem; max-width: 47rem; }
+.interdependence-control { display: grid; gap: 0.35rem; }
+.interdependence-control .control-range { min-height: 44px; max-width: 100%; }
+.interdependence-control span { color: var(--ink-mid); font-family: var(--serif); font-size: 0.92rem; }
+.interdependence-control output { color: var(--ink); font-family: var(--mono); font-size: 0.85em; }
+.interdependence-cost-reading { border-left-color: var(--interdependence-retractive); margin-top: 2rem; max-width: 56rem; }
+.interdependence-cost-chart-wrap { margin-top: 1.8rem; }
+.interdependence-cost-chart { display: block; height: auto; min-height: 360px; width: 100%; }
+.interdependence-chart-fallback { color: var(--ink-mid); font-family: var(--serif); font-size: var(--fs-body); }
+.interdependence-model-equation { color: var(--ink-faint); font-family: var(--serif); font-size: 0.92rem; line-height: 1.55; margin: 1rem 0 0; max-width: 65ch; }
+.interdependence-curve-guide { border-top: 1px solid var(--ink-ghost); margin-top: 1.8rem; padding-top: 1.5rem; }
+.interdependence-curve-guide > h2 { color: var(--ink); font-family: var(--serif-alt); font-size: 1.3rem; font-style: italic; font-weight: 300; margin-bottom: 0.65rem; }
+.interdependence-curve-guide > p { color: var(--ink-mid); font-family: var(--serif); font-size: var(--fs-body); line-height: 1.6; max-width: 67ch; }
+.interdependence-curve-guide-grid { display: grid; gap: 0.75rem; margin-top: 1.2rem; }
+.interdependence-curve-card { background: var(--card-surface); border: var(--card-border-width) solid var(--card-border-color); border-left: var(--card-accent-width) solid var(--slate); border-radius: var(--card-radius); padding: 1rem 1.15rem; }
+.interdependence-curve-card--short { border-left-color: var(--sage); }
+.interdependence-curve-card--delayed { border-left-color: var(--rust); }
+.interdependence-curve-card h3 { color: var(--ink); font-family: var(--mono); font-size: 0.68rem; font-weight: 300; letter-spacing: 0.065em; text-transform: uppercase; }
+.interdependence-curve-formula { color: var(--ink); font-family: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', math, var(--serif); font-size: 1.02rem; line-height: 1.55; margin: 0.6rem 0; overflow-x: auto; }
+.interdependence-curve-card > p:last-child { color: var(--ink-mid); font-family: var(--serif); font-size: 0.92rem; line-height: 1.55; margin: 0; }
+.interdependence-curve-mechanism { border-top: 1px solid var(--ink-ghost); margin-top: 0.8rem !important; padding-top: 0.7rem; }
+.interdependence-curve-mechanism span { color: var(--ink-faint); display: block; font-family: var(--mono); font-size: 0.6rem; font-weight: 300; letter-spacing: 0.075em; margin-bottom: 0.25rem; text-transform: uppercase; }
+.interdependence-math { background: var(--paper-deep); color: var(--ink); font-family: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', math, var(--serif); font-size: 1.05rem; line-height: 1.65; margin: 0.75rem 0; max-width: 46rem; overflow-x: auto; padding: 0.7rem 0.85rem; }
+.interdependence-symbols { display: grid; gap: 0; margin: 1.25rem 0; max-width: 58rem; }
+.interdependence-symbols div { border-bottom: 1px solid var(--ink-ghost); display: grid; gap: 0.75rem; grid-template-columns: 2.2rem minmax(0, 1fr); padding: 0.5rem 0; }
+.interdependence-symbols dt { color: var(--ink); font-family: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', math, var(--serif); font-size: 1.05rem; }
+.interdependence-symbols dd { color: var(--ink-mid); font-family: var(--serif); font-size: 0.9rem; line-height: 1.45; margin: 0; }
+.interdependence-symbols strong { color: var(--ink); font-family: var(--mono); font-size: 0.7rem; font-weight: 300; letter-spacing: 0.03em; }
+.interdependence-chart-axis text,
+.interdependence-chart-legend text { font-family: var(--mono); font-size: 0.58rem; font-weight: 300; letter-spacing: 0.025em; }
+.interdependence-chart-axis-label { font-family: var(--mono); font-size: 0.57rem; font-weight: 300; letter-spacing: 0.04em; text-transform: uppercase; }
+
+@media (max-width: 520px) {
+  .interdependence-score-grid,
+  .interdependence-cost-metrics { grid-template-columns: 1fr; }
+  .interdependence-cost-chart { min-height: 340px; }
+}

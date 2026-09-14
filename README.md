@@ -43,6 +43,13 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
     - Risk taxonomy grounded in ISO 31000, IEC 31010, COSO ERM, PMI risk management, FMEA/FMECA, bowtie analysis, NIST RMF, ISO/IEC 27005, HACCP, ISO 14971, and ICH Q9(R1).
   - **03 Assessment** (`/modules/products-over-projects/assessment/`)
     - Residual-risk scoring instrument for classifying product-mode, project-mode, hybrid, or formal risk/control governance.
+- **Interdependence & Coordination** — Classifying work structure, coordination fit, and the cost of mismatch.
+  - **01 Coordination Fit** (`/modules/interdependence/`)
+    - Thompson's pooled, sequential, and reciprocal interdependence types, with the additive/retractive feedback boundary.
+  - **02 Diagnose** (`/modules/interdependence/diagnostic/`)
+    - Plain-language instrument for reading work structure and the capacity of its current organisational boundary.
+  - **03 Cost of Mismatch** (`/modules/interdependence/cost/`)
+    - Illustrative cumulative-effort model for retraction, decision latency, and dependent work in flight.
 - **Flow & Queuing** — Queueing theory and the resource-utilization trap, using D3 visuals to show how average load, variability, backlog, and flow interact.
   - **01 Flow and Waiting** (`/modules/flow-queuing/`)
     - Plain-language introduction to queueing theory, utilization pressure, variability amplification, Little's Law, and TOC framing.

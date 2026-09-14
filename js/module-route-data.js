@@ -50,6 +50,14 @@
       sections: 'Risk Lens / Taxonomy / Assessment'
     },
     {
+      title: 'Interdependence & Coordination',
+      slug: 'interdependence',
+      path: 'interdependence/',
+      status: '',
+      descriptor: 'Classifying work structure, coordination fit, and the cost of mismatch.',
+      sections: 'Coordination Fit / Diagnose / Cost of Mismatch'
+    },
+    {
       title: 'Flow & Queuing',
       slug: 'flow-queuing',
       path: 'flow-queuing/',

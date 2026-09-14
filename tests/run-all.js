@@ -29,6 +29,7 @@ const tests = [
   'test-flow-queuing-concept-graph-contract.js',
   'test-bell-inequality-contract.js',
   'test-products-over-projects-assessment.js',
+  'test-interdependence-contract.js',
   'test-satellite-index-contract.js',
   'test-mix-mapper-assumptions-contract.js',
   'test-mix-mapper-mode-motion-contract.js',

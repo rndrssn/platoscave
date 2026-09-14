@@ -126,6 +126,7 @@ The canonical component precedent source is `design-system/index.html`. Before a
 - [ ] Checked `design-system/index.html` for an existing precedent before authoring a new component.
 - [ ] Identified the existing precedent before writing a new component (force graph, legend, scoreboard, controls form, status line, story panel).
 - [ ] Reused the precedent's class names where behaviour overlaps; new classes only for genuinely new affordances.
+- [ ] For each interactive control, verified that its canonical component class is present and its documented state behaviour is retained (for example, range inputs use `.control-range` and `--control-range-color`, not a native-slider override alone).
 - [ ] Did not introduce a third dialect of an already-doubled pattern.
 
 #### Visual encoding

@@ -126,6 +126,8 @@
 .interdependence-question-group legend span { color: var(--ink-faint); font-family: var(--mono); font-size: 0.62rem; font-style: normal; letter-spacing: 0.08em; margin-right: 0.35rem; text-transform: uppercase; }
 .interdependence-question { border-bottom: 1px solid var(--ink-ghost); padding: 1.05rem 0; }
 .interdependence-question > p { color: var(--ink-mid); font-family: var(--serif); font-size: var(--fs-body); line-height: 1.58; margin: 0 0 0.8rem; max-width: 62ch; }
+.interdependence-question-example { color: var(--ink-faint) !important; font-size: 0.92rem !important; line-height: 1.5 !important; }
+.interdependence-question-example span { color: var(--ink-faint); font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.06em; margin-right: 0.4rem; text-transform: uppercase; }
 .interdependence-options { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .interdependence-options label { align-items: center; background: var(--link-surface-nav); border-radius: 0.14rem; cursor: pointer; display: inline-flex; min-height: 44px; padding: 0.35rem 0.65rem; }
 .interdependence-options label:hover { background: var(--link-surface-nav-hover); }
@@ -147,10 +149,13 @@
 
 .interdependence-model-notice { border-left: 2px solid var(--gold); line-height: 1.55; margin: 0 0 1.3rem; max-width: 64ch; padding-left: 0.75rem; text-transform: none; }
 .interdependence-cost-lab { border-bottom: 1px solid var(--ink-ghost); border-top: 1px solid var(--ink-ghost); padding: 1.5rem 0; }
+.interdependence-cost-controls-help { color: var(--ink-mid); font-family: var(--serif); font-size: var(--fs-body); line-height: 1.55; margin: 0 0 1.1rem; max-width: 62ch; }
 .interdependence-cost-controls { --control-range-color: var(--rust); display: grid; gap: 1.15rem; max-width: 47rem; }
 .interdependence-control { display: grid; gap: 0.35rem; }
+.interdependence-control label { color: var(--ink); font-family: var(--serif); font-size: var(--fs-body); line-height: 1.45; }
 .interdependence-control .control-range { min-height: 44px; max-width: 100%; }
-.interdependence-control span { color: var(--ink-mid); font-family: var(--serif); font-size: 0.92rem; }
+.interdependence-control-reading { color: var(--ink-mid); font-family: var(--serif); font-size: 0.92rem; line-height: 1.45; margin: 0; }
+.interdependence-control-reading span { color: var(--ink-faint); font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.06em; margin-right: 0.4rem; text-transform: uppercase; }
 .interdependence-control output { color: var(--ink); font-family: var(--mono); font-size: 0.85em; }
 .interdependence-cost-reading { border-left-color: var(--interdependence-retractive); margin-top: 2rem; max-width: 56rem; }
 .interdependence-cost-chart-wrap { margin-top: 1.8rem; }

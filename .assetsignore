@@ -9,3 +9,6 @@ node_modules/
 tests/
 scripts/
 content/
+# Except the skills-graph data file, which the live page fetches at runtime
+# as a lightweight Markdown CMS (see README.md "Experience-Skill Graph CMS").
+!content/graph-data/

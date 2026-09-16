@@ -2,7 +2,7 @@
   {
     "title": "Making Instructions Executable",
     "slug": "making-instructions-executable",
-    "summary": "Project instructions become stronger when their observable consequences are encoded as tests. The pattern turns agent guidance into executable contracts without pretending that judgment itself can be fully automated.",
+    "summary": "Tests can enforce the observable consequences of project instructions, leaving judgment to contributors.",
     "date": "2026-06-03",
     "tags": [
       {
@@ -23,7 +23,7 @@
   {
     "title": "Operating model for low-Volume High-Software-Content Products",
     "slug": "lowvolumehighsoftware",
-    "summary": "A low-volume high-software-content product cannot be run economically for long on an operating model designed for high-volume software. The fixed costs, team topology, and measurement regime only pay back when there is enough meaningful product change to amortise them.",
+    "summary": "How the rate of product change determines whether owned platforms and specialist teams pay back, and why low-volume products need a different operating model.",
     "date": "2026-03-24",
     "tags": [
       {

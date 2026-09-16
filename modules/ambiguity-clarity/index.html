@@ -51,13 +51,13 @@
       <header class="module-header">
         <h1 class="module-header-title">Ambiguous Documents</h1>
         <p class="module-header-body">
-          Product work usually enters the organisation as documentation long before it enters the codebase. Early documents being ambiguous is not the problem. Pretending they are already precise enough to hand over is.
+          Product work usually reaches the organisation in documents before it reaches the codebase. Early descriptions are ambiguous. Trouble starts when they are handed over as though the decisions were settled.
         </p>
         <p class="module-header-body">
-          This module follows a lineage of artifacts: narrative, brief, plan, story, ticket, and finally code. PM, UX, and engineering rely on different artifacts because they work at different distances from ambiguity.
+          This module follows the work through narrative, brief, plan, story, ticket, and finally code. PM, UX, and engineering need different artifacts as the work becomes more precise.
         </p>
         <p class="module-header-body">
-          Documentation does not remove uncertainty completely. It should reduce enough ambiguity for the next responsible move, while staying open to evidence that changes the bet. When documentation cannot absorb feedback, the organisation accumulates <a href="../learning-feedback/feedback-debt/">Feedback Debt</a>.
+          Documentation should clarify enough for the next decision and remain open to evidence that changes it. When documents cannot absorb feedback, the organisation accumulates <a href="../learning-feedback/feedback-debt/">Feedback Debt</a>.
         </p>
       </header>
 
@@ -66,75 +66,73 @@
         <section class="essay-section">
           <h2 class="essay-heading">Why documentation exists</h2>
           <p class="essay-body">
-            Early documentation is what you write before anyone has converged. Its job is to hold the problem open, so PM, UX, and engineering can explore without mistaking a first description for a final decision. A PRD &mdash; or whatever the organisation calls its closing document &mdash; comes later, once the solution is understood.
+            Early documentation gives PM, UX, and engineering room to explore a problem before agreeing on a solution. The PRD, or equivalent closing document, comes later. Writing it before discovery treats an initial description as a decision before the team has enough evidence.
           </p>
+
           <p class="essay-body">
-            Writing the closing document before discovery is the common failure mode. It looks decisive, but usually means the documentation stopped holding ambiguity before the team had enough signal.
-          </p>
-          <p class="essay-body">
-            There are two common documentation paths. <strong>Improvement work</strong> changes something that already exists; it needs <em>Where We Are</em> as an anchor, because UX and engineering are not starting from zero. <strong>New-feature work</strong> has no such ground to stand on, so <em>People</em> has to carry more weight &mdash; it is the only scaffolding available.
+            <strong>Improvement work</strong> needs a shared account of <em>Where We Are</em>, including the existing system and its constraints. <strong>New-feature work</strong> has no existing feature to work from, so its account of <em>People</em> must provide that context.
           </p>
         </section>
 
         <section class="essay-section">
           <h2 class="essay-heading">Eight clarity concerns</h2>
           <p class="essay-body">
-            These are not eight separate documents. They are concerns that show up across the documentation lineage. The further a concern travels toward tickets and code, the less room there should be for interpretation.
+            These eight concerns recur across the documents. Each needs less room for interpretation as the work approaches tickets and code.
           </p>
 
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">1 &middot; Problem</h3>
             <p class="essay-body">
-              Why this work exists at all. The point of departure. Must be agreed before anything else moves. Ambiguity is highest here and that is correct &mdash; premature precision at the top of the lineage is how solutions get smuggled in as problems.
+              Agree on why the work is needed before moving on. Uncertainty belongs here. Defining the problem too precisely, too early, can conceal a solution choice inside it.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">2 &middot; Direction</h3>
             <p class="essay-body">
-              The desired change in the world. Outcome, not solution. This is the earliest point where UX can start diverging, and the last point where the work is still fully open. After this, the shape of the thing begins to matter.
+              Describe the outcome the work should produce, leaving the solution open. UX can begin exploring alternatives here. Beyond this point, the shape of the solution starts to matter.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">3 &middot; Where We Are <span class="section-sub">(improvement work only)</span></h3>
             <p class="essay-body">
-              A shared baseline &mdash; how the current thing works, what is broken, what the constraints of the existing system are. Without this, the first week of any improvement project is spent reconstructing it anyway.
+              Describe how the current system works, what is broken, and which constraints apply. Otherwise, the first week of improvement work goes into reconstructing this baseline.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">4 &middot; People</h3>
             <p class="essay-body">
-              Who is affected, what they are trying to accomplish, under what conditions. Load-bearing in new-feature documentation where there is no existing feature to orient around. In improvement work this still matters, but <em>Where We Are</em> shares the weight.
+              Describe who is affected, what they are trying to accomplish, and the conditions they work under. New-feature work depends on this account for orientation. Improvement work can also draw on <em>Where We Are</em>.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">5 &middot; Scope</h3>
             <p class="essay-body">
-              In, out, and open questions. The open-questions column is the one to watch: it should shrink as discovery progresses. Scope that stays static is scope that is not being challenged.
+              Record what is in scope, what is excluded, and what remains undecided. Open questions should shrink as discovery tests the scope. An unchanged scope suggests those decisions are not being challenged.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">6 &middot; Slices <span class="section-sub">(stories)</span></h3>
             <p class="essay-body">
-              User-facing units of value. Written loosely here to keep exploration possible; tightened into ticket-ready form later, in the PRD or directly in the backlog. If you cannot yet write these, the direction above probably is not specific enough.
+              Describe units of value for users loosely enough to allow exploration. Tighten them into tickets later, in the PRD or backlog. Difficulty writing slices usually means the direction needs more detail.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">7 &middot; Constraints</h3>
             <p class="essay-body">
-              The boundaries the solution must operate within: legal, technical, deadlines, non-functional needs, integration dependencies. Should be short. If this list gets long, scope decisions have crept in disguised as constraints.
+              Keep the legal, technical, deadline, non-functional, and integration constraints brief. A long list suggests that scope decisions have been recorded as constraints.
             </p>
           </div>
 
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">8 &middot; Acceptance Criteria</h3>
             <p class="essay-body">
-              Binary pass/fail conditions. This is the least ambiguous concern because it sits closest to build and test. If acceptance criteria are hard to write, the artifacts above are not yet clear enough &mdash; which is information, not failure.
+              Write binary pass/fail conditions that engineering can build and test against. If these are hard to write, earlier documents still leave decisions unresolved.
             </p>
           </div>
         </section>
@@ -142,13 +140,13 @@
         <section class="essay-section">
           <h2 class="essay-heading">Three readiness thresholds</h2>
           <p class="essay-body">
-            The documentation lineage becomes useful in stages. Different functions can start when the artifacts they rely on are clear enough. Treating those thresholds as one moment is how UX starts too late or locks down too early.
+            Each function can start once the artifacts it needs are clear enough. A single readiness gate can bring UX in too late or require detailed commitments too early.
           </p>
 
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">PM can frame <span class="section-sub">(after Direction)</span></h3>
             <p class="essay-body">
-              Problem and direction together are enough to start exploration and frame the work. You do not need users, scope, or stories yet. Waiting for them is how UX shows up after decisions are already made.
+              Problem and direction are enough to frame the work and begin exploration. Waiting for people, scope, and stories to be settled can leave UX arriving after the decisions have been made.
             </p>
           </div>
 
@@ -162,7 +160,7 @@
           <div class="taxonomy-dimension">
             <h3 class="taxonomy-dimension-title">Engineering can build <span class="section-sub">(after Acceptance Criteria)</span></h3>
             <p class="essay-body">
-              Fully unlocked at acceptance criteria. Earlier artifacts contribute gradually; the bottom of the lineage is where engineering can build without inventing missing decisions.
+              Earlier artifacts prepare engineering gradually. Acceptance criteria supply the last decisions needed to build without inventing what the documents left out.
             </p>
           </div>
         </section>
@@ -170,10 +168,10 @@
         <section class="essay-section">
           <h2 class="essay-heading">Zoom out</h2>
           <p class="essay-body">
-            This documentation problem happens many times over in any organisation. <a href="../learning-feedback/">04 &middot; Learning &amp; Feedback</a> asks <em>where</em> an organisation should commit to knowing &mdash; which paths it can afford to run sequentially and which must stay genuinely open. This module shows <em>how</em> one path is documented while it runs.
+            <a href="../learning-feedback/">04 &middot; Learning &amp; Feedback</a> examines these decisions across an organisation, including which paths can run sequentially and which must remain open to evidence. Ambiguous Documents follows the documents used along one such path.
           </p>
           <p class="essay-body">
-            The same bet, at two altitudes. Documentation that pretends to be final is a portfolio that pretends complexity is manageable &mdash; the same failure mode, one level down.
+            Prematurely final documents repeat the wider organisational mistake of treating uncertain work as settled.
           </p>
         </section>
 

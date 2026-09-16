@@ -62,10 +62,10 @@
         <section class="essay-section">
           <h2 class="essay-heading">Scientific interest</h2>
           <p class="essay-body">
-            The update rule is deterministic: the next state of each cell depends only on its current state and the count of its eight live neighbours. There is no randomness in the rule itself. Given the same initial state, each run produces the same trajectory. But deterministic does not mean easy to predict; to know what happens, you still need to run the system forward &mdash; <a class="ep-jump" href="#ep-life-panel" data-ep-jump-seed="r-pentomino">try R-pentomino &darr;</a>.
+            The update rule uses only a cell's current state and its eight live neighbours. Given the same starting grid, it produces the same sequence without randomness. That sequence can still be hard to predict without running it. <a class="ep-jump" href="#ep-life-panel" data-ep-jump-seed="r-pentomino">Try R-pentomino &darr;</a>.
           </p>
           <p class="essay-body">
-            That is why the model is scientifically useful. Simple local rules create rich global behaviour: stable structures, oscillators, moving patterns, long transients, and sensitivity to initial conditions &mdash; <a class="ep-jump" href="#ep-life-panel" data-ep-jump-patterns>see canonical patterns &darr;</a>. Complexity emerges from interaction, not from central control.
+            Local interactions produce stable structures, oscillators, moving patterns, and long transients, with outcomes sensitive to the initial conditions. This makes the model useful for studying how complexity can arise without central control. <a class="ep-jump" href="#ep-life-panel" data-ep-jump-patterns>See canonical patterns &darr;</a>.
           </p>
 
           <div class="ep-life-panel" id="ep-life-panel" tabindex="-1">
@@ -145,7 +145,7 @@
                 <figcaption class="ep-pattern-caption">Beacon · oscillator</figcaption>
               </figure>
             </div>
-            <p class="ep-pattern-note">With a fixed seed and rule set, runs are deterministic: same start state, same sequence. These motifs commonly appear from Bunnies, R-pentomino, and Acorn.</p>
+            <p class="ep-pattern-note">These motifs commonly appear from Bunnies, R-pentomino, and Acorn.</p>
           </aside>
         </section>
       </article>

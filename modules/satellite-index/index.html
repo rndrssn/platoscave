@@ -52,10 +52,7 @@
       <header class="module-header">
         <h1 class="module-header-title">Boundary-free monitoring</h1>
         <p class="module-header-body">
-          Most precision agriculture tools want a field boundary before they show you anything — upload a
-          shapefile, draw a polygon, type in parcel coordinates. This proof of concept asks whether that step
-          is needed at all for a first look at a crop. If you have already panned a map to your field, you
-          have drawn the boundary. The Explorer just reads it off the screen.
+          Most precision agriculture tools require a field boundary before displaying data. A user must upload a shapefile, draw a polygon, or supply parcel coordinates. This proof of concept uses the visible map area for a first look at a crop. Pan to your field and the Explorer takes that viewport as the area of interest.
         </p>
       </header>
 
@@ -63,42 +60,24 @@
         <section class="essay-section">
           <h2 class="essay-heading">The premise</h2>
           <p class="essay-body">
-            Registration is the first gate. Before you see a single pixel of your own land, you have to hand
-            over a digital boundary — a GIS file, a drawn polygon, a parcel number from a cadastral registry.
-            If you already run GIS software, that is a five-minute job. If you are a smallholder, a tenant
-            farmer, or just looking at ground you do not farm yet, it is the reason you never get past the
-            setup screen.
+            Supplying a GIS file, drawn boundary, or cadastral parcel number may take five minutes for someone who already uses GIS software. For a smallholder, tenant farmer, or someone inspecting land they do not yet farm, it can prevent them from getting past setup.
           </p>
           <p class="essay-body">
-            So skip it. Someone who has panned to a field and zoomed in far enough to inspect it has already
-            said where they mean, as precisely as any polygon would. Take the viewport as the area of interest
-            and the registration step disappears — you can still read canopy, moisture, and chlorophyll across
-            the same ground.
+            The premise is that panning to a field and zooming to inspection scale identifies the area closely enough for this first look. The viewport supplies the area of interest without registration, letting the user inspect canopy, moisture, and chlorophyll across the ground on screen.
           </p>
         </section>
 
         <section class="essay-section">
           <h2 class="essay-heading">The explorer</h2>
           <p class="essay-body">
-            Pan to a field, zoom in, hit <strong>Load indices</strong>. The explorer pulls seven Sentinel-2
-            spectral indices for whatever is on screen — NDVI, NDRE, NDWI, NDMI, EVI, SAVI, CIre — and renders
-            each one as a Three.js terrain mesh sitting on a satellite tile base. Height is the index value.
-            The imagery underneath keeps you oriented against field edges, tracks, and hedgerows. Switching
-            index rebuilds only the mesh; the base layer and the camera stay put, so you can flip between
-            signals over the same ground without losing your place.
+            Pan to a field, zoom in, and select <strong>Load indices</strong>. The Explorer retrieves NDVI, NDRE, NDWI, NDMI, EVI, SAVI, and CIre from Sentinel-2 and renders each as a Three.js mesh over satellite imagery. Height represents index value. Field edges, tracks, and hedgerows in the imagery help you stay oriented.
           </p>
           <p class="essay-body">
-            Data comes from a Cloudflare Worker proxying Sentinel Hub. All seven indices arrive in one call,
-            for the current viewport and the most recent cloud-free scene. When the live path is down, a
-            procedural fixture preserves the interaction model with spatially coherent synthetic data — it is
-            not real crop data and should not be read as such.
+            A Cloudflare Worker retrieves all seven indices from Sentinel Hub in one call for the current viewport and the most recent cloud-free scene. If the live path is unavailable, a procedural fixture preserves the interaction model using spatially coherent synthetic data. It is not real crop data.
           </p>
           <aside class="satellite-poc-card" aria-label="Proof of concept scope">
             <p>
-              Sentinel-2 resolves about 10&thinsp;m per pixel on its primary bands. The explorer caps the
-              viewport at 200 hectares — past that, cost climbs and everything averages out into a landscape
-              summary instead of a field inspection. Zoom in until the area readout drops under
-              200&thinsp;ha and the analysis unlocks.
+              Sentinel-2's primary bands resolve about 10&thinsp;m per pixel. The Explorer limits requests to 200 hectares, beyond which costs rise and the view becomes a landscape summary. Zoom in until the area readout is below 200&thinsp;ha to enable analysis.
             </p>
           </aside>
         </section>
@@ -225,15 +204,10 @@
         <section class="essay-section">
           <h2 class="essay-heading">Approach</h2>
           <p class="essay-body">
-            No draw tool, no saved boundary, no coordinate box. To inspect a different field you move the map
-            to it.
+            Move the map to inspect another field. There is no saved boundary, drawing tool, or coordinate entry.
           </p>
           <p class="essay-body">
-            All seven indices come back in one Worker call for the same viewport and scene date, then sit in
-            the client cache — switching between them rebuilds the mesh without touching the network. Each
-            index gets its own colorscale and a normalised height range, so the surfaces stay comparable
-            despite wildly different absolute scales: NDVI in [&minus;1,&thinsp;1] and CIre in
-            [0,&thinsp;6] both occupy the same vertical stage.
+            The browser keeps all seven indices for the same viewport and scene date. Switching index rebuilds the mesh while the base layer and camera stay in place, with no further network request. Each index has its own colorscale and normalised height range, so NDVI in [−1,&thinsp;1] and CIre in [0,&thinsp;6] occupy the same vertical space despite their different scales.
           </p>
           <p class="essay-body">
             Surface height represents the index value, not terrain elevation.
@@ -258,9 +232,7 @@
         <section class="essay-section">
           <h2 class="essay-heading">Try it</h2>
           <p class="essay-body">
-            Pan to a field, zoom in, click <strong>Load indices</strong>. Seven Sentinel-2 indices render as
-            a terrain mesh over a satellite tile base, and the tabs switch between them without going back
-            to the network.
+            Open the Explorer and use <strong>Load indices</strong> to inspect the current viewport.
           </p>
           <div class="essay-links">
             <a class="essay-link" href="three/">

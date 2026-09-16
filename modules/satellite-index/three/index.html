@@ -52,13 +52,7 @@
       <header class="module-header">
         <h1 class="module-header-title">Explorer</h1>
         <p class="module-header-body">
-          Pan to any agricultural area, zoom to field scale, and click <strong>Load indices</strong> — no
-          boundary registration required. Seven Sentinel-2 spectral indices render as terrain above a
-          satellite tile base fitted to the current bounds. Select an index to swap the surface; the imagery
-          and camera position stay fixed. Orbit controls make boundary-free monitoring tactile: the field becomes
-          a surface you can turn, compare, and inspect from any angle. After a live analysis, <strong>Scene RGB</strong>
-          swaps in the lower-resolution Sentinel image from the same acquisition date; <strong>Terrain</strong>
-          swaps in contour context.
+          Pan to an agricultural area, zoom to field scale, and select <strong>Load indices</strong>. No boundary registration is required. Seven Sentinel-2 indices render as surfaces above satellite imagery fitted to the current map bounds. Switch indices with the camera and imagery held in place, or orbit the surface to inspect it from another angle. After live analysis, <strong>Scene RGB</strong> displays the lower-resolution Sentinel image from the same acquisition date. <strong>Terrain</strong> displays contours.
         </p>
       </header>
 
@@ -136,37 +130,37 @@
         <div class="satellite-three-index-notes">
           <article class="satellite-three-index-note satellite-three-index-note--active" data-index-note="ndvi">
             <h2>NDVI — Vegetation density</h2>
-            <p>Normalised red and near-infrared contrast. Useful for a first read of canopy density and broad vegetation vigour.</p>
+            <p>Normalised red and near-infrared contrast gives a first view of canopy density and broad vegetation vigour.</p>
             <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="ndvi">View on terrain &uarr;</a>
           </article>
           <article class="satellite-three-index-note" data-index-note="ndre">
             <h2>NDRE — Red-edge chlorophyll</h2>
-            <p>Uses the red-edge band to stay sensitive in dense canopy where NDVI can saturate. Useful for chlorophyll and nitrogen-related patterns.</p>
+            <p>The red-edge band remains sensitive in dense canopy where NDVI can saturate, revealing chlorophyll and nitrogen-related patterns.</p>
             <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="ndre">View on terrain &uarr;</a>
           </article>
           <article class="satellite-three-index-note" data-index-note="ndwi">
             <h2>NDWI — Water content</h2>
-            <p>Highlights water and wetness contrasts in the visible and near-infrared bands. Useful for drainage, inundation, and surface water signals.</p>
+            <p>Visible and near-infrared contrasts highlight drainage, inundation, and surface water.</p>
             <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="ndwi">View on terrain &uarr;</a>
           </article>
           <article class="satellite-three-index-note" data-index-note="ndmi">
             <h2>NDMI — Canopy moisture</h2>
-            <p>Compares near-infrared and short-wave infrared response. Useful for moisture stress and canopy hydration patterns.</p>
+            <p>Near-infrared and short-wave infrared response indicate canopy hydration and patterns of moisture stress.</p>
             <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="ndmi">View on terrain &uarr;</a>
           </article>
           <article class="satellite-three-index-note" data-index-note="evi">
             <h2>EVI — Enhanced vegetation</h2>
-            <p>Reduces atmospheric and soil-background effects compared with NDVI. Useful when dense vegetation or haze makes simple contrast less stable.</p>
+            <p>Reduced atmospheric and soil-background effects make EVI useful in dense vegetation or haze, where NDVI becomes less stable.</p>
             <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="evi">View on terrain &uarr;</a>
           </article>
           <article class="satellite-three-index-note" data-index-note="savi">
             <h2>SAVI — Soil-adjusted vegetation</h2>
-            <p>Compensates for exposed soil brightness. Useful for sparse canopy, early growth, dry fields, or mixed bare-soil scenes.</p>
+            <p>Compensates for exposed soil brightness in sparse canopy, early growth, dry fields, and mixed bare-soil scenes.</p>
             <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="savi">View on terrain &uarr;</a>
           </article>
           <article class="satellite-three-index-note" data-index-note="cire">
             <h2>CIre — Chlorophyll index</h2>
-            <p>Expresses near-infrared to red-edge contrast as a chlorophyll-oriented ratio. Useful for within-field nutrition and canopy status variation.</p>
+            <p>The near-infrared to red-edge ratio indicates chlorophyll variation, helping reveal nutrition and canopy patterns within a field.</p>
             <a class="satellite-three-index-return" href="#satellite-three-stage" data-index="cire">View on terrain &uarr;</a>
           </article>
         </div>
@@ -196,8 +190,8 @@
             vertices should be read as resampled display points rather than independent source observations.
             The base context defaults to sharper MapTiler imagery for orientation, while Scene RGB uses the same
             Sentinel acquisition as the index grids when the live response includes it.
-            If the live path is unavailable, a procedural fixture preserves the tactile interaction model; treat
-            that fallback as illustrative interaction data rather than crop observations.
+            If the live path is unavailable, a procedural fixture keeps the interaction working with synthetic values.
+            The fallback does not contain real crop observations.
           </p>
         </section>
       </article>

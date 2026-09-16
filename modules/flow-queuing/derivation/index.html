@@ -58,10 +58,7 @@
       <header class="module-header">
         <h1 class="module-header-title">Appendix: M/M/1 Derivation</h1>
         <p class="module-header-body">
-          The M/M/1 result W&nbsp;=&nbsp;1&thinsp;/&thinsp;(&mu;&nbsp;&minus;&nbsp;&lambda;) is not postulated.
-          It follows from two distributional choices, a Markov chain argument, and a single counting identity.
-          This appendix traces that path from first principles. Equations are numbered for cross-reference;
-          text references link back to the relevant formula.
+          This appendix derives <var>W</var>&nbsp;=&nbsp;1&thinsp;/&thinsp;(<var>&mu;</var>&nbsp;&minus;&nbsp;<var>&lambda;</var>) from the arrival and service distributions, a Markov chain, and Little's Law. Equations are numbered, with links from the text for cross-reference.
         </p>
         <p class="module-header-body">
           The two M's in M/M/1 name the distributions: the first for Markovian (Poisson) arrivals,
@@ -246,10 +243,7 @@
         <section class="essay-section">
           <h2 class="essay-heading" id="pasta">PASTA: Poisson arrivals see time averages</h2>
           <p class="essay-body">
-            Before deriving the steady-state distribution, a subtlety deserves attention. We want to know what
-            fraction of arriving customers find <var>n</var> customers already in the system. In general,
-            strategic or correlated arrivals might prefer to arrive when the queue is short or long.
-            Poisson arrivals are different.
+            An arriving customer may see a different queue from the one observed at an arbitrary time. Strategic or correlated arrivals can favour times when queues are short or long. Poisson arrivals have a useful property here.
           </p>
           <p class="essay-body">
             PASTA (Poisson Arrivals See Time Averages) is the theorem that the fraction of Poisson
@@ -437,20 +431,10 @@
         <section class="essay-section">
           <h2 class="essay-heading">The formula in context</h2>
           <p class="essay-body">
-            The chain of reasoning is compact: Poisson arrivals produce exponential interarrival times
-            <a href="#eq-2" class="eq-ref">(2)</a>; exponential service times are memoryless
-            <a href="#eq-4" class="eq-ref">(4)</a>, giving the Markov property; PASTA
-            <a href="#eq-5" class="eq-ref">(5)</a> connects time-average probabilities to arrival-epoch
-            probabilities; detailed balance <a href="#eq-6" class="eq-ref">(6)</a> and normalization yield the
-            geometric distribution <a href="#eq-8" class="eq-ref">(8)</a>; and Little&rsquo;s Law converts
-            that distribution into the lead time formula <a href="#eq-10" class="eq-ref">(10)</a>.
+            Poisson arrivals give exponential interarrival times <a href="#eq-2" class="eq-ref">(2)</a>. Together with memoryless service times <a href="#eq-4" class="eq-ref">(4)</a>, they give the Markov property. Detailed balance <a href="#eq-6" class="eq-ref">(6)</a> and normalization yield the geometric distribution <a href="#eq-8" class="eq-ref">(8)</a>, which PASTA <a href="#eq-5" class="eq-ref">(5)</a> also relates to arriving customers. Little&rsquo;s Law then gives lead time <a href="#eq-10" class="eq-ref">(10)</a>.
           </p>
           <p class="essay-body">
-            Each step introduces exactly one non-trivial idea. The formula W&nbsp;=&nbsp;1&thinsp;/&thinsp;(&mu;&nbsp;&minus;&nbsp;&lambda;)
-            looks simple because everything has already been done: the distributions, the chain, the balance
-            equations, and the geometric series. The (1&nbsp;&minus;&nbsp;<var>&rho;</var>) in the denominator
-            of <a href="#eq-9" class="eq-ref">(9)</a> is the normalization constant for the geometric
-            distribution; the nonlinear part comes from there, not from any arbitrary choice.
+            The (1&nbsp;&minus;&nbsp;<var>&rho;</var>) in the denominator of <a href="#eq-9" class="eq-ref">(9)</a> comes from normalizing the geometric distribution. It accounts for the nonlinear growth as utilization rises.
           </p>
           <p class="essay-body">
             Return to <a href="../#mm1">Flow and Waiting</a> to see how the formula is used, or to

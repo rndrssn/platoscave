@@ -58,16 +58,10 @@
       <header class="module-header">
         <h1 class="module-header-title">Flow and Waiting</h1>
         <p class="module-header-body">
-          Queueing theory is the formal study of waiting: how demand arrives at a processing step, how capacity at that
-          step determines throughput, and how the relationship between arrival rate and service rate governs the time
-          work spends in the system. Its central result—that waiting grows non-linearly as utilization approaches
-          service capacity—has consequences for any system where variability exists and capacity is shared.
+          Queueing theory describes how arrivals and available capacity affect throughput and time in a system. Where capacity is shared and work varies, waiting grows non-linearly as utilization approaches service capacity.
         </p>
         <p class="module-header-body">
-          Product development is a queueing system. Features, fixes, reviews, and decisions arrive at constraint steps
-          whose capacity determines flow. Utilization—the ratio of arrival rate to service rate—can appear stable on
-          average while backlog, lead time, and interruption grow disproportionately at the constraint. This divergence
-          between average load and experienced waiting is the utilization trap.
+          In product development, features, fixes, reviews, and decisions wait at steps with limited capacity. Average utilization can stay steady while backlog, lead time, and interruptions grow at the constraint. This gap between average load and experienced waiting is the <em>utilization trap</em>.
         </p>
         <p class="module-header-body">
           This module applies queueing theory to knowledge work. It covers the core quantities,
@@ -81,21 +75,12 @@
       <article class="module-essay queue-machine-theory">
         <section class="essay-section">
           <h2 class="essay-heading">Queueing theory in plain English</h2>
+
           <p class="essay-body">
-            Queueing theory is the study of waiting. It asks a simple question with uncomfortable consequences: when work
-            arrives at some rate and a system can only finish work at some other rate, what happens in the space between?
-            That space is the queue.
+            Queues in knowledge work include ticket backlogs, pull requests awaiting review, decisions awaiting a meeting, features needing a specialist, and incidents pending diagnosis. Partly finished work waiting for its next step is a queue too.
           </p>
           <p class="essay-body">
-            The word "queue" does not only mean people standing in line. It can be a backlog of tickets, pull requests
-            waiting for review, decisions waiting for a meeting, features waiting for a specialist, incidents waiting for
-            diagnosis, or partially finished work waiting for the next step.
-          </p>
-          <p class="essay-body">
-            The trap is that averages hide timing. If one item arrives every hour and one item can be finished every hour,
-            the average rates match. But if four items arrive at once, three of them wait even though the average still
-            looks balanced. Add variable item sizes, interruptions, rework, reviews, and handoffs, and waiting becomes the
-            dominant part of elapsed time.
+            Matching average rates hide the timing of work. Four items arriving together leave three waiting if only one can be served at a time, even when arrivals average one per hour and capacity is one per hour. Variation in item size, interruptions, rework, reviews, and handoffs add enough waiting to dominate elapsed time.
           </p>
         </section>
 
@@ -119,9 +104,7 @@
         <section class="essay-section">
           <h2 class="essay-heading" id="littles-law">Little's Law</h2>
           <p class="essay-body">
-            Little's Law is the accounting identity of flow. If WIP goes up and throughput does not, where does the pain
-            go? Into time. In any stable system observed over a meaningful interval, average work in the system equals
-            average throughput multiplied by average time in the system.
+            In a stable system observed over a meaningful interval, average work in the system equals average throughput multiplied by average time in the system. This is Little's Law.
           </p>
 
           <figure class="queue-machine-equation" data-formula="L = \lambda W">
@@ -176,10 +159,7 @@
         <section class="essay-section">
           <h2 class="essay-heading" id="mm1">Why high utilization bites</h2>
           <p class="essay-body">
-            M/M/1 is not a model of software development. It is a stripped-down warning light: one server, random arrivals,
-            random service times, and stable arrival rate below service capacity. Even in that small world, waiting does
-            not rise gently as utilization increases. It bends upward, then turns nearly vertical as arrival rate approaches
-            service capacity.
+            M/M/1 describes a single server with random arrivals, random service times, and a stable arrival rate below capacity. It is a simplified model rather than a representation of software development. Even here, waiting rises steeply as arrival rate approaches service capacity.
           </p>
 
           <figure class="queue-machine-equation" data-formula="\rho = \dfrac{\lambda}{\mu}">
@@ -196,18 +176,10 @@
           </figure>
 
           <p class="essay-body">
-            The formula looks simple, but it is a hyperbola, not a line. Rewrite the denominator:
-            <var>&mu;</var>&nbsp;&minus;&nbsp;<var>&lambda;</var>&nbsp;=&nbsp;<var>&mu;</var>(1&nbsp;&minus;&nbsp;<var>&rho;</var>),
-            so <var>W</var>&nbsp;=&nbsp;(1/<var>&mu;</var>)&nbsp;&divide;&nbsp;(1&nbsp;&minus;&nbsp;<var>&rho;</var>)&nbsp;&mdash;
-            average service time divided by the spare capacity fraction. When utilization is 50%, spare capacity is 50% and
-            wait is two service times. At 90%, spare capacity is 10% and wait is ten service times. At 99%, wait reaches a
-            hundred service times. The denominator collapsing toward zero is the nonlinear part.
+            Rewriting <var>&mu;</var>&nbsp;&minus;&nbsp;<var>&lambda;</var> as <var>&mu;</var>(1&nbsp;&minus;&nbsp;<var>&rho;</var>) gives <var>W</var>&nbsp;=&nbsp;(1/<var>&mu;</var>)&nbsp;&divide;&nbsp;(1&nbsp;&minus;&nbsp;<var>&rho;</var>). Average time in the system is average service time divided by the spare-capacity fraction. At 50% utilization, it is two service times. At 90%, it is ten, and at 99%, a hundred. The denominator approaches zero, producing a hyperbola.
           </p>
           <p class="essay-body">
-            The Poisson arrivals and exponential service times are not in the formula because they are used to derive it.
-            Those distributional assumptions make the queueing math tractable (via a birth-death Markov chain), and the
-            result of all that work happens to be a clean rational expression. The distributions are baked in; the formula
-            is the simplified answer. See the <a href="derivation/">M/M/1 appendix</a> for the full argument.
+            Poisson arrivals and exponential service times are assumptions used in the derivation through a birth-death Markov chain. They still constrain the result, even though the final expression contains only the rates. The <a href="derivation/">M/M/1 appendix</a> works through that derivation.
           </p>
 
           <aside class="queue-machine-assumption-card" aria-label="Model assumptions">
@@ -224,9 +196,7 @@
         <section class="essay-section">
           <h2 class="essay-heading" id="kingman">Where variability enters</h2>
           <p class="essay-body">
-            Kingman is where the warning starts to look like product work. Real teams do not just have average load; they
-            have uneven arrivals and uneven item sizes. Rework appears, reviews block, priorities change, and dependencies
-            turn one card into six.
+            Kingman's approximation accounts for uneven arrivals and service times. These matter in product work, where rework, blocked reviews, changing priorities, and dependencies alter both the timing and size of tasks.
           </p>
 
           <figure class="queue-machine-equation" data-formula="W_q \approx \dfrac{\rho}{1-\rho} \times \dfrac{C_a^2 + C_s^2}{2} \times E[S]">
@@ -249,20 +219,15 @@
         <section class="essay-section">
           <h2 class="essay-heading" id="toc">Connection to Theory of Constraints</h2>
           <p class="essay-body">
-            Queueing theory describes the waiting mechanism. Theory of Constraints offers the complementary management
-            question: where is the constraint, and what would protect its flow?
+            Theory of Constraints (TOC) uses the constraint to guide management action. Queueing theory explains why waiting builds there.
           </p>
           <p class="essay-body">
-            TOC's defining claim is that the throughput of any system is governed by its constraint. Subordinating all
-            other decisions to the constraint—protecting its input queue from starvation, preventing non-constraints
-            from overfeeding it—turns a diagnosis of high utilization into a tractable management action. Queueing
-            gives the formula for why things are slow; TOC asks what to change first.
+            TOC holds that a system's throughput is governed by its constraint. Other decisions should protect that flow, keeping the constraint supplied without letting other steps overload it.
           </p>
           <aside class="queue-machine-toc-panel" aria-label="Theory of Constraints">
             <h3>Theory of Constraints</h3>
             <p>
-              Identify the constraint. Exploit it fully. Subordinate all other decisions to it. The target is not
-              universal busyness; it is valuable work moving through the constraint at a sustainable pace.
+              Identify the constraint, exploit it fully, and subordinate other decisions to it. Aim for valuable work moving through it at a sustainable pace.
             </p>
           </aside>
         </section>
@@ -270,17 +235,9 @@
         <section class="essay-section">
           <h2 class="essay-heading">From utilization to flow</h2>
           <p class="essay-body">
-            Henrik Kniberg's <em>resource utilization trap</em> demonstration makes the practical lesson visible. Two lanes
-            process the same bursty arrivals and variable task sizes, but with different release policies: one pushes work
-            aggressively, one caps WIP and protects flow.
+            Henrik Kniberg's <em>resource utilization trap</em> demonstration puts two release policies alongside each other. Both lanes receive the same bursty arrivals and variable task sizes. One starts work aggressively to keep people busy. The other caps WIP and accepts local slack to absorb variation.
           </p>
-          <ol class="queue-machine-step-list">
-            <li><strong>Bursty arrivals:</strong> the same average load produces very different queues depending on whether work arrives steadily or in waves.</li>
-            <li><strong>Variable item sizes:</strong> fat-tailed effort distributions compound the arrival variability penalty at each stage.</li>
-            <li><strong>Push policy:</strong> starting work early to keep everyone visibly busy raises WIP, which raises lead time by Little's Law.</li>
-            <li><strong>Pull policy:</strong> capping WIP and accepting local slack absorbs variation before it becomes persistent backlog.</li>
-            <li><strong>Flow measurement:</strong> throughput, lead time, and WIP as a system—not resource utilization in isolation.</li>
-          </ol>
+          <p class="essay-body">Bursty arrivals create different queues from steady arrivals at the same average load. Fat-tailed item sizes add to the variability at each stage. Starting more work raises WIP and, by Little's Law, lead time. Read throughput, lead time, and WIP together to see how the policies affect flow.</p>
           <p class="essay-body">
             See Kniberg's <a href="https://www.youtube.com/watch?v=CostXs2p6r0">resource utilization trap video</a> for the
             original visual demonstration.

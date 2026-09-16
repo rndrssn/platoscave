@@ -8,7 +8,11 @@ node_modules/
 .github/
 tests/
 scripts/
-content/
+# content/* (not content/) so the directory itself isn't excluded outright —
+# gitignore-style parsers never descend into a wholly-excluded directory, so
+# a trailing negation below would otherwise be unable to re-include anything
+# in it.
+content/*
 # Except the skills-graph data file, which the live page fetches at runtime
 # as a lightweight Markdown CMS (see README.md "Experience-Skill Graph CMS").
 !content/graph-data/

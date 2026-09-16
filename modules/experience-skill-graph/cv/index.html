@@ -161,6 +161,7 @@
       masthead.parentNode.insertBefore(sentinel, masthead);
       var spacer = null;
       var stuck = false;
+      var stickyMediaQuery = window.matchMedia('(min-width: 641px)');
       function getNavOffset() {
         var nav = document.querySelector('.main-nav');
         if (!nav) return 0;
@@ -168,7 +169,7 @@
         return r.height + Math.max(0, r.top);
       }
       function stick() {
-        if (stuck) return;
+        if (stuck || !stickyMediaQuery.matches) return;
         stuck = true;
         spacer = document.createElement('div');
         spacer.style.height = masthead.getBoundingClientRect().height + 'px';
@@ -183,9 +184,13 @@
         masthead.style.top = '';
         masthead.classList.remove('experience-skill-masthead--stuck');
       }
-      new IntersectionObserver(function(entries) {
+      var observer = new IntersectionObserver(function(entries) {
         entries[0].isIntersecting ? unstick() : stick();
-      }, { threshold: 0 }).observe(sentinel);
+      }, { threshold: 0 });
+      observer.observe(sentinel);
+      stickyMediaQuery.addEventListener('change', function(e) {
+        if (!e.matches) unstick();
+      });
       window.addEventListener('resize', function() {
         if (stuck && spacer) {
           masthead.classList.remove('experience-skill-masthead--stuck');

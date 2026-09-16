@@ -242,6 +242,13 @@
           label: 'CV',
           className: 'contact-social-link contact-social-link--cv footer-social-link footer-social-link--cv',
           ariaLabel: 'CV'
+        },
+        {
+          href: 'https://apps.apple.com/us/app/ioths/id6787224776',
+          className: 'contact-social-link contact-social-link--ioths footer-social-link',
+          ariaLabel: 'ioths on the App Store',
+          external: true,
+          icon: true
         }
       ].forEach(function (item) {
         socials.appendChild(createFooterSocialLink(item));

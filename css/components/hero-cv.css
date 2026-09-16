@@ -121,6 +121,11 @@
   -webkit-mask-image: url('../../assets/images/icons/github.svg');
 }
 
+.contact-social-link--ioths .contact-social-icon {
+  mask-image: url('../../assets/images/icons/r-pentomino.svg');
+  -webkit-mask-image: url('../../assets/images/icons/r-pentomino.svg');
+}
+
 .contact-social-link--cv {
   width: auto;
   min-width: 0;

@@ -2,7 +2,7 @@
 id: experience-skill-graph
 type: graph-data
 title: Experience-Skill Graph Data
-updated: 2026-04-06
+updated: 2026-10-11
 ---
 
 # Experience-Skill Graph Data
@@ -36,6 +36,9 @@ updated: 2026-04-06
 - skill-product-ops | Product Operations | 195 | [[cat-leadership]]
 - skill-platform | Platform Management | 196 | [[cat-leadership]]
 - skill-api | API Strategy | 197 | [[cat-leadership]]
+- skill-ios-product | iOS Product Development | 200 | [[cat-technical]]
+- skill-swift | Swift / SwiftUI | 210 | [[cat-technical]]
+- skill-ai-assisted-development | AI-assisted Software Development | 250 | [[cat-technical]]
 
 ## Experiences
 - exp-tu | TU Delft PhD (2004-2008) | 0 | [[skill-quantum]], [[skill-complex-systems]], [[skill-condensed-matter]]
@@ -46,3 +49,4 @@ updated: 2026-04-06
 - exp-aiim | AI in Motion (2021) | 5 | [[skill-pm]], [[skill-agile]], [[skill-cv]], [[skill-ml]], [[skill-embedded]], [[skill-robotics]], [[skill-logistics]], [[skill-people]]
 - exp-ikea | IKEA (2021-2023) | 6 | [[skill-retail]], [[skill-pm]], [[skill-agile]], [[skill-ar]], [[skill-crossfn]], [[skill-strategy]], [[skill-stakeholder]], [[skill-platform]], [[skill-api]]
 - exp-yara | Yara (2023-Present) | 7 | [[skill-agtech]], [[skill-pm]], [[skill-agile]], [[skill-strategy]], [[skill-stakeholder]], [[skill-people]], [[skill-crossfn]], [[skill-platform]], [[skill-api]], [[skill-product-ops]]
+- exp-ioths | ioths (2026-Present) | 8 | [[skill-ios-product]], [[skill-swift]], [[skill-ai-assisted-development]], [[skill-strategy]], [[skill-pm]]

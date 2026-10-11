@@ -156,6 +156,10 @@ function finalizeSimulationResult(agg, lastResult) {
     },
 
     ticks: ticks,
+    stageTicks: lastResult.stageTicks,
+    choiceClosedWithProblems: agg.totalClosedWithProblems / agg.iterations,
+    choiceClosedWithoutProblems: agg.totalClosedWithoutProblems / agg.iterations,
+    choiceStillOpen: agg.totalStillOpen / agg.iterations,
   };
 }
 

@@ -44,9 +44,9 @@ function makeExplorerHarness() {
     'panel-a-load', 'panel-a-inflow', 'panel-a-decision', 'panel-a-access',
     'explorer-diagnosis', 'explorer-sim-trigger', 'explorer-diagnosis-title', 'explorer-diagnosis-body',
     'explorer-pressure-block', 'explorer-problem-pressure', 'explorer-coordination-pressure', 'explorer-combo-narrative',
-    'viz-svg', 'sim-summary', 'run-sim-btn', 'replay-btn', 'stochastic-note', 'viz-area'
+    'viz-svg', 'sim-summary', 'run-sim-btn', 'replay-btn', 'generate-run-btn', 'stochastic-note', 'viz-area'
   ];
-  ids.forEach((id) => document.register(new FakeElement(id === 'run-sim-btn' || id === 'replay-btn' ? 'button' : 'div', { id })));
+  ids.forEach((id) => document.register(new FakeElement(['run-sim-btn', 'replay-btn', 'generate-run-btn'].includes(id) ? 'button' : 'div', { id })));
 
   document.getElementById('explorer-diagnosis').hidden = true;
   document.getElementById('explorer-sim-trigger').hidden = true;
@@ -60,6 +60,8 @@ function makeExplorerHarness() {
 
   let emptyStateCalls = 0;
   let drawVizCalls = 0;
+  const renderedResults = [];
+  let simulationCalls = 0;
 
   let runImpl = function() {
     return Promise.resolve({ ticks: [], resolution: 0, oversight: 0, flight: 0, problemResolved: 0, problemDisplaced: 0, problemAdrift: 0, problemInForum: 0 });
@@ -70,9 +72,11 @@ function makeExplorerHarness() {
     window: windowObj,
     setRunImpl: function(fn) { runImpl = fn; },
     get drawVizCalls() { return drawVizCalls; },
+    get simulationCalls() { return simulationCalls; },
+    renderedResults,
     get emptyStateCalls() { return emptyStateCalls; },
     drawEmptyState: function() { emptyStateCalls++; },
-    drawViz: function() { drawVizCalls++; },
+    drawViz: function(result) { drawVizCalls++; renderedResults.push(result); },
     getDiagnosis: function() {
       return {
         title: 'Diag',
@@ -80,6 +84,7 @@ function makeExplorerHarness() {
       };
     },
     runGarbageCanSimulationAsync: function(params) {
+      simulationCalls++;
       return runImpl(params);
     }
   };
@@ -130,6 +135,34 @@ async function run() {
   assert.strictEqual(runBtn.hidden, true, 'run button should hide after successful run');
   assert.strictEqual(runBtn.textContent, 'See how decisions play out', 'run button label must restore after success');
   assert.strictEqual(h.drawVizCalls, 1, 'drawViz should run once on successful simulation');
+
+  const originalResult = h.renderedResults[0];
+  const replay = h.document.getElementById('replay-btn');
+  replay.listeners.click[0].call(replay);
+  assert.strictEqual(h.simulationCalls, 1, 'replay must not generate another simulation');
+  assert.strictEqual(h.renderedResults[1], originalResult, 'replay must reuse the exact result, including its averages');
+  const replacement = { ticks: [], resolution: 0.4, oversight: 0.3, flight: 0.3 };
+  h.setRunImpl(() => Promise.resolve(replacement));
+  const generate = h.document.getElementById('generate-run-btn');
+  await generate.listeners.click[0].call(generate);
+  assert.strictEqual(h.simulationCalls, 2, 'generate must calculate a new batch');
+  assert.strictEqual(h.renderedResults[2], replacement);
+  replay.listeners.click[0].call(replay);
+  assert.strictEqual(h.renderedResults[3], replacement, 'replay must use the most recently generated batch');
+  load.value = 'heavy';
+  load.dispatchEvent({ type: 'change', preventDefault: function() {} });
+  const beforeResetReplay = h.drawVizCalls;
+  replay.listeners.click[0].call(replay);
+  assert.strictEqual(h.drawVizCalls, beforeResetReplay, 'parameter change must invalidate cached replay');
+
+  let completePending;
+  h.setRunImpl(() => new Promise(resolve => { completePending = resolve; }));
+  const pendingGeneration = generate.listeners.click[0].call(generate);
+  load.value = 'light';
+  load.dispatchEvent({ type: 'change', preventDefault: function() {} });
+  completePending(replacement);
+  await pendingGeneration;
+  assert.strictEqual(h.drawVizCalls, beforeResetReplay, 'obsolete generation must not replace the changed configuration');
 
   runBtn.hidden = false;
   h.setRunImpl(function() {

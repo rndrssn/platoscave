@@ -197,13 +197,30 @@ function pickRandomMinIndex(values) {
  * @param {number[]}   entryW - shuffled array of problem indices (entry order)
  * @returns object with state arrays
  */
-function garbageCan(A, D, E, nel, inflowSchedule, entryM, entryW) {
+function garbageCan(A, D, E, nel, inflowSchedule, entryM, entryW, captureStages) {
   // State arrays indexed [entity][tick], filled with sentinel values
   const Problems              = Array.from({ length: W }, () => new Array(PERIODS + 1).fill(STATE_INACTIVE));
   const Choices               = Array.from({ length: M }, () => new Array(PERIODS + 1).fill(STATE_INACTIVE));
   const Members               = Array.from({ length: V }, () => new Array(PERIODS + 1).fill(STATE_ACTIVE));
   const ChoicesEnergyRequired = Array.from({ length: M }, () => new Array(PERIODS + 1).fill(0));
   const ChoicesEnergySpent    = Array.from({ length: M }, () => new Array(PERIODS + 1).fill(0));
+  const stageTicks = [];
+  function recordStage(t, stage) {
+    if (!captureStages) return;
+    stageTicks.push({
+      tick: t + 1, stage,
+      choices: Choices.map((row, id) => ({ id,
+        state: row[t + 1] === STATE_INACTIVE ? 'inactive' : row[t + 1] === STATE_RESOLVED ? 'closed' : 'active',
+        energyRequired: stage === 'arrival' ? ChoicesEnergyRequired[id][t] : ChoicesEnergyRequired[id][t + 1],
+        energySpent: stage === 'arrival' || stage === 'movement' ? ChoicesEnergySpent[id][t] : ChoicesEnergySpent[id][t + 1],
+        participants: stage === 'attention' || stage === 'closure' ? Members.filter(member => member[t + 1] === id).length : 0
+      })),
+      problems: Problems.map((row, id) => ({ id,
+        state: row[t + 1] === STATE_INACTIVE ? 'inactive' : row[t + 1] === STATE_ACTIVE ? 'floating' : row[t + 1] >= 90 ? 'resolved' : 'attached',
+        attachedTo: row[t + 1] >= 90 ? row[t + 1] - 100 : row[t + 1] >= 0 ? row[t + 1] : null
+      }))
+    });
+  }
 
   for (let t = 0; t < PERIODS; t++) {
 
@@ -226,6 +243,7 @@ function garbageCan(A, D, E, nel, inflowSchedule, entryM, entryW) {
       if (idx < W) Problems[entryW[idx]][t + 1] = STATE_ACTIVE;
     }
 
+    recordStage(t, 'arrival');
     // ── Problems attach to choice with minimum energy deficit ─────────────────
     const energyRequiredCalc = new Array(M).fill(0);
 
@@ -253,6 +271,7 @@ function garbageCan(A, D, E, nel, inflowSchedule, entryM, entryW) {
     }
 
     for (let i = 0; i < M; i++) ChoicesEnergyRequired[i][t + 1] = energyRequiredCalc[i];
+    recordStage(t, 'movement');
 
     // ── Decision makers allocate energy to choice with minimum deficit ────────
     // energySpentCalc starts as a copy of cumulative spent-so-far
@@ -280,6 +299,7 @@ function garbageCan(A, D, E, nel, inflowSchedule, entryM, entryW) {
     }
 
     for (let i = 0; i < M; i++) ChoicesEnergySpent[i][t + 1] = energySpentCalc[i];
+    recordStage(t, 'attention');
 
     // ── Resolve choices where cumulative energy meets or exceeds requirement ──
     for (let d1 = 0; d1 < M; d1++) {
@@ -294,9 +314,10 @@ function garbageCan(A, D, E, nel, inflowSchedule, entryM, entryW) {
         }
       }
     }
+    recordStage(t, 'closure');
   }
 
-  return { Choices, Problems, Members, ChoicesEnergyRequired, ChoicesEnergySpent };
+  return { Choices, Problems, Members, ChoicesEnergyRequired, ChoicesEnergySpent, stageTicks };
 }
 
 
@@ -605,6 +626,10 @@ function finalizeSimulationResult(agg, lastResult) {
     },
 
     ticks,
+    stageTicks: lastResult.stageTicks,
+    choiceClosedWithProblems: agg.totalClosedWithProblems / agg.iterations,
+    choiceClosedWithoutProblems: agg.totalClosedWithoutProblems / agg.iterations,
+    choiceStillOpen: agg.totalStillOpen / agg.iterations,
   };
 }
 
@@ -619,6 +644,10 @@ function getGarbageCanDefaults() {
 function createSimulationAccumulator(iterations) {
   return {
     iterations: iterations,
+    completed: 0,
+    totalClosedWithProblems: 0,
+    totalClosedWithoutProblems: 0,
+    totalStillOpen: 0,
     totalResolutions: 0,
     totalOversights: 0,
     totalFlights: 0,
@@ -636,7 +665,8 @@ function runOneSimulationIteration(ctx, agg) {
   const entryM = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
   const entryW = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
 
-  const result = garbageCan(ctx.A, ctx.D, ctx.E, ctx.nel, ctx.inflowSchedule, entryM, entryW);
+  const result = garbageCan(ctx.A, ctx.D, ctx.E, ctx.nel, ctx.inflowSchedule, entryM, entryW, agg.completed === agg.iterations - 1);
+  agg.completed++;
   const counts = countDecisionTypes(result.Choices, result.Problems, result.ChoicesEnergyRequired);
 
   agg.totalResolutions += counts.resolutions;
@@ -651,6 +681,13 @@ function runOneSimulationIteration(ctx, agg) {
   agg.totalProbInForum      += probCounts.inForum;
   agg.totalProbNeverEntered += probCounts.neverEntered;
   const resolvedByChoice = countResolvedByChoice(result.Problems);
+  result.Choices.forEach((choice, id) => {
+    if (choice[PERIODS] === STATE_ACTIVE) agg.totalStillOpen++;
+    if (choice[PERIODS] === STATE_RESOLVED) {
+      if (resolvedByChoice[id] > 0) agg.totalClosedWithProblems++;
+      else agg.totalClosedWithoutProblems++;
+    }
+  });
   for (let i = 0; i < M; i++) {
     agg.totalResolvedByChoice[i] += resolvedByChoice[i];
   }

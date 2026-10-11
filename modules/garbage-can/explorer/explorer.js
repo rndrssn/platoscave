@@ -12,6 +12,8 @@
 var resultsNav = document.getElementById('explorer-results-nav');
 var resultsNavLinks = Array.from(document.querySelectorAll('.results-nav-link'));
 var hasAutoNavigatedToResults = false;
+var lastSimulationResult = null;
+var simulationRequestVersion = 0;
 
 function setSimError(message) {
   var simError = document.getElementById('explorer-sim-error');
@@ -27,7 +29,13 @@ function setSimError(message) {
 // gc-pressure-narrative.js from ../runtime/ is loaded before this file (see index.html script order).
 // This wrapper exists to give the call site a named function and a clear dependency contract.
 function buildExplorerNarrative(intensity, inflow, decision, access) {
-  return window.buildGcPressureNarrative(intensity, inflow, decision, access);
+  var narrative = window.buildGcPressureNarrative(intensity, inflow, decision, access);
+  var schedules = { light: 'Ongoing issues: 1 per iteration for 20', moderate: 'Planning-period issues: 2 per iteration for 10', heavy: 'Backlog arrives in a burst: 4 per iteration for 5' };
+  return {
+    problemSummary: intensity.charAt(0).toUpperCase() + intensity.slice(1) + ' difficulty · ' + schedules[inflow],
+    coordinationSummary: narrative.coordinationSummary,
+    synthesis: 'Watch where problems and participant effort meet. Earlier arrivals can reach opportunities before they close; restricted access can concentrate problems or keep them apart. Compare problems solved with choices closed rather than assuming that more closures mean more resolution.'
+  };
 }
 
 
@@ -109,6 +117,11 @@ function updateDiagnosis() {
 
 // ─── Simulation reset ─────────────────────────────────────────────────────────
 function resetSimulation() {
+  lastSimulationResult = null;
+  simulationRequestVersion++;
+  var generateButton = document.getElementById('generate-run-btn');
+  if (generateButton) generateButton.hidden = true;
+  if (typeof window.stopGcExplorerPlayback === 'function') window.stopGcExplorerPlayback();
   var svg = document.getElementById('viz-svg');
   if (svg) {
     while (svg.firstChild) svg.removeChild(svg.firstChild);
@@ -142,7 +155,10 @@ function resetSimulation() {
 
 // ─── Run simulation button ────────────────────────────────────────────────────
 var runSimBtn = document.getElementById('run-sim-btn');
-if (runSimBtn) runSimBtn.addEventListener('click', async function() {
+var generateRunBtn = document.getElementById('generate-run-btn');
+async function generateSimulation() {
+  if (runSimBtn.disabled || (generateRunBtn && generateRunBtn.disabled)) return;
+  var requestVersion = ++simulationRequestVersion;
   var intensity = document.getElementById('panel-a-load').value;
   var inflow    = document.getElementById('panel-a-inflow').value;
   var decision  = document.getElementById('panel-a-decision').value;
@@ -151,6 +167,8 @@ if (runSimBtn) runSimBtn.addEventListener('click', async function() {
   var originalText = runBtn.textContent;
 
   runBtn.disabled = true;
+  if (generateRunBtn) generateRunBtn.disabled = true;
+  if (replayBtnEl) replayBtnEl.disabled = true;
   runBtn.textContent = 'Running simulation...';
   try {
     var simResult = await runGarbageCanSimulationAsync({
@@ -159,47 +177,32 @@ if (runSimBtn) runSimBtn.addEventListener('click', async function() {
       decisionStructure: decision,
       accessStructure: access
     });
+    if (requestVersion !== simulationRequestVersion) return;
+    lastSimulationResult = simResult;
     runBtn.hidden = true;
     drawViz(simResult);
     setTimeout(centerSimulationCanvasInViewport, 80);
     setActiveResultsNav('viz-area');
     setSimError('');
   } catch (error) {
+    if (requestVersion !== simulationRequestVersion) return;
     setSimError('Simulation failed. Please try again.');
     throw error;
   } finally {
     runBtn.disabled = false;
+    if (generateRunBtn) generateRunBtn.disabled = false;
+    if (replayBtnEl) replayBtnEl.disabled = false;
     runBtn.textContent = originalText;
   }
-});
+}
+if (runSimBtn) runSimBtn.addEventListener('click', generateSimulation);
+if (generateRunBtn) generateRunBtn.addEventListener('click', generateSimulation);
 
 // ─── Replay button ────────────────────────────────────────────────────────────
 var replayBtnEl = document.getElementById('replay-btn');
-if (replayBtnEl) replayBtnEl.addEventListener('click', async function() {
-  var intensity = document.getElementById('panel-a-load').value;
-  var inflow    = document.getElementById('panel-a-inflow').value;
-  var decision  = document.getElementById('panel-a-decision').value;
-  var access    = document.getElementById('panel-a-access').value;
-  var replayBtn = document.getElementById('replay-btn');
-  var originalText = replayBtn.textContent;
-
-  replayBtn.disabled = true;
-  replayBtn.textContent = 'Running simulation...';
-  try {
-    var newSim = await runGarbageCanSimulationAsync({
-      problemIntensity: intensity,
-      problemInflow: inflow,
-      decisionStructure: decision,
-      accessStructure: access
-    });
-    drawViz(newSim);
-    setTimeout(centerSimulationCanvasInViewport, 80);
-    setSimError('');
-  } catch (error) {
-    setSimError('Simulation failed. Please try again.');
-    throw error;
-  } finally {
-    replayBtn.disabled = false;
-    replayBtn.textContent = originalText;
-  }
+if (replayBtnEl) replayBtnEl.addEventListener('click', function() {
+  if (!lastSimulationResult || replayBtnEl.disabled) return;
+  drawViz(lastSimulationResult);
+  setTimeout(centerSimulationCanvasInViewport, 80);
+  setSimError('');
 });

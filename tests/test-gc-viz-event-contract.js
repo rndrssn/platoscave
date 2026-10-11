@@ -56,7 +56,7 @@ function loadContracts() {
   };
   vm.createContext(context);
   vm.runInContext(
-    source + '\nmodule.exports = { collectChoiceDeltaForTick, choiceEventTextFromDelta };',
+    source + '\nmodule.exports = { collectChoiceDeltaForTick, choiceEventTextFromDelta, problemEventTextForTick };',
     context,
     { filename: 'gc-viz.contracts.js' }
   );
@@ -71,7 +71,7 @@ function makeTick(choiceStates) {
 }
 
 function run() {
-  const { collectChoiceDeltaForTick, choiceEventTextFromDelta } = loadContracts();
+  const { collectChoiceDeltaForTick, choiceEventTextFromDelta, problemEventTextForTick } = loadContracts();
 
   var prev = makeTick(['inactive', 'inactive', 'inactive']);
   var curr = makeTick(['inactive', 'active', 'inactive']);
@@ -95,6 +95,20 @@ function run() {
   curr = makeTick(['inactive', 'inactive', 'inactive']);
   delta = collectChoiceDeltaForTick(prev, curr, 3);
   assert(choiceEventTextFromDelta(delta) === 'No CO open/close event', 'Expected explicit no-event wording');
+
+  prev = makeTick(['active', 'active']);
+  curr = makeTick(['closed', 'active']);
+  prev.problems = [{ state: 'attached', attachedTo: 0 }, { state: 'attached', attachedTo: 0 }];
+  curr.problems = [{ state: 'resolved', attachedTo: 0 }, { state: 'attached', attachedTo: 1 }];
+  assert(problemEventTextForTick(prev, curr) === 'CO1 closed; 1 problem solved. 1 problem moved from CO1 to CO2', 'Closure must distinguish solved problems from migration');
+  curr.problems = [{ state: 'floating', attachedTo: null }, { state: 'attached', attachedTo: 1 }];
+  assert(problemEventTextForTick(prev, curr).includes('CO1 closed; no problems solved'), 'Empty closure must not imply problem resolution');
+  assert(problemEventTextForTick(prev, curr).includes('remain unresolved'), 'Departing problems must remain explicitly unresolved');
+  prev = makeTick(['active']);
+  curr = makeTick(['active']);
+  prev.problems = [{ state: 'inactive', attachedTo: null }];
+  curr.problems = [{ state: 'attached', attachedTo: 0 }];
+  assert(problemEventTextForTick(prev, curr) === '1 problem joined CO1. 1 new problem entered', 'Arrival and attachment must both be narrated');
 
   console.log('PASS: tests/test-gc-viz-event-contract.js');
 }

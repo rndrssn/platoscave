@@ -3,6 +3,7 @@
 
 const assert = require('assert');
 const path = require('path');
+const os = require('os');
 
 async function run() {
   if (process.env.CI === 'true') {
@@ -36,6 +37,50 @@ async function run() {
   await page.waitForSelector('main#main-content');
   const hasHomeNav = await page.locator('.main-nav .nav-link').first().count();
   assert(hasHomeNav > 0, 'Home page should render global nav links');
+
+  await page.goto(toFile(path.join('modules', 'garbage-can', 'explorer', 'index.html')));
+  await page.selectOption('#panel-a-load', 'light');
+  await page.selectOption('#panel-a-inflow', 'moderate');
+  await page.selectOption('#panel-a-decision', 'unsegmented');
+  await page.selectOption('#panel-a-access', 'unsegmented');
+  await page.click('#run-sim-btn');
+  await page.waitForSelector('#explorer-playback:visible');
+  assert(await page.isVisible('#replay-btn'), 'replay must be available during playback');
+  assert(await page.isVisible('#generate-run-btn'), 'generation must be available during playback');
+  await page.click('#explorer-pause');
+  assert.strictEqual(await page.textContent('#explorer-pause'), 'Resume');
+  const toolbar = page.locator('#explorer-playback');
+  const mobileBounds = await toolbar.boundingBox();
+  assert(mobileBounds.width <= 390, 'mobile toolbar must fit the viewport');
+  await toolbar.screenshot({ path: path.join(os.tmpdir(), 'gc-explorer-toolbar-mobile.png') });
+  await page.setViewportSize({ width: 1280, height: 900 });
+  const trackingBounds = await page.locator('#explorer-track').boundingBox();
+  const pauseBounds = await page.locator('#explorer-pause').boundingBox();
+  assert(Math.abs(trackingBounds.y - pauseBounds.y) < 3, 'desktop controls must align on one row');
+  await toolbar.screenshot({ path: path.join(os.tmpdir(), 'gc-explorer-toolbar-desktop.png') });
+  await page.setViewportSize({ width: 390, height: 844 });
+  const pausedCaption = await page.textContent('.gc-viz__top-legend');
+  await page.waitForTimeout(2600);
+  assert.strictEqual(await page.textContent('.gc-viz__top-legend'), pausedCaption, 'pause must prevent advancing');
+  await page.selectOption('#explorer-track', '0');
+  assert((await page.textContent('#explorer-tracking')).startsWith('P1:'), 'selected problem must have a stable identity');
+  for (let i = 0; i < 80; i++) {
+    if (await page.isDisabled('#explorer-step')) break;
+    await page.click('#explorer-step');
+  }
+  await page.waitForSelector('#sim-summary:visible');
+  assert((await page.textContent('#sum-header')).includes('animated run'));
+  assert((await page.textContent('#sum-choice-resolution')).includes('10.0 of 10'), 'immediate successful closures must count as solving problems');
+  assert((await page.textContent('#sum-prob-resolved')).includes('20.0 of 20'));
+  assert(await page.isDisabled('#explorer-step'), 'finished playback cannot advance');
+  assert(await page.isVisible('#generate-run-btn'), 'new generation must be available after completion');
+  await page.click('#replay-btn');
+  await page.waitForSelector('#explorer-playback:visible');
+  assert(!(await page.isVisible('#sim-summary')), 'replay must restart the animation');
+  assert((await page.textContent('.gc-viz__top-legend')).includes('0/20'), 'replay starts at the same initial snapshot');
+  assert.strictEqual(await page.inputValue('#explorer-track'), '', 'replay must reset tracking');
+  await page.selectOption('#panel-a-load', 'heavy');
+  assert(!(await page.isVisible('#explorer-playback')), 'changing parameters must stop old playback');
 
   await page.goto(toFile(path.join('modules', 'garbage-can', 'explorer', 'index.html')));
   await page.waitForSelector('#panel-a-load');

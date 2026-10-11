@@ -70,6 +70,25 @@ async function assertAllCombosInvariant() {
           const lastTick = result.ticks[result.ticks.length - 1];
           assert.strictEqual(lastTick.choices.length, 10, 'expected 10 choices in last tick');
           assert.strictEqual(lastTick.problems.length, 20, 'expected 20 problems in last tick');
+          assert.strictEqual(result.stageTicks.length, 80, 'expected four stages per iteration');
+          assert(Math.abs(result.choiceClosedWithProblems + result.choiceClosedWithoutProblems + result.choiceStillOpen - 10) < EPS, 'exclusive choice outcomes must total ten');
+          for (let t = 1; t <= 20; t++) {
+            const stages = result.stageTicks.slice((t - 1) * 4, t * 4);
+            assert.deepStrictEqual(Array.from(stages, s => s.stage), ['arrival', 'movement', 'attention', 'closure']);
+            const closure = stages[3];
+            assert.strictEqual(JSON.stringify(closure.problems), JSON.stringify(result.ticks[t].problems), 'closure must match the original problem snapshot');
+            closure.choices.forEach((choice, id) => {
+              const original = result.ticks[t].choices[id];
+              assert.strictEqual(choice.state, original.state);
+              assert.strictEqual(choice.energySpent, original.energySpent);
+              assert.strictEqual(choice.energyRequired, original.energyRequired);
+            });
+            stages[2].choices.forEach((choice, id) => {
+              if (stages[1].choices[id].state === 'active') {
+                assert(Math.abs(choice.energySpent - stages[1].choices[id].energySpent - choice.participants * 0.39) < EPS, 'attention must expose actual participant contributions');
+              }
+            });
+          }
 
           const finalResolved = lastTick.problems.filter((p) => p.state === 'resolved').length;
           const finalAttached = lastTick.problems.filter((p) => p.state === 'attached').length;

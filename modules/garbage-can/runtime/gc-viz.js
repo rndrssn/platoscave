@@ -284,6 +284,38 @@ function choiceEventTextFromDelta(choiceDelta) {
   return 'No CO open/close event';
 }
 
+function problemEventTextForTick(previous, current) {
+  const events = [];
+  current.choices.forEach(function(choice, choiceId) {
+    if (choice.state !== 'closed' || previous.choices[choiceId].state === 'closed') return;
+    const solved = current.problems.filter(function(problem, id) {
+      return problem.state === 'resolved' && problem.attachedTo === choiceId && previous.problems[id].state !== 'resolved';
+    }).length;
+    events.push(formatChoiceOpportunityLabel(choiceId) + ' closed; ' + (solved ? solved + ' problem' + (solved === 1 ? '' : 's') + ' solved' : 'no problems solved'));
+  });
+  const moves = new Map();
+  let searching = 0;
+  let entered = 0;
+  const attachments = new Map();
+  current.problems.forEach(function(problem, id) {
+    const before = previous.problems[id];
+    if (before.state === 'inactive' && problem.state !== 'inactive') entered++;
+    if (problem.state === 'attached' && before.state !== 'attached') {
+      attachments.set(problem.attachedTo, (attachments.get(problem.attachedTo) || 0) + 1);
+    }
+    if (before.state === 'attached' && problem.state === 'floating') searching++;
+    if (before.state === 'attached' && problem.state === 'attached' && before.attachedTo !== problem.attachedTo) {
+      const route = formatChoiceOpportunityLabel(before.attachedTo) + ' to ' + formatChoiceOpportunityLabel(problem.attachedTo);
+      moves.set(route, (moves.get(route) || 0) + 1);
+    }
+  });
+  moves.forEach(function(count, route) { events.push(count + ' problem' + (count === 1 ? '' : 's') + ' moved from ' + route); });
+  attachments.forEach(function(count, choice) { events.push(count + ' problem' + (count === 1 ? '' : 's') + ' joined ' + formatChoiceOpportunityLabel(choice)); });
+  if (searching) events.push(searching + ' problem' + (searching === 1 ? '' : 's') + ' left a choice and remain unresolved');
+  if (entered) events.push(entered + ' new problem' + (entered === 1 ? '' : 's') + ' entered');
+  return events.join('. ') || 'Problems remain in their current state.';
+}
+
 // ─── Positioning diagram ──────────────────────────────────────────────────────
 function drawPositioning(raw) {
   const svgEl  = document.getElementById('positioning-svg');
@@ -440,7 +472,8 @@ function showEndState(
   probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
   choiceResolvedPerCoMean,
   lastTick,
-  dims
+  dims,
+  explorerResult
 ) {
   function setReadout(id, toneClass, label, metric, detail) {
     var el = document.getElementById(id);
@@ -506,6 +539,9 @@ function showEndState(
   setReadout('sum-thisrun-never-entered', 'outcome-unresolved', 'Never entered', runNeverEntered + ' of ' + dims.problems + ' problems');
   setReadout('sum-thisrun-choices-resolved', 'outcome-resolved', 'Choice opportunities closed', runChoicesClosed + ' of ' + dims.choices);
   setReadout('sum-thisrun-choices-open', 'outcome-unresolved', 'Choice opportunities active', runChoicesOpen + ' of ' + dims.choices);
+  const withProblems = runResolvedByChoice.filter(n => n > 0).length;
+  setReadout('sum-thisrun-with-problems', 'outcome-resolved', 'Closed with problems solved', withProblems + ' of ' + dims.choices);
+  setReadout('sum-thisrun-without-problems', 'outcome-unresolved', 'Closed without problems solved', (runChoicesClosed - withProblems) + ' of ' + dims.choices);
 
   // Primary: canonical GCM decision styles (choice-level)
   document.getElementById('sum-header').textContent =
@@ -516,6 +552,14 @@ function showEndState(
   setReadout('sum-choice-resolution', 'outcome-resolved', 'Deliberation', `${pctRes}%`, 'choice opportunity closed after sustained engagement');
   setReadout('sum-choice-oversight', 'outcome-oversight', 'Oversight', `${pctOver}%`, 'choice opportunity closed with no problem attached');
   setReadout('sum-choice-flight', 'outcome-flight', 'Flight', `${pctFli}%`, 'choice opportunity closed after problems fled');
+  if (explorerResult) {
+    document.getElementById('sum-header').textContent = 'What happened in the animated run?';
+    document.getElementById('sum-ensemble-header').textContent = 'Comparison: averages across 100 simulations';
+    document.getElementById('sum-choices-label').textContent = 'How did choice opportunities close?';
+    setReadout('sum-choice-resolution', 'outcome-resolved', 'Closed with problems solved', explorerResult.choiceClosedWithProblems.toFixed(1) + ' of 10');
+    setReadout('sum-choice-oversight', 'outcome-unresolved', 'Closed without problems solved', explorerResult.choiceClosedWithoutProblems.toFixed(1) + ' of 10');
+    setReadout('sum-choice-flight', 'outcome-in-co', 'Still open', explorerResult.choiceStillOpen.toFixed(1) + ' of 10');
+  }
   var runPerCo = runResolvedByChoice.map(function(v, i) {
     return formatChoiceOpportunityLabel(i) + ' ' + v;
   }).join(' · ');
@@ -523,7 +567,7 @@ function showEndState(
   var meanPerCo = meanArr.length ? meanArr.map(function(v, i) {
     return formatChoiceOpportunityLabel(i) + ' ' + v.toFixed(1);
   }).join(' · ') : 'n/a';
-  setReadout('sum-choice-perco', 'outcome-unresolved', 'Per-CO closure', 'Run: ' + runPerCo, 'MC mean: ' + meanPerCo);
+  setReadout('sum-choice-perco', 'outcome-unresolved', 'Problems solved per opportunity', 'Run: ' + runPerCo, 'MC mean: ' + meanPerCo);
 
   // Supplementary: problem fates (interpretive extension)
   document.getElementById('sum-problems-label').textContent =
@@ -533,14 +577,24 @@ function showEndState(
   setReadout('sum-prob-adrift', 'outcome-searching', 'Problem adrift', `${probAdrift} of ${dims.problems}`, 'detached from a choice opportunity after entry');
   setReadout('sum-prob-never-entered', 'outcome-unresolved', 'Never entered', `${probNeverEntered} of ${dims.problems}`, `never attached to any choice opportunity by organisational iteration ${dims.periods}`);
   setReadout('sum-prob-inforum', 'outcome-in-co', 'Problem in choice opportunity', `${probInForum} of ${dims.problems}`, `still attached to an open choice opportunity at organisational iteration ${dims.periods}`);
+  if (explorerResult) {
+    document.getElementById('sum-prob-displaced').hidden = explorerResult.problemDisplaced === 0;
+    document.getElementById('sum-prob-never-entered').hidden = explorerResult.problemNeverEntered === 0;
+  }
 
   document.getElementById('replay-btn').hidden      = false;
+  const generateButton = document.getElementById('generate-run-btn');
+  if (generateButton) generateButton.hidden = false;
   document.getElementById('stochastic-note').hidden = false;
 }
 
 // ─── Visualization ────────────────────────────────────────────────────────────
 function drawViz(simResult, options) {
-  const { ticks, resolution, oversight, flight } = simResult;
+  const isExplorer = d3.select('#viz-svg').attr('data-explain-streams') === 'true';
+  if (isExplorer && typeof window.stopGcExplorerPlayback === 'function') window.stopGcExplorerPlayback();
+  const ticks = isExplorer && simResult.stageTicks && simResult.stageTicks.length
+    ? [simResult.ticks[0]].concat(simResult.stageTicks) : simResult.ticks;
+  const { resolution, oversight, flight } = simResult;
   var dims = resolveVizDimensions(simResult, options);
   var eventTickerEl = ensureVizEventTicker();
   if (eventTickerEl) eventTickerEl.textContent = '';
@@ -554,16 +608,19 @@ function drawViz(simResult, options) {
   const pctFli  = 100 - pctRes - pctOver;
 
   // Problem-level counts (out of configured problem count, interpretive extension)
-  const probResolved  = Math.round(simResult.problemResolved);
-  const probDisplaced = Math.round(simResult.problemDisplaced);
-  const probAdrift    = Math.round(simResult.problemAdrift);
-  const probInForum   = Math.round(simResult.problemInForum);
-  const probNeverEntered = Math.round(simResult.problemNeverEntered);
+  const meanProblemCount = value => isExplorer ? value.toFixed(1) : Math.round(value);
+  const probResolved  = meanProblemCount(simResult.problemResolved);
+  const probDisplaced = meanProblemCount(simResult.problemDisplaced);
+  const probAdrift    = meanProblemCount(simResult.problemAdrift);
+  const probInForum   = meanProblemCount(simResult.problemInForum);
+  const probNeverEntered = meanProblemCount(simResult.problemNeverEntered);
   const choiceResolvedPerCoMean = Array.isArray(simResult.choiceResolvedPerCoMean) ? simResult.choiceResolvedPerCoMean : [];
 
   // Reset summary state
   document.getElementById('sim-summary').hidden   = true;
   document.getElementById('replay-btn').hidden    = true;
+  const generateButton = document.getElementById('generate-run-btn');
+  if (generateButton) generateButton.hidden = true;
   document.getElementById('stochastic-note').hidden = true;
 
   const {
@@ -745,6 +802,44 @@ function drawViz(simResult, options) {
   // Cumulative resolved-at-choice counts — one entry per choice, never decreases
   const resolvedAtChoice = Array(dims.choices).fill(0);
 
+  const explainStreams = svg.attr('data-explain-streams') === 'true';
+  let selectedProblem = null;
+  let displayedTick = 0;
+  const trackingLayer = svg.append('g').attr('class', 'problem-tracking').attr('pointer-events', 'none');
+  const trackSelect = document.getElementById('explorer-track');
+  function updateTracking() {
+    svg.selectAll('circle.problem').classed('problem-selected', id => id === selectedProblem);
+    trackingLayer.selectAll('*').remove();
+    const status = document.getElementById('explorer-tracking');
+    if (selectedProblem === null) { if (status) status.textContent = ''; return; }
+    const p = ticks[displayedTick].problems[selectedProblem];
+    const name = 'P' + (selectedProblem + 1);
+    if (status) status.textContent = name + ': ' + (p.state === 'inactive' ? 'not yet entered' : p.state === 'floating' ? 'seeking an accessible choice opportunity' : p.state === 'resolved' ? 'solved at ' + formatChoiceOpportunityLabel(p.attachedTo) : 'in ' + formatChoiceOpportunityLabel(p.attachedTo));
+    const positions = ticks.slice(0, displayedTick + 1).filter(t => t.problems[selectedProblem].state !== 'inactive').map(t => probAttrs(t, selectedProblem));
+    if (!positions.length) return;
+    trackingLayer.append('path').attr('d', positions.map((pos,i) => (i ? 'L' : 'M') + pos.x + ',' + pos.y).join(' '))
+      .attr('fill', 'none').attr('stroke', C.slate).attr('stroke-dasharray', '3 3').attr('opacity', 0.6);
+    const pos = positions[positions.length - 1];
+    trackingLayer.append('text').attr('class', 'gc-viz__choice-label').attr('x', pos.x + 10).attr('y', pos.y - 10).text(name);
+  }
+  if (explainStreams && trackSelect) {
+    trackSelect.replaceChildren(new Option('None', ''));
+    for (let id = 0; id < dims.problems; id++) trackSelect.add(new Option('P' + (id + 1), String(id)));
+    trackSelect.onchange = function() { selectedProblem = this.value === '' ? null : Number(this.value); updateTracking(); };
+    svg.selectAll('circle.problem').on('click', function(_event, id) {
+      trackSelect.value = String(id); selectedProblem = id; updateTracking();
+    });
+  }
+  const effortLayer = svg.append('g').attr('class', 'choice-effort');
+  if (explainStreams) {
+    effortLayer.selectAll('circle').data(d3.range(dims.choices)).join('circle')
+      .attr('cx', i => choiceCenters[i].x).attr('cy', i => choiceCenters[i].y)
+      .attr('r', CHOICE_R + 5).attr('fill', 'none').attr('stroke', C.slate)
+      .attr('stroke-width', 2).attr('transform', i => 'rotate(-90 ' + choiceCenters[i].x + ' ' + choiceCenters[i].y + ')')
+      .attr('opacity', 0);
+    if (eventTickerEl) eventTickerEl.setAttribute('aria-live', 'polite');
+  }
+
   // Problem IDs that have ever been active (for entrance animation)
   const everActive = new Set();
 
@@ -848,6 +943,16 @@ function drawViz(simResult, options) {
     const choicesOpenedThisTick = [];
     const choicesResolvedThisTick = new Set();
 
+    if (explainStreams) {
+      const circumference = 2 * Math.PI * (CHOICE_R + 5);
+      effortLayer.selectAll('circle').data(tick.choices)
+        .attr('opacity', d => d.state === 'active' ? 0.85 : 0)
+        .attr('stroke-dasharray', d => {
+          const fraction = d.energyRequired > 0 ? Math.min(1, Math.max(0, d.energySpent / d.energyRequired)) : 0;
+          return (fraction * circumference) + ' ' + circumference;
+        });
+    }
+
     svg.selectAll('circle.choice')
       .data(tick.choices)
       .transition()
@@ -926,7 +1031,11 @@ function drawViz(simResult, options) {
     // Resolution pulse on the CO itself to make closures visually unmissable.
     if (choicesResolvedThisTick.size > 0) {
       var pulseData = Array.from(choicesResolvedThisTick).map(function(choiceId) {
-        return choiceCenters[choiceId];
+        return Object.assign({}, choiceCenters[choiceId], {
+          solved: tick.problems.some(function(p, id) {
+            return p.state === 'resolved' && p.attachedTo === choiceId && prevTick.problems[id].state !== 'resolved';
+          })
+        });
       });
 
       svg.append('g')
@@ -939,7 +1048,8 @@ function drawViz(simResult, options) {
           .attr('cy', function(d) { return d.y; })
           .attr('r', CHOICE_R * 0.95)
           .attr('fill', 'none')
-          .attr('stroke', C.sage)
+          .attr('stroke', d => explainStreams && !d.solved ? C.slate : C.sage)
+          .attr('stroke-dasharray', d => explainStreams && !d.solved ? '4 3' : null)
           .attr('stroke-width', 1.8)
           .attr('opacity', 0.9)
           .transition()
@@ -1229,13 +1339,87 @@ function drawViz(simResult, options) {
     allProbs.classed('problem-attached', id => tick.problems[id].state === 'attached');
     allProbs.classed('problem-searching', id => tick.problems[id].state === 'floating');
 
-    // Event ticker lives in top legend; keep external ticker empty
-    if (eventTickerEl) eventTickerEl.textContent = '';
+    if (eventTickerEl) {
+      let caption = explainStreams && prevTick ? problemEventTextForTick(prevTick, tick) : '';
+      if (explainStreams && tick.stage === 'attention') {
+        const attention = tick.choices.filter(c => c.participants > 0).map(c => formatChoiceOpportunityLabel(c.id) + ': ' + c.participants + ' participant' + (c.participants === 1 ? '' : 's'));
+        caption = attention.length ? 'Attention allocated — ' + attention.join('; ') : 'No accessible opportunity received participant effort.';
+      }
+      eventTickerEl.textContent = caption;
+    }
+    displayedTick = tickIdx;
+    if (explainStreams) updateTracking();
   }
 
   renderTick(0, null, 900);
 
   let current = 0;
+
+  if (explainStreams) {
+    const controls = document.getElementById('explorer-playback');
+    const pauseButton = document.getElementById('explorer-pause');
+    const stepButton = document.getElementById('explorer-step');
+    let paused = false;
+    let cancelled = false;
+    let playbackTimer = null;
+    function syncPlayback() {
+      if (pauseButton) { pauseButton.textContent = paused ? 'Resume' : 'Pause'; pauseButton.disabled = current === ticks.length - 1; }
+      if (stepButton) stepButton.disabled = current === ticks.length - 1;
+    }
+    function finish() {
+      showEndState(pctRes, pctOver, pctFli, probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,
+        choiceResolvedPerCoMean, ticks[ticks.length - 1], dims, simResult);
+      syncPlayback();
+    }
+    function advance() {
+      if (cancelled || current >= ticks.length - 1) return;
+      const previous = ticks[current++];
+      const tick = ticks[current];
+      const stageNames = { arrival: 'Arrival', movement: 'Problem movement', attention: 'Participant attention', closure: 'Closure' };
+      setTopLegend('Org. iteration ' + tick.tick + '/' + dims.periods, stageNames[tick.stage] || 'Next iteration');
+      renderTick(current, previous, 900);
+      syncPlayback();
+      playbackTimer = setTimeout(function() {
+        playbackTimer = null;
+        if (cancelled) return;
+        if (current === ticks.length - 1) finish();
+        else if (!paused) advance();
+      }, 2400);
+    }
+    if (controls) controls.hidden = false;
+    document.getElementById('replay-btn').hidden = false;
+    if (generateButton) generateButton.hidden = false;
+    if (pauseButton) pauseButton.onclick = function() {
+      paused = !paused;
+      syncPlayback();
+      if (paused && current < ticks.length - 1) {
+        clearTimeout(playbackTimer);
+        playbackTimer = null;
+      }
+      if (!paused && playbackTimer === null) advance();
+    };
+    if (stepButton) stepButton.onclick = function() {
+      paused = true;
+      clearTimeout(playbackTimer);
+      playbackTimer = null;
+      svg.selectAll('*').interrupt();
+      advance();
+    };
+    window.stopGcExplorerPlayback = function() {
+      cancelled = true;
+      clearTimeout(playbackTimer);
+      svg.selectAll('*').interrupt();
+      if (controls) controls.hidden = true;
+      if (trackSelect) trackSelect.onchange = null;
+      if (pauseButton) pauseButton.onclick = null;
+      if (stepButton) stepButton.onclick = null;
+      const status = document.getElementById('explorer-tracking');
+      if (status) status.textContent = '';
+    };
+    syncPlayback();
+    playbackTimer = setTimeout(advance, 1000);
+    return;
+  }
 
   function stepTick() {
     current++;
@@ -1255,7 +1439,7 @@ function drawViz(simResult, options) {
 
     if (current === ticks.length - 1) {
       setTimeout(function() {
-        if (eventTickerEl) eventTickerEl.textContent = '';
+        if (eventTickerEl && !explainStreams) eventTickerEl.textContent = '';
         showEndState(
           pctRes, pctOver, pctFli,
           probResolved, probDisplaced, probAdrift, probInForum, probNeverEntered,

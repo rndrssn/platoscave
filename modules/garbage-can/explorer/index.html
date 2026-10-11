@@ -61,7 +61,7 @@
         <h1 class="module-header-title">Explore</h1>
         <p class="module-header-body">
           Run the Garbage Can Model with any parameter combination.
-          Adjust problem difficulty, problem arrival rate, decision structure,
+          Adjust problem difficulty, how problems surface, decision structure,
           and access structure to see how different configurations shape decision-making.
         </p>
       </header>
@@ -70,11 +70,13 @@
       <div class="field-notes-card">
         <p class="field-notes-title">The Garbage Can Model</p>
         <p class="field-notes-body">
-          Choice opportunities, shown as circles, are places where decisions could be made, such as meetings, reviews, and committees. Problems, shown as dots, attach to them seeking resolution. Decision makers are not drawn. In each organisational iteration, they allocate energy to the choices they can access. A choice opportunity closes when cumulative energy meets demand.
+          Choice opportunities are the large circles: meetings, reviews, or committees where decisions can happen. Problems are the small dots: they arrive, seek an accessible opportunity, and may move between opportunities. Participants are represented through the effort they contribute, rather than individual figures. The blue-grey arc around each active circle shows accumulated effort relative to its current problem demand; a choice closes when effort meets demand.
         </p>
+        <p class="field-notes-body">This explorer simplifies the model's four streams. Solutions are represented by a fixed effectiveness setting in participants' effort, rather than separate moving objects. Green dots are problems inside a choice opportunity, not solutions. A green closure pulse means problems were solved; a dashed blue-grey pulse means the choice closed without solving any. Brief rust or blue-grey flashes on departing dots mark unresolved problems leaving an opportunity. The green fill records the cumulative number of problems solved there, not participant effort.</p>
         <p class="field-notes-body">
-          High problem pressure and tighter coordination channels produce more oversight and flight. In oversight, the choice opportunity closes while problems are elsewhere. In flight, problems leave before it closes. Resolution becomes less common. Adjust problem difficulty to change effort per problem, or problem arrival rate to change how many new problems enter per iteration.
+          Watch the sequence: arrivals, problem movement, participant attention, then closure. Problems and participants each favour accessible opportunities with the smallest remaining effort deficit; ties are random. This can leave difficult problems clustered elsewhere while easier opportunities close. Problems leaving before closure illustrate flight; an opportunity closing while problems are elsewhere illustrates oversight. Both can describe the same closure.
         </p>
+        <p class="field-notes-body">Ongoing issues emerge steadily through everyday work. Planning-period issues surface mainly during initial discovery and planning. A backlog arrives in a burst when an audit, incident, or organisational change brings accumulated concerns to attention. Problems that surface early may reach a meeting before it closes; later ones may find the budget already allocated or the review finished. Use Pause and Next stage to inspect the sequence, or select a problem to follow its path.</p>
       </div>
 
       <!-- Parameter selectors — page-level controls -->
@@ -90,12 +92,12 @@
             </select>
           </div>
           <div class="explorer-select-group">
-            <label class="explorer-select-label" for="panel-a-inflow">Problem arrival rate</label>
-            <select class="explorer-select" id="panel-a-inflow">
+            <label class="explorer-select-label" for="panel-a-inflow">How problems surface</label>
+            <select class="explorer-select" id="panel-a-inflow" aria-describedby="explorer-inflow-help">
               <option value="" disabled selected>Select&hellip;</option>
-              <option value="light">Light</option>
-              <option value="moderate">Moderate</option>
-              <option value="heavy">Heavy</option>
+              <option value="light">Ongoing issues</option>
+              <option value="moderate">Planning-period issues</option>
+              <option value="heavy">Backlog arrives in a burst</option>
             </select>
           </div>
           <div class="explorer-select-group">
@@ -120,6 +122,7 @@
       </div>
 
       <!-- Diagnosis — appears when all dropdowns are set -->
+      <p class="positioning-caption" id="explorer-inflow-help">Every run contains 20 problems. This setting changes when they surface relative to decision opportunities.</p>
       <section id="explorer-diagnosis" class="results-section" hidden>
         <p class="stage-label">Diagnosis</p>
         <div class="sim-summary-card">
@@ -140,20 +143,35 @@
       <!-- Simulation area — shown when all dropdowns are set -->
       <section id="viz-area" class="results-section explorer-results-section" hidden>
         <p class="stage-label">GC Simulation</p>
-        <svg id="viz-svg"></svg>
+        <svg id="viz-svg" data-explain-streams="true" role="img" aria-label="Animated problems moving between choice opportunities, with arcs showing participant effort"></svg>
+        <div id="explorer-playback" hidden>
+          <div class="explorer-toolbar-group" role="group" aria-labelledby="explorer-playback-label">
+            <span class="explorer-select-label" id="explorer-playback-label">Playback</span>
+            <div class="explorer-toolbar-actions">
+              <button id="explorer-pause" class="control-action" type="button">Pause</button>
+              <button id="explorer-step" class="control-action" type="button">Next stage</button>
+            </div>
+          </div>
+          <div class="explorer-toolbar-group" role="group" aria-labelledby="explorer-run-label">
+            <span class="explorer-select-label" id="explorer-run-label">Run</span>
+            <div class="explorer-toolbar-actions">
+              <button class="control-action" id="replay-btn" type="button" title="Repeat this exact run and its results" hidden>Replay this run</button>
+              <button class="control-action control-action--primary" id="generate-run-btn" type="button" title="Calculate 100 fresh simulations and animate the last" hidden>Generate new run</button>
+            </div>
+          </div>
+          <div class="explorer-toolbar-group explorer-toolbar-tracking">
+            <label class="explorer-select-label" for="explorer-track">Follow problem</label>
+            <select id="explorer-track" class="explorer-select"><option value="">None</option></select>
+          </div>
+        </div>
+        <p id="explorer-tracking" class="positioning-caption" aria-live="polite"></p>
         <div class="submit-row" id="explorer-sim-trigger" hidden>
           <button class="submit-btn control-action control-action--primary" id="run-sim-btn">See how decisions play out</button>
-        </div>
-        <div class="submit-row">
-          <button class="submit-btn control-action control-action--primary replay-btn" id="replay-btn" hidden>Run simulation again</button>
         </div>
         <p class="form-error" id="explorer-sim-error" hidden aria-live="polite"></p>
         <div class="sim-summary-card" id="sim-summary" hidden>
           <p class="sim-summary-header" id="sum-header"></p>
-          <p class="positioning-caption">
-            <strong>How to read outcomes:</strong> Choice opportunity outcomes are Deliberation, Oversight, and Flight.
-            Problem outcomes are Resolved, Displaced, Adrift, In choice opportunity, and Never entered.
-          </p>
+          <p class="positioning-caption">The animated run comes first. The averages below describe 100 simulations, so they can differ from the run you watched. Choice closures are grouped by whether they solved problems; oversight and flight describe patterns that can overlap.</p>
 
           <p class="sim-summary-subheader" id="sum-thisrun-label"></p>
           <p class="period-readout" id="sum-thisrun-resolved"></p>
@@ -162,7 +180,10 @@
           <p class="period-readout" id="sum-thisrun-never-entered"></p>
           <p class="period-readout" id="sum-thisrun-choices-resolved"></p>
           <p class="period-readout" id="sum-thisrun-choices-open"></p>
+          <p class="period-readout" id="sum-thisrun-with-problems"></p>
+          <p class="period-readout" id="sum-thisrun-without-problems"></p>
 
+          <p class="sim-summary-header" id="sum-ensemble-header"></p>
           <p class="sim-summary-subheader" id="sum-choices-label"></p>
           <p class="period-readout" id="sum-choice-resolution"></p>
           <p class="period-readout" id="sum-choice-oversight"></p>
@@ -176,7 +197,7 @@
           <p class="period-readout" id="sum-prob-never-entered"></p>
           <p class="period-readout" id="sum-prob-inforum"></p>
 
-          <p class="positioning-caption" id="stochastic-note">Each run varies slightly. The simulation is stochastic.</p>
+          <p class="positioning-caption" id="stochastic-note">Replay this run repeats the same sequence and results. Generate new run calculates 100 fresh simulations and animates the last one. Runs can differ substantially. Means are rounded to one decimal and may differ slightly from the totals when added.</p>
         </div>
       </section>
 

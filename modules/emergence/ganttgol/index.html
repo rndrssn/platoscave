@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="GANTT meets Game of Life as a planning-versus-emergence simulation within the Emergence module." />
+  <meta name="description" content="GANTT meets Game of Life as a playful illustration of rigid planning meeting emergence." />
   <title>GANTT meets Game of Life · Emergence · To the Bedrock</title>
   <script src="../../../theme.config.js"></script>
   <script src="../../../js/theme-bootstrap.js"></script>
@@ -51,21 +51,21 @@
       <header class="module-header">
         <h1 class="module-header-title">GANTT meets Game of Life</h1>
         <p class="module-header-body">
-          The simulation compares a Tayloristic, plan-first Gantt scaffold with a Game of Life layer of local interaction and feedback. The scaffold has linear phases and fixed dependencies. As feedback accumulates, some parts of the plan hold and others are rewritten.
+          A playful illustration of emergence meeting rigid planning. A plan-first Gantt scaffold sets out linear phases and fixed dependencies; a Game of Life layer follows simple local rules and produces patterns the plan did not anticipate. It is a visual metaphor, not a model of how organisations behave.
         </p>
         <p class="module-header-cue">
-          <a class="ep-jump ep-jump--hero" href="#ep-life-panel" data-ep-jump-hero>Try the simulation below &darr;</a>
+          <a class="ep-jump ep-jump--hero" href="#ep-life-panel" data-ep-jump-hero>Try the illustration below &darr;</a>
         </p>
       </header>
 
       <article class="module-essay">
         <section class="essay-section">
-          <h2 class="essay-heading">When feedback changes the plan</h2>
+          <h2 class="essay-heading">When emergence meets the plan</h2>
           <p class="essay-body">
-            Predictive project models often treat weak signals as noise until late and manage plans as if the system were mostly closed. This can work for complicated work whose causes and effects can be analysed and stabilised. Complex product work stays open to changes from users, markets, operations, and adjacent teams. <a class="ep-jump" href="#ep-life-panel" data-ep-jump-seed="r-pentomino">See it unfold on R-pentomino &darr;</a>.
+            A fixed plan assumes that enough of the path can be known in advance. That can work well when the work is understood and conditions remain stable. Product work is often less cooperative: users, markets, operations, and adjacent teams introduce changes that travel beyond where they began. <a class="ep-jump" href="#ep-life-panel" data-ep-jump-seed="r-pentomino">See it unfold on R-pentomino &darr;</a>.
           </p>
           <p class="essay-body">
-            Plans remain useful, but their initial assumptions need to change with the work. Feedback can reshape outcomes faster than fixed phases can accommodate. This simulation is a playful abstraction of that process, deterministic for any chosen seed. <a class="ep-jump" href="#ep-life-panel" data-ep-jump-patterns>See the motifs that emerge &darr;</a>.
+            Plans remain useful, but they do not control what emerges around them. Here, Game of Life is simply a visual metaphor for local activity: some patterns disappear, some settle, and others move across the planned sequence. The illustration is deterministic for any chosen seed. <a class="ep-jump" href="#ep-life-panel" data-ep-jump-patterns>See the motifs that emerge &darr;</a>.
           </p>
 
           <div class="ep-life-panel" id="ep-life-panel" tabindex="-1">
@@ -91,10 +91,10 @@
               </button>
             </div>
 
-            <p class="ep-life-mode-note">Press play to start. Selecting a seed stops and resets the simulation. The simulation is deterministic.</p>
+            <p class="ep-life-mode-note">How to read it: the sage scaffold is the starting plan, rust diamonds are its gates, and black cells are local activity unfolding. Press play to start; selecting a seed stops and resets the illustration.</p>
 
             <div class="ep-life-stage">
-              <canvas id="ep-life-canvas" class="ep-life-canvas ep-life-canvas--cells" data-life-kind="gantt" width="960" height="600" role="img" aria-label="Gantt and Conway simulation grid at 192 by 120 cells"></canvas>
+              <canvas id="ep-life-canvas" class="ep-life-canvas ep-life-canvas--cells" data-life-kind="gantt" width="960" height="600" role="img" aria-label="Illustration of a Gantt plan meeting Conway's Game of Life on a 192 by 120 cell grid"></canvas>
               <canvas id="ep-life-overlay" class="ep-life-canvas ep-life-canvas--overlay" width="960" height="600" aria-hidden="true"></canvas>
             </div>
 
@@ -144,10 +144,10 @@
                 <figcaption class="ep-pattern-caption">Beacon · oscillator</figcaption>
               </figure>
             </div>
-            <p class="ep-pattern-note">These motifs commonly appear from Bunnies, R-pentomino, and Acorn.</p>
+            <p class="ep-pattern-note">These are visual motifs to watch for, not categories of organisational behaviour.</p>
           </aside>
 
-          <p class="essay-body">The Gantt scaffold enacts <strong>sequential interdependence</strong>: a fixed handoff, ordered in advance, coordinated by planning. For the underlying vocabulary &mdash; pooled, sequential, and reciprocal work, and when planning stops being the right coordination mechanism &mdash; see <a href="../../interdependence/">Interdependence &amp; Coordination</a>.</p>
+          <p class="essay-body">The illustration begins with <strong>sequential interdependence</strong>: fixed handoffs, ordered in advance and coordinated by planning. The Game of Life layer playfully unsettles that certainty. For the underlying vocabulary &mdash; pooled, sequential, and reciprocal work, and when planning stops being the right coordination mechanism &mdash; see <a href="../../interdependence/">Interdependence &amp; Coordination</a>.</p>
         </section>
       </article>
 

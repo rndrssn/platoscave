@@ -1,5 +1,5 @@
 ---
-title: Semantic modernization & new jargon
+title: Semantic modernisation & new jargon
 slug: semantics
 date: 2026-03-30
 status: published
@@ -8,8 +8,9 @@ tags:
   - the-mix
 related_modules: []
 ---
-## Semantic modernization & new jargon
 
-Semantic modernization & re-jargonization without epistemic change -how the organization believes knowledge is created, validated, and justified- probably wastes trillions in traditionally managed high software-content enterprising.
+## Semantic modernisation & new jargon
 
-While activities must happen in time sequence, understanding does not progress linearly (in “knowledge work”). The most important knowledge about users/customers/clients, feasibility and business value alignment -often emerges only after partial solutions exist.
+An organisation can adopt new management vocabulary while keeping the same assumptions about how knowledge is created, validated, and justified. Calling delivery "agile" changes little if evidence from the work cannot alter the plan.
+
+Activities happen in sequence, but understanding develops through feedback. Important knowledge about users, feasibility, and business value often emerges only after a partial solution exists. The operating model has to let that knowledge change decisions.

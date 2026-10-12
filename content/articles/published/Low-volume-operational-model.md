@@ -3,184 +3,183 @@ title: Operating model for low-Volume High-Software-Content Products
 slug: lowvolumehighsoftware
 date: 2026-03-24
 status: published
-summary: How the rate of product change determines whether owned platforms and specialist teams pay back, and why low-volume products need a different operating model.
-tags: 
+summary: A proposed LVHSC framework for matching software ownership and team structure to warranted change demand, shared capability, and continuing operational value.
+tags:
 - product-management
 related_modules: []
 ---
-A low-volume high-software-content product cannot be run economically for long on an operating model designed for high-volume software. Owned platforms, specialist teams, and the coordination between them only pay back when enough meaningful product change uses that capacity.
+A software product needs an organisation that can keep it working and adapt it when worthwhile changes arise. Retaining that ability costs money even when little changes. Owned platforms, specialist teams, and the coordination between them are investments whose value depends on how much useful work they enable and what continuing service they provide.
 
-By **high-software-content product**, I mean a product whose value, cost base, and adaptability are primarily carried in software. It may serve agriculture, logistics, healthcare, public services, finance, or industrial operations. Hardware, services, compliance work, field operations, and human expertise may all matter, but software carries most of the continuing change, differentiation, integration, and cost.
+By **high-software-content product**, I mean a product whose continuing value and adaptability are primarily carried in software. Hardware, field operations, services, compliance, and human expertise may still be substantial. The designation concerns the role of software in the product being assessed; it does not require software to dominate the manufacturer's entire cost base.
 
-I use **LVHSC** as shorthand for low-volume high-software-content. It describes an operating condition, rather than a market category.
+I use **LVHSC** as shorthand for low-volume high-software-content. It describes a product's operating condition, rather than a market category: software carries most continuing value and adaptation, while demand for meaningful change is low relative to the fixed commitments supporting it.
 
-Many enterprises inherit the operating model of hyperscalers, mass consumer platforms, or B2B SaaS companies at scale. Applied to low-volume products, that model leaves fixed costs that never amortise and teams measured on work that does not justify their cost. The organisation may have the right number of people and still organise them around a volume of change its products do not produce.
+Products in the same market can occupy different conditions. One product can move between them as it searches for fit, expands, or becomes established. A large enterprise can contain many LVHSC products alongside rapidly changing ones.
 
-## What "volume" means
+This article proposes a framework for explaining that condition. Its central question is **when retaining software capability is productive investment and when it becomes overhead**. The operating recommendations follow from the proposed mechanisms and their limits. The framework remains a set of propositions to test, rather than an empirically established classification.
 
-Operational volume is **the rate of meaningful product change relative to the fixed commitments required to produce it**. User count, revenue, and engineering headcount do not measure it directly. A product shipping a handful of meaningful changes per quarter is operationally low-volume. One shipping many per week is high-volume.
+## Demand, capacity, and delivered change
 
-Meaningful need not mean large. Users, operators, risk owners, or the business would notice if the change did not happen. To make that judgment testable, count an increment when it satisfies at least two of these four tests:
+Operational volume concerns **warranted demand for meaningful product change relative to the fixed commitments required to support it**. Three quantities must be distinguished:
 
-- **User-surface test.** It changes behaviour in a workflow used by a meaningful share of active users, or materially changes a critical workflow for a smaller but strategically important segment.
-- **Outcome test.** It is expected to move a primary product or business metric, such as conversion, retention, error rate, support burden, or regulatory risk, by a non-trivial amount.
-- **Coordination test.** It requires non-trivial cross-discipline work, for example across product, design, engineering, legal, or operations, rather than a local patch.
-- **Persistence test.** Its effect lasts beyond a short release window. Users or operators would notice if it were reverted after a month.
+- **Warranted demand:** changes whose expected benefit justifies their total cost over a stated horizon, including delivery, validation, operation, and the consequences of delay or failure.
+- **Change capacity:** the organisation's ability to deliver those changes safely and in useful time, including skills, tools, available attention, and decision authority.
+- **Delivered change:** the changes actually completed. This is observable output, shaped by both demand and capacity.
 
-Use a rolling 90-day window and calibrate thresholds per product. As a starting point, roughly 0–6 meaningful increments per quarter indicates low operational volume, roughly 20+ indicates high volume, and the middle range depends on context.
+Benefit can mean revenue, user utility, learning, reduced operating cost, or avoided harm. A mandatory safety or regulatory change may be warranted because the consequences of leaving it undone are unacceptable. Some benefits cannot be credibly expressed in money; record the governing constraint and uncertainty instead of inventing a valuation.
 
-Alongside that count, record how much owned platform, infrastructure, specialist-team, and coordination cost supports the increments. Separate productive work from time spent waiting on dependencies. Then examine which owned capabilities differentiate the product and which remain in-house because they are familiar.
+Demand is not every request in a backlog. Capacity is not headcount. Delivered volume alone cannot identify the operating condition.
 
-## Why fixed costs depend on volume
+Low warranted demand with modest capacity may be economical stability. Low demand with substantial retained capacity may indicate excess commitment. High demand with insufficient capacity produces unmet need and delayed value. High demand with sufficient capacity may justify substantial investment, provided the outcomes repay it.
 
-Owned developer platforms, design systems, experimentation infrastructure, SRE functions, data platforms, and specialised teams can spread their cost across many downstream changes. At high volume, that investment pays back repeatedly.
+A product delivering three changes per quarter might need only three. It might instead need thirty and be held back by dependencies. Treating both as low-volume would prescribe the same remedy for different problems.
 
-At low volume, a dedicated platform team, bespoke toolchain, or fragmented discovery-to-delivery process remains a fixed commitment with too little work to pay for it. Running it more professionally does not change that calculation. LVHSC products therefore need a bias toward rented capability, value-stream-aligned teams, and outcome measurement.
+Warranted demand also depends on cost. A useful change that is uneconomical under today's organisation may become viable under a cheaper alternative. Assess demand against both current costs and a credible alternative operating model. Keep that alternative explicit so that a costly organisation cannot make its own demand appear low by pricing every change out of consideration.
 
-## When user count is a useful proxy
+## What counts as meaningful change
 
-In practice, meaningful change correlates strongly with user base size. A product with millions of users can support more development investment than one with thousands, through revenue or strategic value. More parallel work creates more streams of change.
+A meaningful change has an identifiable user, operational, or business consequence. Its absence would matter to someone responsible for the product's use, performance, or risk. It may affect a visible workflow, an API, reliability, latency, safety, or regulatory compliance. Size and visibility alone do not establish significance.
 
-Large user bases also produce stronger learning signals. A/B tests can reach significance in hours instead of weeks, and telemetry continually exposes friction and edge cases. Teams can identify and validate changes faster. Visible products attract competitors and substitutes, creating pressure to keep evolving. Niche products can often remain stable for longer without consequences.
+For each candidate change, record the problem, expected benefit, evidence, estimated total cost, and cost of postponement. For delivered changes, record whether the expected benefit materialised. A learning increment may produce value by showing that a proposed direction should be abandoned.
 
-With enough users, owned experimentation platforms, design systems, and feature-flag infrastructure become economical and lower the cost of subsequent changes. Integrations, marketplaces, and developer platforms add further work that a smaller product's ecosystem does not generate.
+Count coherent changes against a defined problem or outcome. Splitting one change into ten tickets should not increase its measured volume. Equally, bundling ten independent improvements into one release should not reduce it. Work requiring several disciplines is a cost characteristic, rather than evidence that the change is valuable.
 
-User count will therefore give approximately the right answer in many cases. Millions of active users usually suggest high operational volume, while a few thousand suggest low volume. Several product categories break that correlation:
+Review demand and delivery over rolling 90-day windows, with a longer view where seasonal or qualification cycles matter. A handful of warranted changes per quarter is a useful starting signal of low volume, but no universal numerical boundary is established here. Ten inexpensive changes can justify less retained capability than one complex change with substantial value.
 
-- **Mature products with stable fit** may have many users and little meaningful change. Stability is part of their value. Users do not want payroll systems or mail clients reinvented quarterly.
-- **Regulated products**, including medical devices, avionics, and financial core systems, can serve many users while qualification and re-qualification costs make rapid change expensive.
-- **Infrastructure products** such as stable Linux kernels, database engines, and core protocols deliberately change slowly because others depend on their stability.
-- **Internal-at-scale products** may have few external users but change rapidly as the organisation reshapes its processes.
-- **Early-stage products** may have few users while a small team iterates quickly in search of product-market fit.
+User count, revenue, and organisational size provide context. They do not determine the condition. A large installed base may value stability; a small product searching for fit may need rapid adaptation. Measure the demand and commitments directly.
 
-For these categories, measure the rate of change directly. A large installed base does not justify a high-volume operating model on its own, and a small one does not rule it out.
+## Capability is the unit of economic analysis
 
-Total organisational headcount has no equivalent correlation with meaningful change. It can reflect historical growth, acquisitions, internal politics, or the belief that more engineers must produce more output. A familiar fixed-cost structure often follows once the people are there.
+The product is the unit whose operating condition we describe. The **capability** is the unit whose ownership economics we assess. A capability is a repeatable ability to do something the product requires: authenticate users, validate a release, process payments, observe failures, or implement a differentiating function.
 
-A low-volume model can support a large enterprise running many value-stream-aligned teams in parallel. A small organisation can justify owned tooling and specialisation when it iterates fast enough. The choice of model determines how people are organised, what they own, and how they are measured. A large enterprise with low operational volume may need a different structure without needing fewer people.
+A whole product rarely has one uniform economic profile. Its editor, identity service, reporting tools, and deployment infrastructure may each warrant different ownership arrangements.
 
-## Different rates within the same market
+For each capability, examine five things:
 
-Rate of change depends on how a product is run. Two products in the same market can operate at different volumes because their owners make different choices.
+1. **Retention burden:** the recurring cost of keeping it usable, including maintenance, specialist availability, upgrades, security, and standing coordination.
+2. **Use burden:** the effort, validation, coordination, and delay incurred when applying it to a change.
+3. **Supported demand:** the warranted changes that actually benefit from it, within and across products.
+4. **Continuing service value:** the reliability, safety, performance, cost savings, and other benefits it provides even when functionality remains stable.
+5. **Dependency exposure:** the consequences of supplier failure, price changes, incompatibility, loss of control, or replacement.
 
-Rapidly changing products ship substantive, user-visible changes weekly to monthly. Someone returning after six months finds a recognisably different product. Examples include consumer and prosumer tools such as Linear, Notion, and Figma through much of its history, developer platforms such as Vercel and Stripe in its first decade, current-generation AI platforms, consumer media platforms with changing recommendation and creator tools, and B2B SaaS products during rapid expansion.
+Across a stated horizon, an operating arrangement is economically justified when the value of its enabled changes and continuing services exceeds its retention, use, transition, and dependency costs. Choosing between arrangements also requires comparing their net value under the same assumptions. Several arrangements can be viable; the preferred one need not be the cheapest if it enables substantially more value.
 
-At that rate, owned tooling pays back and specialist teams have enough work to use their capacity. Cycle time, deployment frequency, and features shipped say something useful about the operation's health.
+This is a decision structure, not a licence to assign precise numbers to uncertain outcomes. Avoid counting the same benefit twice, especially where several capabilities contribute to one outcome. Separate measured costs, estimated benefits, and constraints that any acceptable arrangement must satisfy.
 
-Low-volume products change modestly on a quarterly-to-annual cadence. Users experience them as stable. Examples include mature enterprise systems of record, specialist agricultural and industrial software, process-industry software, medical device and other regulated software, mature public-sector services, long-tail vertical SaaS, internal data platforms after their initial build, and mature consumer utilities.
+LVHSC describes limited change demand relative to retained commitments. It does not, by itself, establish that those commitments are wasteful. Continuing service value may justify them.
 
-Here, a dedicated design-system team can stay busy without improving much for customers. A platform team can produce capability faster than product teams can absorb it. Throughput measures may report activity while revealing little about value.
+## Why change volume and shared demand matter
 
-Some products have both rates at once. A mature consumer platform can look stable while its ranking, moderation, advertising, and trust systems change continuously. Games-as-a-service combine frequent content changes with stable mechanics. Banking apps may change modestly for users while regulation and integrations drive substantial backend work.
+A capability retained mainly to make future changes cheaper needs enough warranted changes to recover its retention burden. If demand falls while the burden remains, each change carries a larger share of that burden. Improving the platform's engineering quality does not create additional demand for it.
 
-Assess those parts separately. User-facing change usually matters most in choosing the product operating model because it shows whether fixed investments pay back in outcomes users experience. Internal change deserves equal or greater weight when reliability, latency, safety, compliance, APIs, or partner integrations are themselves the product's value.
+A capability retained mainly to keep a critical service safe can remain valuable with almost no functional change. Release validation, security expertise, and reliable control systems may belong in this category. Their economics depend heavily on continuing service and avoided harm.
 
-## What carries over from physical products
+The other determinant is **how much demand can genuinely share the capability**. Fifty stable products may collectively justify a shared service if their needs substantially overlap. Fifty rapidly changing products may fail to justify one if accommodating their differences creates extensive negotiation and customisation.
 
-High-volume physical product development optimises for **low unit cost**. Design for manufacturing reduces costs built into every unit by choosing fewer, cheaper, or more standard parts before tooling and production begin. Factory operations then reduce the cost of making the agreed design through faster cycles, less waste, automation, supplier terms, and lean production.
+Shared demand must be counted at the capability boundary. An enterprise's total feature count says little about whether a particular platform helps those features. Record actual reuse, the work consumers avoid, and the additional coordination they incur. Sharing is economical when the ownership burden it avoids exceeds the interface, adaptation, and dependency burden it introduces.
 
-Saving one euro per unit across ten million units saves ten million euros in either case. The tooling, production line, and specialised labour also spread their fixed costs across that volume.
+Frequency and reuse therefore work together. A small fast-moving product can justify owned tooling. A portfolio of slow-moving products can justify a common capability. An individual LVHSC product may still be better served by renting everything around its differentiating core.
 
-At a hundred units, those savings rarely justify bespoke design or a dedicated line. Low-volume development instead optimises for **low total development cost to a working product**. Buying standard motors, connectors, or enclosures accepts a per-unit premium to avoid design, tooling, and qualification costs. Bespoke pays above a break-even volume. Below it, off-the-shelf components win.
+## The cost of organisational boundaries
 
-The software equivalent needs care. A software *build* usually means compiling and packaging an artifact through CI/CD, often at near-zero marginal cost. Copying another instance is cheap. The relevant unit here is a change in functionality.
+A team boundary introduces costs when a change must cross it. Those costs include waiting for another backlog, maintaining an interface, reconstructing context, negotiating priorities, and obtaining decisions. Some recur whether or not a change happens; others arise with each use.
 
-Software has two corresponding sources of cost. Architecture and rent-vs-compose-vs-build choices determine the capability an organisation owns and the fixed commitments it takes on. Team topology and ways of working determine the cost of producing increments, including coordination and handoffs.
+Two days of productive work can take six weeks if the change passes through several queues. Parallel work may keep the organisation occupied, but it does not remove the delay for that change. A heavily loaded shared team may produce considerable output while its consumers wait longer.
 
-High-volume operations invest in design systems, developer platforms, observability stacks, data platforms, and feature-flag services because many feature teams use them. They can sustain separate discovery, design, engineering, QA, SRE, data, security, enablement, and product-ops functions when each has enough work and the output justifies the coordination cost. A small organisation can make the same investments where its iteration rate supports them.
+Specialisation can offset these costs through greater expertise, safer decisions, and reusable work. A boundary is justified when those benefits exceed its burden. High demand can support specialist capacity, but it does not automatically make handoffs efficient. Low demand can make standing coordination expensive, but it does not remove the need for scarce expertise.
 
-At high volume, owning a capability can also cost less than paying a vendor's per-unit premium once usage crosses the break-even point. LVHSC operations cannot recoup those commitments at their rate of change. The alternative has to address both the technical stack and the organisation of the work.
+The relevant comparison is the total cost and outcome of the work under each arrangement. Moving responsibility into one team saves a handoff only if the team can absorb the responsibility without greater overload, duplicated effort, or operational risk.
 
-## Rent, compose, or build bespoke
+## Four illustrative operating conditions
 
-Stack choices determine how much time teams spend on the product and how much on maintaining capability around it. Managed services resemble off-the-shelf physical components, while bespoke software resembles custom components. Composed open-source software is a third case that the hardware analogy does not capture well.
+These examples show where the framework could apply. They are conditional illustrations, rather than measured classifications of manufacturers or industries.
+
+### A PLC manufacturer's mature programming environment
+
+Consider the software used to program, diagnose, and integrate an established family of programmable logic controllers. Software carries much of the environment's continuing value. If customers primarily need compatibility, dependable diagnostics, and occasional adaptations, warranted change demand may be low despite a large installed base.
+
+The LVHSC question is whether its retained tooling and team structure fit that demand. A dedicated platform serving only a few changes may be expensive. A validation capability shared across controller families may repay its cost through reuse and continuing reliability. A new programming platform under active development could occupy a different condition within the same manufacturer.
+
+### Software controlling a water-treatment plant
+
+Consider a commissioned control system whose functional requirements remain stable for years. Monitoring, alarms, and control depend on software, while the need for new functionality may be modest. That is a plausible LVHSC condition for the software system, irrespective of the plant's physical production volume.
+
+Its low change demand does not diminish the consequences of failure. Operational expertise, dependable support, and safe validation may justify substantial retained capability. General administrative and development tools may be rented where the constraints permit. The framework requires distinguishing those supporting tools from the control functions whose continuing service is essential.
+
+### Established medical imaging software
+
+Consider software for an established scanner configuration, where reconstruction and clinical workflows remain stable. Selective improvements may need extensive validation. If warranted functional change is infrequent, the software product may be LVHSC even while its use and clinical value remain substantial.
+
+Validation and specialist expertise can repay their retention cost through safety and dependable operation. Supporting infrastructure should still be examined separately. A new reconstruction method or a substantial workflow redesign could increase warranted demand and change the operating condition.
+
+### SpaceX flight software for a mature vehicle configuration
+
+SpaceX is too broad an organisation to classify as LVHSC. Its account of Crew Dragon's development describes extensive software and integrated system testing, illustrating that validation capability can carry substantial weight in flight systems. See [SpaceX's account of Crew Dragon testing](https://www.spacex.com/updates/reusability).
+
+For the framework, consider a mature vehicle configuration whose flight-software requirements have become stable. If warranted functional changes are selective, that subsystem could occupy an LVHSC condition. Low launch frequency would not establish this, and frequent launches would not rule it out: operational use and demand for software change are separate quantities.
+
+Flight control, simulation, and validation could still warrant owned specialist capability because their continuing value, differentiation, and failure consequences are substantial. Active vehicle development may generate high change demand elsewhere in the same company. The example makes no claim about SpaceX's actual internal change rate or cost structure.
+
+## Propositions to test
+
+The framework makes five conditional predictions. Each should be assessed with explicit scope, assumptions, and a comparison period.
+
+1. **Retention burden per change increases as supported change demand falls**, holding the capability and its retention cost constant. Whether that becomes uneconomical depends on its continuing service value. The arithmetic is straightforward; the empirical question is how much cost is actually avoidable.
+2. **Shared ownership becomes more economical as overlapping demand grows**, provided the avoided duplication exceeds the additional interface, adaptation, and coordination costs. More consumers alone need not improve the economics.
+3. **Removing a team boundary improves time-to-outcome when the dependency burden removed exceeds the additional burden inside the receiving team.** Lower waiting time accompanied by greater rework, overload, or failure would weaken the case for that change.
+4. **Renting improves adaptation economics when the ownership burden avoided exceeds vendor, integration, transition, and dependency costs**, while satisfying the same operational requirements. A lower initial development cost alone does not confirm the prediction.
+5. **Low delivered volume understates demand when reducing a capacity constraint produces additional worthwhile changes from previously identified unmet needs.** More deployments without demonstrated benefit would not establish that unmet demand existed.
+
+These predictions should be specified before a reorganisation or sourcing change. Evidence that a shared platform improves total cost and outcomes across individually stable products would challenge a blanket rule against platforms. Evidence that consolidated teams become slower through operational overload would challenge that particular ownership arrangement. Neither should be dismissed merely because it conflicts with the preferred recommendation.
+
+## Operating implications: rent, compose, or build
+
+For supporting capabilities with low supported demand and little unique continuing service value, the LVHSC default is **rent first, compose second, and build bespoke last**. That preference follows from avoiding retention burden. It is conditional on the alternatives meeting the product's requirements.
 
 The choices have different cost profiles:
 
-1. **Build bespoke.** The highest fixed development and operating burden, with the most control.
-2. **Rent as a service.** A low fixed development burden, with variable vendor spend.
-3. **Compose open-source.** Low acquisition cost, with integration, upgrades, security, and operation remaining the team's responsibility.
+- **Rent as a service:** lower internal development and operating commitments, with vendor charges, integration work, and dependency exposure.
+- **Compose open-source:** low acquisition cost, with integration, upgrades, security, and operation remaining internal responsibilities.
+- **Build bespoke:** greater development and retention commitments, with control over behaviour and adaptation.
 
-Open-source acquisition can look inexpensive while recurring work consumes product-team capacity. For a capability that does not differentiate the product, the LVHSC default is to **rent first, compose second, and build bespoke last**. Managed services, SaaS, PaaS, and foundation model APIs can all serve this purpose.
+Renting does not transfer every responsibility. The product team still owns configuration, integration, supplier assessment, and the consequences for its users. Open-source acquisition cost does not measure its full ownership burden. Bespoke development may be appropriate where a capability differentiates the product or acceptable substitutes do not exist.
 
-Sovereignty, lock-in, latency, safety, and differentiation can justify exceptions. Those reasons should be explicit. Requiring a product team to own identity, infrastructure, observability, billing, and every other supporting capability brings back dependency queues or burdens the team with more than it can operate.
+The physical-product analogy helps explain fixed commitments: a dedicated production line needs enough use to repay it, while standard components avoid tooling costs. Software differs because copying an artifact is inexpensive, shared capabilities can serve several products, and continuing service can create value without new functionality. The relevant volume here is warranted change demand, rather than units sold or software builds produced.
 
-## The cost between teams
+## Operating implications: teams owning a value stream
 
-Team topology determines who carries responsibility and how they coordinate. It is the software counterpart to organising production on the factory floor. Deep role separation can work at high volume, where specialist teams stay fully loaded and enough output pays for the handoffs. At low volume, coordination can cost more than the productive work.
+A **value-stream-aligned team** owns discovery, design, engineering, delivery, and operation of a coherent product slice. Keeping that context together can reduce repeated reconstruction, backlog negotiation, and decision delay.
 
-**Synchronisation latency** starts with waiting for another team's next available slot. Two days of work can take six weeks if it queues through three backlogs. At high volume, latency averages out across continuous parallel work. At low volume, there are too few parallel flows to hide the waiting.
+Such ownership is sustainable when the team has enough capability and authority to carry its responsibilities. Rented supporting services can make that possible. A well-designed shared internal service can do the same where its aggregate economics justify ownership and consumers can use it without recurrent negotiation.
 
-Each team boundary also needs an interface, whether an API, data contract, ticket template, or request protocol. Designing, documenting, versioning, and maintaining it is ongoing work. At low volume, that effort may exceed the work passing through it.
+A designer, engineer, and product manager can collaborate as the work requires. People still have primary disciplines. Specialist support may remain necessary for unusual problems or independent assurance. End-to-end ownership does not require eliminating every boundary; it requires making their costs and benefits explicit.
 
-A handoff requires the receiving team to reconstruct the problem, user context, constraints, prior decisions, and rejected alternatives. A feature passing through discovery, design, engineering, QA, and SRE pays for that reconstruction four times. A team carrying it end to end pays once.
+Breadth can reduce specialist depth. Multiple teams may duplicate solutions or develop inconsistent conventions. Moving decisions closer to the work can improve adaptation, but moving every operational responsibility into the team can overload it. Compare these consequences with the dependencies removed.
 
-Steering committees, planning sessions, dependency maps, roadmap synchronisation, quarterly PI planning, and stakeholder reviews are another cost of fragmented responsibility. They coordinate real work. At low volume, however, each meeting supports fewer changes, so the overhead per change is higher.
+Stack choices and team structure must be examined together. Consolidating a team around an unchanged estate of specialist dependencies may leave most of its waiting intact. Renting services while preserving the same approval structure may do likewise. Partial adoption can produce gains, but its remaining constraint should be identified rather than assuming the second change must always follow.
 
-Dependencies also create queues governed by someone else's priorities. Three feature teams waiting for a shared platform team spend time advocating, escalating, and designing workarounds. At high volume, many consumers can justify the platform team. At low volume, the same structure adds waiting and political work.
+## Measuring outcomes and testing the model
 
-Budgets rarely name these costs. They appear as slow cycle times, frustrated teams, and recurring roadmap slippage. An operation that delivers less than its engineering capacity suggests may be spending much of that capacity between teams.
+Throughput measures describe flow. They do not establish value, at either high or low volume. Higher warranted demand makes capacity and marginal delivery cost more consequential; it does not make every additional increment beneficial.
 
-## Value-stream-aligned teams
+LVHSC operations should prioritise **time-to-outcome**, the cost of retaining adaptability, and continuing operational performance. In discovery, an outcome may be validated learning about whether a direction should continue. In a stable system, it may be a safely deployed change with confirmed benefit, or sustained service within its required reliability and risk limits.
 
-A **value-stream-aligned team** owns discovery, design, engineering, delivery, and operation of a coherent slice of product. It includes engineers, designers, and PMs, ideally with data and operations capability. It retains those disciplines inside one team instead of separating them into specialist teams that must negotiate every change.
+Before changing the model, establish a baseline over a relevant period, commonly the prior 12 months:
 
-This converts much of the fixed coordination cost into collaboration as work requires it. A designer can discuss a change with the engineers who will build it. Engineers who operate their own service keep the production context. The PM who did discovery also prioritises the backlog and sees the telemetry. Synchronisation, interface work, context reconstruction, alignment meetings, and dependency queues largely disappear where their former boundaries no longer exist.
+- Warranted demand, including unmet needs and the assumptions behind their valuation.
+- Delivered meaningful changes and evidence of their outcomes.
+- Time-to-outcome, separating productive work, validation, and dependency waiting.
+- Capability retention and use costs, with continuing service benefits recorded separately.
+- Actual shared use, supplier exposure, and operational quality.
 
-Large enterprises can run many such teams. An enterprise with a thousand engineers could have fifty value-stream-aligned teams of twenty. The model describes each delivery unit, and becomes more relevant as the coordination cost of a fragmented organisation grows.
+Compare these after the change and review quarterly, allowing for seasonal demand and long validation cycles. Record transition costs separately from recurring costs. A before-and-after improvement is evidence, but not proof of causation: demand, staffing, and product maturity may also have changed. Where feasible, compare similar unchanged products or introduce changes in stages.
 
-Within a team, people still have primary disciplines. Their responsibilities broaden, and decisions move closer to the work. The team owns an outcome such as conversion, retention, or another customer result, and prioritises against it rather than a centrally assigned feature list. Architecture, design, sequencing, and release decisions also sit inside the team. If every consequential trade-off still needs escalation, approval overhead replaces the coordination cost the new structure was meant to remove.
+## Changing an inherited operating model
 
-The people who build also operate. Being responsible for a 3am page gives them a reason to prevent it. Observability and operational discipline become internal habits rather than requirements imposed by a separate SRE team.
+Low output combined with expensive platforms and fragmented responsibility warrants investigation. It does not yet establish an LVHSC condition. First ask whether demand is genuinely low, capacity is constrained, or the costly capability earns its keep through shared use and continuing service.
 
-Discovery and delivery overlap. A designer may investigate next quarter's work while engineers deliver this quarter's, with feedback moving through the team in weeks rather than through the organisation in quarters. When the team needs a legal decision or a data export from another product area, it negotiates that dependency itself.
+If warranted demand is low and retained commitments have little compensating value, reduce those commitments. That may mean retiring bespoke supporting infrastructure, renting services, consolidating responsibility, or reducing standing coordination. If demand is high but blocked, strengthen the constrained capability or remove the dependency instead. If a shared service pays back across a portfolio, improve its interface rather than duplicating it into every team.
 
-### Trade-offs
+Data sovereignty, latency, safety, independent assurance, supplier dependence, and differentiation can change the choice. Expected growth can justify early investment when the horizon, likelihood, and cost of being wrong are explicit. These considerations belong in the economic comparison from the start.
 
-Breadth costs specialist depth. A designer on a value-stream-aligned team will have less depth in design-system craft than someone on a dedicated design-system team. The same applies to data engineering and other specialisms. At low volume, the work rarely needs the depth only a fully specialised team can provide. At high volume, that depth can be the competitive edge.
-
-Consistency across teams is harder to maintain. Different patterns, libraries, and operating conventions accumulate, especially in a large enterprise. That cost is exchanged for less coordination overhead, a better trade at low volume than at high volume. Communities of practice and shared reference architectures may help without recreating dedicated platform dependencies.
-
-Career paths are less linear than progression within a single craft. Hiring, retention, and performance management need to account for that breadth. The work also requires people who can use broader context and make decisions that a fragmented organisation would escalate. People accustomed to narrow roles may struggle initially, so hiring and development have to prepare them for the responsibility.
-
-## Team ownership depends on the stack
-
-A value-stream-aligned team needs rented capability to sustain end-to-end ownership. It cannot own infrastructure, authentication, billing, observability, feature management, and the product itself with the same headcount. Keeping all of that in-house either overloads the team or makes it dependent on specialists again. Each team must be viable at its own scale, even in an enterprise of a thousand people running fifty teams.
-
-Renting also needs a team able to choose and use services coherently. Fragmented organisations tend to preserve internal interfaces. Replacing an internal platform with a vendor service can cross so many team boundaries that agreement becomes politically difficult. A team that owns its product slice can decide for its own stack without negotiating across five functions.
-
-This is why adopting only one part of the model often stalls. Teams that nominally own a value stream still depend on whoever controls an unchanged internal platform estate. Rented services introduced into a fragmented organisation can remain behind the same coordination barriers as the services they replace.
-
-Partial adoption can be a rational transition and deliver local gains. It is likely to plateau unless the other part follows within a defined period.
-
-## Measuring the work
-
-At high volume, **throughput of increments** can be a primary management signal because the link between more increments and more value is stronger. DORA metrics, cycle time, deployment frequency, features per squad per quarter, and cost per experiment help track an operation seeking a low marginal cost per increment.
-
-LVHSC operations instead seek a low total cost to reach a working product and a low cost of adapting it. They should track flow, but give priority to **time-to-outcome** and the rate of strategic adaptation. The outcome depends on the product's phase:
-
-- **Discovery, while searching for fit:** weeks from identifying a problem to a first working release, then weeks to validated learning about whether the direction should continue.
-- **Stability, while operating a trusted system:** weeks from identifying a risk or opportunity to safely deploying a change, then weeks to confirmed user or operational benefit, without degrading reliability.
-
-Rewarding a low-volume team mainly for increments can keep it busy shipping changes that do little for users or operations. Throughput remains useful as a guardrail.
-
-Before changing the model, establish a baseline from the prior 12 months for meaningful increments delivered, median time-to-outcome, dependency-wait time, and the fixed-cost share of engineering spend. Compare these after the change and review them quarterly to test whether the model is helping in your context.
-
-## Changing an inherited enterprise model
-
-A common enterprise problem is low output combined with the legacy structure of a high-volume operation. Separate platform teams, owned infrastructure, deep specialisation, and DORA-style measurement remain in place, but the rate of change cannot pay for them. The resulting slowness and expense are often diagnosed as an execution problem: "we need to ship faster."
-
-That diagnosis persists when a large user base or workforce is taken as evidence of high operational volume. Mature, regulated, and infrastructure products can have many users and little change. A large organisation can be running many low-volume products. Measure meaningful change against fixed commitments before treating either size measure as a reason to keep the structure.
-
-Changing it means consolidating fragmented teams around value streams, retiring self-hosted infrastructure in favour of managed services, cutting platform investments that do not pay back, and shifting measurement toward outcomes. This is difficult when people have built their careers and professional identities inside the existing structure. Leaving it in place means continuing to pay those costs against low-volume output.
-
-## When to make an exception
-
-The rent-vs-compose-vs-build rule is economic. Other considerations can override it:
-
-- **Data sovereignty and residency.** Restrictions on where data can live may require self-hosting even when renting is cheaper. Agriculture, healthcare, financial services, and EU-operating businesses with cross-border data concerns encounter this.
-- **Vendor lock-in.** Long-lived, critical capabilities can make dependence on one vendor's roadmap and prices more costly than the operational savings. This risk is invoked more often than it warrants, but sometimes it is decisive.
-- **Infrastructure as differentiation.** A search company's index or a database company's query engine is part of what makes the product valuable. Building it is the point.
-- **Expected scale.** A low-volume organisation expecting high volume within a defined horizon may invest early and accept a period before those costs pay back. The forecast is often wrong, particularly about timing, but early investment can be rational.
-
-Name the reason for an exception. Familiarity with a high-volume operating model is not enough to justify its costs.
+The LVHSC framework explains why a product can need substantial software expertise while having little demand for functional change, and why that condition changes the economics of retained capability. Its practical test is whether the chosen arrangement delivers warranted adaptation and continuing service at a lower total burden over time.

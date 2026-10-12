@@ -3,7 +3,7 @@ title: What works and what doesn't work
 slug: what-works-and-what-doesnt-work
 date: 2026-03-23
 status: published
-summary: A first field note on how traditionally managed organisations view epistemological access to outcome causes and effects.
+summary: A field note on the pressure for clear answers in primary industries, and what that means for software development.
 tags:
   - the-mix
 related_modules:
@@ -11,8 +11,6 @@ related_modules:
 
 ## A great place to work
 
-A reason, I think, why it is hard (yet a great place) to do high-software-content development in primary industries is that executives trained in such industries are accustomed to a brutal and hard-nosed stance on:  
-  
-What is Needed & What is Not Needed; What Works & What Does Not Work.  
-  
-(That type of view cannot be inherited or applied in high sw content dev. work , yet it puts necessary pressure on bringing efficiency, clarity and transparency to the work)
+I think one reason high-software-content development is hard in primary industries is also what makes them a good place to work. Executives trained in those industries often expect a hard-nosed answer: what is needed, what is unnecessary, what works, and what does not?
+
+Software development cannot always supply those answers before the work begins. Some become clear only after trying a partial solution. Yet the demand for answers puts useful pressure on teams to make the work efficient, understandable, and open to scrutiny.

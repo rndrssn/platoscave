@@ -14,6 +14,13 @@ var resultsNavLinks = Array.from(document.querySelectorAll('.results-nav-link'))
 var hasAutoNavigatedToResults = false;
 var lastSimulationResult = null;
 var simulationRequestVersion = 0;
+Array.from(document.querySelectorAll('[data-explorer-focus]')).forEach(function(button) {
+  button.addEventListener('click', function() {
+    Array.from(document.querySelectorAll('[data-explorer-focus]')).forEach(function(other) {
+      other.setAttribute('aria-pressed', other === button ? 'true' : 'false');
+    });
+  });
+});
 
 function setSimError(message) {
   var simError = document.getElementById('explorer-sim-error');
@@ -122,6 +129,10 @@ function resetSimulation() {
   var generateButton = document.getElementById('generate-run-btn');
   if (generateButton) generateButton.hidden = true;
   if (typeof window.stopGcExplorerPlayback === 'function') window.stopGcExplorerPlayback();
+  var eventDetails = document.getElementById('explorer-event-details');
+  if (eventDetails) eventDetails.hidden = true;
+  var stageNote = document.getElementById('explorer-stage-note');
+  if (stageNote) stageNote.textContent = 'Ready to run';
   var svg = document.getElementById('viz-svg');
   if (svg) {
     while (svg.firstChild) svg.removeChild(svg.firstChild);

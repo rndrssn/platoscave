@@ -153,6 +153,7 @@ function resolveTextScale(scalePresetOrNumber) {
 }
 
 function drawBottomLegend(svg, legendY, sizing) {
+  if (svg.attr('data-explain-streams') === 'true') return;
   var legendG = svg.append('g').attr('transform', 'translate(0, ' + legendY + ')');
   var LEGEND_MARKER_R = sizing.legendMarkerRadius;
   var LEGEND_TEXT_GAP = 9;
@@ -199,6 +200,12 @@ function drawBottomLegend(svg, legendY, sizing) {
 }
 
 function createTopLegend(svg) {
+  if (svg.attr('data-explain-streams') === 'true') {
+    return function(iterText, eventText) {
+      const heading = document.getElementById('explorer-stage-note');
+      if (heading) heading.textContent = iterText.replace('Org. iteration ', 'Iteration ').replace('/', ' of ') + ' · ' + (eventText === 'No CO open/close event' ? 'Ready' : eventText);
+    };
+  }
   var topLegend = svg.append('text')
     .attr('class', 'viz-counter gc-viz__top-legend')
     .attr('x', 0)
@@ -215,6 +222,7 @@ function ensureVizEventTicker() {
   if (!svgEl) return null;
 
   var tickerEl = document.getElementById('viz-event-ticker');
+  if (svgEl.getAttribute('data-explain-streams') === 'true' && tickerEl) return tickerEl;
   if (!tickerEl) {
     tickerEl = document.createElement('p');
     tickerEl.id = 'viz-event-ticker';
@@ -804,14 +812,58 @@ function drawViz(simResult, options) {
 
   const explainStreams = svg.attr('data-explain-streams') === 'true';
   let selectedProblem = null;
+  let selectedChoice = null;
+  const focusButtons = Array.from(document.querySelectorAll('[data-explorer-focus]'));
+  let focusMode = (focusButtons.find(button => button.getAttribute('aria-pressed') === 'true') || { getAttribute: () => 'overview' }).getAttribute('data-explorer-focus');
   let displayedTick = 0;
   const trackingLayer = svg.append('g').attr('class', 'problem-tracking').attr('pointer-events', 'none');
   const trackSelect = document.getElementById('explorer-track');
+  const choiceSelect = document.getElementById('explorer-track-choice');
+  function updateFocus() {
+    if (!explainStreams) return;
+    const tick = ticks[displayedTick];
+    const previous = ticks[Math.max(0, displayedTick - 1)];
+    const stage = tick.stage || 'arrival';
+    const dimension = focusMode === 'overview' ? (stage === 'arrival' || stage === 'movement' ? 'problems' : 'choices') : focusMode;
+    svg.attr('data-focus', dimension).attr('data-stage', stage);
+    const relatedChoices = new Set();
+    if (selectedProblem !== null) {
+      const p = tick.problems[selectedProblem];
+      const before = previous.problems[selectedProblem];
+      if (p.attachedTo !== null) relatedChoices.add(p.attachedTo);
+      if (before.attachedTo !== null) relatedChoices.add(before.attachedTo);
+    }
+    if (selectedChoice !== null) relatedChoices.add(selectedChoice);
+    function quietChoice(id) {
+      if (selectedProblem !== null || selectedChoice !== null) return !relatedChoices.has(id);
+      if (dimension === 'problems') return true;
+      if (stage === 'attention') return !tick.choices[id].participants;
+      if (stage === 'closure') return !(tick.choices[id].state === 'closed' && previous.choices[id].state !== 'closed');
+      return tick.choices[id].state !== 'active';
+    }
+    svg.selectAll('circle.choice').classed('is-context', (_d, id) => quietChoice(id));
+    svg.selectAll('rect.choice-fill').classed('is-context', id => quietChoice(id));
+    svg.selectAll('text.choice-label').classed('is-context', id => quietChoice(id));
+    effortLayer.selectAll('circle').classed('is-context', (_d, id) => quietChoice(id));
+    effortLayer.selectAll('circle').attr('opacity', d => d.state === 'active' && (stage === 'attention' || focusMode === 'choices') ? 0.85 : 0);
+    svg.selectAll('circle.problem').classed('is-context', id => {
+      if (selectedProblem !== null) return id !== selectedProblem;
+      const p = tick.problems[id];
+      if (selectedChoice !== null) return p.attachedTo !== selectedChoice && previous.problems[id].attachedTo !== selectedChoice;
+      if (dimension === 'problems') return false;
+      return !(stage === 'closure' && p.state === 'resolved' && previous.problems[id].state !== 'resolved');
+    });
+    focusButtons.forEach(button => button.setAttribute('aria-pressed', button.getAttribute('data-explorer-focus') === focusMode ? 'true' : 'false'));
+  }
   function updateTracking() {
     svg.selectAll('circle.problem').classed('problem-selected', id => id === selectedProblem);
     trackingLayer.selectAll('*').remove();
     const status = document.getElementById('explorer-tracking');
-    if (selectedProblem === null) { if (status) status.textContent = ''; return; }
+    updateFocus();
+    if (selectedProblem === null) {
+      if (status) status.textContent = selectedChoice === null ? '' : formatChoiceOpportunityLabel(selectedChoice) + ': ' + ticks[displayedTick].choices[selectedChoice].state + ' · ' + ticks[displayedTick].problems.filter(p => p.attachedTo === selectedChoice && p.state === 'attached').length + ' attached problems';
+      return;
+    }
     const p = ticks[displayedTick].problems[selectedProblem];
     const name = 'P' + (selectedProblem + 1);
     if (status) status.textContent = name + ': ' + (p.state === 'inactive' ? 'not yet entered' : p.state === 'floating' ? 'seeking an accessible choice opportunity' : p.state === 'resolved' ? 'solved at ' + formatChoiceOpportunityLabel(p.attachedTo) : 'in ' + formatChoiceOpportunityLabel(p.attachedTo));
@@ -825,9 +877,14 @@ function drawViz(simResult, options) {
   if (explainStreams && trackSelect) {
     trackSelect.replaceChildren(new Option('None', ''));
     for (let id = 0; id < dims.problems; id++) trackSelect.add(new Option('P' + (id + 1), String(id)));
-    trackSelect.onchange = function() { selectedProblem = this.value === '' ? null : Number(this.value); updateTracking(); };
+    trackSelect.onchange = function() {
+      selectedProblem = this.value === '' ? null : Number(this.value);
+      selectedChoice = null;
+      if (choiceSelect) choiceSelect.value = '';
+      updateTracking();
+    };
     svg.selectAll('circle.problem').on('click', function(_event, id) {
-      trackSelect.value = String(id); selectedProblem = id; updateTracking();
+      trackSelect.value = String(id); trackSelect.onchange();
     });
   }
   const effortLayer = svg.append('g').attr('class', 'choice-effort');
@@ -838,6 +895,90 @@ function drawViz(simResult, options) {
       .attr('stroke-width', 2).attr('transform', i => 'rotate(-90 ' + choiceCenters[i].x + ' ' + choiceCenters[i].y + ')')
       .attr('opacity', 0);
     if (eventTickerEl) eventTickerEl.setAttribute('aria-live', 'polite');
+    if (choiceSelect) {
+      choiceSelect.replaceChildren(new Option('None', ''));
+      for (let id = 0; id < dims.choices; id++) choiceSelect.add(new Option(formatChoiceOpportunityLabel(id), String(id)));
+      choiceSelect.onchange = function() {
+        selectedChoice = this.value === '' ? null : Number(this.value);
+        selectedProblem = null;
+        if (trackSelect) trackSelect.value = '';
+        updateTracking();
+      };
+      svg.selectAll('circle.choice').on('click', function(_event, choice) {
+        choiceSelect.value = String(typeof choice === 'number' ? choice : choice.id);
+        choiceSelect.onchange();
+      });
+    }
+    focusButtons.forEach(button => {
+      button.onclick = function() { focusMode = this.getAttribute('data-explorer-focus'); updateFocus(); };
+    });
+  }
+
+  function renderExplorerStage(tickIdx, previous) {
+    const tick = ticks[tickIdx];
+    const stage = tick.stage || 'arrival';
+    displayedTick = tickIdx;
+    svg.selectAll('*').interrupt();
+    svg.selectAll('.explorer-closure-mark').remove();
+    svg.selectAll('circle.choice').data(tick.choices)
+      .attr('stroke', d => d.state === 'active' ? C.inkMid : C.inkGhost)
+      .attr('stroke-width', CHOICE_STROKE_WIDTH)
+      .attr('stroke-dasharray', d => d.state === 'inactive' ? '3 4' : null)
+      .attr('opacity', d => d.state === 'closed' ? 0.4 : 1)
+      .select('title').text(d => formatChoiceOpportunityLabel(d.id) + ': ' + d.state);
+    if (previous) tick.problems.forEach((p, id) => {
+      if (p.state === 'resolved' && previous.problems[id].state !== 'resolved') resolvedAtChoice[p.attachedTo]++;
+    });
+    svg.selectAll('rect.choice-fill').attr('y', id => choiceCenters[id].y + CHOICE_R - resolvedAtChoice[id] / dims.problems * CHOICE_R * 2)
+      .attr('height', id => resolvedAtChoice[id] / dims.problems * CHOICE_R * 2);
+    const circumference = 2 * Math.PI * (CHOICE_R + 5);
+    effortLayer.selectAll('circle').data(tick.choices)
+      .attr('opacity', d => stage === 'attention' && d.state === 'active' ? 0.85 : 0)
+      .attr('stroke-dasharray', d => Math.min(1, d.energyRequired > 0 ? d.energySpent / d.energyRequired : 0) * circumference + ' ' + circumference);
+    const problems = svg.selectAll('circle.problem');
+    problems.classed('problem-attached', false).classed('problem-searching', id => tick.problems[id].state === 'floating');
+    problems.each(function(id) {
+      const p = tick.problems[id];
+      const before = previous && previous.problems[id];
+      const attrs = probAttrs(tick, id);
+      const dot = d3.select(this);
+      dot.select('title').text('P' + (id + 1) + ': ' + p.state);
+      const entering = before && before.state === 'inactive' && p.state !== 'inactive';
+      const solved = before && p.state === 'resolved' && before.state !== 'resolved';
+      if (entering) {
+        const pos = enteringLanePos(id);
+        dot.attr('cx', pos.x).attr('cy', pos.y).attr('opacity', 1).attr('fill', MARKER.enteringFill)
+          .attr('stroke', MARKER.enteringStroke).attr('r', PROB_R);
+        return;
+      }
+      if (stage === 'attention') {
+        dot.attr('cx', attrs.x).attr('cy', attrs.y).attr('opacity', attrs.opacity)
+          .attr('fill', attrs.fill).attr('stroke', attrs.stroke).attr('stroke-width', attrs.strokeWidth).attr('r', attrs.r);
+        return;
+      }
+      dot.transition().duration(solved ? 600 : 700).ease(d3.easeCubicInOut)
+        .attr('cx', attrs.x).attr('cy', attrs.y).attr('opacity', attrs.opacity)
+        .attr('fill', attrs.fill).attr('stroke', attrs.stroke).attr('stroke-width', attrs.strokeWidth).attr('r', attrs.r);
+    });
+    const closing = previous ? tick.choices.filter((c,id) => c.state === 'closed' && previous.choices[id].state !== 'closed') : [];
+    closing.forEach(choice => {
+      const solved = tick.problems.some((p,id) => p.state === 'resolved' && p.attachedTo === choice.id && previous.problems[id].state !== 'resolved');
+      svg.append('circle').attr('class', 'explorer-closure-mark').attr('cx', choiceCenters[choice.id].x).attr('cy', choiceCenters[choice.id].y)
+        .attr('r', CHOICE_R + 3).attr('fill', 'none').attr('stroke', solved ? C.sage : C.slate)
+        .attr('stroke-width', 2).attr('stroke-dasharray', solved ? null : '4 3');
+    });
+    if (eventTickerEl) {
+      const contributors = tick.choices.filter(c => c.participants > 0);
+      const events = previous ? problemEventTextForTick(previous, tick).split('. ') : [];
+      const details = document.getElementById('explorer-event-details');
+      const detailText = document.getElementById('explorer-event-detail');
+      if (details) details.hidden = stage === 'attention' || events.length < 2;
+      if (detailText) detailText.textContent = events.join('. ');
+      eventTickerEl.textContent = stage === 'attention'
+        ? contributors.length ? 'Participants contribute to ' + contributors.length + ' choice opportunit' + (contributors.length === 1 ? 'y.' : 'ies.') : 'No accessible opportunity receives effort.'
+        : previous ? events[0] + (events.length > 1 ? ' · ' + (events.length - 1) + ' other change' + (events.length === 2 ? '' : 's') : '') : 'Choose a focus or follow one problem or opportunity.';
+    }
+    updateTracking();
   }
 
   // Problem IDs that have ever been active (for entrance animation)
@@ -935,6 +1076,7 @@ function drawViz(simResult, options) {
   }
 
   function renderTick(tickIdx, prevTick, motionBudgetMs) {
+    if (explainStreams) { renderExplorerStage(tickIdx, prevTick); return; }
     const tick = ticks[tickIdx];
     const motionScale = Math.max(0.5, Math.min(2.5, (motionBudgetMs || 900) / 900));
     function sd(ms) {
@@ -1411,6 +1553,8 @@ function drawViz(simResult, options) {
       svg.selectAll('*').interrupt();
       if (controls) controls.hidden = true;
       if (trackSelect) trackSelect.onchange = null;
+      if (choiceSelect) choiceSelect.onchange = null;
+      focusButtons.forEach(button => { button.onclick = null; });
       if (pauseButton) pauseButton.onclick = null;
       if (stepButton) stepButton.onclick = null;
       const status = document.getElementById('explorer-tracking');

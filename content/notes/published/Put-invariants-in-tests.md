@@ -11,16 +11,12 @@ tags:
 related_modules: []
 ---
 
-## Abstract
+An agent can read the project instructions and still miss a requirement in the files it changes. Put requirements with stable, observable consequences in tests.
 
-AI agent instructions should not only describe how an agent ought to work. Where possible, they should identify which outcomes can be validated automatically.
+A repository can check that required API-key placeholders remain in place, route documentation matches navigation, and release scripts preserve the expected gates. These checks belong to familiar practices such as policy as code, contract testing, and executable specification.
 
-The pattern is simple: keep judgment in prose, but put durable invariants in tests.
+A passing test establishes only what it checks. It cannot tell you whether the agent understood the instruction or chose a sensible design. "Prefer existing patterns" still requires someone to judge whether those patterns suit the change.
 
-This is a form of policy as code, contract testing, or executable specification. A repository can test that secrets remain placeholders, generated maps still follow source conventions, documentation stays aligned with route data, and workflow scripts preserve the expected release gates. These tests do not prove that an agent reasoned correctly. They prove that the resulting repository state still satisfies the contract.
-
-That distinction is useful. Many instructions remain irreducibly judgment-based: be careful, follow the local design system, prefer existing patterns, avoid unnecessary abstractions. But many consequences of good behavior are visible in files, metadata, commands, links, and generated artifacts. Those consequences can be guarded.
-
-The result is a better collaboration surface between humans, agents, and the repository itself. Instructions stop being passive documentation and become feedback loops.
+Keep that judgment in prose. Give durable repository requirements a test with a failure message that explains what needs fixing. A route omitted from the documentation then produces a failure before release, even if nobody remembers to check it manually.
 
 The longer version is in [Making Instructions Executable](../../articles/making-instructions-executable/).

@@ -3,22 +3,22 @@ title: The Distant Business
 slug: the-distant-business
 date: 2026-06-03
 status: published
-summary: When IT calls another part of the company "the business," the phrase reveals a deeper operating-model fracture: strategy and delivery have been split apart, and the feedback loop that should connect them has died.
+summary: Calling another part of the company "the business" can reveal a separation between strategy and delivery that prevents new evidence from changing commitments.
 tags:
   - product-management
   - the-mix
 related_modules: []
 ---
 
-When you're not involved in day-to-day prioritization and delivery, you lose the essential feedback loop that tells you whether your strategy actually works. You miss the technical constraints, the user journey friction, and the implementation edge cases that should inform strategic decisions. For more complex products, you might even lose touch with the product itself. You are too distant from its users to develop empathy with them.
+When someone in your IT organisation refers to another part of the company as "the business," I want to know who gets to decide what to build.
 
-When someone in your IT organization refers to another part of the company as "the business," you have a problem.
+The phrase often reflects a separation between strategy and delivery. Marketing, sales, or operations choose the work; IT estimates it and delivers. The people making commitments may rarely see a user struggle with the product or hear an engineer explain why a requested change will disrupt another workflow.
 
-This is a trillion dollar discourse, coming from the worst idea since Taylorism: the separation of "thinking" from "doing." Taylor's scientific management split the worker who executes from the manager who plans, and a century later we've reproduced the same fracture inside software organizations, except now the line runs between "the business" who supposedly knows what to build and "IT" who supposedly knows how.
+This repeats the separation of planning from execution associated with Taylor's scientific management. In software development, building a partial solution often reveals something that changes the plan. A prototype exposes a missing step. An integration uncovers a constraint. A customer uses the feature differently from what anyone expected.
 
-It's a category error dressed up as a division of labor. When your delivery organization calls marketing or sales or operations "the business," they've conceded that they are not the business: that they are a cost center executing tickets, a service desk for other people's strategy. And the moment that concession is made, the feedback loop dies. The people closest to the technical constraints, the user friction, the implementation edge cases, the people best positioned to discover what's actually possible, have been organizationally instructed that discovery is not their job. Their job is throughput.
+If delivery is treated as a cost centre executing tickets, that evidence has to travel back across the organisational boundary before it can change a commitment. Sometimes it arrives after the budget and scope have been fixed. Sometimes the team is told to deliver what was agreed anyway.
 
-This is why it's a trillion-dollar problem and not merely an annoying turn of phrase. The phrase encodes an operating model. "The business" tells IT what it wants; IT estimates, commits, and delivers; success is measured as the fidelity of delivery against the original request. Outcomes belong to "the business." Output belongs to IT. And so the entire apparatus optimizes for the wrong variable: utilization, predictability, on-time delivery of features nobody validated, while the actual question, should we be building this at all, has no owner anywhere in the system.
+The organisation can then measure success through utilisation, predictability, and delivery against the original request, even when the team has learned that the request will not solve the problem. Who can reconsider the investment? Who is responsible for checking whether the delivered feature helps?
 
 Business says: "Digital built it wrong."
 

@@ -72,7 +72,7 @@
         <p class="field-notes-body">
           Choice opportunities are the large circles: meetings, reviews, or committees where decisions can happen. Problems are the small dots: they arrive, seek an accessible opportunity, and may move between opportunities. Participants are represented through the effort they contribute, rather than individual figures. The blue-grey arc around each active circle shows accumulated effort relative to its current problem demand; a choice closes when effort meets demand.
         </p>
-        <p class="field-notes-body">This explorer simplifies the model's four streams. Solutions are represented by a fixed effectiveness setting in participants' effort, rather than separate moving objects. Green dots are problems inside a choice opportunity, not solutions. A green closure pulse means problems were solved; a dashed blue-grey pulse means the choice closed without solving any. Brief rust or blue-grey flashes on departing dots mark unresolved problems leaving an opportunity. The green fill records the cumulative number of problems solved there, not participant effort.</p>
+        <p class="field-notes-body">This explorer simplifies the model's four streams. Solutions are represented by a fixed effectiveness setting in participants' effort, rather than separate moving objects. Green dots are problems inside a choice opportunity, not solutions. A solid green closure outline means problems were solved; a dashed blue-grey outline means the choice closed without solving any. The green fill records the cumulative number of problems solved there, not participant effort. Open “How to read this animation” for the two legends.</p>
         <p class="field-notes-body">
           Watch the sequence: arrivals, problem movement, participant attention, then closure. Problems and participants each favour accessible opportunities with the smallest remaining effort deficit; ties are random. This can leave difficult problems clustered elsewhere while easier opportunities close. Problems leaving before closure illustrate flight; an opportunity closing while problems are elsewhere illustrates oversight. Both can describe the same closure.
         </p>
@@ -123,6 +123,14 @@
 
       <!-- Diagnosis — appears when all dropdowns are set -->
       <p class="positioning-caption" id="explorer-inflow-help">Every run contains 20 problems. This setting changes when they surface relative to decision opportunities.</p>
+      <details class="explorer-reading-guide" id="explorer-operating-practices">
+        <summary>Connections to operating practices</summary>
+        <p>Frameworks shape when issues become visible and when they receive attention. The same organisation can experience continuous discovery, planning cycles, and sudden bursts of demand. These connections offer examples for the illustration; they do not assign each framework to one arrival pattern.</p>
+        <p><strong>Ongoing issues.</strong> Regular customer contact in <a href="https://www.producttalk.org/getting-started-with-discovery/">continuous discovery</a> helps concerns surface throughout the work. Continuous-flow approaches such as <a href="https://kanbanguides.org/the-kanban-guide">Kanban</a> provide a useful setting for exploring this kind of intake. Discovering an issue and starting work on it are separate decisions.</p>
+        <p><strong>Planning-period issues.</strong> <a href="https://scrumguides.org/scrum-guide.html">Scrum Sprint Planning</a> and <a href="https://framework.scaledagile.com/pi-planning">SAFe PI Planning</a> bring priorities and proposed work into discussion; PI Planning also makes risks and dependencies visible. Planning groups existing issues for attention as well as revealing new ones. Scrum also includes ongoing backlog refinement, so issues can surface between planning events.</p>
+        <p><strong>Backlog arrives in a burst.</strong> An incident, audit, or transformation review can bring accumulated issues to attention together. <a href="https://sre.google/workbook/postmortem-culture/">SRE postmortems</a>, for example, identify corrective actions after an incident. A burst is a situation that can occur within any operating model.</p>
+        <p>Here, “surface” means becoming visible to the decision process. The illustration changes arrival timing; it does not simulate the frameworks themselves or distinguish issues by their origin.</p>
+      </details>
       <section id="explorer-diagnosis" class="results-section" hidden>
         <p class="stage-label">Diagnosis</p>
         <div class="sim-summary-card">
@@ -143,6 +151,21 @@
       <!-- Simulation area — shown when all dropdowns are set -->
       <section id="viz-area" class="results-section explorer-results-section" hidden>
         <p class="stage-label">GC Simulation</p>
+        <div class="explorer-focus-controls" role="group" aria-label="Animation focus">
+          <button class="control-action" type="button" data-explorer-focus="overview" aria-pressed="true">Overview</button>
+          <button class="control-action" type="button" data-explorer-focus="problems" aria-pressed="false">Problems</button>
+          <button class="control-action" type="button" data-explorer-focus="choices" aria-pressed="false">Choice opportunities</button>
+        </div>
+        <div class="explorer-live-caption">
+          <p class="explorer-stage-note" id="explorer-stage-note">Ready to run</p>
+          <p id="viz-event-ticker" class="viz-event-ticker" aria-live="polite">Overview follows each stage. Choose a focus to keep one dimension prominent.</p>
+          <div class="explorer-caption-details">
+            <details id="explorer-event-details" class="explorer-reading-guide" hidden>
+              <summary>All changes this stage</summary>
+              <p id="explorer-event-detail"></p>
+            </details>
+          </div>
+        </div>
         <svg id="viz-svg" data-explain-streams="true" role="img" aria-label="Animated problems moving between choice opportunities, with arcs showing participant effort"></svg>
         <div id="explorer-playback" hidden>
           <div class="explorer-toolbar-group" role="group" aria-labelledby="explorer-playback-label">
@@ -160,11 +183,38 @@
             </div>
           </div>
           <div class="explorer-toolbar-group explorer-toolbar-tracking">
-            <label class="explorer-select-label" for="explorer-track">Follow problem</label>
-            <select id="explorer-track" class="explorer-select"><option value="">None</option></select>
+            <div class="explorer-toolbar-group">
+              <label class="explorer-select-label" for="explorer-track">Follow problem</label>
+              <select id="explorer-track" class="explorer-select"><option value="">None</option></select>
+            </div>
+            <div class="explorer-toolbar-group">
+              <label class="explorer-select-label" for="explorer-track-choice">Follow opportunity</label>
+              <select id="explorer-track-choice" class="explorer-select"><option value="">None</option></select>
+            </div>
           </div>
         </div>
         <p id="explorer-tracking" class="positioning-caption" aria-live="polite"></p>
+        <details id="explorer-reading-guide" class="explorer-reading-guide">
+          <summary>How to read this animation</summary>
+          <div class="explorer-legend-columns">
+            <section aria-labelledby="explorer-problem-legend">
+              <h3 id="explorer-problem-legend">Problems</h3>
+              <p><span class="explorer-key explorer-key--entering" aria-hidden="true"></span>Rust dot: entering the organisation.</p>
+              <p><span class="explorer-key explorer-key--searching" aria-hidden="true"></span>Gold dot with dashed rim: seeking an opportunity.</p>
+              <p><span class="explorer-key explorer-key--attached" aria-hidden="true"></span>Green dot: attached to an opportunity.</p>
+              <p>A solved problem moves to the centre and fades. Selecting a problem reveals its path.</p>
+            </section>
+            <section aria-labelledby="explorer-choice-legend">
+              <h3 id="explorer-choice-legend">Choice opportunities &amp; participation</h3>
+              <p><span class="explorer-key explorer-key--choice" aria-hidden="true"></span>Large circle: a decision opportunity. Faded circles are closed; dashed circles have not opened yet.</p>
+              <p><span class="explorer-key explorer-key--effort" aria-hidden="true"></span>Blue-grey outer arc: accumulated participant effort relative to current problem demand.</p>
+              <p><span class="explorer-key explorer-key--solved" aria-hidden="true"></span>Green fill: cumulative problems solved there.</p>
+              <p><span class="explorer-key explorer-key--closed-solved" aria-hidden="true"></span>Solid green closure outline: problems were solved.</p>
+              <p><span class="explorer-key explorer-key--closed-empty" aria-hidden="true"></span>Dashed blue-grey closure outline: no problems were solved.</p>
+            </section>
+          </div>
+          <p>During attention, problems stay still while effort changes. During closure, only the closing opportunities and solved problems change. Focus changes emphasis, not the simulation.</p>
+        </details>
         <div class="submit-row" id="explorer-sim-trigger" hidden>
           <button class="submit-btn control-action control-action--primary" id="run-sim-btn">See how decisions play out</button>
         </div>

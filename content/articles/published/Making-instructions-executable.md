@@ -32,9 +32,9 @@ These tests check the resulting repository state. They cannot establish whether 
 
 ## Where tests help, and where they overreach
 
-Look for effects in files, commands, metadata, links, generated artifacts, or runtime behavior. Alongside the examples above, useful candidates include reproducible generated output, dependency sourcing, required source metadata, accessibility and security guardrails, and naming conventions that other tools depend on. A failure should identify a concrete repair.
+Look for effects in files, commands, metadata, links, generated artifacts, or runtime behaviour. Alongside the examples above, useful candidates include reproducible generated output, dependency sourcing, required source metadata, accessibility and security guardrails, and naming conventions that other tools depend on. A failure should identify a concrete repair.
 
-Judgment is harder to encode. Instructions to write elegant code, avoid unnecessary abstractions, keep the user experience coherent, or understand the domain before changing behavior still matter. Reducing them to mechanical rules can produce brittle tests that reward a shallow imitation of good work. "Prefer existing patterns" depends on whether those patterns suit the change. "Plan before acting" is visible in a conversation, but cannot be established from the resulting repository alone.
+Judgment is harder to encode. Instructions to write elegant code, avoid unnecessary abstractions, keep the user experience coherent, or understand the domain before changing behaviour still matter. Reducing them to mechanical rules can produce brittle tests that reward a shallow imitation of good work. "Prefer existing patterns" depends on whether those patterns suit the change. "Plan before acting" is visible in a conversation, but cannot be established from the resulting repository alone.
 
 Keep those principles in prose. The instruction file can explain how to approach the work, and the README can describe the public workflow. Tests can enforce the observable requirements, such as keeping contract files identical or generating an index through documented conventions. They should not claim to decide every case.
 

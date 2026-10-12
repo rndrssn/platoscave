@@ -23,7 +23,7 @@
   {
     "title": "The Distant Business",
     "slug": "the-distant-business",
-    "summary": "When IT calls another part of the company \"the business,\" the phrase reveals a deeper operating-model fracture: strategy and delivery have been split apart, and the feedback loop that should connect them has died.",
+    "summary": "Calling another part of the company \"the business\" can reveal a separation between strategy and delivery that prevents new evidence from changing commitments.",
     "date": "2026-06-03",
     "tags": [
       {
@@ -40,7 +40,7 @@
   {
     "title": "Wrap a head around Bell's inequality",
     "slug": "bellsinequality",
-    "summary": "Wrap a head around Bell's inequality On Bell’s inequality Bell’s inequality is a notoriously difficult subject, not because the basic conclusion is impossible to state, but because the conclusion rests on distinctions that are easy to blur. A simplified explanation therefore has to sacrifice some precision. Still, the broad shape of the argument is this: Classical physics tends to assume a few things about the world. First, locality: things can only be affected by other things close enough to influence them, meaning inside their light cone. Second, realism: measurable properties have definite values whether or not anyone has measured them yet. Third, ordinary causality: later events do not reach backward and cause earlier ones. These assumptions feel so natural that they can seem almost invisible.",
+    "summary": "Wrap a head around Bell's inequality I find Bell’s inequality difficult because small differences in the assumptions change what the conclusion means. The game version helps me keep track of what is being tested. A local hidden-variable account explains measurement outcomes through information carried by the particles, without a measurement choice at one location affecting the outcome at the other. Bell inequalities place limits on the correlations such an account can produce, assuming the measurement choices are independent of the hidden variables. In the CHSH game, Bob and Claire each receive an independently chosen random bit, 0 or 1, and each return a bit. They cannot communicate after receiving their inputs. They win if their answers match, except when both inputs are 1, when their answers must differ.",
     "date": "2026-05-28",
     "tags": [
       {
@@ -53,7 +53,7 @@
   {
     "title": "PM-ing and Complexity",
     "slug": "pm-complexity",
-    "summary": "For linear dynamic environments (problems, solutions, organisations, and their interactions): Your job is to (0) extract signal from noise, (1) understand for whom which signal is ambiguous, (2) make ambiguity less ambiguous for who it matters. For dynamic non-linear environments: Your challenge is to (0) read signals from noise in a system where your interventions remakes the system you're trying to read, (1) understand for whom which signal is ambiguous, (2) make ambiguity less ambiguous for who it matters.(3) expect emergence where the patterns produced cannot be read back from the parts and interactions, leading to a reconfigure of (0)",
+    "summary": "For linear dynamic environments (problems, solutions, organisations, and their interactions), your job is to: Extract signal from noise. Understand who finds that signal ambiguous, and why. Clarify it for the people whose decisions depend on it.",
     "date": "2026-04-10",
     "tags": [
       {
@@ -72,9 +72,9 @@
     "relatedModules": []
   },
   {
-    "title": "Semantic modernization & new jargon",
+    "title": "Semantic modernisation & new jargon",
     "slug": "semantics",
-    "summary": "Semantic modernization & new jargon Semantic modernization & re-jargonization without epistemic change -how the organization believes knowledge is created, validated, and justified- probably wastes trillions in traditionally managed high software-content enterprising. While activities must happen in time sequence, understanding does not progress linearly (in “knowledge work”). The most important knowledge about users/customers/clients, feasibility and business value alignment -often emerges only after partial solutions exist.",
+    "summary": "Semantic modernisation & new jargon An organisation can adopt new management vocabulary while keeping the same assumptions about how knowledge is created, validated, and justified. Calling delivery \"agile\" changes little if evidence from the work cannot alter the plan. Activities happen in sequence, but understanding develops through feedback. Important knowledge about users, feasibility, and business value often emerges only after a partial solution exists. The operating model has to let that knowledge change decisions.",
     "date": "2026-03-30",
     "tags": [
       {
@@ -87,7 +87,7 @@
   {
     "title": "What works and what doesn't work",
     "slug": "what-works-and-what-doesnt-work",
-    "summary": "A first field note on how traditionally managed organisations view epistemological access to outcome causes and effects.",
+    "summary": "A field note on the pressure for clear answers in primary industries, and what that means for software development.",
     "date": "2026-03-23",
     "tags": [
       {

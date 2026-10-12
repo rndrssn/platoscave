@@ -263,6 +263,7 @@
 
 .pm-map-tooltip {
   position: absolute;
+  box-sizing: border-box;
   z-index: 2;
   max-width: 15rem;
   padding: 0.45rem 0.6rem;
@@ -273,6 +274,7 @@
   font-size: 0.62rem;
   line-height: 1.4;
   white-space: pre-line;
+  overflow-wrap: anywhere;
   pointer-events: none;
 }
 

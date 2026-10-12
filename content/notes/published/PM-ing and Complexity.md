@@ -11,10 +11,10 @@ tags:
 related_modules: []
 ---
 
-For **linear dynamic** environments (problems, solutions, organisations, and their interactions):
+For **linear dynamic** environments (problems, solutions, organisations, and their interactions), your job is to:
 
-Your job is to (0) extract signal from noise, (1) understand for whom which signal is ambiguous, (2) make ambiguity less ambiguous for who it matters.
+0. Extract signal from noise.
+1. Understand who finds that signal ambiguous, and why.
+2. Clarify it for the people whose decisions depend on it.
 
-For **dynamic non-linear** environments:
-
-Your challenge is to (0) read signals from noise in a system where your interventions remakes the system you're trying to read, (1) understand for whom which signal is ambiguous, (2) make ambiguity less ambiguous for who it matters.(3) expect emergence where the patterns produced cannot be read back from the parts and interactions, leading to a reconfigure of (0)
+For **dynamic non-linear** environments, your interventions change the system you are trying to read. You still need to identify signals and clarify their meaning, but you also have to expect patterns that cannot be inferred from the parts and their interactions alone. When those patterns emerge, reconsider what you are looking for.

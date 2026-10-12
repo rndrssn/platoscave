@@ -199,8 +199,19 @@
 
   function positionTooltip(event) {
     const bounds = stage.getBoundingClientRect();
-    tooltip.style.left = `${event.clientX - bounds.left + stage.scrollLeft + 12}px`;
-    tooltip.style.top = `${event.clientY - bounds.top + 12}px`;
+    const gap = 12;
+    const inset = 8;
+    const x = event.clientX - bounds.left - stage.clientLeft;
+    const y = event.clientY - bounds.top - stage.clientTop;
+    tooltip.style.maxWidth = `${Math.max(0, Math.min(240, stage.clientWidth - inset * 2))}px`;
+    const tooltipWidth = tooltip.offsetWidth;
+    const tooltipHeight = tooltip.offsetHeight;
+    const left = x + gap + tooltipWidth > stage.clientWidth - inset
+      ? x - gap - tooltipWidth : x + gap;
+    const top = y + gap + tooltipHeight > stage.clientHeight - inset
+      ? y - gap - tooltipHeight : y + gap;
+    tooltip.style.left = `${stage.scrollLeft + Math.max(inset, Math.min(left, stage.clientWidth - tooltipWidth - inset))}px`;
+    tooltip.style.top = `${stage.scrollTop + Math.max(inset, Math.min(top, stage.clientHeight - tooltipHeight - inset))}px`;
   }
 
   function hideTooltip() { tooltip.hidden = true; }

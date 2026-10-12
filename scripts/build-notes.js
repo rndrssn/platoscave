@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const { htmlShell, navHtml } = require('./lib/page-shell');
+const productManagementHistory = require('../js/product-management-history-data');
 
 const ROOT = path.resolve(__dirname, '..');
 const NOTES_CONTENT_ROOT = path.join(ROOT, 'content', 'notes');
@@ -561,6 +562,7 @@ function renderWritingIndexCard(entry, options) {
 
 function writeWritingPage(entry, options) {
   const prefix = '../../';
+  const articleExperience = options.articleExperience || null;
   const tagsHtml = renderTagLinks(entry.tags, prefix);
   const summaryHtml = entry.summary
     ? '<p class="module-header-body">' + escapeHtml(entry.summary) + '</p>'
@@ -575,7 +577,9 @@ function writeWritingPage(entry, options) {
     + '      </header>\n\n'
     + '      <article class="module-essay note-content">\n'
     + '        <section class="essay-section">\n'
-    + entry.htmlBody.split('\n').map((line) => '          ' + line).join('\n') + '\n'
+    + (articleExperience
+      ? articleExperience.transformBody(entry.htmlBody).split('\n').map((line) => '          ' + line).join('\n')
+      : entry.htmlBody.split('\n').map((line) => '          ' + line).join('\n')) + '\n'
     + '        </section>\n'
     + '      </article>\n\n'
     + '      <nav class="module-footer-nav module-footer-nav--section" aria-label="Section navigation">\n'
@@ -597,7 +601,10 @@ function writeWritingPage(entry, options) {
     description: entry.summary || (options.itemLabel + ': ' + entry.title),
     prefix,
     nav: navHtml(prefix, options.navActive),
-    main: body
+    main: body,
+    mainClass: articleExperience ? articleExperience.mainClass : undefined,
+    extraStyles: articleExperience ? articleExperience.styles.map((href) => prefix + href) : [],
+    extraScripts: articleExperience ? articleExperience.scripts.map((src) => prefix + src) : []
   });
 
   const outDir = path.join(options.outputDir, entry.slug);
@@ -664,6 +671,55 @@ function writeNotesIndex(notes) {
 }
 
 function writeArticlePage(article) {
+  const productManagementExperience = article.slug === 'product-management-intellectual-history'
+    ? {
+        mainClass: 'main--article-visual',
+        styles: ['css/pages/product-management-history.css'],
+        scripts: ['assets/vendor/d3.v7.min.js', 'js/product-management-history-data.js', 'js/product-management-history.js'],
+        transformBody(htmlBody) {
+          const marker = '<p>{{product-management-metro}}</p>';
+          const transcript = productManagementHistory.stations.map((station) => '<li>\n'
+            + '      <p><strong>' + escapeHtml(station.year + ' · ' + station.label) + '</strong></p>\n'
+            + '      <p class="pm-map-transcript-source">' + escapeHtml(station.author) + ' · <em>' + escapeHtml(station.work) + '</em></p>\n'
+            + '      <p class="pm-map-transcript-links">' + station.references.map((reference) => '<a href="' + escapeHtml(reference.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(reference.label) + '</a>').join(' · ') + '</p>\n'
+            + '      <p><span>Contributed:</span> ' + escapeHtml(station.contributed) + '</p>\n'
+            + '      <p><span>Limits &amp; failure modes:</span> ' + escapeHtml(station.limits) + '</p>\n'
+            + '    </li>').join('\n');
+          const figure = '<figure class="pm-map" data-pm-map>\n'
+            + '  <div class="pm-map-toolbar" aria-label="Timeline controls">\n'
+            + '    <div class="pm-map-lines" role="group" aria-label="Focus a lineage"></div>\n'
+            + '  </div>\n'
+            + '  <div class="pm-map-stage">\n'
+            + '    <svg class="pm-map-svg" role="img" aria-labelledby="pm-map-title pm-map-desc"></svg>\n'
+            + '    <div class="pm-map-tooltip" role="tooltip" hidden></div>\n'
+            + '  </div>\n'
+            + '  <div class="pm-map-detail" aria-live="polite">\n'
+            + '    <div class="pm-map-detail-heading">\n'
+            + '      <p class="pm-map-detail-kicker">Select a station</p>\n'
+            + '      <p class="pm-map-detail-title">Four traditions become one profession</p>\n'
+            + '      <p class="pm-map-detail-source"></p>\n'
+            + '    </div>\n'
+            + '    <div class="pm-map-detail-reading">\n'
+            + '      <p class="pm-map-detail-label">Contributed</p>\n'
+            + '      <p class="pm-map-detail-contributed">Choose a station to inspect the durable idea it added to the craft.</p>\n'
+            + '    </div>\n'
+            + '    <div class="pm-map-detail-reading">\n'
+            + '      <p class="pm-map-detail-label">Limits &amp; failure modes</p>\n'
+            + '      <p class="pm-map-detail-limits">See what the work omitted, where it aged badly, or how later practice distorted it.</p>\n'
+            + '    </div>\n'
+            + '  </div>\n'
+            + '  <details class="pm-map-transcript">\n'
+            + '    <summary>Read the complete station index</summary>\n'
+            + '    <ol>\n' + transcript + '\n    </ol>\n'
+            + '  </details>\n'
+            + '  <figcaption>Selected works and events, 1931–2024. Stations run in approximate historical order; like a transit map, spacing is not to scale.</figcaption>\n'
+            + '</figure>';
+          if (!htmlBody.includes(marker)) throw new Error('Missing product management metro marker');
+          return htmlBody.replace(marker, figure);
+        }
+      }
+    : null;
+
   writeWritingPage(article, {
     collectionTitle: 'Articles',
     itemLabel: 'Article',
@@ -672,6 +728,7 @@ function writeArticlePage(article) {
     backLabelAria: 'Back to Articles',
     backLabelFull: '&larr; Back to Articles',
     backLabelShort: '&larr; Articles',
+    articleExperience: productManagementExperience,
     secondaryFooterLink: {
       href: '../../notes/',
       ariaLabel: 'Back to Notes',

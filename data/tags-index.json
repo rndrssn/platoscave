@@ -76,6 +76,15 @@
     "modules": []
   },
   {
+    "label": "organisational design",
+    "slug": "organisational-design",
+    "notes": [],
+    "articles": [
+      "product-management-intellectual-history"
+    ],
+    "modules": []
+  },
+  {
     "label": "organised anarchy",
     "slug": "organised-anarchy",
     "notes": [],
@@ -101,6 +110,7 @@
       "pm-complexity"
     ],
     "articles": [
+      "product-management-intellectual-history",
       "lowvolumehighsoftware"
     ],
     "modules": []

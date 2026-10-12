@@ -46,6 +46,7 @@ function htmlShell(params) {
   const mainClass = String(params.mainClass || 'main--narrow').trim();
   const mainAttrs = String(params.mainAttrs || '').trim();
   const extraScripts = Array.isArray(params.extraScripts) ? params.extraScripts : [];
+  const extraStyles = Array.isArray(params.extraStyles) ? params.extraStyles : [];
   const bodyAttrs = String(params.bodyAttrs || '').trim();
 
   return '<!DOCTYPE html>\n'
@@ -69,6 +70,7 @@ function htmlShell(params) {
     + '  <link rel="stylesheet" href="' + prefix + 'css/themes.css" />\n'
     + '  <link rel="stylesheet" href="' + prefix + 'css/gc-viz.css" />\n'
     + '  <link rel="stylesheet" href="' + prefix + 'css/pages.css" />\n'
+    + extraStyles.map((href) => '  <link rel="stylesheet" href="' + escapeAttr(href) + '" />\n').join('')
     + '  <link rel="icon" type="image/png" href="' + prefix + 'assets/images/doodles/skate_c.png" />\n'
     + '  <link rel="apple-touch-icon" href="' + prefix + 'assets/images/doodles/skate_c.png" />\n'
     + '</head>\n'

@@ -1,5 +1,22 @@
 [
   {
+    "title": "Product Management, Mapped",
+    "slug": "product-management-intellectual-history",
+    "summary": "How brand management, engineering, design, and startup discovery shaped the software PM role—and why their different ideas about authority still matter.",
+    "date": "2026-10-12",
+    "tags": [
+      {
+        "label": "product management",
+        "slug": "product-management"
+      },
+      {
+        "label": "organisational design",
+        "slug": "organisational-design"
+      }
+    ],
+    "relatedModules": []
+  },
+  {
     "title": "Making Instructions Executable",
     "slug": "making-instructions-executable",
     "summary": "Tests can enforce the observable consequences of project instructions, leaving judgment to contributors.",

@@ -1,0 +1,378 @@
+/* Product-management article layout and interactive metro map. */
+.main--article-visual {
+  width: min(100%, 92rem);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 3rem);
+}
+
+.main--article-visual .module-header,
+.main--article-visual .note-content > .essay-section > :not(.pm-map),
+.main--article-visual .module-footer-nav {
+  max-width: 60rem;
+  margin-inline: auto;
+}
+
+.main--article-visual .note-content > .essay-section > p,
+.main--article-visual .note-content > .essay-section > ul,
+.main--article-visual .note-content > .essay-section > ol,
+.main--article-visual .note-content > .essay-section > blockquote {
+  max-width: 64ch;
+}
+
+.pm-map {
+  margin: 3rem 0 4rem;
+  padding: 1rem 0;
+  border-block: 1px solid var(--ink-ghost);
+}
+
+.pm-map-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.pm-map-lines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.8rem;
+}
+
+.pm-map-line-button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.35rem 0;
+  cursor: pointer;
+}
+
+.pm-map-line-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pm-map-line-button::before {
+  content: '';
+  width: 1.2rem;
+  height: 0.22rem;
+  background: var(--pm-line-color);
+}
+
+.pm-map-line-button:hover,
+.pm-map-line-button:focus-visible,
+.pm-map-line-button[aria-pressed='true'] {
+  color: var(--ink);
+}
+
+.pm-map-line-button:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 3px;
+}
+
+/* The halo replaces the browser's rectangular focus ring, which also appeared after a mouse click. */
+.pm-station:focus {
+  outline: none;
+}
+
+.pm-map-stage {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-color: var(--ink-ghost) transparent;
+}
+
+.pm-map-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pm-era-band {
+  fill: var(--paper-dark);
+  opacity: 0.38;
+}
+
+.pm-era-label,
+.pm-route-label,
+.pm-station-year,
+.pm-station-label {
+  fill: var(--ink-faint);
+  font-family: var(--mono);
+}
+
+.pm-era-label {
+  fill: var(--ink-mid);
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pm-route-label {
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+
+.pm-route {
+  fill: none;
+  stroke: var(--pm-line-color);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity 180ms ease, stroke-width 180ms ease;
+}
+
+.pm-map.is-focused .pm-route:not(.is-focused),
+.pm-map.is-focused .pm-station:not(.is-focused) {
+  opacity: 0.14;
+}
+
+.pm-map.is-focused .pm-route.is-focused {
+  stroke-width: 10;
+}
+
+.pm-station {
+  cursor: pointer;
+  transition: opacity 180ms ease;
+}
+
+.pm-station-shape {
+  fill: var(--paper);
+  stroke: var(--pm-station-color);
+  stroke-width: 4;
+}
+
+[data-role='inflation'] > .pm-station-shape {
+  fill: var(--pm-station-color);
+}
+
+[data-role='provisional'] > .pm-station-shape {
+  stroke-dasharray: 4 3;
+}
+
+[data-shape='interchange'] > .pm-station-shape {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.pm-legend-item {
+  --pm-station-color: var(--ink-mid);
+}
+
+.pm-legend-item .pm-station-shape {
+  stroke-width: 2.5;
+  scale: 0.8;
+}
+
+.pm-legend-label {
+  fill: var(--ink-mid);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.pm-station-label {
+  fill: var(--ink);
+  font-size: 17px;
+}
+
+.pm-station-year {
+  font-size: 14px;
+}
+
+.pm-station-halo {
+  fill: var(--pm-station-color);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+[data-shape='interchange'] > .pm-station-halo {
+  fill: var(--ink-faint);
+}
+
+.pm-station.is-selected .pm-station-halo,
+.pm-station:focus-visible .pm-station-halo {
+  opacity: 0.3;
+}
+
+.pm-station.is-selected .pm-station-label {
+  font-weight: 700;
+}
+
+.pm-map-detail {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.9fr) minmax(14rem, 1fr) minmax(18rem, 1.3fr);
+  gap: 0.7rem 1.4rem;
+  min-height: 5.6rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--ink-ghost);
+}
+
+.pm-map-detail p {
+  margin: 0;
+}
+
+/* Scoped through the figure so the article's .note-content paragraph styles don't override these labels. */
+.pm-map .pm-map-detail p.pm-map-detail-kicker {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.pm-map .pm-map-detail p.pm-map-detail-title {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--ink);
+}
+
+.pm-map .pm-map-detail p.pm-map-detail-source {
+  margin-top: 0.3rem;
+  font-family: var(--serif);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  white-space: pre-line;
+  color: var(--ink-mid);
+}
+
+.pm-map .pm-map-detail p.pm-map-detail-label {
+  margin-bottom: 0.3rem;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.pm-map-detail-contributed,
+.pm-map-detail-limits {
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--ink-mid);
+}
+
+.pm-map-tooltip {
+  position: absolute;
+  z-index: 2;
+  max-width: 15rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--ink-ghost);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  line-height: 1.4;
+  white-space: pre-line;
+  pointer-events: none;
+}
+
+.pm-map-transcript {
+  margin-top: 0.75rem;
+  border-top: 1px solid var(--ink-ghost);
+  padding-top: 0.8rem;
+}
+
+.pm-map-transcript summary {
+  width: fit-content;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.pm-map-transcript summary:hover,
+.pm-map-transcript summary:focus-visible {
+  color: var(--ink);
+}
+
+.pm-map-transcript ol {
+  columns: 2 24rem;
+  column-gap: 3rem;
+  margin: 1.2rem 0 0;
+  padding-left: 1.4rem;
+}
+
+.pm-map-transcript li {
+  break-inside: avoid;
+  margin: 0 0 1.2rem;
+  padding-left: 0.3rem;
+  color: var(--ink-mid);
+}
+
+.pm-map-transcript li p {
+  margin: 0 0 0.25rem;
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  line-height: 1.45;
+}
+
+.pm-map-transcript li .pm-map-transcript-source {
+  color: var(--ink-faint);
+}
+
+.pm-map-transcript li .pm-map-transcript-links {
+  font-size: 0.72rem;
+}
+
+.pm-map-transcript li .pm-map-transcript-links a {
+  color: var(--ink-mid);
+}
+
+.pm-map-transcript li span {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.pm-map figcaption {
+  margin-top: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  line-height: 1.5;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 700px) {
+  .pm-map-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  /* Below this width the map keeps a readable scale and pans instead of shrinking to fit. */
+  .pm-map-svg {
+    width: 72rem;
+    max-width: none;
+  }
+
+  .pm-map-stage:not(.is-scrolled-end) {
+    -webkit-mask-image: linear-gradient(to right, #000 82%, transparent);
+    mask-image: linear-gradient(to right, #000 82%, transparent);
+  }
+
+  .pm-map-detail {
+    grid-template-columns: 1fr;
+    min-height: 9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-route,
+  .pm-station,
+  .pm-station-halo {
+    transition: none;
+  }
+}

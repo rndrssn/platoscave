@@ -401,52 +401,21 @@
   background: transparent;
 }
 
-/* ─── 10. Inline SVG icon ────────────────────────────────────── */
+.js-enabled .nav-links .nav-modules-head {
+  margin-right: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+/* ─── 10. Catalogue icon ────────────────────────────────────── */
 .js-enabled .nav-links .nav-modules-toggle--bento .nav-modules-icon,
 .js-enabled .nav-links.is-open .nav-modules-toggle--bento .nav-modules-icon {
   width: var(--nav-modules-icon-size);
   height: var(--nav-modules-icon-size);
   display: block;
   pointer-events: none;
+  background: currentColor;
+  mask: url('../../assets/images/icons/r-pentomino.svg') center / contain no-repeat;
+  -webkit-mask: url('../../assets/images/icons/r-pentomino.svg') center / contain no-repeat;
 }
-
-.nav-modules-icon {
-  overflow: visible;
-}
-
-.nav-modules-icon .orbit-ring {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  opacity: 0;
-}
-
-.nav-modules-icon .menu-dot {
-  fill: currentColor;
-}
-
-.nav-modules-icon .dots-group {
-  transform-origin: 12px 12px;
-  transform-box: view-box;
-}
-
-/* Converge: each dot slides to SVG centre (12, 12) when expanded */
-.nav-modules-icon .menu-dot {
-  transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 280ms ease;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.nav-modules-toggle[aria-expanded='true'] .dot-0 { transform: translate(4px,  4px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-1 { transform: translate(0px,  6px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-2 { transform: translate(-4px, 4px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-3 { transform: translate(-6px, 0px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-4 { transform: translate(-4px,-4px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-5 { transform: translate(0px, -6px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-6 { transform: translate(4px, -4px); }
-.nav-modules-toggle[aria-expanded='true'] .dot-7 { transform: translate(6px,  0px); }
 
 /* ─── 11. Keyframes ──────────────────────────────────────────── */
 @keyframes nav-popover-in {
@@ -527,7 +496,7 @@
     width: auto;
     gap: 0;
     position: relative;
-    margin-left: auto;
+    margin-left: 0;
     color: var(--ink);
   }
 
@@ -716,7 +685,7 @@
     display: inline-flex;
     align-items: center;
     position: relative;
-    margin-left: auto;
+    margin-left: 0;
     color: var(--ink);
   }
 
@@ -888,4 +857,32 @@
 /* ─── 15. Reduced motion ─────────────────────────────────────── */
 @media (min-width: 900px) and (prefers-reduced-motion: reduce) {
   .js-enabled .nav-links > .nav-link { transition: none; }
+}
+
+/* Explore's label and icon share one menu target; its popup opens from the first entry. */
+.js-enabled .nav-links .nav-modules-toggle--bento {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 0.4rem;
+  width: auto;
+  min-width: 0;
+  font-size: calc(var(--fs-nav-title) * 0.7995 * var(--nav-menu-scale));
+}
+
+.nav-explore-label {
+  font-family: var(--serif-alt);
+  font-size: inherit;
+  font-weight: 300;
+}
+
+.js-enabled .nav-links .nav-modules-submenu {
+  left: 0;
+  right: auto;
+}
+
+@media (max-width: 899px) {
+  .js-enabled .nav-links .nav-modules-toggle--bento {
+    font-size: calc(var(--fs-nav-title) * 0.5859375 * var(--nav-menu-scale));
+  }
 }

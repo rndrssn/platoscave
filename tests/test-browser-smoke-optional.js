@@ -37,6 +37,16 @@ async function run() {
   await page.waitForSelector('main#main-content');
   const hasHomeNav = await page.locator('.main-nav .nav-link').first().count();
   assert(hasHomeNav > 0, 'Home page should render global nav links');
+  assert.strictEqual(await page.locator('.nav-explore-label').textContent(), 'Explore');
+  const aboutHref = await page.locator('.nav-links > a').filter({ hasText: 'About' }).getAttribute('href');
+  assert.strictEqual(aboutHref, './skills/', 'About must retain the existing experience URL');
+  for (const [label, collection] of [['Notes', 'notes'], ['Articles', 'articles']]) {
+    assert.strictEqual(await page.locator('.nav-links > a').filter({ hasText: label }).getAttribute('href'), './' + collection + '/');
+  }
+  await page.goto(toFile('notes/index.html'));
+  assert.strictEqual(await page.locator('.nav-links > a').filter({ hasText: 'Notes' }).getAttribute('href'), '../notes/');
+  assert.strictEqual(await page.locator('.nav-links > a').filter({ hasText: 'About' }).getAttribute('href'), '../skills/');
+
 
   await page.goto(toFile(path.join('modules', 'garbage-can', 'explorer', 'index.html')));
   await page.selectOption('#panel-a-load', 'light');

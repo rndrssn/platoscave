@@ -36,6 +36,8 @@ There is no framework runtime and no bundler. When a page loads several scripts,
 
 ## Navigation and Module IA
 
+Primary navigation is Explore, Notes, Articles, and About. Explore opens the module catalogue; Notes and Articles link directly to their existing collection pages; About retains `/skills/` and its existing experience/CV destinations. The shared page shell supplies static links and `js/nav-controller.js` normalises navigation on existing pages. The site-title link supplies the root prefix for relative navigation.
+
 Live modules use local section numbering:
 - Section `01` is the module root at `modules/<slug>/`.
 - Root module pages keep a `module-back-link` to `../`.

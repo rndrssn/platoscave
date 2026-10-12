@@ -85,6 +85,8 @@
     }
 
     function detectRootPrefix() {
+      var titleLink = document.querySelector('.nav-title[href]');
+      if (titleLink) return titleLink.getAttribute('href') || './';
       var aboutNavLink = null;
       var navCandidates = getNavCandidates();
       navCandidates.forEach(function (link) {
@@ -158,10 +160,10 @@
 
       navLinks.textContent = '';
       [
+        { label: 'Explore', href: modulesHref, active: isModulesPath(pathname), role: 'catalogue' },
         { label: 'Notes', href: notesHref, active: isNotesPath(pathname) },
         { label: 'Articles', href: articlesHref, active: isArticlesPath(pathname) },
-        { label: 'My Experience', href: myExperienceHref, active: isMyExperiencePath(pathname) },
-        { label: 'Catalogue', href: modulesHref, active: isModulesPath(pathname), role: 'catalogue' }
+        { label: 'About', href: myExperienceHref, active: isMyExperiencePath(pathname) }
       ].forEach(function (item) {
         navLinks.appendChild(createPrimaryNavLink(item));
       });
@@ -292,8 +294,8 @@
       if (!modulesToggleButton || !modulesSubmenu) return;
       modulesSubmenu.hidden = !open;
       modulesToggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
-      modulesToggleButton.setAttribute('aria-label', open ? 'Collapse catalogue list' : 'Expand catalogue list');
-      modulesToggleButton.setAttribute('title', open ? 'Collapse catalogue list' : 'Expand catalogue list');
+      modulesToggleButton.setAttribute('aria-label', open ? 'Collapse Explore menu' : 'Expand Explore menu');
+      modulesToggleButton.setAttribute('title', open ? 'Collapse Explore menu' : 'Expand Explore menu');
       if (open) modulesToggleButton.classList.add('is-expanded');
       else modulesToggleButton.classList.remove('is-expanded');
     }
@@ -353,38 +355,17 @@
       modulesToggleButton = document.createElement('button');
       modulesToggleButton.type = 'button';
       modulesToggleButton.className = 'nav-link nav-link--editorial nav-modules-toggle nav-modules-toggle--bento';
-      modulesToggleButton.title = 'Catalogue';
+      modulesToggleButton.title = 'Explore';
       var modulesToggleLabel = document.createElement('span');
-      modulesToggleLabel.className = 'visually-hidden';
-      modulesToggleLabel.textContent = 'Catalogue';
+      modulesToggleLabel.className = 'nav-explore-label';
+      modulesToggleLabel.textContent = 'Explore';
       modulesToggleButton.appendChild(modulesToggleLabel);
-      var svgNs = 'http://www.w3.org/2000/svg';
-      var iconSvg = document.createElementNS(svgNs, 'svg');
-      iconSvg.setAttribute('viewBox', '0 0 24 24');
-      iconSvg.setAttribute('aria-hidden', 'true');
-      iconSvg.setAttribute('focusable', 'false');
-      iconSvg.setAttribute('class', 'nav-modules-icon');
-      var orbitRing = document.createElementNS(svgNs, 'circle');
-      orbitRing.setAttribute('class', 'orbit-ring');
-      orbitRing.setAttribute('cx', '12');
-      orbitRing.setAttribute('cy', '12');
-      orbitRing.setAttribute('r', '6');
-      iconSvg.appendChild(orbitRing);
-      var dotsGroup = document.createElementNS(svgNs, 'g');
-      dotsGroup.setAttribute('class', 'dots-group');
-      var DOT_POS = [[8,8],[12,6],[16,8],[18,12],[16,16],[12,18],[8,16],[6,12]];
-      for (var di = 0; di < DOT_POS.length; di++) {
-        var dot = document.createElementNS(svgNs, 'circle');
-        dot.setAttribute('cx', String(DOT_POS[di][0]));
-        dot.setAttribute('cy', String(DOT_POS[di][1]));
-        dot.setAttribute('r', '1.2');
-        dot.setAttribute('class', 'menu-dot dot-' + di);
-        dotsGroup.appendChild(dot);
-      }
-      iconSvg.appendChild(dotsGroup);
-      modulesToggleButton.appendChild(iconSvg);
+      var catalogueIcon = document.createElement('span');
+      catalogueIcon.className = 'nav-modules-icon';
+      catalogueIcon.setAttribute('aria-hidden', 'true');
+      modulesToggleButton.appendChild(catalogueIcon);
       modulesToggleButton.setAttribute('aria-expanded', modulesAutoExpand ? 'true' : 'false');
-      modulesToggleButton.setAttribute('aria-label', modulesAutoExpand ? 'Collapse catalogue list' : 'Expand catalogue list');
+      modulesToggleButton.setAttribute('aria-label', modulesAutoExpand ? 'Collapse Explore menu' : 'Expand Explore menu');
 
       modulesSubmenu = document.createElement('div');
       modulesSubmenu.className = 'nav-modules-submenu';
@@ -455,7 +436,7 @@
         });
 
       modulesSubmenu.appendChild(
-        createSubEntry({ title: 'Catalogue', slug: '', status: '', href: modulesHref }, isEntryActive(''))
+        createSubEntry({ title: 'All models', slug: '', status: '', href: modulesHref }, isEntryActive(''))
       );
       entries.forEach(function (entry) {
         modulesSubmenu.appendChild(createSubEntry(entry, isEntryActive(entry.slug)));

@@ -20,7 +20,7 @@
   --nav-inset: 2rem;
   --nav-links-offset: 0rem;
   --nav-menu-scale: 1.3;
-  --nav-modules-icon-size: calc(1.75rem * var(--nav-menu-scale));
+  --nav-modules-icon-size: calc(1.75rem * var(--nav-menu-scale) * 0.5625);
   --nav-modules-toggle-size: calc(1.9rem * var(--nav-menu-scale));
   --nav-main-link-min-height: calc(1.6rem * var(--nav-menu-scale));
   --nav-bar-min-height: calc(1.9rem * var(--nav-menu-scale));

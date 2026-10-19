@@ -73,6 +73,7 @@ A portfolio of interactive tools and visualizations about complexity, emergence,
 
 - **My Experience (Skills + CV)** — force-directed skills graph plus CV. Reachable via the footer and the shortcut URLs `/skills/` → `/modules/experience-skill-graph/` and `/cv/` → `/modules/experience-skill-graph/cv/`.
   - Uses a dedicated CV/Skills shell with a local view switcher (`Skills Graph` ↔ `CV`) rather than the standard module breadcrumb/sub-nav pattern.
+  - A downloadable PDF CV lives at `cv/Robert-Andersson-CV.pdf`, linked from the CV and Skills Graph mastheads and the shared footer. It is generated outside this repo by the private CV builder (public build, phone number omitted) and committed here as a static file; `tests/test-cv-pdf-download-contract.js` guards the file and links.
   - The `/skills/` and `/cv/` redirect pages must be kept in sync with any slug change to `modules/experience-skill-graph/`. Renaming the module slug requires updating both redirect targets and re-testing navigation contracts.
 - **Legacy Cases URLs** — old `/cases/` paths redirect to the promoted Boundary-free monitoring module.
 

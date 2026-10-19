@@ -51,6 +51,36 @@
   color: var(--ink-faint);
 }
 
+.experience-skill-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0.46rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--link-ui);
+  transition: color 160ms ease;
+}
+
+.experience-skill-download:hover,
+.experience-skill-download:focus-visible {
+  color: var(--link-ui-hover);
+}
+
+.experience-skill-download .contact-social-icon {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+/* The stuck masthead is transparent and only the switch stays interactive. */
+.experience-skill-masthead--stuck .experience-skill-download {
+  visibility: hidden;
+}
+
 .experience-skill-switch {
   position: relative;
   display: inline-flex;
@@ -165,7 +195,8 @@
     margin-bottom: 0.72rem;
   }
 
-  .experience-skill-identity {
+  .experience-skill-identity,
+  .experience-skill-download {
     margin-top: 0.34rem;
     font-size: 0.64rem;
     letter-spacing: 0.07em;

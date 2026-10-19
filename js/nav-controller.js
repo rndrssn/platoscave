@@ -193,6 +193,7 @@
         link.target = '_blank';
         link.rel = 'noopener';
       }
+      if (config.download) link.setAttribute('download', '');
       if (config.icon) {
         var icon = document.createElement('span');
         icon.className = 'contact-social-icon';
@@ -244,6 +245,13 @@
           label: 'CV',
           className: 'contact-social-link contact-social-link--cv footer-social-link footer-social-link--cv',
           ariaLabel: 'CV'
+        },
+        {
+          href: rootPrefix + 'cv/Robert-Andersson-CV.pdf',
+          className: 'contact-social-link contact-social-link--pdf footer-social-link',
+          ariaLabel: 'Download CV as PDF',
+          download: true,
+          icon: true
         },
         {
           href: 'https://apps.apple.com/us/app/ioths/id6787224776',
